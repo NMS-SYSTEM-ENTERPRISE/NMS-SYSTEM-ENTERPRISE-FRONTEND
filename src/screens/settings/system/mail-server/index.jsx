@@ -247,7 +247,8 @@ const MailServerSettings = () => {
               Save Mail Server Settings
             </button>
           </div>
-        </div>
+      </div>
+    </div>
   );
 };
 export default MailServerSettings;

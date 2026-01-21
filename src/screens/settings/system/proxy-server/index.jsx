@@ -156,7 +156,8 @@ const ProxyServerSettings = () => {
               Save Proxy Server Settings
             </button>
           </div>
-        </div>
+      </div>
+    </div>
   );
 };
 export default ProxyServerSettings;

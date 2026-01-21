@@ -40,6 +40,8 @@ const HistoryChart = ({ type, data, times }) => {
       color = type === 'packetLoss' ? '#f43f5e' : '#22d3ee';
     }
 
+    chart.group = 'pathHistoryGroup';
+    
     chart.setOption({
       grid: { left: 0, right: 0, top: 20, bottom: 20 },
       xAxis: {
@@ -52,6 +54,14 @@ const HistoryChart = ({ type, data, times }) => {
         show: false,
         max: type === 'availability' ? 100 : 'dataMax'
       },
+      dataZoom: [
+        {
+          type: 'inside',
+          start: 80, // View last 20% of data (approx "2 hours" window)
+          end: 100,
+          zoomLock: false
+        }
+      ],
       tooltip: {
         trigger: 'axis',
         backgroundColor: '#111827',
@@ -80,6 +90,9 @@ const HistoryChart = ({ type, data, times }) => {
         }
       }]
     });
+
+    // Ensure connection happens
+    echarts.connect('pathHistoryGroup');
 
     const handleResize = () => chart.resize();
     window.addEventListener('resize', handleResize);

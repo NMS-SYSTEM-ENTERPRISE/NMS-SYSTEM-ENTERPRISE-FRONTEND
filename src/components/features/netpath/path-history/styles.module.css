@@ -4,6 +4,7 @@
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.05); /* Balanced frame */
   border-radius: var(--radius-lg);
+  overflow: hidden; /* Prevent overflow */
 }
 
 .historyHeader {
@@ -81,7 +82,7 @@
 }
 
 .chartsContainer {
-  padding: 32px 24px 12px 24px; /* Added internal side padding to match header */
+  padding: 32px 24px 12px 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -149,6 +150,7 @@
   height: 80px;
   background: transparent;
   border-radius: 4px;
+  min-width: 0; /* Fix flex overflow */
 }
 
 .chartRow:hover .chartCanvas {

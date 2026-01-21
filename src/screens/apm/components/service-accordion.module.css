@@ -587,14 +587,16 @@
 .metricsWidgetGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 0;
   width: 100%;
+  border-bottom: 1px solid var(--color-border); /* Optional bottom border for the section */
 }
 
 .metricWidget {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  border-radius: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -603,19 +605,23 @@
   min-height: 200px;
 }
 
+.metricWidget:last-child {
+  border-right: none;
+}
+
 .metricWidget:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.02); /* Subtle hover effect */
+  transform: none;
+  box-shadow: none;
 }
 
 .widgetHeader {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: var(--color-bg-tertiary);
-  border-bottom: 1px solid var(--color-border);
+  padding: 16px 24px;
+  background: transparent;
+  border-bottom: none;
 }
 
 .widgetIcon {
@@ -818,10 +824,12 @@
 }
 
 /* Analytics Widgets - Dashboard Theme */
+/* Analytics Widgets - Dashboard Theme */
 .analyticsWidget {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  border-radius: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -831,26 +839,19 @@
   position: relative;
 }
 
-.analyticsWidget::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.analyticsWidget:hover::before {
-  opacity: 1;
+.analyticsWidget:last-child {
+  border-right: none;
 }
 
 .analyticsWidget:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Remove the top gradient line */
+.analyticsWidget::before {
+  display: none;
 }
 
 .analyticsWidgetInner {

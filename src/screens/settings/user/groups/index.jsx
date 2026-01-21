@@ -88,9 +88,9 @@ const Groups = () => {
     setShowPreviewModal(true);
   };
   return (
-    
+    <>
       <div className={styles.mainContent}>
-<div className={styles.contentArea}>
+        <div className={styles.contentArea}>
           <div className={styles.toolbar}>
             <div className={styles.searchBox}>
               <Icon icon="mdi:magnify" width={18} height={18} />
@@ -384,6 +384,7 @@ const Groups = () => {
           <span className={styles.paginationInfo}>1 - 100 of 165 items</span>
         </div>
       </Modal>
+    </>
   );
 };
 export default Groups;

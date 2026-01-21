@@ -1,6 +1,6 @@
 'use client';
 import { Icon } from '@iconify/react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './styles.module.css';
 

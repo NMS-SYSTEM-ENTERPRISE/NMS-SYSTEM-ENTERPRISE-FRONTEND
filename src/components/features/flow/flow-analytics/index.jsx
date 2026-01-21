@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
+import { TopTalkersWidget } from '../top-talkers-widget';
 import styles from './styles.module.css';
 
 const TREND_DATA = [120, 150, 180, 170, 210, 250, 280, 260, 290, 320, 310, 350];
@@ -15,6 +16,7 @@ const APP_DATA = [
 export const FlowAnalytics = () => {
   const [expandedSections, setExpandedSections] = useState({
     summary: true,
+    topTalkers: true,
     distribution: true,
     performance: true,
     insights: true
@@ -173,7 +175,26 @@ export const FlowAnalytics = () => {
             </div>
           )}
         </div>
-        {/* Section 1: Traffic Distribution Analysis */}
+
+        {/* Section 1: Top Talkers */}
+        <div className={styles.accordion}>
+          <div className={styles.accordionHeader} onClick={() => toggleSection('topTalkers')}>
+            <div className={styles.headerLeft}>
+              <div className={styles.iconWrapper} style={{ color: '#06b6d4', borderColor: 'rgba(6, 182, 212, 0.3)' }}>
+                <Icon icon="mdi:network-strength-4" width={20} />
+              </div>
+              <span className={styles.headerTitle}>Top Talkers <span className={styles.badge} style={{ color: '#06b6d4', background: 'rgba(6, 182, 212, 0.1)' }}>BANDWIDTH</span></span>
+            </div>
+            <Icon icon="mdi:chevron-down" className={`${styles.chevron} ${expandedSections.topTalkers ? styles.chevronOpen : ''}`} />
+          </div>
+          {expandedSections.topTalkers && (
+            <div className={styles.accordionContent}>
+              <TopTalkersWidget />
+            </div>
+          )}
+        </div>
+
+        {/* Section 2: Traffic Distribution Analysis */}
         <div className={styles.accordion}>
           <div className={styles.accordionHeader} onClick={() => toggleSection('distribution')}>
             <div className={styles.headerLeft}>

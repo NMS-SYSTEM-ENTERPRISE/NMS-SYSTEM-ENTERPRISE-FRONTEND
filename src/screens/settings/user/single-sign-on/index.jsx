@@ -346,6 +346,7 @@ const SingleSignOn = () => {
             <button className={styles.btnPrimary}>Save</button>
           </div>
         </div>
+      </div>
   );
 };
 export default SingleSignOn;

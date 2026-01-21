@@ -2,8 +2,8 @@
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import * as echarts from 'echarts';
-import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 
 // All Widget Categories with colors for visual recognition
@@ -498,8 +498,29 @@ const DashboardCustom = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedWidget, setSelectedWidget] = useState(null);
   const [activeTab, setActiveTab] = useState('Chart');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [configTab, setConfigTab] = useState('Style');
-  const [widgets, setWidgets] = useState([]);
+  // Initial Mock Widgets for better "out of the box" experience
+  const [widgets, setWidgets] = useState([
+    {
+      id: 1,
+      type: 'Chart',
+      title: 'System CPU Performance',
+      config: { style: 'area', area: true, lineWidth: 2, showMarkers: true, counter: 'system.cpu.percent', aggregation: 'avg' }
+    },
+    {
+      id: 2,
+      type: 'Gauge',
+      title: 'Memory Usage',
+      config: { counter: 'system.mem.used', aggregation: 'avg' }
+    },
+    {
+        id: 3,
+        type: 'Top N',
+        title: 'Top Processes by Memory',
+        config: { counter: 'process.mem', aggregation: 'max' }
+    }
+  ]);
   const [activeHeaderAction, setActiveHeaderAction] = useState(null);
 
   // Comprehensive Widget Configuration State
@@ -617,15 +638,25 @@ const DashboardCustom = () => {
   return (
     <div className={styles.dashboardCustom}>
       {/* Left Sidebar for Widgets */}
-      <div className={styles.dashboardSidebar}>
+      <div className={`${styles.dashboardSidebar} ${isSidebarCollapsed ? styles.collapsed : ''}`}>
         <div className={styles.sidebarHeader}>
-          <Icon icon="mdi:view-grid-plus" width={24} />
-          <span>Widgets</span>
+          {!isSidebarCollapsed && (
+            <>
+              <Icon icon="mdi:view-grid-plus" width={20} />
+              <span>Widgets</span>
+            </>
+          )}
+          <button 
+            className={styles.sidebarToggle}
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          >
+            <Icon icon={isSidebarCollapsed ? "mdi:menu" : "mdi:chevron-left"} width={20} />
+          </button>
         </div>
         <div className={styles.sidebarContent}>
           {WIDGET_CATEGORIES.map((category) => (
             <div key={category.category} className={styles.sidebarCategory}>
-              <h3>{category.category}</h3>
+              {!isSidebarCollapsed && <h3>{category.category}</h3>}
               <div className={styles.sidebarGrid}>
                 {category.widgets.map((widget) => (
                   <button
@@ -636,10 +667,10 @@ const DashboardCustom = () => {
                   >
                     <Icon
                       icon={widget.icon}
-                      width={24}
+                      width={isSidebarCollapsed ? 24 : 20}
                       style={{ color: widget.color }}
                     />
-                    <span>{widget.name}</span>
+                    {!isSidebarCollapsed && <span>{widget.name}</span>}
                   </button>
                 ))}
               </div>
@@ -653,15 +684,15 @@ const DashboardCustom = () => {
         {/* Header */}
         <header className={styles.header}>
           <div className={styles.headerLeft}>
-            <button className={styles.backBtn} onClick={() => router.push('/')}>
-              <Icon icon="mdi:arrow-left" width={20} />
-            </button>
-            <div className={styles.breadcrumb}>
-              <Icon icon="mdi:view-dashboard" width={20} />
-              <span>pmg_test</span>
-              <Icon icon="mdi:star-outline" width={16} />
-            </div>
+          <button className={styles.backBtn} onClick={() => router.push('/dashboard')} title="Back to Dashboard">
+            <Icon icon="mdi:arrow-left" width={18} />
+          </button>
+          <div className={styles.breadcrumb}>
+            <Icon icon="mdi:view-dashboard-edit" width={16} height={16} color="var(--color-accent-cyan)" />
+            <span className={styles.breadcrumbSeparator}>/</span>
+            <span className={styles.breadcrumbText}>Custom Dashboard Builder</span>
           </div>
+        </div>
           <div className={styles.headerRight}>
             <div className={styles.timeRange}>
               <span className={styles.todayBadge}>today</span>

@@ -2,9 +2,8 @@
 import { PerformanceAccordion } from '@/components/features/dashboard/performance-accordion';
 import { ResourceAccordion } from '@/components/features/dashboard/resource-accordion';
 import * as echarts from 'echarts';
-import { useEffect, useRef } from 'react';
-import { FiPlus } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import styles from './styles.module.css';
 
 const cpuMonitorData = [
@@ -1104,15 +1103,6 @@ const Index = () => {
 
 
       </main>
-
-      {/* Add Widget Button */}
-      <button
-        className={styles.addWidgetBtn}
-        onClick={() => router.push('/dashboard/custom')}
-        title="Create Custom Dashboard"
-      >
-        <FiPlus size={24} />
-      </button>
     </div>
   );
 };

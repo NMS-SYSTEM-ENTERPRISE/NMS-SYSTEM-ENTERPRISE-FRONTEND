@@ -6,7 +6,7 @@ import ServerDetail from '@/components/features/networkmonitoring/detail-dashboa
 import styles from '@/screens/network-monitoring/detail.module.css';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { FiArrowLeft, FiImage, FiLogOut, FiMaximize, FiPlus, FiRefreshCw } from 'react-icons/fi';
+import { FiArrowLeft, FiImage, FiLogOut, FiMaximize, FiRefreshCw } from 'react-icons/fi';
 
 const NetworkMonitoringDetail = () => {
   const router = useRouter();
@@ -98,15 +98,6 @@ const NetworkMonitoringDetail = () => {
       <main className={styles.dashboard_content}>
         {renderDashboard()}
       </main>
-
-      {/* Add Widget Button */}
-      <button
-        className={styles.addWidgetBtn}
-        onClick={() => router.push('/dashboard/custom')}
-        title="Create Custom Dashboard"
-      >
-        <FiPlus size={24} />
-      </button>
     </div>
   );
 };

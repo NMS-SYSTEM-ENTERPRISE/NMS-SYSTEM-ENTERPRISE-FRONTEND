@@ -1,8 +1,8 @@
 "use client";
-import { Icon } from '@iconify/react';
-import { useState } from 'react';
 import { NavLink } from '@/components/ui/nav-link';
+import { Icon } from '@iconify/react';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import styles from './styles.module.css';
 
 const menuGroups = [
@@ -31,6 +31,7 @@ const menuGroups = [
       { icon: 'lucide:workflow', label: 'Traffic Flow', path: '/flow', badge: null },
       { icon: 'lucide:target', label: 'Service Objectives', path: '/slo', badge: null },
       { icon: 'lucide:layers', label: 'Event Monitor', path: '/trap-explorer', badge: null },
+      { icon: 'lucide:layout-panel-left', label: 'Dashboard Builder', path: '/dashboard/custom', badge: 'New' },
     ],
   },
   {

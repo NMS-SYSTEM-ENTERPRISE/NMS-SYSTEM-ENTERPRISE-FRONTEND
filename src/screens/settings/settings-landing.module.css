@@ -1,0 +1,152 @@
+.landingHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xl);
+  padding: var(--padding-xl);
+  background: linear-gradient(135deg, rgba(0, 174, 239, 0.1) 0%, rgba(124, 77, 255, 0.1) 100%);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--margin-2xl);
+  border: 1px solid var(--color-border);
+}
+
+.landingHeaderIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-chart-cyan) 0%, var(--color-chart-purple) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-bg-primary);
+  box-shadow: 0 8px 24px rgba(0, 174, 239, 0.3);
+}
+
+.landingTitle {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-chart-cyan);
+  margin: 0 0 var(--margin-sm) 0;
+}
+
+.landingDescription {
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--gap-lg);
+  margin-bottom: var(--margin-2xl);
+}
+
+.settingCard {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+  padding: var(--padding-xl);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.settingCard:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-chart-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.cardIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cardContent {
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--margin-xs) 0;
+}
+
+.cardDescription {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cardArrow {
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+
+.settingCard:hover .cardArrow {
+  color: var(--color-chart-cyan);
+  transform: translateX(4px);
+}
+
+.statsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--gap-lg);
+  padding: var(--padding-xl);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  padding: var(--padding-lg);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.statCard svg {
+  color: var(--color-chart-cyan);
+}
+
+.statValue {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--margin-xs);
+}
+
+@media (max-width: 768px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .landingHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .statsSection {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+

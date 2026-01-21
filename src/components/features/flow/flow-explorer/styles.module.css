@@ -1,0 +1,578 @@
+.explorer {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--color-bg-primary);
+  min-height: 100%;
+}
+
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.accordion {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.accordion:first-of-type {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.accordion:last-of-type {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.accordionHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.iconWrapper {
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg-secondary);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22d3ee;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
+}
+
+.headerTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #10b981;
+  letter-spacing: 1px;
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 12px rgba(16, 185, 129, 0.8); }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.chevron {
+  color: var(--color-text-muted);
+  transition: transform 0.3s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #22d3ee;
+}
+
+.accordionContent {
+  padding: 24px;
+  background: rgba(11, 15, 25, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Filter Workspace */
+.filterWorkspace {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0; /* Remove gap to use dividers */
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px;
+  position: relative;
+}
+
+.filterField:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0.15) 80%,
+    transparent
+  );
+}
+
+.filterField:first-child { padding-left: 0; }
+.filterField:last-child { padding-right: 0; }
+
+.filterField label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fieldIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.inputWrap input,
+.inputWrap select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px 10px 36px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.inputWrap input:focus,
+.inputWrap select:focus {
+  border-color: #22d3ee;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.05);
+}
+
+.filterActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 20px;
+}
+
+.clearBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.applyBtn {
+  background: #22d3ee;
+  border: none;
+  color: #0b0f19;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.applyBtn:hover {
+  background: #67e8f9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
+}
+
+/* Stats Strip */
+.statsStrip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statItem {
+  flex: 1;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statLabel {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+}
+
+.statValue {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.statDivider {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.25) 20%,
+    rgba(255, 255, 255, 0.25) 80%,
+    transparent
+  );
+}
+
+/* Explorer Table */
+.explorerTableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.explorerTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.explorerTable th {
+  padding: 12px 24px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.01);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.subHeader {
+  font-size: 8px;
+  opacity: 0.6;
+  margin-left: 4px;
+}
+
+.flowRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.2s;
+}
+
+.flowRow:hover {
+  background: rgba(34, 211, 238, 0.02);
+}
+
+.explorerTable td {
+  padding: 14px 24px;
+  vertical-align: middle;
+}
+
+.timeCell {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #9ca3af;
+  width: 120px;
+}
+
+.ipGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ipText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #22d3ee;
+  font-weight: 600;
+}
+
+.portText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 700;
+}
+
+.protoBadge {
+  background: rgba(192, 132, 252, 0.1);
+  color: #c084fc;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(192, 132, 252, 0.2);
+}
+
+.appBadge {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.volumeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.volumeText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.packetText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.monoText {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.statusGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.active { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+.closed { background: #9ca3af; }
+
+.statusText {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+}
+
+/* Flow Architecture Sketch */
+.sketchContainer {
+  padding: 16px;
+  background: transparent;
+  border-radius: 12px;
+}
+
+.sketchCanvas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 320px;
+  gap: 0;
+  position: relative;
+}
+
+.sketchColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  position: relative;
+  z-index: 2;
+}
+
+.columnLabel {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.nodeItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  width: 220px;
+  transition: all 0.3s;
+}
+
+.nodeItem:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.nodeIconWrap {
+  width: 44px;
+  height: 44px;
+  border: 1px solid;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.nodeDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nodeIp {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nodeTag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.flowLinesArea {
+  flex: 1;
+  height: 200px;
+  position: relative;
+  z-index: 1;
+}
+
+.animatedPath {
+  stroke-dasharray: 5, 5;
+  animation: flowLine 20s linear infinite;
+}
+
+@keyframes flowLine {
+  from { stroke-dashoffset: 200; }
+  to { stroke-dashoffset: 0; }
+}
+
+.centralNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.serviceDisc {
+  width: 140px;
+  height: 140px;
+  background: transparent;
+  border: 1px dashed rgba(192, 132, 252, 0.3);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  box-shadow: 0 0 30px rgba(192, 132, 252, 0.05);
+}
+
+.serviceName {
+  font-size: 11px;
+  font-weight: 800;
+  color: #c084fc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.serviceStats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.serviceStat {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}

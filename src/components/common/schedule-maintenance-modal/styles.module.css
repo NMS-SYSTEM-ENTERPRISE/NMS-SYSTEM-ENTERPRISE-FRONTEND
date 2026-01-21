@@ -1,0 +1,198 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-chart-cyan);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-lg) var(--padding-xl);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-chart-cyan);
+}
+
+.closeButton {
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.closeButton:hover {
+  color: var(--color-text-primary);
+}
+
+.modalBody {
+  padding: var(--padding-xl);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.section {
+  margin-bottom: var(--margin-xl);
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--margin-md);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.formGroup label {
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.required {
+  color: #ef4444;
+}
+
+.formGroup input,
+.formGroup select {
+  padding: var(--padding-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  border-color: var(--color-chart-cyan);
+}
+
+.schedulerTypes {
+  display: flex;
+  gap: var(--gap-md);
+  flex-wrap: wrap;
+}
+
+.typeBtn {
+  padding: var(--padding-sm) var(--padding-lg);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.typeBtn:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.typeBtnActive {
+  background: var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+  border-color: var(--color-chart-cyan);
+}
+
+.typeBtnActive:hover {
+  opacity: 0.9;
+  color: var(--color-bg-primary);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-md);
+  padding: var(--padding-lg) var(--padding-xl);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-tertiary);
+}
+
+.resetBtn {
+  padding: var(--padding-sm) var(--padding-lg);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.resetBtn:hover {
+  background: var(--color-bg-hover);
+}
+
+.scheduleBtn {
+  padding: var(--padding-sm) var(--padding-lg);
+  background: var(--color-chart-cyan);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-bg-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.scheduleBtn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .schedulerTypes {
+    flex-wrap: wrap;
+  }
+
+  .typeBtn {
+    flex: 1;
+    min-width: calc(50% - var(--gap-md) / 2);
+  }
+}

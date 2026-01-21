@@ -1,0 +1,239 @@
+/* Settings Sidebar - Tree Style */
+.sidebar {
+  width: 260px;
+  background-color: #0b0f19;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebarCollapsed {
+  width: 60px;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 64px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.collapseBtn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.collapseBtn:hover {
+  color: #22d3ee;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Sidebar Collapsed Button Center */
+.sidebarCollapsed .collapseBtn {
+  margin: 0 auto;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.searchBox input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+
+.menu {
+  flex: 1;
+  padding: 0 0 16px 16px; 
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll during transition */
+}
+
+.sidebarCollapsed .menu {
+  padding: 16px 0;
+  align-items: center;
+}
+
+.menuItem {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.sidebarCollapsed .menuItem {
+  align-items: center;
+}
+
+/* Top Level Items */
+.menuButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px; 
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  margin-right: 16px;
+}
+
+.sidebarCollapsed .menuButton {
+  justify-content: center;
+  padding: 10px 0;
+  width: 40px;
+  margin-right: 0;
+}
+
+.menuButton:hover {
+  color: #e2e8f0;
+}
+
+.sidebarCollapsed .menuButton:hover {
+   background: rgba(255, 255, 255, 0.05);
+}
+
+.menuButtonActive {
+  background: transparent;
+  color: #22d3ee;
+}
+
+.menuButtonLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebarCollapsed .menuButtonLeft {
+  gap: 0;
+  justify-content: center;
+}
+
+/* Badges - Hide in collapsed or show as small dot? User didn't specify, hidden is safer for 'clean' */
+.badge {
+  padding: 2px 6px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ... (Submenu styles remain mostly same) ... */
+
+.menuButtonActive .badge {
+  background: rgba(6, 182, 212, 0.1);
+  color: #22d3ee;
+}
+
+/* Submenu Container */
+.subMenu {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 24px; /* Align line with parent icon center approx */
+  margin-left: 10px;
+  gap: 0;
+}
+
+/* Vertical line for submenu */
+/* We won't use a continuous line, we'll use branch logic if possible, 
+   but for submenus commonly a thin line is cleaner. 
+   Let's use the branch logic to match the main sidebar exactly. */
+
+.subMenuItem {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 8px 12px;
+  color: #94a3b8;
+  font-size: 13px;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s;
+  margin-right: 16px;
+  font-weight: 500;
+}
+
+.subMenuItem:hover {
+  color: #e2e8f0;
+}
+
+.subMenuItemActive {
+  background: transparent;
+  color: #22d3ee;
+}
+
+/* Tree Branch for Subitems */
+.treeBranch {
+  position: absolute;
+  left: -12px; 
+  top: -14px; 
+  height: calc(50% + 14px);
+  width: 12px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 8px;
+  pointer-events: none;
+}
+
+.subMenuItem:first-of-type .treeBranch {
+  top: -6px;
+  height: calc(50% + 6px);
+}
+
+.subMenuItemActive .treeBranch {
+  border-color: #22d3ee;
+  z-index: 1;
+}
+
+

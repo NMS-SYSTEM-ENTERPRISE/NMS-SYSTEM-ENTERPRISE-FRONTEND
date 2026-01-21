@@ -1,0 +1,620 @@
+.createCustomReport {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--color-bg-primary);
+  overflow: hidden;
+}
+
+/* Header - Minimal & Efficient */
+.header {
+  height: 56px;
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-accent-cyan);
+  border-color: var(--color-accent-cyan);
+}
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 280px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 10px 8px 32px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-accent-cyan);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Content - Two Panel Layout */
+.content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left Panel - Compact Sidebar */
+.leftPanel {
+  width: 320px;
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.leftPanelCollapsed {
+  width: 48px;
+}
+
+.panelHeader {
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.leftPanelCollapsed .panelHeader {
+  justify-content: center;
+  padding: 0;
+}
+
+.collapseBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.collapseBtn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-accent-cyan);
+}
+
+.badge {
+  margin-left: auto;
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--color-accent-cyan);
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+}
+
+.categoriesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.categoriesContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.categoriesContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.categoriesContainer::-webkit-scrollbar-thumb {
+  background: var(--color-border-light);
+  border-radius: 3px;
+}
+
+.categoriesContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-cyan);
+}
+
+/* Collapsed View - Icon Only */
+.collapsedView {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.collapsedView::-webkit-scrollbar {
+  width: 4px;
+}
+
+.collapsedView::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.collapsedView::-webkit-scrollbar-thumb {
+  background: var(--color-border-light);
+  border-radius: 2px;
+}
+
+.collapsedView::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-cyan);
+}
+
+.collapsedCategoryIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  cursor: help;
+  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+}
+
+.collapsedCategoryIcon:hover {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--color-accent-cyan);
+  border-color: var(--color-accent-cyan);
+}
+
+/* Metric Group - Tree Structure */
+.metricGroup {
+  margin-bottom: 8px;
+}
+
+.groupHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.groupHeader:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--color-text-primary);
+}
+
+.groupChevron {
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: transform 0.3s;
+}
+
+.groupHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.groupTitle {
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.categoryBadge {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-muted);
+  padding: 2px 5px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+}
+
+/* Group Content - Nested Items with Curved Lines */
+.groupContent {
+  padding: 4px 0 4px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+
+/* Vertical Tree Line - Perfectly aligned with Header Chevron */
+.groupContent::before {
+  content: '';
+  position: absolute;
+  left: 24px; /* Perfectly centered under the chevron */
+  top: 0;
+  bottom: 12px;
+  width: 1px;
+  background: var(--color-border-light);
+  opacity: 0.3;
+}
+
+/* Metric Item - Tree Node */
+.metricItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.metricItem:last-child {
+  border-bottom-color: transparent;
+}
+
+.metricItem:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+.metricItemActive {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.metricItemActive .typeName {
+  color: var(--color-accent-cyan) !important;
+}
+
+.metricItemActive .metricItemLine {
+  opacity: 1;
+  border-color: var(--color-accent-cyan);
+}
+
+/* Curved Branch Line - Consistent for all nodes */
+.metricItemLine {
+  position: absolute;
+  left: -12px;
+  top: -12px; /* Reach up to connect to previous item's path */
+  width: 12px;
+  height: calc(50% + 12px);
+  background: transparent;
+  border-left: 1.5px solid var(--color-border-light);
+  border-bottom: 1.5px solid var(--color-border-light);
+  border-bottom-left-radius: 8px;
+  opacity: 0.3;
+  transition: all 0.2s;
+}
+
+/* First item doesn't need to reach up as much */
+.metricItem:first-child .metricItemLine {
+  top: 0;
+  height: 50%;
+}
+
+/* Active node gets full opacity and accent color */
+.metricItemActive .metricItemLine {
+  opacity: 1;
+  border-left-color: var(--color-accent-cyan);
+  border-bottom-color: var(--color-accent-cyan);
+}
+
+.typeIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tertiary);
+  border-radius: 6px;
+  color: var(--color-accent-cyan);
+  transition: all 0.2s;
+}
+
+.metricItemActive .typeIcon {
+  background: transparent;
+  color: var(--color-accent-cyan);
+}
+
+.typeContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.typeName {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typeDescription {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* Right Panel - Configuration */
+.rightPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-bg-primary);
+}
+
+.configHeader {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+}
+
+.configHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.configHeaderLeft h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.configHeaderLeft p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.configContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.configContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.configContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.configContent::-webkit-scrollbar-thumb {
+  background: var(--color-border-light);
+  border-radius: 3px;
+}
+
+.configContent::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-cyan);
+}
+
+/* Configuration Sections - Minimal */
+.configSection {
+  background: transparent;
+  border: none;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  margin-bottom: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sectionContent {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-accent-cyan);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 10px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.checkboxLabel:hover {
+  background: rgba(6, 182, 212, 0.05);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkboxLabel span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.configFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+}
+
+/* Empty State */
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-text-muted);
+  padding: 40px;
+  text-align: center;
+}
+
+.emptyState h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 12px;
+  max-width: 320px;
+}

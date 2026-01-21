@@ -1,0 +1,207 @@
+.pageContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-lg) var(--padding-xl);
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.headerLeft h1 {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-chart-cyan);
+  margin: 0;
+}
+
+.contentArea {
+  padding: var(--padding-xl);
+  max-width: 1400px;
+}
+
+.pageTitle {
+  font-size: var(--font-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-chart-cyan);
+  margin: 0 0 var(--margin-md) 0;
+}
+
+.pageDescription {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--margin-xl);
+  line-height: 1.6;
+}
+
+.link {
+  color: var(--color-chart-cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.settingsSection {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--padding-xl);
+  margin-bottom: var(--margin-xl);
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-lg) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.settingRow:last-child {
+  border-bottom: none;
+}
+
+.settingLabel {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.settingControl {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.toggleBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: 4px 12px 4px 40px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 70px;
+}
+
+.toggleBtnOn {
+  background-color: rgba(35, 168, 109, 0.2);
+  border-color: var(--color-success);
+}
+
+.toggleLabel {
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.toggleBtnOn .toggleLabel {
+  color: var(--color-success);
+}
+
+.toggleSlider {
+  position: absolute;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  background-color: var(--color-text-muted);
+  border-radius: 50%;
+  transition: all var(--transition-normal);
+}
+
+.toggleSliderOn {
+  background-color: var(--color-success);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.modeBtn {
+  padding: var(--padding-sm) var(--padding-lg);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modeBtn:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-chart-cyan);
+}
+
+.modeBtnActive {
+  background-color: var(--color-chart-cyan);
+  border-color: var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-md);
+}
+
+.btnSecondary,
+.btnPrimary {
+  padding: var(--padding-sm) var(--padding-xl);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btnSecondary {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.btnSecondary:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-text-muted);
+}
+
+.btnPrimary {
+  background-color: var(--color-chart-cyan);
+  border: 1px solid var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-chart-cyan-light);
+  border-color: var(--color-chart-cyan-light);
+}
+
+

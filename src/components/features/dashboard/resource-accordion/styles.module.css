@@ -1,0 +1,338 @@
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--margin-lg);
+  border: 1px solid var(--color-border);
+}
+
+.accordionItem {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.accordionItem:last-child {
+  border-bottom: none;
+}
+
+.accordionItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-md) var(--padding-lg);
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-height: 60px;
+}
+
+.accordionHeader:hover {
+  background: var(--color-bg-hover);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.headerTitle {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: 0.3px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.statBadge {
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  min-width: 70px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.chevron {
+  color: var(--color-text-muted);
+  transition: transform 0.3s ease;
+  opacity: 0.7;
+}
+
+.accordionItem[data-open="true"] .chevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* Base Content Layout */
+.accordionContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--color-bg-primary);
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  position: relative;
+  /* Divider logic similar to performance-accordion */
+}
+
+.accordionContent::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border);
+  opacity: 0.5;
+  transform: translateX(-50%);
+}
+
+.accordionContent[data-layout="full"] {
+  display: flex;
+  flex-direction: row;
+  gap: var(--gap-xl);
+}
+
+.accordionContent[data-layout="full"]::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border);
+  opacity: 0.3; /* Subtle divider */
+  display: block; 
+}
+
+/* Triple Column Layout for Network */
+.accordionContent[data-layout="triple"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--gap-lg);
+  position: relative;
+}
+/* Dividers for triple layout */
+.accordionContent[data-layout="triple"]::before,
+.accordionContent[data-layout="triple"]::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: var(--color-border);
+  opacity: 0.3;
+}
+.accordionContent[data-layout="triple"]::before { left: 33.33%; }
+.accordionContent[data-layout="triple"]::after { left: 66.66%; }
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: 24px;
+  min-width: 0;
+  flex: 1; /* Expand to fill full layout */
+}
+
+.splitColumnWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+/* Ensure children of split wrapper fill space */
+.splitColumnWrapper > .column {
+  flex: 1;
+  border-bottom: 1px solid var(--color-border); /* Separator between top/bottom */
+  justify-content: center; /* Center content vertically */
+  padding: 32px; /* Balanced padding */
+}
+.splitColumnWrapper > .column:last-child {
+  border-bottom: none;
+}
+
+.columnHeader {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Visualization Styles */
+
+/* List Rows */
+.monitorList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; 
+}
+
+.monitorList[data-spread="true"] {
+  height: 100%;
+  justify-content: space-between; /* Distribute rows evenly */
+  gap: 0; /* Let space-between handle it */
+}
+
+/* Cleaner, background-less rows like the screenshot */
+/* Cleaner, background-less rows like the screenshot */
+/* Cleaner, background-less rows like the screenshot */
+.monitorRow {
+  display: flex; /* Flex for better control than grid here */
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0; /* Vertical padding only */
+  background: transparent; 
+  gap: var(--gap-md);
+  min-height: 48px; 
+  border-bottom: 1px solid var(--color-border); /* Explicit divider as requested */
+}
+
+.monitorRow:last-child {
+  border-bottom: none;
+}
+
+.monitorRow:hover .monitorNameText {
+  color: var(--color-primary); 
+}
+
+.monitorName {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  flex: 1; /* Take available text space */
+  margin-right: 8px;
+}
+
+.monitorNameText {
+  font-size: 13px;
+  color: var(--color-text-secondary); 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  display: block; /* Ensure own line */
+  margin-bottom: 3px;
+}
+
+.monitorSubText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* Ensure own line */
+}
+
+/* Container for graph */
+.vizContainer {
+  height: 32px;
+  width: 80px; /* Fixed width for consistency */
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.monitorValue {
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.5px;
+  min-width: 60px; /* Fixed alignment width */
+  flex-shrink: 0;
+}
+
+/* Chart Containers */
+.vizContainer {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align bars to left */
+  min-width: 0;
+}
+
+/* 1. Mini Pie / Donut */
+.pieContainer {
+  width: 48px; 
+  height: 48px;
+  position: relative; /* For absolute positioning of text */
+}
+
+/* 2. Progress Bar - Sleek Pill Shape */
+.progressContainer {
+  width: 100%;
+  height: 6px; /* Thinner */
+  background: rgba(255, 255, 255, 0.05); /* Very subtle track */
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s ease;
+  position: relative;
+}
+
+/* 3. Smooth Area / Line */
+.chartSparkline {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .accordionContent {
+    grid-template-columns: 1fr;
+  }
+  .accordionContent::after {
+    display: none;
+  }
+}

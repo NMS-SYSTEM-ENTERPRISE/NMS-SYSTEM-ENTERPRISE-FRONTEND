@@ -1,0 +1,280 @@
+.sidebar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.section {
+  padding: 12px 16px 8px 16px; /* Reduced padding */
+  border-bottom: 1px solid #1f2937;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Reduced gap */
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.select {
+  width: 100%;
+  border-radius: 0;
+  background: transparent; /* Removed background */
+  border: none;
+  border-bottom: 1px solid #374151; /* Minimalist bottom border */
+  color: #f3f4f6; /* Keep text bright */
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  padding: 6px 0; /* Reduced padding */
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.select:hover {
+  border-color: #6b7280;
+}
+
+.select:focus {
+  border-color: #0ea5e9;
+  box-shadow: none;
+}
+
+.viewTabs {
+  display: flex;
+  padding: 16px 16px 0;
+  gap: 4px;
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+}
+
+.viewTab {
+  flex: 1;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.viewTab:hover {
+  color: #f3f4f6;
+  background: rgba(255,255,255,0.02);
+}
+
+.viewTabActive {
+  color: #0ea5e9;
+  border-bottom-color: #0ea5e9;
+}
+
+/* Metrics Tree Section */
+.metricsSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 16px 0 16px 0;
+  background: #111827;
+}
+
+.searchBox {
+  position: relative;
+  margin: 0 16px 16px 16px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  color: #f3f4f6;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+}
+
+.metricsList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 0;
+}
+
+
+/* Collapsible Groups */
+.metricGroup {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  color: #e5e7eb;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 10;
+}
+
+.groupHeader:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #0ea5e9;
+}
+
+.groupIcon {
+  color: #6b7280;
+  transition: transform 0.2s;
+}
+
+.groupHeader:hover .groupIcon {
+  color: #0ea5e9;
+}
+
+.groupContent {
+  position: relative;
+  margin-left: 24px; /* Align deeply */
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Vertical line connecting group header to children */
+.groupContent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -10px; /* Connect to header area */
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  /* Hide the very bottom of the line so it doesn't dangle past last item? 
+     No, handled by item specific branches usually. 
+     But for simplicity, keeping one main trunk is robust for variable height/groups. 
+  */
+}
+
+/* Tree Items inside Group */
+.metricItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px 8px 16px; /* Padding left for the curve span */
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #9ca3af;
+  position: relative;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.metricItem:hover {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.05);
+}
+
+/* The Curved Connector (metricItemLine) */
+.metricItemLine {
+  position: absolute;
+  left: 0; /* Starts at the trunk line */
+  top: -12px; /* Start from approx center of prev space */
+  bottom: 50%; /* End at center of this item */
+  width: 14px; /* Curve distance */
+  border-left: 1px solid rgba(255, 255, 255, 0.1); /* The vertical part of branch */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* The horizontal part */
+  border-bottom-left-radius: 12px; /* The Curve */
+  pointer-events: none;
+}
+
+/* 
+   Hide the main trunk line's sharp vertical segment at the intersection?
+   The .groupContent::before is the main straight trunk. 
+   The .metricItemLine draws a curved 'L' on top.
+   If we push the item padding further right, we can have the L branch off the main line.
+   Let's adjust positioning so .metricItemLine starts AT the trunk.
+*/
+
+.metricItem:hover .metricItemLine {
+  border-color: #0ea5e9; /* Highlight branch on hover */
+  /* Also need to highlight vertical segment? It might look disconnected if trunk isn't highlighted.
+     But highlighting just the branch is a nice effect.
+  */
+}
+
+/* Highlight the main trunk segment corresponding to hovered item? Tricky with CSS only. */
+
+.metricName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Inter', sans-serif;
+}
+
+.metricAdd {
+  opacity: 0;
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.metricItem:hover .metricAdd {
+  opacity: 1;
+}
+
+.metricAdd:hover {
+  background: #0ea5e9;
+  color: white;
+}
+
+
+
+

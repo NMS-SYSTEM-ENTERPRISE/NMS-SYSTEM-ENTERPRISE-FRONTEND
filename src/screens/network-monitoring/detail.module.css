@@ -1,0 +1,702 @@
+.dashboard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #111827; /* Dark background */
+  color: #e5e7eb;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px;
+  border-bottom: 1px solid #374151;
+  background: #1f2937;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dashboardName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.iconBtn {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.iconBtn:hover {
+  color: #fff;
+}
+
+.dashboard_content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0; /* Important for nested flex scrolling */
+  padding: 16px 16px 40px 16px; /* Reduced from 24px to 16px */
+}
+
+.dashboard_row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.widgetCard {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fill the grid item */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* React Grid Layout Placeholder */
+:global(.react-grid-placeholder) {
+  background: rgba(55, 65, 81, 0.5) !important;
+  border: 2px dashed #4b5563 !important;
+  border-radius: 8px !important;
+  opacity: 0.8 !important;
+}
+
+:global(.react-grid-item.resizing) {
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.dragController {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  margin-right: 8px;
+  transition: all 0.2s;
+}
+
+.dragController:hover {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+.dragController:active {
+  cursor: grabbing;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.widgetTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin: 0;
+}
+
+.badge {
+  background: #0ea5e9;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.chartContainer {
+  flex: 1;
+  width: 100%;
+  min-height: 200px;
+}
+
+/* Stats */
+.statItem {
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* List */
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listValue {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.listLabel {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Table */
+.tableContainer {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.dataTable th {
+  text-align: left;
+  padding: 8px;
+  color: #9ca3af;
+  font-weight: 600;
+  border-bottom: 1px solid #374151;
+}
+
+.dataTable td {
+  padding: 8px;
+  color: #e5e7eb;
+  border-bottom: 1px solid #374151;
+}
+
+.dataTable tr:last-child td {
+  border-bottom: none;
+}
+
+/* Add Widget Button */
+.addWidgetBtn {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transition: all 0.2s;
+  z-index: 100;
+}
+
+.addWidgetBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .dashboard_row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard_row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Interface View Styles */
+.interfaceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Rack View */
+.rackViewContainer {
+  background: #1f2937; /* Dark background for the rack container */
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #374151;
+}
+
+.rackPanel {
+  background: #334155; /* Slate-700 like color for the switch face */
+  flex: 1;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-radius: 4px;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.rackEars {
+  width: 20px;
+  height: 100px;
+  background: #cbd5e1; /* Light grey for rack ears */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 0;
+  align-items: center;
+  border-radius: 2px;
+}
+
+.rackEarHole {
+  width: 8px;
+  height: 12px;
+  background: #1f2937;
+  border-radius: 4px;
+}
+
+.portsRow {
+  display: flex;
+  gap: 8px;
+}
+
+.portWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.portLed {
+  width: 6px;
+  height: 4px;
+  border-radius: 1px;
+}
+
+.ledGreen {
+  background-color: #22c55e;
+  box-shadow: 0 0 4px #22c55e;
+}
+
+.ledRed {
+  background-color: #ef4444;
+  box-shadow: 0 0 4px #ef4444;
+}
+
+.portIcon {
+  width: 24px;
+  height: 24px;
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portSocket {
+  width: 16px;
+  height: 12px;
+  background: #0f172a;
+  border-radius: 1px;
+}
+
+.deviceLabelBox {
+  background: #fff;
+  color: #0ea5e9;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* Table Section */
+.tableSection {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.tableControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  padding: 8px 12px;
+  width: 300px;
+}
+
+.searchIcon {
+  color: #9ca3af;
+  margin-right: 8px;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+}
+
+.viewIcon {
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.interfaceTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.interfaceTable th {
+  text-align: left;
+  padding: 12px;
+  color: #e5e7eb;
+  font-weight: 600;
+  border-bottom: 1px solid #374151;
+  background: #111827;
+}
+
+.interfaceTable td {
+  padding: 12px;
+  border-bottom: 1px solid #374151;
+  vertical-align: middle;
+}
+
+.interfaceTable tr:hover {
+  background: #374151;
+}
+
+.textBlue {
+  color: #0ea5e9;
+}
+.textWhite {
+  color: #f3f4f6;
+}
+.textGreen {
+  color: #22c55e;
+}
+.textRed {
+  color: #ef4444;
+}
+
+.statusCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconGreen {
+  color: #22c55e;
+}
+.iconRed {
+  color: #ef4444;
+}
+.iconOrange {
+  color: #f97316;
+}
+.iconYellow {
+  color: #eab308;
+}
+
+.progressBarWrapper {
+  width: 100%;
+  height: 6px;
+  background: #374151;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progressBar {
+  height: 100%;
+  background: #0ea5e9;
+  border-radius: 3px;
+}
+
+.progressText {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.iconCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+}
+
+/* --- Accordion Groups Layout --- */
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  background: #1f2937;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+  border: 1px solid #374151;
+  gap: 0; /* Connected sequence */
+}
+
+.accordionItem {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #374151;
+  background: transparent;
+  border-radius: 0 !important;
+  position: relative;
+}
+
+.accordionItem:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.accordionItem:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: transparent; /* Inherits from container or item */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-height: 56px;
+  border-bottom: 1px solid transparent; /* default no border */
+}
+
+/* Add separator when open */
+.accordionItem[data-open="true"] .accordionHeader {
+  border-bottom: 1px solid #374151;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(14, 165, 233, 0.1); /* Subtle Cyan Tint Standard */
+  color: #0ea5e9; /* Standard Theme Cyan */
+}
+
+.headerTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f3f4f6;
+  letter-spacing: 0.3px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statBadge {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  min-width: 60px;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+  background: #3b82f6; /* Default Blue Badge */
+  border: none;
+}
+
+/* Optional: Status based override classes can be added if needed, but keeping simple for now */
+
+.chevron {
+  color: #9ca3af;
+  transition: transform 0.3s ease;
+}
+
+.accordionItem[data-open="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Content Area */
+.accordionContent {
+  background: #111827; /* Darker inner bg */
+  padding: 0; /* Remove padding to let widgets touch edges */
+  display: flex; /* Flex to handle dividers easier than grid gap */
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+/* Widget Card Integration inside Accordion */
+.accordionContent .widgetCard {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  flex: 1; /* Distribute evenly */
+  min-width: 300px;
+  border-right: 1px solid #374151; /* Vertical Divider */
+  height: 320px;
+  padding: 24px; /* Internal padding */
+}
+
+.accordionContent .widgetCard:last-child {
+  border-right: none;
+}
+
+/* Remove separate card headers styling inside seamless view */
+.accordionContent .widgetCard .cardHeader {
+  margin-bottom: 24px;
+}
+
+/* Responsive adjustment */
+@media (max-width: 1280px) {
+  .accordionContent .widgetCard {
+     flex: 1 0 50%; /* 2 per row */
+     border-bottom: 1px solid #374151;
+  }
+  .accordionContent .widgetCard:nth-child(2n) {
+    border-right: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .accordionContent .widgetCard {
+    flex: 1 0 100%; /* 1 per row */
+    border-right: none;
+  }
+}
+
+/* --- Service Stats Widget Styling --- */
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  height: 100%;
+  align-content: start;
+}
+
+.statBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.statBox:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.statBoxLabel {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.statBoxValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f3f4f6;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.statBoxSub {
+    font-size: 11px;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .accordionContent {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Widget Title Icon Highlighting --- */
+.widgetIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px; /* Space between icon and text */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Depth */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+}

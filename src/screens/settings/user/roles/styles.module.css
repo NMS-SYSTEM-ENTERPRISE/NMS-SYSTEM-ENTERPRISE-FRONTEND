@@ -1,0 +1,88 @@
+.permissionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-md);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--margin-sm);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.permissionsHeaderLeft,
+.permissionsHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.permissionsHeaderRight input[type="checkbox"] {
+  margin-right: var(--gap-xs);
+}
+
+.permissionModule {
+  margin-bottom: var(--margin-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-md);
+  background-color: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.moduleHeader:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.moduleHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.moduleHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+}
+
+.permissionsList {
+  background-color: var(--color-bg-primary);
+}
+
+.permissionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-sm) var(--padding-md) var(--padding-sm) 48px;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-sm);
+}
+
+.permissionName {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.permissionChecks {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+}
+
+.permissionChecks input[type="checkbox"] {
+  cursor: pointer;
+}
+
+

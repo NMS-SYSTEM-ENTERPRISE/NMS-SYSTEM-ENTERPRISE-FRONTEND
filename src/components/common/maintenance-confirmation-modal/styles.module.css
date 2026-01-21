@@ -1,0 +1,147 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-chart-cyan);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 500px;
+  overflow: hidden;
+}
+
+.modalContent {
+  padding: var(--padding-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.icon {
+  color: var(--color-chart-cyan);
+  margin-bottom: var(--margin-md);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--margin-md);
+  line-height: 1.4;
+}
+
+.monitorName {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-chart-cyan);
+  margin-bottom: var(--margin-lg);
+}
+
+.noteSection {
+  width: 100%;
+  margin-bottom: var(--margin-lg);
+}
+
+.noteHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  padding: var(--padding-md);
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.noteIcon {
+  color: var(--color-chart-cyan);
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.noteText {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.remarkInput {
+  width: 100%;
+  padding: var(--padding-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: var(--margin-lg);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.remarkInput:focus {
+  border-color: var(--color-chart-cyan);
+}
+
+.remarkInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+.noBtn,
+.yesBtn {
+  flex: 1;
+  padding: var(--padding-md) var(--padding-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+}
+
+.noBtn {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.noBtn:hover {
+  background: var(--color-bg-hover);
+}
+
+.yesBtn {
+  background: var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+}
+
+.yesBtn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+  }
+
+  .modalContent {
+    padding: var(--padding-lg);
+  }
+}

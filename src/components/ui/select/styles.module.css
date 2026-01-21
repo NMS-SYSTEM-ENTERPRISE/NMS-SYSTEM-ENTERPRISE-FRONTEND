@@ -1,0 +1,19 @@
+.selectWrapper {
+  width: 100%;
+  position: relative;
+}
+
+/* Ensure react-select dropdowns have high z-index */
+.selectWrapper :global(.react-select__menu) {
+  z-index: 9999 !important;
+}
+
+.selectWrapper :global(.react-select__menu-portal) {
+  z-index: 9999 !important;
+}
+
+/* Override any parent z-index constraints */
+.selectWrapper :global(.react-select__menu-portal > div) {
+  z-index: 9999 !important;
+}
+

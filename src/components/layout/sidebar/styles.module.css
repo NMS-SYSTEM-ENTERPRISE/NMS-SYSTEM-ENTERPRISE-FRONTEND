@@ -1,0 +1,284 @@
+/* Main Sidebar Styled like Ticketing Tree */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background-color: #0b0f19;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 100;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebarCollapsed {
+  width: 72px;
+}
+
+/* Logo Section */
+.logoSection {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(34, 211, 238, 0.1);
+  color: #22d3ee;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.15);
+}
+
+.logoIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarCollapsed .logoText {
+  opacity: 0;
+  width: 0;
+  display: none;
+}
+
+.logoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.logoSubtitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Collapse Button */
+.collapseButton {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.collapseButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #22d3ee;
+}
+
+.sidebarCollapsed .collapseButton {
+  margin: 0 auto;
+}
+
+/* Navigation */
+.navigation {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Reduced gap */
+  padding: 16px 0 16px 20px; /* Left padding for whole tree */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebarCollapsed .navigation {
+  padding: 16px 0;
+  align-items: center;
+}
+
+/* Menu Group / Tree Root */
+.menuGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.treeRoot {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  margin-left: -5px; /* Visual alignment */
+}
+
+.groupLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: #22d3ee; /* Cyan root label */
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.sidebarCollapsed .groupLabel,
+.sidebarCollapsed .treeRoot {
+  display: none;
+}
+
+.groupItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Zero gap to ensure lines connect perfectly via padding */
+  position: relative;
+  padding-left: 12px;
+}
+
+/* Remove continuous line to avoid dangling on last item */
+.groupItems::before {
+  display: none;
+}
+
+.sidebarCollapsed .groupItems {
+  padding-left: 0;
+  width: 100%;
+  align-items: center;
+}
+
+/* Navigation Item */
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px; /* Balanced padding */
+  border-radius: 6px;
+  color: #94a3b8;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  width: 100%;
+  margin-bottom: 2px; /* Tiny visual gap, handled by branch extension */
+}
+
+.sidebarCollapsed .navItem {
+  justify-content: center;
+  padding: 10px 0;
+  width: 40px;
+}
+
+/* Tree Branch (L-shape) */
+.treeBranch {
+  position: absolute;
+  left: -12px; /* Connect to the imaginary vertical line at 0 */
+  top: -14px; /* Extend up to connect with previous item */
+  height: calc(50% + 14px); /* Stop exactly at vertical center */
+  width: 12px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 8px;
+  pointer-events: none;
+}
+
+/* Fix First Item Branch: Connect to Root */
+.navItem:first-of-type .treeBranch {
+  top: -6px; /* Less extension for first item meeting the label */
+  height: calc(50% + 6px);
+}
+
+.sidebarCollapsed .treeBranch {
+  display: none;
+}
+
+.navItem:hover {
+  color: #e2e8f0;
+}
+
+/* Active State */
+.navItemActive {
+  background: transparent !important;
+  color: #22d3ee !important;
+}
+
+/* Highlight Branch */
+.navItemActive .treeBranch {
+  border-color: #22d3ee;
+  opacity: 1;
+  z-index: 1;
+}
+
+.navItemIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.navItemLabel {
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.navItemActive .navItemLabel {
+  font-weight: 600;
+}
+
+/* Badges */
+.navItemBadge {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.05);
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.navItemActive .navItemBadge {
+  background: rgba(6, 182, 212, 0.1);
+  color: #22d3ee;
+}
+
+.navItemBadgeCollapsed {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #ef4444;
+  color: white;
+  font-size: 8px;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+

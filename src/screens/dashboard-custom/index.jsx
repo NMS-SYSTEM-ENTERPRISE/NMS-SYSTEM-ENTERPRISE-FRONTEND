@@ -667,7 +667,7 @@ const DashboardCustom = () => {
                   >
                     <Icon
                       icon={widget.icon}
-                      width={isSidebarCollapsed ? 24 : 20}
+                      width={isSidebarCollapsed ? 28 : 22}
                       style={{ color: widget.color }}
                     />
                     {!isSidebarCollapsed && <span>{widget.name}</span>}

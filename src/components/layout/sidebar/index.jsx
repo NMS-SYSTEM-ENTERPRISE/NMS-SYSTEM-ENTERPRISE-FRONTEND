@@ -10,7 +10,7 @@ const menuGroups = [
     id: 'overview',
     label: 'Overview',
     items: [
-      { icon: 'lucide:layout-dashboard', label: 'Control Center', path: '/', badge: null },
+      { icon: 'lucide:layout-dashboard', label: 'Control Center', path: '/dashboard', badge: null },
     ],
   },
   {

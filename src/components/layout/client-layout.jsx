@@ -10,6 +10,11 @@ export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const isSettings = pathname?.startsWith('/settings');
   const isCustomDashboard = pathname?.includes('/dashboard/custom') || pathname?.includes('/dashboard-custom');
+  const isLogin = pathname === '/' || pathname === '/login';
+
+  if (isLogin) {
+    return <main style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>{children}</main>;
+  }
 
   return (
     <div className="standardLayout">

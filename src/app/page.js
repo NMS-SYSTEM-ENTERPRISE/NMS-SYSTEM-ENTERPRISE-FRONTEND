@@ -1,4 +1,4 @@
-import Screen from '@/screens/dashboard';
+import Screen from '@/screens/login';
 
 export default function Page() {
   return <Screen />;

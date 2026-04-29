@@ -3,7 +3,7 @@ import { Modal } from '@/components/ui/modal';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../../../shared-settings-styles.module.css';
 const MOCK_BACKUPS = [
   {

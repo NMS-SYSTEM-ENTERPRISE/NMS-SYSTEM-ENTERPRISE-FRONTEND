@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
@@ -58,14 +58,15 @@ const MOCK_REQUESTS = [
 const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
   // Filter logic
   const filteredRequests = MOCK_REQUESTS.filter((req) => {
-    const matchesSearch = 
+    const matchesSearch =
       req.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       req.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       req.requester.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     let matchesCategory = true;
     if (category === 'open') matchesCategory = req.status === 'Open';
-    if (category === 'closed') matchesCategory = req.status === 'Resolved' || req.status === 'Closed';
+    if (category === 'closed')
+      matchesCategory = req.status === 'Resolved' || req.status === 'Closed';
     if (category === 'my-tickets') matchesCategory = req.assignee === 'Jerry'; // Mock user
 
     return matchesSearch && matchesCategory;
@@ -78,7 +79,12 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
         <div className={styles.filterTags}>
           {category !== 'all' && (
             <div className={styles.filterTag}>
-              Status: {category === 'open' ? 'Open' : category === 'closed' ? 'Closed' : 'All'}
+              Status:{' '}
+              {category === 'open'
+                ? 'Open'
+                : category === 'closed'
+                  ? 'Closed'
+                  : 'All'}
             </div>
           )}
           <div className={styles.filterTag}>
@@ -87,12 +93,12 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
           </div>
         </div>
         <div className={styles.headerActions}>
-           <button className={styles.actionBtn} title="Refresh">
-             <Icon icon="mdi:refresh" width={18} />
-           </button>
-           <button className={styles.actionBtn} title="Columns">
-             <Icon icon="mdi:view-column-outline" width={18} />
-           </button>
+          <button className={styles.actionBtn} title="Refresh">
+            <Icon icon="mdi:refresh" width={18} />
+          </button>
+          <button className={styles.actionBtn} title="Columns">
+            <Icon icon="mdi:view-column-outline" width={18} />
+          </button>
         </div>
       </div>
 
@@ -100,7 +106,9 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
         <table className={styles.requestsTable}>
           <thead>
             <tr>
-              <th style={{ width: '40px' }}><input type="checkbox" /></th>
+              <th style={{ width: '40px' }}>
+                <input type="checkbox" />
+              </th>
               <th>ID</th>
               <th>Subject</th>
               <th>Requester</th>
@@ -113,9 +121,17 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
           </thead>
           <tbody>
             {filteredRequests.map((request) => (
-              <tr key={request.id} onClick={() => onTicketClick(request)} style={{ cursor: 'pointer' }}>
-                <td onClick={(e) => e.stopPropagation()}><input type="checkbox" /></td>
-                <td><span className={styles.ticketId}>{request.id}</span></td>
+              <tr
+                key={request.id}
+                onClick={() => onTicketClick(request)}
+                style={{ cursor: 'pointer' }}
+              >
+                <td onClick={(e) => e.stopPropagation()}>
+                  <input type="checkbox" />
+                </td>
+                <td>
+                  <span className={styles.ticketId}>{request.id}</span>
+                </td>
                 <td>
                   <span className={styles.subjectLink}>{request.subject}</span>
                 </td>
@@ -130,22 +146,32 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
                   </div>
                 </td>
                 <td>
-                  <span className={`${styles.statusBadge} ${
-                    request.status === 'Open' ? styles.statusOpen :
-                    request.status === 'Resolved' ? styles.statusResolved :
-                    styles.statusProgress
-                  }`}>
+                  <span
+                    className={`${styles.statusBadge} ${
+                      request.status === 'Open'
+                        ? styles.statusOpen
+                        : request.status === 'Resolved'
+                          ? styles.statusResolved
+                          : styles.statusProgress
+                    }`}
+                  >
                     {request.status}
                   </span>
                 </td>
                 <td>
-                  <span className={`${styles.statusBadge} ${styles.priorityLow}`}>
+                  <span
+                    className={`${styles.statusBadge} ${styles.priorityLow}`}
+                  >
                     {request.priority}
                   </span>
                 </td>
                 <td>
                   <div className={styles.dueStatus}>
-                    <Icon icon="mdi:clock-outline" width={14} className={styles.dueIcon} />
+                    <Icon
+                      icon="mdi:clock-outline"
+                      width={14}
+                      className={styles.dueIcon}
+                    />
                     {request.dueStatus.includes('Due in') ? 'In 6h' : 'Overdue'}
                   </div>
                 </td>
@@ -153,7 +179,14 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
             ))}
             {filteredRequests.length === 0 && (
               <tr>
-                <td colSpan="9" style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-muted)' }}>
+                <td
+                  colSpan="9"
+                  style={{
+                    textAlign: 'center',
+                    padding: '40px',
+                    color: 'var(--color-text-muted)',
+                  }}
+                >
                   No tickets found matching your criteria.
                 </td>
               </tr>

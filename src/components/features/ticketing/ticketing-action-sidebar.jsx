@@ -3,7 +3,12 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import styles from './ticketing-action-sidebar.module.css';
 
-export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', ticketData = null }) => {
+export const TicketingActionSidebar = ({
+  isOpen,
+  onClose,
+  mode = 'details',
+  ticketData = null,
+}) => {
   const [activeTab, setActiveTab] = useState('details');
 
   useEffect(() => {
@@ -22,11 +27,19 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
             <h3>Create New Ticket</h3>
             <div className={styles.formGroup}>
               <label>Subject</label>
-              <input type="text" className={styles.input} placeholder="Enter ticket subject" />
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Enter ticket subject"
+              />
             </div>
             <div className={styles.formGroup}>
               <label>Requester</label>
-              <input type="text" className={styles.input} placeholder="Enter requester name" />
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Enter requester name"
+              />
             </div>
             <div className={styles.row}>
               <div className={styles.formGroup}>
@@ -54,11 +67,17 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
             </div>
             <div className={styles.formGroup}>
               <label>Description</label>
-              <textarea className={styles.textarea} rows={5} placeholder="Describe the issue..."></textarea>
+              <textarea
+                className={styles.textarea}
+                rows={5}
+                placeholder="Describe the issue..."
+              ></textarea>
             </div>
             <div className={styles.actions}>
               <button className={styles.primaryBtn}>Create Ticket</button>
-              <button className={styles.secondaryBtn} onClick={onClose}>Cancel</button>
+              <button className={styles.secondaryBtn} onClick={onClose}>
+                Cancel
+              </button>
             </div>
           </div>
         );
@@ -76,7 +95,9 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
                   <div className={styles.alertContent}>
                     <div className={styles.alertTitle}>New Ticket Assigned</div>
                     <div className={styles.alertTime}>Just now</div>
-                    <div className={styles.alertMsg}>Ticket #INC-{100+i} has been assigned to you.</div>
+                    <div className={styles.alertMsg}>
+                      Ticket #INC-{100 + i} has been assigned to you.
+                    </div>
                   </div>
                 </div>
               ))}
@@ -91,19 +112,35 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
             <div className={styles.formGroup}>
               <label>Status Filter</label>
               <div className={styles.checkboxGroup}>
-                <label><input type="checkbox" defaultChecked /> Open</label>
-                <label><input type="checkbox" defaultChecked /> In Progress</label>
-                <label><input type="checkbox" /> Resolved</label>
-                <label><input type="checkbox" /> Closed</label>
+                <label>
+                  <input type="checkbox" defaultChecked /> Open
+                </label>
+                <label>
+                  <input type="checkbox" defaultChecked /> In Progress
+                </label>
+                <label>
+                  <input type="checkbox" /> Resolved
+                </label>
+                <label>
+                  <input type="checkbox" /> Closed
+                </label>
               </div>
             </div>
             <div className={styles.formGroup}>
               <label>Priority Filter</label>
               <div className={styles.checkboxGroup}>
-                <label><input type="checkbox" defaultChecked /> Critical</label>
-                <label><input type="checkbox" defaultChecked /> High</label>
-                <label><input type="checkbox" defaultChecked /> Medium</label>
-                <label><input type="checkbox" defaultChecked /> Low</label>
+                <label>
+                  <input type="checkbox" defaultChecked /> Critical
+                </label>
+                <label>
+                  <input type="checkbox" defaultChecked /> High
+                </label>
+                <label>
+                  <input type="checkbox" defaultChecked /> Medium
+                </label>
+                <label>
+                  <input type="checkbox" defaultChecked /> Low
+                </label>
               </div>
             </div>
             <div className={styles.actions}>
@@ -114,17 +151,20 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
         );
 
       case 'details':
-        if (!ticketData) return <div className={styles.emptyState}>No ticket selected</div>;
+        if (!ticketData)
+          return <div className={styles.emptyState}>No ticket selected</div>;
         return (
           <div className={styles.section}>
             <div className={styles.detailsHeader}>
               <div className={styles.ticketId}>{ticketData.id}</div>
-              <span className={`${styles.statusBadge} ${styles[ticketData.status.toLowerCase().replace(' ', '')] || styles.statusOpen}`}>
+              <span
+                className={`${styles.statusBadge} ${styles[ticketData.status.toLowerCase().replace(' ', '')] || styles.statusOpen}`}
+              >
                 {ticketData.status}
               </span>
             </div>
             <h3 className={styles.ticketSubject}>{ticketData.subject}</h3>
-            
+
             <div className={styles.detailsGrid}>
               <div className={styles.detailItem}>
                 <label>Requester</label>
@@ -136,7 +176,9 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
               </div>
               <div className={styles.detailItem}>
                 <label>Priority</label>
-                <span className={`${styles.priorityBadge} ${styles[ticketData.priority.toLowerCase()]}`}>
+                <span
+                  className={`${styles.priorityBadge} ${styles[ticketData.priority.toLowerCase()]}`}
+                >
                   {ticketData.priority}
                 </span>
               </div>
@@ -153,13 +195,13 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
             <div className={styles.divider}></div>
 
             <div className={styles.tabs}>
-              <button 
+              <button
                 className={`${styles.tab} ${activeTab === 'details' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('details')}
               >
                 Description
               </button>
-              <button 
+              <button
                 className={`${styles.tab} ${activeTab === 'activity' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('activity')}
               >
@@ -170,8 +212,9 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
             {activeTab === 'details' && (
               <div className={styles.tabContent}>
                 <p>
-                  User reported an issue regarding {ticketData.subject.toLowerCase()}. 
-                  Please investigate and resolve as soon as possible.
+                  User reported an issue regarding{' '}
+                  {ticketData.subject.toLowerCase()}. Please investigate and
+                  resolve as soon as possible.
                 </p>
               </div>
             )}
@@ -183,14 +226,16 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
                   <div className={styles.activityContent}>
                     <div className={styles.activityHeader}>
                       <span className={styles.activityUser}>System</span>
-                      <span className={styles.activityTime}>Today, 10:00 AM</span>
+                      <span className={styles.activityTime}>
+                        Today, 10:00 AM
+                      </span>
                     </div>
                     <div className={styles.activityText}>Ticket created</div>
                   </div>
                 </div>
               </div>
             )}
-            
+
             <div className={styles.footerActions}>
               <button className={styles.primaryBtn}>Update Status</button>
               <button className={styles.secondaryBtn}>Add Note</button>
@@ -208,10 +253,38 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
       <div className={styles.sidebar} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <div className={styles.headerTitle}>
-            {mode === 'create' && <Icon icon="mdi:plus-circle" width={24} height={24} className={styles.headerIcon} />}
-            {mode === 'alerts' && <Icon icon="mdi:bell" width={24} height={24} className={styles.headerIcon} />}
-            {mode === 'settings' && <Icon icon="mdi:filter" width={24} height={24} className={styles.headerIcon} />}
-            {mode === 'details' && <Icon icon="mdi:ticket-account" width={24} height={24} className={styles.headerIcon} />}
+            {mode === 'create' && (
+              <Icon
+                icon="mdi:plus-circle"
+                width={24}
+                height={24}
+                className={styles.headerIcon}
+              />
+            )}
+            {mode === 'alerts' && (
+              <Icon
+                icon="mdi:bell"
+                width={24}
+                height={24}
+                className={styles.headerIcon}
+              />
+            )}
+            {mode === 'settings' && (
+              <Icon
+                icon="mdi:filter"
+                width={24}
+                height={24}
+                className={styles.headerIcon}
+              />
+            )}
+            {mode === 'details' && (
+              <Icon
+                icon="mdi:ticket-account"
+                width={24}
+                height={24}
+                className={styles.headerIcon}
+              />
+            )}
             <h2>
               {mode === 'create' && 'Create Ticket'}
               {mode === 'alerts' && 'Notifications'}
@@ -224,9 +297,7 @@ export const TicketingActionSidebar = ({ isOpen, onClose, mode = 'details', tick
           </button>
         </div>
 
-        <div className={styles.content}>
-          {renderContent()}
-        </div>
+        <div className={styles.content}>{renderContent()}</div>
       </div>
     </div>
   );

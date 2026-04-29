@@ -199,3 +199,4 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
 };
 
 export { TicketingRequests };
+export default TicketingRequests;

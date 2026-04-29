@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
@@ -100,108 +100,104 @@ const MACAddressList = () => {
       item.interfaceName.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
-    
-      <div className={styles.mainContent}>
-<div className={styles.contentArea}>
-          <div className={styles.contentHeader}>
-            <div>
-              <h2 className={styles.pageTitle}>MAC Address List</h2>
-              <p className={styles.pageDescription}>
-                Manage MAC addresses of network devices discovered within
-                snr-edatas AIOps. For more information:{' '}
-                <a href="#" className={styles.link}>
-                  MAC Address List
-                  <Icon icon="mdi:open-in-new" width={16} height={16} />
-                </a>
-              </p>
-            </div>
-            <button className={styles.btnPrimary}>Create Mac Address</button>
+    <div className={styles.mainContent}>
+      <div className={styles.contentArea}>
+        <div className={styles.contentHeader}>
+          <div>
+            <h2 className={styles.pageTitle}>MAC Address List</h2>
+            <p className={styles.pageDescription}>
+              Manage MAC addresses of network devices discovered within
+              snr-edatas AIOps. For more information:{' '}
+              <a href="#" className={styles.link}>
+                MAC Address List
+                <Icon icon="mdi:open-in-new" width={16} height={16} />
+              </a>
+            </p>
           </div>
-          <div className={styles.toolbar}>
-            <div className={styles.searchBox}>
-              <Icon icon="mdi:magnify" width={18} height={18} />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>MAC ADDRESS</th>
-                  <th>DEVICE IP ADDRESS</th>
-                  <th>INTERFACE IP ADDRESS</th>
-                  <th>INTERFACE NAME</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredItems.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.mac}</td>
-                    <td>{item.deviceIp}</td>
-                    <td>{item.interfaceIp}</td>
-                    <td>{item.interfaceName}</td>
-                    <td>
-                      <div className={styles.actions}>
-                        <button className={styles.actionBtn} title="More">
-                          <Icon
-                            icon="mdi:dots-vertical"
-                            width={18}
-                            height={18}
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.pagination}>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-double-left" width={18} height={18} />
-            </button>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-left" width={18} height={18} />
-            </button>
-            <span className={styles.pageNumber}>1</span>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-right" width={18} height={18} />
-            </button>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-double-right" width={18} height={18} />
-            </button>
-            <span className={styles.paginationBtn}>2</span>
-            <span className={styles.paginationBtn}>3</span>
-            <span className={styles.paginationBtn}>4</span>
-            <span className={styles.paginationBtn}>5</span>
-            <span style={{ margin: '0 8px' }}>...</span>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-right" width={18} height={18} />
-            </button>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-double-right" width={18} height={18} />
-            </button>
-            <SelectComponent
-              className={styles.itemsPerPageSelect}
-              value={itemsPerPage}
-              onChange={(e) => setItemsPerPage(Number(e.target.value))}
-              options={[
-                { value: 50, label: '50' },
-                { value: 100, label: '100' },
-              ]}
-              placeholder="50"
-              isSearchable={false}
+          <button className={styles.btnPrimary}>Create Mac Address</button>
+        </div>
+        <div className={styles.toolbar}>
+          <div className={styles.searchBox}>
+            <Icon icon="mdi:magnify" width={18} height={18} />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <span className={styles.paginationInfo}>Items per page</span>
-            <span className={styles.paginationTotal}>1 - 50 of 1550 Items</span>
           </div>
         </div>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>MAC ADDRESS</th>
+                <th>DEVICE IP ADDRESS</th>
+                <th>INTERFACE IP ADDRESS</th>
+                <th>INTERFACE NAME</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredItems.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.mac}</td>
+                  <td>{item.deviceIp}</td>
+                  <td>{item.interfaceIp}</td>
+                  <td>{item.interfaceName}</td>
+                  <td>
+                    <div className={styles.actions}>
+                      <button className={styles.actionBtn} title="More">
+                        <Icon icon="mdi:dots-vertical" width={18} height={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className={styles.pagination}>
+          <button className={styles.paginationBtn}>
+            <Icon icon="mdi:chevron-double-left" width={18} height={18} />
+          </button>
+          <button className={styles.paginationBtn}>
+            <Icon icon="mdi:chevron-left" width={18} height={18} />
+          </button>
+          <span className={styles.pageNumber}>1</span>
+          <button className={styles.paginationBtn}>
+            <Icon icon="mdi:chevron-right" width={18} height={18} />
+          </button>
+          <button className={styles.paginationBtn}>
+            <Icon icon="mdi:chevron-double-right" width={18} height={18} />
+          </button>
+          <span className={styles.paginationBtn}>2</span>
+          <span className={styles.paginationBtn}>3</span>
+          <span className={styles.paginationBtn}>4</span>
+          <span className={styles.paginationBtn}>5</span>
+          <span style={{ margin: '0 8px' }}>...</span>
+          <button className={styles.paginationBtn}>
+            <Icon icon="mdi:chevron-right" width={18} height={18} />
+          </button>
+          <button className={styles.paginationBtn}>
+            <Icon icon="mdi:chevron-double-right" width={18} height={18} />
+          </button>
+          <SelectComponent
+            className={styles.itemsPerPageSelect}
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            options={[
+              { value: 50, label: '50' },
+              { value: 100, label: '100' },
+            ]}
+            placeholder="50"
+            isSearchable={false}
+          />
+          <span className={styles.paginationInfo}>Items per page</span>
+          <span className={styles.paginationTotal}>1 - 50 of 1550 Items</span>
+        </div>
+      </div>
+    </div>
   );
 };
 export default MACAddressList;

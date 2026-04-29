@@ -1,9 +1,9 @@
-"use client";
+'use client';
 import { Modal } from '@/components/ui/modal';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import styles from '../../../shared-settings-styles.module.css';
 const MOCK_BACKUPS = [
   {
@@ -72,7 +72,7 @@ const RestoreBackup = () => {
     backup.fileName.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
-    
+    <React.Fragment>
       <div
         className={styles.mainContent}
         style={{ marginLeft: 0, width: '100%' }}
@@ -280,6 +280,7 @@ const RestoreBackup = () => {
           </button>
         </div>
       </Modal>
+    </React.Fragment>
   );
 };
 export default RestoreBackup;

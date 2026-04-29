@@ -55,7 +55,7 @@ const MOCK_REQUESTS = [
   },
 ];
 
-const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
+const TicketingRequests = ({ category = 'all', searchQuery = '', onTicketClick = () => {} }) => {
   // Filter logic
   const filteredRequests = MOCK_REQUESTS.filter((req) => {
     const matchesSearch =

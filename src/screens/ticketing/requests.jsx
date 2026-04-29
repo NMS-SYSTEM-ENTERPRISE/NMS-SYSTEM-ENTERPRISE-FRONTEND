@@ -198,4 +198,4 @@ const TicketingRequests = ({ category, searchQuery, onTicketClick }) => {
   );
 };
 
-export default TicketingRequests;
+export { TicketingRequests };

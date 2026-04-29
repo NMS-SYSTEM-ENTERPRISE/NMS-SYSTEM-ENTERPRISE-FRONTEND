@@ -1,4 +1,4 @@
-import Screen from '@/screens/ticketing/dashboard';
+import Screen from '@/screens/ticketing';
 
 export default function Page() {
   return <Screen />;

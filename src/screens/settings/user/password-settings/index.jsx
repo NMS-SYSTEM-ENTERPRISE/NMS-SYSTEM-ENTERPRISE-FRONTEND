@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../../shared-settings-styles.module.css';
+import { usePasswordPolicy } from '@/hooks/settings/user/password-settings/usePasswordPolicy';
 import localStyles from '@/components/features/settings/user/password-settings/styles.module.css';
 import classNames from 'classnames';
 import { SettingRow } from '@/components/features/settings/user/password-settings/SettingRow';
@@ -18,8 +19,30 @@ import { TimelineModal } from '@/components/ui/timeline-modal';
 // ─── Main Screen ──────────────────────────────────────────────
 
 const PasswordSettings = () => {
+  const { getPasswordPolicy, updatePasswordPolicy, resetPasswordPolicy } = usePasswordPolicy();
+
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [showTimeline, setShowTimeline] = useState(false);
+
+  const fetchPolicy = async () => {
+    const data = await getPasswordPolicy();
+    if (data) {
+      setSettings({
+        expiry: data.password_expiry ?? false,
+        expiryDays: data.expiry_days ?? 90,
+        uppercase: data.require_uppercase ?? true,
+        lowercase: data.require_lowercase ?? true,
+        numbers: data.require_numbers ?? true,
+        specialChars: data.require_special_chars ?? true,
+        length: data.min_length ?? 8,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchPolicy();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggle = (key) =>
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -27,8 +50,33 @@ const PasswordSettings = () => {
   const update = (key, value) =>
     setSettings((prev) => ({ ...prev, [key]: value }));
 
-  const handleSave  = () => console.log('Saving password settings:', settings);
-  const handleReset = () => setSettings(DEFAULT_SETTINGS);
+  const handleSave = async () => {
+    const payload = {
+      password_expiry: settings.expiry,
+      expiry_days: settings.expiryDays,
+      require_uppercase: settings.uppercase,
+      require_lowercase: settings.lowercase,
+      require_numbers: settings.numbers,
+      require_special_chars: settings.specialChars,
+      min_length: settings.length,
+    };
+    await updatePasswordPolicy(payload);
+  };
+
+  const handleReset = async () => {
+    const data = await resetPasswordPolicy();
+    if (data) {
+      setSettings({
+        expiry: data.password_expiry ?? false,
+        expiryDays: data.expiry_days ?? 90,
+        uppercase: data.require_uppercase ?? true,
+        lowercase: data.require_lowercase ?? true,
+        numbers: data.require_numbers ?? true,
+        specialChars: data.require_special_chars ?? true,
+        length: data.min_length ?? 8,
+      });
+    }
+  };
 
   return (
     <div className={styles.mainContent}>

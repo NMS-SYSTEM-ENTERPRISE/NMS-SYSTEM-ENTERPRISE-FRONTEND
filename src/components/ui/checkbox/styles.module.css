@@ -1,0 +1,25 @@
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxInput {
+  accent-color: var(--color-chart-cyan);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.checkboxInput:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.checkboxLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+}

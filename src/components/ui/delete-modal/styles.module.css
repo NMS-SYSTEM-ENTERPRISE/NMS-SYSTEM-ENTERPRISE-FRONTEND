@@ -1,0 +1,183 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+  padding: var(--padding-xl);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.modalContent {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+  padding: 32px;
+  text-align: center;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.iconContainer {
+  margin: 0 auto 16px auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(239, 68, 68, 0.1);
+  /* Subtle red background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.warningIcon {
+  font-size: 32px;
+  color: var(--color-danger);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 12px 0;
+}
+
+.description {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.description p {
+  margin: 0 0 8px 0;
+}
+
+.description strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.warningText {
+  color: var(--color-chart-red);
+  font-size: 13px;
+}
+
+.inputGroup {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.inputLabel {
+  display: block;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.inputLabel strong {
+  color: var(--color-text-primary);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.actions {
+  display: flex;
+  gap: var(--gap-md);
+  justify-content: center;
+}
+
+.btnCancel,
+.btnDelete {
+  flex: 1;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+}
+
+.btnCancel {
+  background-color: var(--color-bg-tertiary) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.btnCancel:hover {
+  background-color: var(--color-bg-hover) !important;
+}
+
+.btnDelete {
+  background-color: var(--color-danger) !important;
+  border: 1px solid var(--color-danger) !important;
+  color: #fff !important;
+}
+
+.btnDelete:hover {
+  opacity: 0.9;
+}
+
+.btnDelete:disabled {
+  background-color: var(--color-danger) !important;
+  border: 1px solid var(--color-danger) !important;
+  color: #fff !important;
+  opacity: 0.3 !important;
+  cursor: not-allowed;
+}

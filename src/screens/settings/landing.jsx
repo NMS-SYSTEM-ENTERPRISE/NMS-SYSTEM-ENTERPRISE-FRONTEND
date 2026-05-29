@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import landingStyles from './settings-landing.module.css';
@@ -6,7 +6,7 @@ import styles from './shared-settings-styles.module.css';
 
 const SettingsLanding = () => {
   const router = useRouter();
-  
+
   const settingCards = [
     {
       icon: 'mdi:account',
@@ -36,14 +36,14 @@ const SettingsLanding = () => {
       path: '/settings/compliance',
       color: '#E91E63',
     },
-     {
+    {
       icon: 'mdi:monitor',
       title: 'Monitor Settings',
       description: 'Configure monitoring intervals and protocols',
       path: '/settings/monitor',
       color: '#9C27B0',
     },
-     {
+    {
       icon: 'mdi:file-document',
       title: 'Log Settings',
       description: 'Manage log collection and forwarding',
@@ -76,13 +76,18 @@ const SettingsLanding = () => {
             >
               <div
                 className={landingStyles.cardIcon}
-                style={{ backgroundColor: `${card.color}20`, color: card.color }}
+                style={{
+                  backgroundColor: `${card.color}20`,
+                  color: card.color,
+                }}
               >
                 <Icon icon={card.icon} width={32} height={32} />
               </div>
               <div className={landingStyles.cardContent}>
                 <h3 className={landingStyles.cardTitle}>{card.title}</h3>
-                <p className={landingStyles.cardDescription}>{card.description}</p>
+                <p className={landingStyles.cardDescription}>
+                  {card.description}
+                </p>
               </div>
               <div className={landingStyles.cardArrow}>
                 <Icon icon="mdi:chevron-right" width={24} height={24} />

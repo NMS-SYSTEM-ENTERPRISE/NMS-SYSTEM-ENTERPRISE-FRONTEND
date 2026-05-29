@@ -1,0 +1,20 @@
+.fieldWithTopMargin {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextMain {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextSub {
+  margin-top: var(--margin-sm);
+}
+
+.inputRowContainer {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.flexInput {
+  flex: 1;
+}

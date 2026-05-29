@@ -17,3 +17,10 @@
   z-index: 9999 !important;
 }
 
+.errorMessage {
+  color: var(--color-danger);
+  font-size: var(--font-xs);
+  margin-top: 4px;
+  display: block;
+}
+

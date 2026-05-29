@@ -1,0 +1,35 @@
+.badgeContainer {
+  display: flex;
+  gap: var(--gap-xs);
+  flex-wrap: wrap;
+}
+
+.searchFullWidth {
+  max-width: none;
+  margin-bottom: var(--margin-md);
+}
+
+.tableContainer {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.previewButton {
+  margin-right: auto;
+}
+
+.fieldWithTopMargin {
+  margin-top: var(--margin-lg);
+}
+
+.smallLink {
+  font-size: var(--font-xs);
+}
+
+.helpTextMain {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextSub {
+  margin-top: var(--margin-sm);
+}

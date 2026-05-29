@@ -1,0 +1,55 @@
+/* ============================================================
+   ActionCell Component Styles
+   ============================================================ */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.actionBtn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-chart-cyan);
+}
+
+.actionBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.actionBtn_primary {
+  background-color: rgba(6, 182, 212, 0.1);
+  color: var(--color-chart-cyan);
+}
+
+.actionBtn_primary:hover {
+  background-color: rgba(6, 182, 212, 0.2);
+  color: var(--color-chart-cyan);
+}
+
+/* Danger variant */
+.actionBtn_danger {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+}
+
+.actionBtn_danger:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: var(--color-danger);
+}

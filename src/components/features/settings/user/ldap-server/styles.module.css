@@ -1,0 +1,16 @@
+.fieldWithTopMargin {
+  margin-top: var(--margin-lg);
+}
+
+.passwordInputRow {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.helpTextMain {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextSub {
+  margin-top: var(--margin-sm);
+}

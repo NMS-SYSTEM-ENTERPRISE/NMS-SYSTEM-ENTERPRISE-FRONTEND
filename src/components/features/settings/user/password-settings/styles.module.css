@@ -1,0 +1,28 @@
+.noBorder {
+  border-bottom: none !important;
+}
+
+.requiredAsterisk {
+  color: var(--color-danger);
+  margin-left: 4px;
+}
+
+.settingsSectionConstrained {
+  max-width: 800px;
+}
+
+.expiryInput {
+  width: 100px !important;
+}
+
+.centerInput {
+  text-align: center;
+}
+
+.smallLabel {
+  font-size: var(--font-sm);
+}
+
+.lengthInput {
+  width: 100px !important;
+}

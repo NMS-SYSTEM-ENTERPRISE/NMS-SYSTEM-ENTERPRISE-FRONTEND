@@ -1,243 +1,171 @@
-"use client";
-import { FilterSidebar } from '@/components/ui/filter-sidebar';
-import { SelectComponent } from '@/components/ui/select';
+'use client';
+import { Button } from '@/components/ui/button';
+import { Pagination } from '@/components/ui/pagination';
+import { SearchInput } from '@/components/ui/search-input';
+import { Table } from '@/components/ui/table';
+import { CreateUserSidebar } from '@/components/features/settings/user/users/CreateUserSidebar';
+import { renderUserCell } from '@/components/features/settings/user/users/renderUserCell';
+import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
+import { TimelineModal } from '@/components/ui/timeline-modal';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
-const MOCK_USERS = [
-  { id: 1, firstName: 'Admin', lastName: 'User', email: 'admin@example.com', mobile: '', username: 'admin', status: 'Active', groups: 'Admin', role: 'Admin' },
-  { id: 2, firstName: 'John', lastName: 'Doe', email: 'john@example.com', mobile: '+1234567890', username: 'john.doe', status: 'Active', groups: 'Operators', role: 'Operator' },
-  { id: 3, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', mobile: '', username: 'jane.smith', status: 'Inactive', groups: 'Viewers', role: 'Viewer' },
-];
+
+import { MOCK_USERS } from '@/utils/dummy-data/settings/users';
+import {
+  USERS_COLUMNS as COLUMNS,
+  GROUP_OPTIONS,
+  ROLE_OPTIONS,
+  EMPTY_USER,
+  USER_TIMELINE_STEPS,
+} from '@/utils/constants/settings/users';
+
+// ─── Main Screen ──────────────────────────────────────────────
+
 const Users = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newUser, setNewUser] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobile: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    status: true,
-    groups: '',
-    role: '',
+  const [searchTags, setSearchTags] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [newUser, setNewUser] = useState(EMPTY_USER);
+  const [editingItem, setEditingItem] = useState(null);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const filteredUsers = MOCK_USERS.filter((u) => {
+    if (searchTags.length === 0) return true;
+    return searchTags.every(tag => {
+      const lowerTag = tag.toLowerCase();
+      return u.username.toLowerCase().includes(lowerTag) ||
+        u.email.toLowerCase().includes(lowerTag) ||
+        u.firstName.toLowerCase().includes(lowerTag) ||
+        u.lastName.toLowerCase().includes(lowerTag);
+    });
   });
-  const filteredUsers = MOCK_USERS.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+  const handleFieldChange = (key, value) =>
+    setNewUser((prev) => ({ ...prev, [key]: value }));
+
+  const handleSubmit = () => {
+    console.log(editingItem ? 'Update user:' : 'Create user:', newUser);
+    setShowCreate(false);
+    setEditingItem(null);
+  };
+
+  const handleReset = () => {
+    setNewUser(editingItem || EMPTY_USER);
+  };
+
+  const handleEdit = (user) => {
+    setEditingItem(user);
+    setNewUser(user);
+    setShowCreate(true);
+  };
+
+  const handleDelete = (user) => {
+    setItemToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    console.log('Deleted user:', itemToDelete);
+    setShowDeleteModal(false);
+    setItemToDelete(null);
+  };
+
   return (
     <>
       <div className={styles.mainContent}>
-<div className={styles.contentArea}>
-          <div className={styles.toolbar}>
-            <div className={styles.searchBox}>
-              <Icon icon="mdi:magnify" width={18} height={18} />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+        <div className={styles.contentArea}>
+
+          {/* Page header with Breadcrumbs and Actions */}
+          <div className={styles.contentHeader}>
+            <div>
+              <div className={styles.breadcrumbs}>
+                Settings / User / <span>Users</span>
+              </div>
+              <h2 className={styles.pageTitle}>User Management</h2>
+              <p className={styles.pageDescription}>
+                Manage internal access, assign operational roles, and enforce security policies globally. For more information:{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
+                  Enterprise User Settings <Icon icon="mdi:open-in-new" width={14} height={14} />
+                </a>
+              </p>
             </div>
-            <button className={styles.btnPrimary} onClick={() => setShowCreateModal(true)}>
-              <Icon icon="mdi:plus" width={18} height={18} />
-              Create User
-            </button>
+
+            <div className={styles.headerActions}>
+              <SearchInput
+                tags={searchTags}
+                onTagsChange={setSearchTags}
+                placeholder="Search users..."
+              />
+              <Button variant="cyan" onClick={() => {
+                setEditingItem(null);
+                setNewUser(EMPTY_USER);
+                setShowCreate(true);
+              }}>
+                <Icon icon="mdi:plus" width={18} />
+                Create User
+              </Button>
+            </div>
           </div>
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>FIRST NAME</th>
-                  <th>LAST NAME</th>
-                  <th>EMAIL ADDRESS</th>
-                  <th>MOBILE NUMBER</th>
-                  <th>USER NAME</th>
-                  <th>STATUS</th>
-                  <th>GROUP</th>
-                  <th>ROLE</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.firstName}</td>
-                    <td>{user.lastName}</td>
-                    <td>{user.email}</td>
-                    <td>{user.mobile || '-'}</td>
-                    <td>
-                      <a href="#" className={styles.linkBlue}>{user.username}</a>
-                    </td>
-                    <td>
-                      <span className={user.status === 'Active' ? styles.badgeSuccess : styles.badgeDanger}>
-                        {user.status}
-                      </span>
-                    </td>
-                    <td>{user.groups}</td>
-                    <td>{user.role}</td>
-                    <td>
-                      <div className={styles.actions}>
-                        <button className={styles.actionBtn} title="Edit">
-                          <Icon icon="mdi:pencil" width={18} height={18} />
-                        </button>
-                        <button className={styles.actionBtn} title="More">
-                          <Icon icon="mdi:dots-vertical" width={18} height={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+          {/* Data Table */}
+          <Table
+            columns={COLUMNS}
+            data={filteredUsers}
+            keyExtractor={(u) => u.id}
+            renderCell={(row, col) => renderUserCell(row, col, handleEdit, handleDelete)}
+            emptyMessage="No users found."
+          />
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredUsers.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+          />
         </div>
       </div>
+
       {/* Create User Sidebar */}
-      <FilterSidebar
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        title="Create User"
-        filters={[]}
-        onApply={() => {
-          console.log('Create user:', newUser);
-          setShowCreateModal(false);
+      <CreateUserSidebar
+        isOpen={showCreate}
+        onClose={() => {
+          setShowCreate(false);
+          setEditingItem(null);
         }}
-        onReset={() => setNewUser({
-          firstName: '',
-          lastName: '',
-          email: '',
-          mobile: '',
-          username: '',
-          password: '',
-          confirmPassword: '',
-          status: true,
-          groups: '',
-          role: '',
-        })}
-        applyButtonText="Create User"
-        resetButtonText="Reset"
-      >
-        <div className={styles.formGrid}>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>First Name <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <input
-              type="text"
-              className={styles.formInput}
-              value={newUser.firstName}
-              onChange={(e) => setNewUser({...newUser, firstName: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Last Name <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <input
-              type="text"
-              className={styles.formInput}
-              value={newUser.lastName}
-              onChange={(e) => setNewUser({...newUser, lastName: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Email Address <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <input
-              type="email"
-              className={styles.formInput}
-              value={newUser.email}
-              onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Mobile Number</label>
-            <input
-              type="tel"
-              className={styles.formInput}
-              value={newUser.mobile}
-              onChange={(e) => setNewUser({...newUser, mobile: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>User Name <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <input
-              type="text"
-              className={styles.formInput}
-              placeholder="Must be unique"
-              value={newUser.username}
-              onChange={(e) => setNewUser({...newUser, username: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Password <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <input
-              type="password"
-              className={styles.formInput}
-              placeholder="Do not use simple password"
-              value={newUser.password}
-              onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Confirm Password <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <input
-              type="password"
-              className={styles.formInput}
-              placeholder="Same as the password field"
-              value={newUser.confirmPassword}
-              onChange={(e) => setNewUser({...newUser, confirmPassword: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Status</label>
-            <button
-              className={`${styles.toggleBtn} ${newUser.status ? styles.toggleBtnOn : ''}`}
-              onClick={() => setNewUser({...newUser, status: !newUser.status})}
-            >
-              <span className={styles.toggleSlider}></span>
-              <span className={styles.toggleLabel}>{newUser.status ? 'ON' : 'OFF'}</span>
-            </button>
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Groups <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <SelectComponent
-              className={styles.formSelect}
-              value={newUser.groups}
-              onChange={(e) => setNewUser({...newUser, groups: e.target.value})}
-              options={[
-                { value: 'Admin', label: 'Admin' },
-                { value: 'Operators', label: 'Operators' },
-                { value: 'Viewers', label: 'Viewers' },
-              ]}
-              placeholder="Select"
-            />
-            <a href="#" className={styles.link} style={{fontSize: 'var(--font-xs)', marginTop: '4px'}}>Create Group</a>
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Role <span style={{color: 'var(--color-danger)'}}>*</span></label>
-            <SelectComponent
-              className={styles.formSelect}
-              value={newUser.role}
-              onChange={(e) => setNewUser({...newUser, role: e.target.value})}
-              options={[
-                { value: 'Admin', label: 'Admin' },
-                { value: 'Operator', label: 'Operator' },
-                { value: 'Viewer', label: 'Viewer' },
-              ]}
-              placeholder="Select"
-            />
-            <a href="#" className={styles.link} style={{fontSize: 'var(--font-xs)', marginTop: '4px'}}>Create Role</a>
-          </div>
-        </div>
-        <p style={{fontSize: 'var(--font-xs)', color: 'var(--color-text-secondary)', marginTop: 'var(--margin-lg)'}}>
-          For more information: <a href="#" className={styles.link}>Creating New User</a>
-        </p>
-        <p style={{fontSize: 'var(--font-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--margin-sm)'}}>
-          * fields are mandatory
-        </p>
-      </FilterSidebar>
+        user={newUser}
+        isEditing={!!editingItem}
+        onChange={handleFieldChange}
+        onSubmit={handleSubmit}
+        onReset={handleReset}
+        onInfoClick={() => setShowTimeline(true)}
+      />
+
+      {/* Creation Process Timeline Modal */}
+      <TimelineModal
+        isOpen={showTimeline}
+        onClose={() => setShowTimeline(false)}
+        title="User Creation Process"
+        steps={USER_TIMELINE_STEPS}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.username || ''}
+        itemType="User"
+      />
     </>
   );
 };
+
 export default Users;

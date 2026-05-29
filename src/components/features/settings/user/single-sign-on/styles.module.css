@@ -1,0 +1,52 @@
+.relativeContainer {
+  position: relative;
+}
+
+.copyButton {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.sectionTitle {
+  color: var(--color-chart-cyan);
+  font-size: var(--font-md);
+  margin-bottom: var(--margin-md);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.iconLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.infoIcon {
+  color: var(--color-chart-cyan);
+  cursor: pointer;
+}
+
+.certificateBox {
+  padding: var(--padding-md);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-top: var(--margin-md);
+}
+
+.certText {
+  margin-bottom: 8px;
+}
+
+.certTextBreak {
+  margin-bottom: 8px;
+  word-break: break-all;
+}

@@ -1,0 +1,11 @@
+.smallLink {
+  font-size: var(--font-xs);
+}
+
+.helpTextMain {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextSub {
+  margin-top: var(--margin-sm);
+}

@@ -1,0 +1,129 @@
+/* ============================================================
+   ToggleSwitch UI Component Styles
+   ============================================================ */
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+/* ── Track (the pill) ──────────────────────────────────── */
+.track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 48px;
+  height: 24px;
+  padding: 0;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+  flex-shrink: 0;
+  outline: none;
+  font-family: inherit;
+}
+
+.track:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ON state */
+.track_on {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* Small size */
+.track_sm {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+}
+
+/* Large size */
+.track_lg {
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+}
+
+/* ── Thumb (the circle) ─────────────────────────────────── */
+.thumb {
+  position: absolute;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-text-muted);
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.track_on .thumb {
+  transform: translateX(24px);
+  background-color: #fff;
+}
+
+/* Small thumb */
+.track_sm .thumb {
+  width: 12px;
+  height: 12px;
+}
+
+.track_sm.track_on .thumb {
+  transform: translateX(16px);
+}
+
+/* Large thumb */
+.track_lg .thumb {
+  width: 22px;
+  height: 22px;
+}
+
+.track_lg.track_on .thumb {
+  transform: translateX(30px);
+}
+
+/* ── Inline label (ON / OFF text) ───────────────────────── */
+.inlineLabel {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.25s ease;
+}
+
+/* OFF → label on right side */
+.track:not(.track_on) .inlineLabel {
+  right: 5px;
+  color: var(--color-text-muted);
+}
+
+/* ON → label on left side */
+.track_on .inlineLabel {
+  left: 5px;
+  color: #fff;
+}
+
+/* ── External label ─────────────────────────────────────── */
+.label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.label_disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}

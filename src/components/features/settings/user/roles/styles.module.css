@@ -6,6 +6,7 @@
   background-color: var(--color-bg-tertiary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
+  margin-top: var(--margin-lg);
   margin-bottom: var(--margin-sm);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-semibold);
@@ -23,6 +24,7 @@
 }
 
 .permissionModule {
+  margin-top: var(--margin-lg);
   margin-bottom: var(--margin-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -86,3 +88,19 @@
 }
 
 
+
+.fieldWithTopMargin {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextMain {
+  margin-top: var(--margin-lg);
+}
+
+.helpTextSub {
+  margin-top: var(--margin-sm);
+}
+
+.permissionCheckbox {
+  margin-right: 8px;
+}

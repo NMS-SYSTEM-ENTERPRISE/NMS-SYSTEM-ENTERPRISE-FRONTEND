@@ -1,0 +1,120 @@
+/* ============================================================
+   Pagination UI Component Styles
+   ============================================================ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  margin-top: 0;
+  padding: var(--padding-md) var(--padding-lg);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  flex-wrap: wrap;
+}
+
+/* ── Nav buttons ──────────────────────────────────────── */
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.navBtn:hover:not(:disabled) {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-chart-cyan);
+  color: var(--color-chart-cyan);
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Page number chips ────────────────────────────────── */
+.pageChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--padding-sm);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.pageChip:hover:not(.pageChip_active) {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-chart-cyan);
+  color: var(--color-chart-cyan);
+}
+
+.pageChip_active {
+  background-color: var(--color-chart-cyan);
+  border-color: var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+  font-weight: var(--font-weight-semibold);
+  cursor: default;
+}
+
+.ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  user-select: none;
+}
+
+/* ── Spacer ───────────────────────────────────────────── */
+.spacer {
+  flex: 1;
+}
+
+/* ── Page size selector ──────────────────────────────── */
+.pageSizeGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex-shrink: 0;
+}
+
+.pageSizeLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.pageSizeSelectWrapper {
+  width: 84px;
+  font-size: var(--font-sm);
+}
+
+/* ── Total count ─────────────────────────────────────── */
+.totalCount {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}

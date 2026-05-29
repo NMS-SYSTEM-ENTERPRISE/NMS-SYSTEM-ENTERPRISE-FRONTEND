@@ -22,6 +22,9 @@ export const FilterSidebar = ({
   onApply,
   onReset,
   children,
+  applyButtonText,
+  resetButtonText,
+  customFooterButtons,
 }) => {
   if (!isOpen) return null;
 
@@ -31,9 +34,12 @@ export const FilterSidebar = ({
     }
   };
 
-  const handleApply = () => {
+  const handleApply = async () => {
     if (onApply) {
-      onApply(filterValues);
+      const result = await onApply(filterValues);
+      if (result === false) {
+        return; // Prevent closing if validation fails
+      }
     }
     onClose();
   };
@@ -161,13 +167,14 @@ export const FilterSidebar = ({
 
         {/* Footer Actions */}
         <div className={styles.footer}>
+          {customFooterButtons}
           <button className={styles.resetBtn} onClick={handleReset}>
             <Icon icon="mdi:refresh" width={18} />
-            Reset
+            {resetButtonText || 'Reset'}
           </button>
           <button className={styles.applyBtn} onClick={handleApply}>
             <Icon icon="mdi:check" width={18} />
-            Apply Filters
+            {applyButtonText || 'Apply Filters'}
           </button>
         </div>
       </div>

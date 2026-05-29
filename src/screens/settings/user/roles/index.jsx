@@ -1,214 +1,161 @@
-"use client";
-import { useState } from 'react';
+'use client';
+import { Button } from '@/components/ui/button';
+import { SearchInput } from '@/components/ui/search-input';
+import { Table } from '@/components/ui/table';
+import { CreateRoleSidebar } from '@/components/features/settings/user/roles/CreateRoleSidebar';
+import { renderRoleCell } from '@/components/features/settings/user/roles/renderRoleCell';
+import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
+import { TimelineModal } from '@/components/ui/timeline-modal';
 import { Icon } from '@iconify/react';
-import { FilterSidebar } from '@/components/ui/filter-sidebar';
+import { useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
-import roleStyles from './styles.module.css';
-const MOCK_ROLES = [
-  { id: 1, name: 'Admin', description: 'Full access', userCount: 5 },
-  { id: 2, name: 'Operator', description: 'Limited access', userCount: 12 },
-  { id: 3, name: 'Viewer', description: 'Read-only access', userCount: 8 },
-];
-const PERMISSION_MODULES = [
-  {
-    name: 'General Settings',
-    icon: 'mdi:folder-cog',
-    permissions: [
-      { name: 'User Settings', read: true, write: true, delete: false },
-      { name: 'System Settings', read: true, write: false, delete: false },
-      { name: 'Group Settings', read: true, write: true, delete: false },
-      { name: 'My Account', read: true, write: true, delete: true },
-    ],
-  },
-  {
-    name: 'Monitoring',
-    icon: 'mdi:folder-monitor',
-    permissions: [
-      { name: 'Policy Settings', read: true, write: true, delete: true },
-    ],
-  },
-  {
-    name: 'Visualization',
-    icon: 'mdi:folder-eye',
-    permissions: [
-      { name: 'Dashboard', read: true, write: false, delete: false },
-      { name: 'Template', read: false, write: false, delete: false },
-      { name: 'Widget', read: true, write: false, delete: false },
-      { name: 'Inventory', read: false, write: false, delete: false },
-      { name: 'Metric Explorer', read: false, write: false, delete: false },
-      { name: 'Log Explorer', read: false, write: false, delete: false },
-      { name: 'Flow Explorer', read: false, write: false, delete: false },
-      { name: 'NetRoute', read: false, write: false, delete: false },
-      { name: 'Trap Explorer', read: false, write: false, delete: false },
-      { name: 'Topology', read: false, write: false, delete: false },
-    ],
-  },
-];
+
+import { MOCK_ROLES } from '@/utils/dummy-data/settings/users';
+import {
+  ROLES_COLUMNS as COLUMNS,
+  PERMISSION_MODULES,
+  EMPTY_ROLE,
+  ROLE_TIMELINE_STEPS,
+} from '@/utils/constants/settings/users';
+
+// ─── Sub-components ───────────────────────────────────────────
+
+/** Renders each cell of the Roles table */
+
+// ─── Main Screen ──────────────────────────────────────────────
+
 const Roles = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newRole, setNewRole] = useState({
-    name: '',
-    description: '',
-    permissions: {},
+  const [searchTags, setSearchTags] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [newRole, setNewRole]       = useState(EMPTY_ROLE);
+  const [editingItem, setEditingItem] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const filteredRoles = MOCK_ROLES.filter((r) => {
+    if (searchTags.length === 0) return true;
+    return searchTags.every(tag => {
+      const lowerTag = tag.toLowerCase();
+      return r.name.toLowerCase().includes(lowerTag) ||
+             r.description.toLowerCase().includes(lowerTag) ||
+             r.type.toLowerCase().includes(lowerTag);
+    });
   });
-  const [expandedModules, setExpandedModules] = useState({});
-  const toggleModule = (moduleName) => {
-    setExpandedModules(prev => ({
-      ...prev,
-      [moduleName]: !prev[moduleName]
-    }));
+
+  const handleFieldChange = (key, value) =>
+    setNewRole((prev) => ({ ...prev, [key]: value }));
+
+  const handleSubmit = () => {
+    console.log(editingItem ? 'Update role:' : 'Create role:', newRole);
+    setShowCreate(false);
+    setEditingItem(null);
   };
-  const filteredRoles = MOCK_ROLES.filter((role) =>
-    role.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+  const handleReset = () => {
+    setNewRole(editingItem || EMPTY_ROLE);
+  };
+
+  const handleEdit = (role) => {
+    setEditingItem(role);
+    setNewRole(role);
+    setShowCreate(true);
+  };
+
+  const handleDelete = (role) => {
+    setItemToDelete(role);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    console.log('Deleted role:', itemToDelete);
+    setShowDeleteModal(false);
+    setItemToDelete(null);
+  };
+
   return (
     <>
       <div className={styles.mainContent}>
-<div className={styles.contentArea}>
-          <div className={styles.toolbar}>
-            <div className={styles.searchBox}>
-              <Icon icon="mdi:magnify" width={18} height={18} />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+        <div className={styles.contentArea}>
+        {/* Page header with Breadcrumbs and Actions */}
+        <div className={styles.contentHeader}>
+          <div>
+            <div className={styles.breadcrumbs}>
+              Settings / User / <span>Roles</span>
             </div>
-            <button className={styles.btnPrimary} onClick={() => setShowCreateModal(true)}>
-              <Icon icon="mdi:plus" width={18} height={18} />
+            <h2 className={styles.pageTitle}>Role Management</h2>
+            <p className={styles.pageDescription}>
+              Define access levels and granular permissions for internal team members. For more information:{' '}
+              <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
+                Roles Overview <Icon icon="mdi:open-in-new" width={14} height={14} />
+              </a>
+            </p>
+          </div>
+          
+          <div className={styles.headerActions}>
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search roles..."
+            />
+            <Button variant="cyan" onClick={() => {
+              setEditingItem(null);
+              setNewRole(EMPTY_ROLE);
+              setShowCreate(true);
+            }}>
+              <Icon icon="mdi:plus" width={18} />
               Create Role
-            </button>
+            </Button>
           </div>
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>ROLE NAME</th>
-                  <th>ROLE DESCRIPTION</th>
-                  <th>USER COUNT</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredRoles.map((role) => (
-                  <tr key={role.id}>
-                    <td>
-                      <a href="#" className={styles.linkBlue}>{role.name}</a>
-                    </td>
-                    <td>{role.description}</td>
-                    <td>
-                      <span className={styles.badgeInfo}>{role.userCount}</span>
-                    </td>
-                    <td>
-                      <div className={styles.actions}>
-                        <button className={styles.actionBtn} title="Edit">
-                          <Icon icon="mdi:pencil" width={18} height={18} />
-                        </button>
-                        <button className={styles.actionBtn} title="More">
-                          <Icon icon="mdi:dots-vertical" width={18} height={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        </div>
+
+          {/* Data Table */}
+          <Table
+            columns={COLUMNS}
+            data={filteredRoles}
+            keyExtractor={(r) => r.id}
+            renderCell={(row, col) => renderRoleCell(row, col, handleEdit, handleDelete)}
+            emptyMessage="No roles found."
+          />
         </div>
       </div>
+
       {/* Create Role Sidebar */}
-      <FilterSidebar
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        title="Create Role"
-        filters={[]}
-        onApply={() => {
-          console.log('Create role:', newRole);
-          setShowCreateModal(false);
+      <CreateRoleSidebar
+        isOpen={showCreate}
+        onClose={() => {
+          setShowCreate(false);
+          setEditingItem(null);
         }}
-        onReset={() => setNewRole({name: '', description: '', permissions: {}})}
-        applyButtonText="Create Role"
-        resetButtonText="Reset"
-      >
-        <div className={styles.formGroup} style={{marginBottom: 'var(--margin-lg)'}}>
-          <label className={styles.formLabel}>Role Name <span style={{color: 'var(--color-danger)'}}>*</span></label>
-          <input
-            type="text"
-            className={styles.formInput}
-            placeholder="Must be unique"
-            value={newRole.name}
-            onChange={(e) => setNewRole({...newRole, name: e.target.value})}
-          />
-        </div>
-        <div className={styles.formGroup} style={{marginBottom: 'var(--margin-lg)'}}>
-          <label className={styles.formLabel}>Role Description</label>
-          <input
-            type="text"
-            className={styles.formInput}
-            value={newRole.description}
-            onChange={(e) => setNewRole({...newRole, description: e.target.value})}
-          />
-        </div>
-        {/* Permissions Matrix */}
-        <div className={roleStyles.permissionsHeader}>
-          <div className={roleStyles.permissionsHeaderLeft}>
-            <input type="checkbox" />
-            <span>All Module</span>
-          </div>
-          <div className={roleStyles.permissionsHeaderRight}>
-            <input type="checkbox" />
-            <span>Read</span>
-            <input type="checkbox" />
-            <span>Read & Write</span>
-            <input type="checkbox" />
-            <span>Delete</span>
-          </div>
-        </div>
-        {PERMISSION_MODULES.map((module) => (
-          <div key={module.name} className={roleStyles.permissionModule}>
-            <div className={roleStyles.moduleHeader} onClick={() => toggleModule(module.name)}>
-              <div className={roleStyles.moduleHeaderLeft}>
-                <Icon 
-                  icon={expandedModules[module.name] ? 'mdi:chevron-down' : 'mdi:chevron-right'} 
-                  width={20} 
-                  height={20} 
-                />
-                <Icon icon={module.icon} width={20} height={20} />
-                <input type="checkbox" />
-                <span>{module.name}</span>
-              </div>
-              <div className={roleStyles.moduleHeaderRight}>
-                <input type="checkbox" />
-                <input type="checkbox" />
-                <input type="checkbox" />
-              </div>
-            </div>
-            {expandedModules[module.name] && (
-              <div className={roleStyles.permissionsList}>
-                {module.permissions.map((perm) => (
-                  <div key={perm.name} className={roleStyles.permissionItem}>
-                    <div className={roleStyles.permissionName}>
-                      <input type="checkbox" />
-                      <span>{perm.name}</span>
-                    </div>
-                    <div className={roleStyles.permissionChecks}>
-                      <input type="checkbox" checked={perm.read} readOnly />
-                      <input type="checkbox" checked={perm.write} readOnly />
-                      <input type="checkbox" checked={perm.delete} readOnly />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-        <p style={{fontSize: 'var(--font-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--margin-lg)'}}>
-          * fields are mandatory
-        </p>
-      </FilterSidebar>
-  </>
+        role={newRole}
+        isEditing={!!editingItem}
+        onChange={handleFieldChange}
+        onSubmit={handleSubmit}
+        onReset={handleReset}
+        onInfoClick={() => setShowTimeline(true)}
+      />
+
+      {/* Creation Process Timeline Modal */}
+      <TimelineModal
+        isOpen={showTimeline}
+        onClose={() => setShowTimeline(false)}
+        title="Role Creation Process"
+        steps={ROLE_TIMELINE_STEPS}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.name || ''}
+        itemType="Role"
+      />
+    </>
   );
 };
+
 export default Roles;

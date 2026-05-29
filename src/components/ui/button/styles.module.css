@@ -28,13 +28,51 @@
 }
 
 .button_secondary {
-  background-color: var(--color-bg-tertiary);
+  background-color: transparent;
   color: var(--color-text-primary);
-  border: 1px solid var(--color-border-light);
+  border: 1px solid var(--color-border);
 }
 
 .button_secondary:hover:not(:disabled) {
   background-color: var(--color-bg-hover);
+  border-color: var(--color-text-muted);
+}
+
+/* Cyan — settings-page primary action */
+.button_cyan {
+  background-color: var(--color-chart-cyan);
+  border: 1px solid var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+}
+
+.button_cyan:hover:not(:disabled) {
+  background-color: var(--color-chart-cyan-light, #22d3ee);
+  border-color: var(--color-chart-cyan-light, #22d3ee);
+}
+
+/* Danger — destructive action */
+.button_danger {
+  background-color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  color: #fff;
+}
+
+.button_danger:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+/* Settings — slim icon-only utility button */
+.button_settings {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: var(--padding-sm);
+}
+
+.button_settings:hover:not(:disabled) {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-chart-cyan);
+  color: var(--color-chart-cyan);
 }
 
 .button_ghost {

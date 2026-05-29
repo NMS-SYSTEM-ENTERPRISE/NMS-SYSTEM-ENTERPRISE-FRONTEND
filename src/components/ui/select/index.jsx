@@ -23,6 +23,7 @@ export const SelectComponent = ({
   isClearable = true,
   isSearchable = true,
   variant = 'default',
+  error,
   ...restProps
 }) => {
   // Convert value to react-select format
@@ -69,12 +70,16 @@ export const SelectComponent = ({
     control: (provided, state) => ({
       ...provided,
       backgroundColor: variant === 'borderless' ? 'transparent' : 'var(--color-bg-secondary)',
-      borderColor: variant === 'borderless' 
+      borderColor: error 
+        ? 'var(--color-danger)'
+        : variant === 'borderless' 
         ? 'transparent' 
         : state.isFocused ? 'var(--color-accent-blue)' : 'var(--color-border)',
       borderRadius: 'var(--radius-md)',
       minHeight: variant === 'borderless' ? '30px' : '36px',
-      boxShadow: state.isFocused && variant !== 'borderless'
+      boxShadow: error && state.isFocused
+        ? '0 0 0 1px var(--color-danger)'
+        : state.isFocused && variant !== 'borderless'
         ? '0 0 0 1px var(--color-accent-blue)'
         : 'none',
       borderWidth: variant === 'borderless' ? '0' : '1px',
@@ -184,6 +189,7 @@ export const SelectComponent = ({
         classNamePrefix="react-select"
         {...restProps}
       />
+      {error && <span className={styles.errorMessage}>{error}</span>}
     </div>
   );
 };

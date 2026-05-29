@@ -15,12 +15,18 @@ import {
   LDAP_TIMELINE_STEPS,
 } from '@/utils/constants/settings/users';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLdap } from '@/hooks/settings/user/ldap-server/useLdap';
 import styles from '../../shared-settings-styles.module.css';
 
 // ─── Main Screen ──────────────────────────────────────────────
 
 const LDAPServerSettings = () => {
+  const { getLdapConfigs, createLdapConfig, updateLdapConfig, deleteLdapConfig } = useLdap();
+
+  const [servers, setServers] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+
   const [searchTags, setSearchTags] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,22 +41,73 @@ const LDAPServerSettings = () => {
   const [itemToSync, setItemToSync] = useState(null);
   const [showSyncModal, setShowSyncModal] = useState(false);
 
-  const filteredServers = MOCK_LDAP_SERVERS.filter((s) => {
-    if (searchTags.length === 0) return true;
-    return searchTags.every(tag => {
-      const lowerTag = tag.toLowerCase();
-      return s.ipHost.toLowerCase().includes(lowerTag) ||
-        (s.fqdn && s.fqdn.toLowerCase().includes(lowerTag));
-    });
+  const mapConfigToFrontend = (config) => ({
+    id: config.id,
+    ipHost: config.primary_host,
+    fqdn: config.domain_name,
+    ldapGroups: config.ldap_groups || '-',
+    lastSyncAt: config.updated_at ? new Date(config.updated_at).toLocaleString() : '-',
+    
+    // Additional fields for the form
+    primaryIpHost: config.primary_host || '',
+    secondaryIpHost: config.secondary_host || '',
+    domainName: config.domain_name || '',
+    serverType: config.server_type || 'Microsoft AD',
+    secureLdap: config.secure_ldap || false,
+    port: config.port || 389,
+    userName: config.user_name || '',
+    password: config.password || '',
+    ldapAuthentication: config.ldap_auth || false,
+    autoSync: config.auto_sync || false,
   });
+
+  const fetchServers = async () => {
+    const data = await getLdapConfigs({
+      page: currentPage,
+      limit: pageSize,
+      search: searchTags.join(',') || undefined,
+    });
+    if (data) {
+      setServers(data.items.map(mapConfigToFrontend));
+      setTotalRecords(data.total_records);
+    }
+  };
+
+  useEffect(() => {
+    fetchServers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, searchTags]);
 
   const handleFieldChange = (key, value) =>
     setNewServer((prev) => ({ ...prev, [key]: value }));
 
-  const handleSubmit = () => {
-    console.log(editingItem ? 'Update LDAP Server:' : 'Add LDAP Server:', newServer);
-    setShowAdd(false);
-    setEditingItem(null);
+  const handleSubmit = async () => {
+    const payload = {
+      primary_host: newServer.primaryIpHost,
+      secondary_host: newServer.secondaryIpHost,
+      domain_name: newServer.domainName,
+      server_type: newServer.serverType,
+      secure_ldap: newServer.secureLdap,
+      port: Number(newServer.port) || 389,
+      user_name: newServer.userName,
+      password: newServer.password,
+      ldap_auth: newServer.ldapAuthentication,
+      auto_sync: newServer.autoSync,
+      ldap_groups: newServer.ldapGroups || '',
+    };
+
+    let result;
+    if (editingItem) {
+      result = await updateLdapConfig(editingItem.id, payload);
+    } else {
+      result = await createLdapConfig(payload);
+    }
+
+    if (result) {
+      setShowAdd(false);
+      setEditingItem(null);
+      fetchServers();
+    }
   };
 
   const handleReset = () => {
@@ -68,10 +125,13 @@ const LDAPServerSettings = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    console.log('Deleted server:', itemToDelete);
-    setShowDeleteModal(false);
-    setItemToDelete(null);
+  const confirmDelete = async () => {
+    const result = await deleteLdapConfig(itemToDelete.id);
+    if (result) {
+      setShowDeleteModal(false);
+      setItemToDelete(null);
+      fetchServers();
+    }
   };
 
   const handleSync = (server) => {
@@ -118,7 +178,7 @@ const LDAPServerSettings = () => {
           {/* Data Table */}
           <Table
             columns={COLUMNS}
-            data={filteredServers}
+            data={servers}
             keyExtractor={(s) => s.id}
             renderCell={(row, col) => {
               if (col.key === 'sync') {
@@ -138,7 +198,7 @@ const LDAPServerSettings = () => {
           {/* Pagination */}
           <Pagination
             currentPage={currentPage}
-            totalItems={filteredServers.length}
+            totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}

@@ -9,6 +9,7 @@ import { UserProfileProvider } from '@/contexts/settings/user/user-profiles/user
 import { PatProvider } from '@/contexts/settings/user/personal-access-token/pat-context';
 import { PasswordPolicyProvider } from '@/contexts/settings/user/password-settings/password-policy-context';
 import { SsoProvider } from '@/contexts/settings/user/single-sign-on/sso-context';
+import { LdapProvider } from '@/contexts/settings/user/ldap-server/ldap-context';
 
 export function Providers({ children }) {
   return (
@@ -21,7 +22,9 @@ export function Providers({ children }) {
                 <PatProvider>
                   <PasswordPolicyProvider>
                     <SsoProvider>
-                      {children}
+                      <LdapProvider>
+                        {children}
+                      </LdapProvider>
                     </SsoProvider>
                   </PasswordPolicyProvider>
                 </PatProvider>

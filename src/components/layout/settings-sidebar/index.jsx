@@ -12,17 +12,17 @@ const settingsMenuItems = [
     label: 'User Settings',
     path: '/settings/user',
     subItems: [
-      { label: 'User', path: '/settings/user/users' },
-      { label: 'User Profile', path: '/settings/user/user-profiles' },
+      { label: 'Role', path: '/settings/user/roles' },
       { label: 'Group', path: '/settings/user/groups' },
+      { label: 'User Profile', path: '/settings/user/user-profiles' },
       {
         label: 'Personal Access Token',
         path: '/settings/user/personal-access-token',
       },
-      { label: 'Role', path: '/settings/user/roles' },
       { label: 'Password Settings', path: '/settings/user/password-settings' },
-      { label: 'LDAP Server Settings', path: '/settings/user/ldap-server' },
       { label: 'Single Sign-On', path: '/settings/user/single-sign-on' },
+      { label: 'LDAP Server Settings', path: '/settings/user/ldap-server' },
+      { label: 'User', path: '/settings/user/users' },
     ],
   },
   {

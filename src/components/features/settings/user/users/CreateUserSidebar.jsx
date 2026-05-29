@@ -32,8 +32,8 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
     if (!user.confirmPassword?.trim()) newErrors.confirmPassword = 'Confirm Password is required';
     else if (user.password !== user.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
-    if (!user.groups || (Array.isArray(user.groups) && user.groups.length === 0)) newErrors.groups = 'Groups selection is required';
-    if (!user.role || (Array.isArray(user.role) && user.role.length === 0)) newErrors.role = 'Role selection is required';
+    if (!user.groupId) newErrors.groupId = 'Groups selection is required';
+    if (!user.roleId) newErrors.roleId = 'Role selection is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -153,12 +153,12 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
         <FormField label="Groups" required>
           <SelectComponent
             className={mainStyles.formSelect}
-            value={user.groups}
-            onChange={(e) => handleFieldChange('groups', e.target.value)}
-            onFocus={() => clearError('groups')}
+            value={user.groupId}
+            onChange={(e) => handleFieldChange('groupId', e.target.value)}
+            onFocus={() => clearError('groupId')}
             options={GROUP_OPTIONS}
             placeholder="Select"
-            error={errors.groups}
+            error={errors.groupId || errors.groups}
           />
           <Link href="/settings/user/groups" className={classNames(mainStyles.link, localStyles.smallLink)}>
             Create Group
@@ -168,12 +168,12 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
         <FormField label="Role" required>
           <SelectComponent
             className={mainStyles.formSelect}
-            value={user.role}
-            onChange={(e) => handleFieldChange('role', e.target.value)}
-            onFocus={() => clearError('role')}
+            value={user.roleId}
+            onChange={(e) => handleFieldChange('roleId', e.target.value)}
+            onFocus={() => clearError('roleId')}
             options={ROLE_OPTIONS}
             placeholder="Select"
-            error={errors.role}
+            error={errors.roleId || errors.role}
           />
           <Link href="/settings/user/roles" className={classNames(mainStyles.link, localStyles.smallLink)}>
             Create Role

@@ -7,12 +7,17 @@ export const renderUserCell = (user, col, onEdit, onDelete) => {
   switch (col.key) {
     case 'username':
       return <a href="#" className={styles.linkBlue}>{user.username}</a>;
-    case 'status':
+    case 'status': {
+      const isActive = user.status === true || String(user.status).toUpperCase() === 'ACTIVE';
+      const displayStatus = typeof user.status === 'boolean' 
+        ? (user.status ? 'Active' : 'Inactive') 
+        : user.status;
       return (
-        <Badge variant={user.status === 'Active' ? 'success' : 'danger'}>
-          {user.status}
+        <Badge variant={isActive ? 'success' : 'danger'}>
+          {displayStatus}
         </Badge>
       );
+    }
     case 'actions':
       return (
         <ActionCell

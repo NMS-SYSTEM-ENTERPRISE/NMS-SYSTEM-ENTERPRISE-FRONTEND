@@ -1,0 +1,184 @@
+GET
+/system-settings/mail-server/
+Read Mail Server Settings
+
+Retrieve global Mail Server (SMTP) settings.
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "smtp_server": "string",
+  "smtp_server_port": 0,
+  "security_type": "TLS",
+  "authentication_type": "Basic",
+  "authentication_requires": true,
+  "password": "string",
+  "use_proxy_server": false,
+  "from_email": "string",
+  "user_name": "string",
+  "oauth2_client_id": "string",
+  "oauth2_tenant_id": "string",
+  "oauth2_client_secret": "string",
+  "id": 0,
+  "updated_at": "2026-05-29T08:22:43.919Z"
+}
+No links
+
+PUT
+/system-settings/mail-server/
+Update Mail Server Settings
+
+Update global Mail Server settings (Save).
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "smtp_server": "string",
+  "smtp_server_port": 0,
+  "security_type": "string",
+  "authentication_type": "string",
+  "authentication_requires": true,
+  "password": "string",
+  "use_proxy_server": true,
+  "from_email": "string",
+  "user_name": "string",
+  "oauth2_client_id": "string",
+  "oauth2_tenant_id": "string",
+  "oauth2_client_secret": "string"
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "smtp_server": "string",
+  "smtp_server_port": 0,
+  "security_type": "TLS",
+  "authentication_type": "Basic",
+  "authentication_requires": true,
+  "password": "string",
+  "use_proxy_server": false,
+  "from_email": "string",
+  "user_name": "string",
+  "oauth2_client_id": "string",
+  "oauth2_tenant_id": "string",
+  "oauth2_client_secret": "string",
+  "id": 0,
+  "updated_at": "2026-05-29T08:22:43.924Z"
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string",
+      "input": "string",
+      "ctx": {}
+    }
+  ]
+}
+No links
+
+POST
+/system-settings/mail-server/test
+Test Mail Server Connection
+
+Verify SMTP connection parameters.
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "success": true,
+  "message": "string"
+}
+No links
+
+POST
+/system-settings/mail-server/reset
+Reset Mail Server Settings
+
+Clear SMTP configurations.
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "smtp_server": "string",
+  "smtp_server_port": 0,
+  "security_type": "TLS",
+  "authentication_type": "Basic",
+  "authentication_requires": true,
+  "password": "string",
+  "use_proxy_server": false,
+  "from_email": "string",
+  "user_name": "string",
+  "oauth2_client_id": "string",
+  "oauth2_tenant_id": "string",
+  "oauth2_client_secret": "string",
+  "id": 0,
+  "updated_at": "2026-05-29T08:22:43.905Z"
+}

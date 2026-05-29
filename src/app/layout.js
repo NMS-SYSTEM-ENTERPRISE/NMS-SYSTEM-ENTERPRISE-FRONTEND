@@ -3,6 +3,8 @@ import '@/styles/standard-layout.css';
 import { Geist, Geist_Mono, Manrope } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
+import { Providers } from '@/providers/providers';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -42,7 +44,10 @@ export default function RootLayout({ children }) {
           shadow="0 0 12px #06b6d4,0 0 6px #06b6d4"
           zIndex={9999}
         />
-        <ClientLayout>{children}</ClientLayout>
+        <Providers>
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

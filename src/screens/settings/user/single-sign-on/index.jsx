@@ -4,7 +4,8 @@ import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSso } from '@/hooks/settings/user/single-sign-on/useSso';
 import styles from '../../shared-settings-styles.module.css';
 import localStyles from '@/components/features/settings/user/single-sign-on/styles.module.css';
 import classNames from 'classnames';
@@ -20,13 +21,75 @@ import { SectionTitle } from '@/components/features/settings/user/single-sign-on
 // ─── Main Screen ──────────────────────────────────────────────
 
 const SingleSignOn = () => {
+  const { getSsoConfig, updateSsoConfig, resetSsoConfig } = useSso();
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  const fetchConfig = async () => {
+    const data = await getSsoConfig();
+    if (data) {
+      setSettings({
+        serviceProviderEntityId: data.sp_entity_id || '',
+        redirectURL: data.sp_acs_url || '',
+        serviceProviderLoginURL: data.sp_login_url || '',
+        serviceProviderLogoutURL: data.sp_logout_url || '',
+        identityProvider: data.idp_type || 'OneLogin',
+        identityProviderEntityId: data.idp_entity_id || '',
+        identityProviderLoginURL: data.idp_login_url || '',
+        identityProviderLogoutURL: data.idp_logout_url || '',
+        nameIdFormat: data.nameid_format || 'Unspecified',
+        x509_certificate: data.x509_certificate || '',
+        idp_fingerprint: data.idp_fingerprint || '',
+        is_active: data.is_active || false,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchConfig();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const update = (key, value) =>
     setSettings((prev) => ({ ...prev, [key]: value }));
 
-  const handleSave  = () => console.log('Save SSO settings:', settings);
-  const handleReset = () => setSettings(DEFAULT_SETTINGS);
+  const handleSave = async () => {
+    const payload = {
+      sp_entity_id: settings.serviceProviderEntityId,
+      sp_acs_url: settings.redirectURL,
+      sp_login_url: settings.serviceProviderLoginURL,
+      sp_logout_url: settings.serviceProviderLogoutURL,
+      idp_type: settings.identityProvider,
+      idp_name: settings.identityProvider,
+      idp_entity_id: settings.identityProviderEntityId,
+      idp_login_url: settings.identityProviderLoginURL,
+      idp_logout_url: settings.identityProviderLogoutURL,
+      nameid_format: settings.nameIdFormat,
+      x509_certificate: settings.x509_certificate,
+      idp_fingerprint: settings.idp_fingerprint,
+      is_active: settings.is_active,
+    };
+    await updateSsoConfig(payload);
+  };
+
+  const handleReset = async () => {
+    const data = await resetSsoConfig();
+    if (data) {
+      setSettings({
+        serviceProviderEntityId: data.sp_entity_id || '',
+        redirectURL: data.sp_acs_url || '',
+        serviceProviderLoginURL: data.sp_login_url || '',
+        serviceProviderLogoutURL: data.sp_logout_url || '',
+        identityProvider: data.idp_type || 'OneLogin',
+        identityProviderEntityId: data.idp_entity_id || '',
+        identityProviderLoginURL: data.idp_login_url || '',
+        identityProviderLogoutURL: data.idp_logout_url || '',
+        nameIdFormat: data.nameid_format || 'Unspecified',
+        x509_certificate: data.x509_certificate || '',
+        idp_fingerprint: data.idp_fingerprint || '',
+        is_active: data.is_active || false,
+      });
+    }
+  };
 
   return (
     <div className={styles.mainContent}>
@@ -130,18 +193,19 @@ const SingleSignOn = () => {
             </FormField>
           </div>
 
-          {/* Certificate display block */}
-          <div className={localStyles.certificateBox}>
-            <p className={classNames(styles.helpText, localStyles.certText)}>
-              -----BEGIN CERTIFICATE-----
-            </p>
-            <p className={classNames(styles.helpText, localStyles.certTextBreak)}>
-              MIIDzRCCAksGAwIBAgIJAK5gJAvwR+6hIrY20/2xOvlJGhTG9ndaW4g...
-            </p>
-            <p className={styles.helpText}>
-              {settings.identityProviderEntityId.split('/').pop()}
-            </p>
-          </div>
+          {settings.x509_certificate && (
+            <div className={localStyles.certificateBox}>
+              <p className={classNames(styles.helpText, localStyles.certText)}>
+                -----BEGIN CERTIFICATE-----
+              </p>
+              <p className={classNames(styles.helpText, localStyles.certTextBreak)}>
+                {settings.x509_certificate}
+              </p>
+              <p className={classNames(styles.helpText, localStyles.certText)}>
+                -----END CERTIFICATE-----
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Action buttons */}

@@ -9,7 +9,7 @@ import {
   editUserApi,
   getUserMeApi,
   updateUserMeApi,
-} from '@/networking/settings/user/user-apis';
+} from '@/networking/settings/user/users/user-apis';
 
 export const UserContext = createContext(null);
 

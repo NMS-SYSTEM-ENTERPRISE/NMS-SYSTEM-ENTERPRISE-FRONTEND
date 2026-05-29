@@ -6,7 +6,7 @@ import { SelectComponent } from '@/components/ui/select';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/useToast';
-import { useUser } from '@/hooks/useUser';
+import { useUser } from '@/hooks/settings/user/users/useUser';
 import {
   TIMEZONE_OPTIONS,
   DATE_FORMAT_OPTIONS,

@@ -12,7 +12,7 @@ import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
 import styles from '../../shared-settings-styles.module.css';
 
-import { useUser } from '@/hooks/useUser';
+import { useUser } from '@/hooks/settings/user/users/useUser';
 import {
   USERS_COLUMNS as COLUMNS,
   EMPTY_USER,

@@ -92,7 +92,7 @@ const Roles = () => {
       description: role.description || '',
       type: role.type || 'Custom', // Using default Custom since type isn't always in payload
       permissions: role.permissions || {},
-      users: role.user_count || 0,
+      userCount: role.user_count || 0,
       status: true, // Roles are active unless otherwise stated
     };
   };

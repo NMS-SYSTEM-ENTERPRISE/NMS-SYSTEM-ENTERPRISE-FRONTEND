@@ -1,221 +1,352 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
+"use client";
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
-import { useState, useEffect } from 'react';
-import { useSso } from '@/hooks/settings/user/single-sign-on/useSso';
+import { useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
-import localStyles from '@/components/features/settings/user/single-sign-on/styles.module.css';
-import classNames from 'classnames';
-
-import {
-  IDENTITY_PROVIDER_OPTIONS,
-  NAME_ID_FORMAT_OPTIONS,
-  DEFAULT_SSO_SETTINGS as DEFAULT_SETTINGS,
-} from '@/utils/constants/settings/users';
-import { ReadOnlyField } from '@/components/features/settings/user/single-sign-on/ReadOnlyField';
-import { SectionTitle } from '@/components/features/settings/user/single-sign-on/SectionTitle';
-
-// ─── Main Screen ──────────────────────────────────────────────
-
 const SingleSignOn = () => {
-  const { getSsoConfig, updateSsoConfig, resetSsoConfig } = useSso();
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
-
-  const fetchConfig = async () => {
-    const data = await getSsoConfig();
-    if (data) {
-      setSettings({
-        serviceProviderEntityId: data.sp_entity_id || '',
-        redirectURL: data.sp_acs_url || '',
-        serviceProviderLoginURL: data.sp_login_url || '',
-        serviceProviderLogoutURL: data.sp_logout_url || '',
-        identityProvider: data.idp_type || 'OneLogin',
-        identityProviderEntityId: data.idp_entity_id || '',
-        identityProviderLoginURL: data.idp_login_url || '',
-        identityProviderLogoutURL: data.idp_logout_url || '',
-        nameIdFormat: data.nameid_format || 'Unspecified',
-        x509_certificate: data.x509_certificate || '',
-        idp_fingerprint: data.idp_fingerprint || '',
-        is_active: data.is_active || false,
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchConfig();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const update = (key, value) =>
-    setSettings((prev) => ({ ...prev, [key]: value }));
-
-  const handleSave = async () => {
-    const payload = {
-      sp_entity_id: settings.serviceProviderEntityId,
-      sp_acs_url: settings.redirectURL,
-      sp_login_url: settings.serviceProviderLoginURL,
-      sp_logout_url: settings.serviceProviderLogoutURL,
-      idp_type: settings.identityProvider,
-      idp_name: settings.identityProvider,
-      idp_entity_id: settings.identityProviderEntityId,
-      idp_login_url: settings.identityProviderLoginURL,
-      idp_logout_url: settings.identityProviderLogoutURL,
-      nameid_format: settings.nameIdFormat,
-      x509_certificate: settings.x509_certificate,
-      idp_fingerprint: settings.idp_fingerprint,
-      is_active: settings.is_active,
-    };
-    await updateSsoConfig(payload);
-  };
-
-  const handleReset = async () => {
-    const data = await resetSsoConfig();
-    if (data) {
-      setSettings({
-        serviceProviderEntityId: data.sp_entity_id || '',
-        redirectURL: data.sp_acs_url || '',
-        serviceProviderLoginURL: data.sp_login_url || '',
-        serviceProviderLogoutURL: data.sp_logout_url || '',
-        identityProvider: data.idp_type || 'OneLogin',
-        identityProviderEntityId: data.idp_entity_id || '',
-        identityProviderLoginURL: data.idp_login_url || '',
-        identityProviderLogoutURL: data.idp_logout_url || '',
-        nameIdFormat: data.nameid_format || 'Unspecified',
-        x509_certificate: data.x509_certificate || '',
-        idp_fingerprint: data.idp_fingerprint || '',
-        is_active: data.is_active || false,
-      });
-    }
-  };
-
+  const [settings, setSettings] = useState({
+    serviceProviderEntityId: 'snr-edatas-AIOps',
+    redirectURL: 'https://172.16.14.71/api/v1/sso/callback',
+    serviceProviderLoginURL: 'https://172.16.14.71/api/v1/sso',
+    serviceProviderLogoutURL: 'https://172.16.14.71/api/v1/sso/logout',
+    identityProvider: 'OneLogin',
+    identityProviderEntityId:
+      'https://app.onelogin.com/saml/metadata/444d8ba1-4ebe-4752-8ecd-90b9864b18c6',
+    identityProviderLoginURL:
+      'https://rahit-test-dev.onelogin.com/trust/saml2/http-post/sso/8743535',
+    identityProviderLogoutURL:
+      'https://rahit-test-dev.onelogin.com/trust/saml2/http-redirect/slo/3643535',
+    nameIdFormat: 'Unspecified',
+  });
   return (
+
     <div className={styles.mainContent}>
       <div className={styles.contentArea}>
-
-        {/* Page header */}
         <div className={styles.contentHeader}>
           <div>
             <h2 className={styles.pageTitle}>Single Sign-On</h2>
             <p className={styles.pageDescription}>
-              Single Sign-On is an authentication process that allows a user to access multiple
-              applications with one set of login credentials. For more information:{' '}
+              Single Sign-On is an authentication process that allows a user
+              to access multiple applications with one of login credentials.
+              For more information:{' '}
               <a href="#" className={styles.linkBlue}>
-                Single Sign-On <Icon icon="mdi:open-in-new" width={14} />
+                Single Sign-On{' '}
+                <Icon icon="mdi:open-in-new" width={14} height={14} />
               </a>
             </p>
           </div>
         </div>
-
-        {/* ── Service Provider Details ── */}
         <div className={styles.settingsSection}>
-          <SectionTitle>Service Provider Details</SectionTitle>
+          <h3
+            style={{
+              color: 'var(--color-chart-cyan)',
+              fontSize: 'var(--font-md)',
+              marginBottom: 'var(--margin-md)',
+            }}
+          >
+            Service Provider Details
+          </h3>
           <div className={styles.formGrid}>
-            <ReadOnlyField label="Service Provider Entity ID" value={settings.serviceProviderEntityId} />
-            <ReadOnlyField label="Redirect URL"               value={settings.redirectURL} />
-            <ReadOnlyField label="Service Provider Login URL" value={settings.serviceProviderLoginURL} />
-            <ReadOnlyField label="Service Provider Logout URL" value={settings.serviceProviderLogoutURL} />
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Service Provider Entity ID
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  value={settings.serviceProviderEntityId}
+                  readOnly
+                />
+                <button
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon icon="mdi:content-copy" width={18} height={18} />
+                </button>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Redirect URL</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  value={settings.redirectURL}
+                  readOnly
+                />
+                <button
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon icon="mdi:content-copy" width={18} height={18} />
+                </button>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Service Provider Login URL
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  value={settings.serviceProviderLoginURL}
+                  readOnly
+                />
+                <button
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon icon="mdi:content-copy" width={18} height={18} />
+                </button>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Service Provider Logout URL
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  value={settings.serviceProviderLogoutURL}
+                  readOnly
+                />
+                <button
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon icon="mdi:content-copy" width={18} height={18} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* ── Identity Provider Details ── */}
         <div className={styles.settingsSection}>
-          <SectionTitle>Identity Provider Details</SectionTitle>
+          <h3
+            style={{
+              color: 'var(--color-chart-cyan)',
+              fontSize: 'var(--font-md)',
+              marginBottom: 'var(--margin-md)',
+            }}
+          >
+            Identity Provider Details
+          </h3>
           <div className={styles.formGrid}>
-
-            <FormField label="Identity Provider" required>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider{' '}
+                <span style={{ color: 'var(--color-danger)' }}>*</span>
+              </label>
               <SelectComponent
                 className={styles.formSelect}
                 value={settings.identityProvider}
-                onChange={(e) => update('identityProvider', e.target.value)}
-                options={IDENTITY_PROVIDER_OPTIONS}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    identityProvider: e.target.value,
+                  })
+                }
+                options={[
+                  { value: 'OneLogin', label: 'OneLogin' },
+                  { value: 'Okta', label: 'Okta' },
+                  { value: 'Azure AD', label: 'Azure AD' },
+                ]}
                 placeholder="Select"
               />
-            </FormField>
-
-            <FormField label="Identity Provider Configuration">
-              <div className={localStyles.buttonGroup}>
-                <Button variant="secondary">Upload Metadata File</Button>
-                <Button variant="cyan">Configure Manually</Button>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider Configuration
+              </label>
+              <div style={{ display: 'flex', gap: 'var(--gap-sm)' }}>
+                <button className={styles.btnSecondary}>
+                  Upload Metadata File
+                </button>
+                <button className={styles.btnPrimary}>
+                  Configure Manually
+                </button>
               </div>
-            </FormField>
-
-            <FormField label="Identity Provider Entity ID" required>
-              <Input
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider Entity ID{' '}
+                <span style={{ color: 'var(--color-danger)' }}>*</span>
+              </label>
+              <input
                 type="text"
+                className={styles.formInput}
                 value={settings.identityProviderEntityId}
-                onChange={(e) => update('identityProviderEntityId', e.target.value)}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    identityProviderEntityId: e.target.value,
+                  })
+                }
               />
-            </FormField>
-
-            <FormField label="Identity Provider Login URL" required>
-              <Input
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider Login URL{' '}
+                <span style={{ color: 'var(--color-danger)' }}>*</span>
+              </label>
+              <input
                 type="text"
+                className={styles.formInput}
                 value={settings.identityProviderLoginURL}
-                onChange={(e) => update('identityProviderLoginURL', e.target.value)}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    identityProviderLoginURL: e.target.value,
+                  })
+                }
               />
-            </FormField>
-
-            <FormField label="Identity Provider Logout URL" required>
-              <Input
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider Logout URL{' '}
+                <span style={{ color: 'var(--color-danger)' }}>*</span>
+              </label>
+              <input
                 type="text"
+                className={styles.formInput}
                 value={settings.identityProviderLogoutURL}
-                onChange={(e) => update('identityProviderLogoutURL', e.target.value)}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    identityProviderLogoutURL: e.target.value,
+                  })
+                }
               />
-            </FormField>
-
-            <FormField label="NameID Format" required>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                NameID Format{' '}
+                <span style={{ color: 'var(--color-danger)' }}>*</span>
+              </label>
               <SelectComponent
                 className={styles.formSelect}
                 value={settings.nameIdFormat}
-                onChange={(e) => update('nameIdFormat', e.target.value)}
-                options={NAME_ID_FORMAT_OPTIONS}
+                onChange={(e) =>
+                  setSettings({ ...settings, nameIdFormat: e.target.value })
+                }
+                options={[
+                  { value: 'Unspecified', label: 'Unspecified' },
+                  { value: 'Email', label: 'Email' },
+                  { value: 'Persistent', label: 'Persistent' },
+                ]}
                 placeholder="Select"
               />
-            </FormField>
-
-            <FormField label="Identity Provider X.509 Certificate">
-              <div className={localStyles.buttonGroup}>
-                <Button variant="cyan">Configure Manually</Button>
-                <Button variant="secondary">Upload Certificate</Button>
-              </div>
-            </FormField>
-
-            <FormField label={
-              <span className={localStyles.iconLabel}>
-                Identity Provider Fingerprint
-                <Icon icon="mdi:information-outline" width={16} className={localStyles.infoIcon} />
-              </span>
-            }>
-              {/* Fingerprint display placeholder */}
-            </FormField>
-          </div>
-
-          {settings.x509_certificate && (
-            <div className={localStyles.certificateBox}>
-              <p className={classNames(styles.helpText, localStyles.certText)}>
-                -----BEGIN CERTIFICATE-----
-              </p>
-              <p className={classNames(styles.helpText, localStyles.certTextBreak)}>
-                {settings.x509_certificate}
-              </p>
-              <p className={classNames(styles.helpText, localStyles.certText)}>
-                -----END CERTIFICATE-----
-              </p>
             </div>
-          )}
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider X.509 Certificate
+              </label>
+              <div style={{ display: 'flex', gap: 'var(--gap-sm)' }}>
+                <button className={styles.btnPrimary}>
+                  Configure Manually
+                </button>
+                <button className={styles.btnSecondary}>
+                  Upload Certificate
+                </button>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Identity Provider Fingerprint{' '}
+                <span
+                  style={{
+                    color: 'var(--color-chart-cyan)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon
+                    icon="mdi:information-outline"
+                    width={16}
+                    height={16}
+                  />
+                </span>
+              </label>
+              {/* Fingerprint input/display could go here if needed, image shows info icon */}
+            </div>
+          </div>
+          <div
+            style={{
+              padding: 'var(--padding-md)',
+              backgroundColor: 'var(--color-bg-tertiary)',
+              borderRadius: 'var(--radius-sm)',
+              marginTop: 'var(--margin-md)',
+            }}
+          >
+            <p
+              style={{
+                margin: '0 0 8px 0',
+                fontSize: 'var(--font-xs)',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
+              -----BEGIN CERTIFICATE-----
+            </p>
+            <p
+              style={{
+                margin: '0 0 8px 0',
+                fontSize: 'var(--font-xs)',
+                color: 'var(--color-text-secondary)',
+                wordBreak: 'break-all',
+              }}
+            >
+              MIIDzRCCAksGAwIBAgIJAK5gJAvwR+6hIrY20/2xOvlJGhTG9ndaW4g...
+            </p>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 'var(--font-xs)',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
+              {settings.identityProviderEntityId.split('/').pop()}
+            </p>
+          </div>
         </div>
-
-        {/* Action buttons */}
         <div className={styles.actionButtons}>
-          <Button variant="secondary" onClick={handleReset}>Reset</Button>
-          <Button variant="cyan" onClick={handleSave}>Save</Button>
+          <button className={styles.btnSecondary}>Reset</button>
+          <button className={styles.btnPrimary}>Save</button>
         </div>
       </div>
     </div>
   );
 };
-
 export default SingleSignOn;

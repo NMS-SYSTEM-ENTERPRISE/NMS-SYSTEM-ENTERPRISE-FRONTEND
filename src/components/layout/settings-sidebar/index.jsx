@@ -12,17 +12,17 @@ const settingsMenuItems = [
     label: 'User Settings',
     path: '/settings/user',
     subItems: [
-      { label: 'Role', path: '/settings/user/roles' },
-      { label: 'Group', path: '/settings/user/groups' },
+      { label: 'User', path: '/settings/user/users' },
       { label: 'User Profile', path: '/settings/user/user-profiles' },
+      { label: 'Group', path: '/settings/user/groups' },
       {
         label: 'Personal Access Token',
         path: '/settings/user/personal-access-token',
       },
+      { label: 'Role', path: '/settings/user/roles' },
       { label: 'Password Settings', path: '/settings/user/password-settings' },
-      { label: 'Single Sign-On', path: '/settings/user/single-sign-on' },
       { label: 'LDAP Server Settings', path: '/settings/user/ldap-server' },
-      { label: 'User', path: '/settings/user/users' },
+      { label: 'Single Sign-On', path: '/settings/user/single-sign-on' },
     ],
   },
   {
@@ -273,11 +273,10 @@ const SettingsSidebar = () => {
             {item.subItems ? (
               <>
                 <button
-                  className={`${styles.menuButton} ${
-                    pathname.startsWith(item.path)
+                  className={`${styles.menuButton} ${pathname.startsWith(item.path)
                       ? styles.menuButtonActive
                       : ''
-                  }`}
+                    }`}
                   onClick={() => toggleSection(item.path)}
                   title={isCollapsed ? item.label : ''}
                 >
@@ -307,8 +306,7 @@ const SettingsSidebar = () => {
                         key={subItem.path}
                         to={subItem.path}
                         className={({ isActive }) =>
-                          `${styles.subMenuItem} ${
-                            isActive ? styles.subMenuItemActive : ''
+                          `${styles.subMenuItem} ${isActive ? styles.subMenuItemActive : ''
                           }`
                         }
                       >
@@ -326,8 +324,7 @@ const SettingsSidebar = () => {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `${styles.menuButton} ${
-                    isActive ? styles.menuButtonActive : ''
+                  `${styles.menuButton} ${isActive ? styles.menuButtonActive : ''
                   }`
                 }
                 title={isCollapsed ? item.label : ''}

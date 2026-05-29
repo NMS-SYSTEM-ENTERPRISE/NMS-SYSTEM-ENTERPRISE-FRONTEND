@@ -109,8 +109,7 @@
 }
 
 .navItem_sub {
-  padding: var(--padding-sm) var(--padding-lg) var(--padding-sm)
-    calc(var(--padding-lg) + 28px);
+  padding: var(--padding-sm) var(--padding-lg) var(--padding-sm) calc(var(--padding-lg) + 28px);
   color: var(--color-text-secondary);
   font-size: var(--font-sm);
   cursor: pointer;

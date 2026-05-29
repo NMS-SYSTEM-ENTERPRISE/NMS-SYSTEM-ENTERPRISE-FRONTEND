@@ -6,51 +6,54 @@ import { SelectComponent } from '@/components/ui/select';
 import {
   PROFILE_USER_OPTIONS as USER_OPTIONS,
   PROFILE_ROLE_OPTIONS as ROLE_OPTIONS,
-  PROFILE_GROUP_OPTIONS as GROUP_OPTIONS
+  PROFILE_GROUP_OPTIONS as GROUP_OPTIONS,
 } from '@/utils/constants/settings/users';
+import { useFormValidation, required, selectRequired } from '@/hooks/useFormValidation';
 import mainStyles from '@/screens/settings/shared-settings-styles.module.css';
 import localStyles from './styles.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
-
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 
 /** Create User Profile slide-in sidebar */
-export const CreateProfileSidebar = ({ isOpen, onClose, profile, isEditing, onChange, onSubmit, onReset, onPreview, onInfoClick }) => {
-  const [errors, setErrors] = useState({});
+export const CreateProfileSidebar = ({
+  isOpen,
+  onClose,
+  profile,
+  isEditing,
+  onChange,
+  onSubmit,
+  onReset,
+  onPreview,
+  onInfoClick,
+}) => {
+  const validationRules = useMemo(
+    () => ({
+      name: required('Profile Name is required'),
+      user: selectRequired('User selection is required'),
+      role: selectRequired('Role selection is required'),
+      groups: selectRequired('Groups selection is required'),
+    }),
+    []
+  );
 
-  useEffect(() => {
-    if (!isOpen) setErrors({});
-  }, [isOpen]);
+  const { getFieldError, handleBlur, validateAll, revalidateField } = useFormValidation(
+    profile,
+    validationRules,
+    { isActive: isOpen }
+  );
 
-  const validate = () => {
-    const newErrors = {};
-    if (!profile.name?.trim()) newErrors.name = 'Profile Name is required';
-    if (!profile.user || (Array.isArray(profile.user) && profile.user.length === 0)) newErrors.user = 'User selection is required';
-    if (!profile.role || (Array.isArray(profile.role) && profile.role.length === 0)) newErrors.role = 'Role selection is required';
-    if (!profile.groups || (Array.isArray(profile.groups) && profile.groups.length === 0)) newErrors.groups = 'Groups selection is required';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const updateField = (field, value) => {
+    onChange(field, value);
+    revalidateField(field);
   };
 
   const handleSubmit = () => {
-    if (validate()) {
+    if (validateAll()) {
       onSubmit();
       return true;
     }
     return false;
-  };
-
-  const handleFieldChange = (field, value) => {
-    onChange(field, value);
-    clearError(field);
-  };
-
-  const clearError = (field) => {
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
   };
 
   return (
@@ -74,9 +77,9 @@ export const CreateProfileSidebar = ({ isOpen, onClose, profile, isEditing, onCh
           type="text"
           placeholder="e.g. <Department-Role>"
           value={profile.name}
-          onChange={(e) => handleFieldChange('name', e.target.value)}
-          onFocus={() => clearError('name')}
-          error={errors.name}
+          onChange={(e) => updateField('name', e.target.value)}
+          onBlur={() => handleBlur('name')}
+          error={getFieldError('name')}
         />
       </FormField>
 
@@ -84,9 +87,9 @@ export const CreateProfileSidebar = ({ isOpen, onClose, profile, isEditing, onCh
         <Input
           type="text"
           value={profile.description}
-          onChange={(e) => handleFieldChange('description', e.target.value)}
-          onFocus={() => clearError('description')}
-          error={errors.description}
+          onChange={(e) => updateField('description', e.target.value)}
+          onBlur={() => handleBlur('description')}
+          error={getFieldError('description')}
         />
       </FormField>
 
@@ -94,43 +97,59 @@ export const CreateProfileSidebar = ({ isOpen, onClose, profile, isEditing, onCh
         <SelectComponent
           className={mainStyles.formSelect}
           value={profile.user}
-          onChange={(e) => handleFieldChange('user', e.target.value)}
-          onFocus={() => clearError('user')}
+          onChange={(e) => updateField('user', e.target.value)}
+          onBlur={() => handleBlur('user')}
           options={USER_OPTIONS}
           placeholder="Select User"
-          error={errors.user}
+          error={getFieldError('user')}
         />
-        <Link href="/settings/user/users" className={classNames(mainStyles.link, localStyles.smallLink)}>Create User</Link>
+        <Link href="/settings/user/users" className={classNames(mainStyles.link, localStyles.smallLink)}>
+          Create User
+        </Link>
       </FormField>
 
       <FormField label="Role" required className={localStyles.fieldWithTopMargin}>
         <SelectComponent
           className={mainStyles.formSelect}
           value={profile.role}
-          onChange={(e) => handleFieldChange('role', e.target.value)}
-          onFocus={() => clearError('role')}
+          onChange={(e) => updateField('role', e.target.value)}
+          onBlur={() => handleBlur('role')}
           options={ROLE_OPTIONS}
           placeholder="Select"
-          error={errors.role}
+          error={getFieldError('role')}
         />
-        <Link href="/settings/user/roles" className={classNames(mainStyles.link, localStyles.smallLink)}>Create Role</Link>
+        <Link href="/settings/user/roles" className={classNames(mainStyles.link, localStyles.smallLink)}>
+          Create Role
+        </Link>
       </FormField>
 
       <FormField label="Groups" required className={localStyles.fieldWithTopMargin}>
         <SelectComponent
           className={mainStyles.formSelect}
           value={profile.groups}
-          onChange={(e) => handleFieldChange('groups', e.target.value)}
-          onFocus={() => clearError('groups')}
+          onChange={(e) => updateField('groups', e.target.value)}
+          onBlur={() => handleBlur('groups')}
           options={GROUP_OPTIONS}
           placeholder="Select"
-          error={errors.groups}
+          error={getFieldError('groups')}
         />
-        <Link href="/settings/user/groups" className={classNames(mainStyles.link, localStyles.smallLink)}>Create Group</Link>
+        <Link href="/settings/user/groups" className={classNames(mainStyles.link, localStyles.smallLink)}>
+          Create Group
+        </Link>
       </FormField>
 
       <p className={classNames(mainStyles.helpText, localStyles.helpTextMain)}>
-        For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick?.(); }} className={mainStyles.link}>Create User Profile</a>
+        For more information:{' '}
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            onInfoClick?.();
+          }}
+          className={mainStyles.link}
+        >
+          Create User Profile
+        </a>
       </p>
       <p className={classNames(mainStyles.helpText, localStyles.helpTextSub)}>
         * fields are mandatory

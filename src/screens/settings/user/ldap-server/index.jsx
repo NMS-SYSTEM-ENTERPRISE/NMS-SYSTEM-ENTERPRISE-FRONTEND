@@ -1,8 +1,11 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
+import { Pagination } from '@/components/ui/pagination';
+import { SearchInput } from '@/components/ui/search-input';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
 const MOCK_LDAP_SERVERS = [
   {
@@ -14,7 +17,9 @@ const MOCK_LDAP_SERVERS = [
   },
 ];
 const LDAPServerSettings = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTags, setSearchTags] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newServer, setNewServer] = useState({
     primaryIpHost: '',
@@ -35,102 +40,100 @@ const LDAPServerSettings = () => {
       [key]: !prev[key],
     }));
   };
+
+  const filteredServers = useMemo(() => {
+    if (searchTags.length === 0) return MOCK_LDAP_SERVERS;
+    return MOCK_LDAP_SERVERS.filter((server) =>
+      searchTags.every((tag) => {
+        const lowerTag = tag.toLowerCase();
+        return (
+          server.ipHost.toLowerCase().includes(lowerTag) ||
+          server.fqdn.toLowerCase().includes(lowerTag) ||
+          server.ldapGroups.toLowerCase().includes(lowerTag)
+        );
+      })
+    );
+  }, [searchTags]);
+
   return (
     <>
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
-          <div className={styles.toolbar}>
-            <div className={styles.searchBox}>
-              <Icon icon="mdi:magnify" width={18} height={18} />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          <div className={styles.contentHeader}>
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search LDAP servers..."
+            />
+            <div className={styles.headerActions}>
+              <Button variant="cyan" onClick={() => setShowAddModal(true)}>
+                <Icon icon="mdi:plus" width={18} height={18} />
+                Add LDAP Server
+              </Button>
             </div>
-            <button
-              className={styles.btnPrimary}
-              onClick={() => setShowAddModal(true)}
-            >
-              Add LDAP Server
-            </button>
-            <button className={styles.btnSettings}>
-              <Icon icon="mdi:eye" width={18} height={18} />
-            </button>
           </div>
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>IP/HOST</th>
-                  <th>FQDN</th>
-                  <th>LDAP GROUPS</th>
-                  <th>LAST SYNC AT</th>
-                  <th>SYNC</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {MOCK_LDAP_SERVERS.map((server) => (
-                  <tr key={server.id}>
-                    <td>{server.ipHost}</td>
-                    <td>{server.fqdn}</td>
-                    <td>
-                      <span className={styles.destinationBadge}>
-                        {server.ldapGroups}
-                      </span>
-                    </td>
-                    <td>{server.lastSyncAt}</td>
-                    <td>
-                      <button className={styles.actionBtn} title="Sync">
-                        <Icon
-                          icon="mdi:play-circle-outline"
-                          width={20}
-                          height={20}
-                        />
-                      </button>
-                    </td>
-                    <td>
-                      <div className={styles.actions}>
-                        <button className={styles.actionBtn} title="More">
+
+          <div className={styles.listPageBody}>
+            <div className={styles.tableContainer}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>IP/HOST</th>
+                    <th>FQDN</th>
+                    <th>LDAP GROUPS</th>
+                    <th>LAST SYNC AT</th>
+                    <th>SYNC</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredServers.map((server) => (
+                    <tr key={server.id}>
+                      <td>{server.ipHost}</td>
+                      <td>{server.fqdn}</td>
+                      <td>
+                        <span className={styles.destinationBadge}>
+                          {server.ldapGroups}
+                        </span>
+                      </td>
+                      <td>{server.lastSyncAt}</td>
+                      <td>
+                        <button className={styles.actionBtn} type="button" title="Sync">
                           <Icon
-                            icon="mdi:dots-vertical"
-                            width={18}
-                            height={18}
+                            icon="mdi:play-circle-outline"
+                            width={20}
+                            height={20}
                           />
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.pagination}>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-double-left" width={18} height={18} />
-            </button>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-left" width={18} height={18} />
-            </button>
-            <span className={styles.pageNumber}>1</span>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-right" width={18} height={18} />
-            </button>
-            <button className={styles.paginationBtn}>
-              <Icon icon="mdi:chevron-double-right" width={18} height={18} />
-            </button>
-            <SelectComponent
-              className={styles.itemsPerPageSelect}
-              value={50}
-              onChange={() => { }}
-              options={[{ value: 50, label: '50' }]}
-              placeholder="50"
-              isSearchable={false}
+                      </td>
+                      <td>
+                        <div className={styles.actions}>
+                          <button className={styles.actionBtn} type="button" title="More">
+                            <Icon
+                              icon="mdi:dots-vertical"
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <Pagination
+              className={styles.settingsListPagination}
+              currentPage={currentPage}
+              totalItems={filteredServers.length}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setCurrentPage(1);
+              }}
             />
-            <span className={styles.paginationInfo}>Items per page</span>
-            <span className={styles.paginationTotal}>1 - 1 of 1 Items</span>
           </div>
         </div>
       </div>

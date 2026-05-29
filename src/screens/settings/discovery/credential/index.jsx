@@ -10,10 +10,12 @@ import { CREDENTIAL_PROFILE_COLUMNS } from '@/utils/constants/settings/discovery
 import { MOCK_CREDENTIAL_PROFILES } from '@/utils/dummy-data/settings/discovery';
 import { Icon } from '@iconify/react';
 import { useMemo, useState } from 'react';
-import sharedStyles from '../../shared-settings-styles.module.css';
-import styles from './styles.module.css';
+import { copyToClipboard } from '@/utils/copyToClipboard';
+import { useToast } from '@/hooks/useToast';
+import styles from '../../shared-settings-styles.module.css';
 
 export default function CredentialProfile() {
+  const { showSuccess, showError } = useToast();
   const [searchTags, setSearchTags] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -44,6 +46,26 @@ export default function CredentialProfile() {
     setShowDeleteConfirm(true);
   };
 
+  const handleCopy = async (credential) => {
+    const text = [
+      `Credential: ${credential.name}`,
+      `Type: ${credential.type}`,
+      credential.protocol ? `Protocol: ${credential.protocol}` : null,
+      credential.groups?.length
+        ? `Groups: ${credential.groups.join(', ')}`
+        : null,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      showSuccess('Credential details copied to clipboard');
+    } else {
+      showError('Failed to copy to clipboard');
+    }
+  };
+
   const handleDuplicate = (credential) => {
     setSelectedCredential({ ...credential, name: `${credential.name} (Copy)` });
     setShowCreateModal(true);
@@ -57,54 +79,60 @@ export default function CredentialProfile() {
 
   return (
     <>
-      <div className={sharedStyles.mainContent}>
-        <div className={styles.mainContent_header}>
-          <SearchInput
-            tags={searchTags}
-            onTagsChange={setSearchTags}
-            placeholder="Search credentials..."
-          />
-          <Button
-            variant="cyan"
-            className={styles.createButton}
-            onClick={() => {
-              setSelectedCredential(null);
-              setShowCreateModal(true);
-            }}
-          >
-            <Icon icon="mdi:plus" width={18} height={18} />
-            Create Credential Profile
-          </Button>
-        </div>
+      <div className={styles.mainContent}>
+        <div className={styles.contentArea}>
+          <div className={styles.contentHeader}>
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search credentials..."
+            />
+            <div className={styles.headerActions}>
+              <Button
+                variant="cyan"
+                onClick={() => {
+                  setSelectedCredential(null);
+                  setShowCreateModal(true);
+                }}
+              >
+                <Icon icon="mdi:plus" width={18} height={18} />
+                Create Credential Profile
+              </Button>
+            </div>
+          </div>
 
-        <div className={styles.tableContainer}>
-          <Table
-            columns={CREDENTIAL_PROFILE_COLUMNS}
-            data={filteredCredentials}
-            keyExtractor={(cred) => cred.id}
-            renderCell={(row, col) =>
+          <div className={styles.listPageBody}>
+            <Table
+              className={styles.settingsListTable}
+              columns={CREDENTIAL_PROFILE_COLUMNS}
+              data={filteredCredentials}
+              keyExtractor={(cred) => cred.id}
+              renderCell={(row, col) =>
               renderCredentialCell(
                 row,
                 col,
                 handleEdit,
+                handleCopy,
                 handleDuplicate,
                 handleDelete
               )
-            }
-            emptyMessage="No credential profiles found."
-          />
-        </div>
+              }
+              emptyMessage="No credential profiles found."
+            />
 
-        <Pagination
-          currentPage={currentPage}
-          totalItems={filteredCredentials.length}
-          pageSize={pageSize}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={(size) => {
-            setPageSize(size);
-            setCurrentPage(1);
-          }}
-        />
+            <Pagination
+              className={styles.settingsListPagination}
+              currentPage={currentPage}
+              totalItems={filteredCredentials.length}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       {showCreateModal && (

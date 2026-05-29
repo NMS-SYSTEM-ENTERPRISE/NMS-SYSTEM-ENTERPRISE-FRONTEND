@@ -1,12 +1,9 @@
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/ui/form-field';
-import { Icon } from '@iconify/react';
-import { useState, useEffect } from 'react';
-import classNames from 'classnames';
-
+import { Input } from '@/components/ui/input';
+import { useFormValidation, required } from '@/hooks/useFormValidation';
 import mainStyles from '@/screens/settings/shared-settings-styles.module.css';
+import { useMemo } from 'react';
 
 export const CreateGroupSidebar = ({
   isOpen,
@@ -18,28 +15,29 @@ export const CreateGroupSidebar = ({
   onReset,
   onInfoClick,
 }) => {
-  const [errors, setErrors] = useState({});
+  const validationRules = useMemo(
+    () => ({
+      name: required('Group Name is required'),
+      description: required('Description is required'),
+    }),
+    []
+  );
 
-  useEffect(() => {
-    if (!isOpen) setErrors({});
-  }, [isOpen]);
+  const { getFieldError, handleBlur, validateAll, revalidateField } = useFormValidation(
+    group,
+    validationRules,
+    { isActive: isOpen }
+  );
 
-  const validate = () => {
-    const newErrors = {};
-    if (!group.name?.trim()) newErrors.name = 'Group Name is required';
-    if (!group.description?.trim()) newErrors.description = 'Description is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const updateField = (field, value) => {
+    onChange(field, value);
+    revalidateField(field);
   };
 
   const handleSave = () => {
-    if (validate()) {
+    if (validateAll()) {
       onSubmit();
     }
-  };
-
-  const clearError = (field) => {
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   return (
@@ -53,25 +51,44 @@ export const CreateGroupSidebar = ({
       resetButtonText="Reset"
     >
       <div style={{ padding: '24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
-          <FormField label="Group Name" required error={errors.name}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '24px',
+            marginBottom: '24px',
+          }}
+        >
+          <FormField label="Group Name" required>
             <Input
               value={group.name}
-              onChange={(e) => onChange('name', e.target.value)}
-              onFocus={() => clearError('name')}
+              onChange={(e) => updateField('name', e.target.value)}
+              onBlur={() => handleBlur('name')}
+              error={getFieldError('name')}
             />
           </FormField>
-          <FormField label="Description" required error={errors.description}>
+          <FormField label="Description" required>
             <Input
               value={group.description}
-              onChange={(e) => onChange('description', e.target.value)}
-              onFocus={() => clearError('description')}
+              onChange={(e) => updateField('description', e.target.value)}
+              onBlur={() => handleBlur('description')}
+              error={getFieldError('description')}
             />
           </FormField>
         </div>
 
         <p className={mainStyles.helpText} style={{ marginTop: '24px' }}>
-          For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick(); }} className={mainStyles.linkBlue}>Creating New Group</a>
+          For more information:{' '}
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onInfoClick?.();
+            }}
+            className={mainStyles.linkBlue}
+          >
+            Creating New Group
+          </a>
         </p>
         <p className={mainStyles.helpText} style={{ marginTop: '8px' }}>
           * fields are mandatory

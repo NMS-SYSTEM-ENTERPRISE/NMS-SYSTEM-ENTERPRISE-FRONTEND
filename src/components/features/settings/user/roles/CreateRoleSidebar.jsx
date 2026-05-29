@@ -1,48 +1,52 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { PERMISSION_MODULES } from '@/utils/constants/settings/users';
 import { PermissionModule } from './PermissionModule';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useFormValidation, required } from '@/hooks/useFormValidation';
 import mainStyles from '@/screens/settings/shared-settings-styles.module.css';
 import roleStyles from './styles.module.css';
 import classNames from 'classnames';
 
 /** Create Role slide-in sidebar */
-export const CreateRoleSidebar = ({ isOpen, onClose, role, isEditing, onChange, onSubmit, onReset, onInfoClick }) => {
+export const CreateRoleSidebar = ({
+  isOpen,
+  onClose,
+  role,
+  isEditing,
+  onChange,
+  onSubmit,
+  onReset,
+  onInfoClick,
+}) => {
   const [expandedModules, setExpandedModules] = useState({});
-  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (!isOpen) setErrors({});
-  }, [isOpen]);
+  const validationRules = useMemo(
+    () => ({
+      name: required('Role Name is required'),
+    }),
+    []
+  );
 
-  const validate = () => {
-    const newErrors = {};
-    if (!role.name?.trim()) newErrors.name = 'Role Name is required';
+  const { getFieldError, handleBlur, validateAll, revalidateField } = useFormValidation(
+    role,
+    validationRules,
+    { isActive: isOpen }
+  );
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const updateField = (field, value) => {
+    onChange(field, value);
+    revalidateField(field);
   };
 
   const handleSubmit = () => {
-    if (validate()) {
+    if (validateAll()) {
       onSubmit();
       return true;
     }
     return false;
-  };
-
-  const handleFieldChange = (field, value) => {
-    onChange(field, value);
-    clearError(field);
-  };
-
-  const clearError = (field) => {
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
   };
 
   const toggleModule = (name) =>
@@ -64,9 +68,9 @@ export const CreateRoleSidebar = ({ isOpen, onClose, role, isEditing, onChange, 
           type="text"
           placeholder="Must be unique"
           value={role.name}
-          onChange={(e) => handleFieldChange('name', e.target.value)}
-          onFocus={() => clearError('name')}
-          error={errors.name}
+          onChange={(e) => updateField('name', e.target.value)}
+          onBlur={() => handleBlur('name')}
+          error={getFieldError('name')}
         />
       </FormField>
 
@@ -74,13 +78,12 @@ export const CreateRoleSidebar = ({ isOpen, onClose, role, isEditing, onChange, 
         <Input
           type="text"
           value={role.description}
-          onChange={(e) => handleFieldChange('description', e.target.value)}
-          onFocus={() => clearError('description')}
-          error={errors.description}
+          onChange={(e) => updateField('description', e.target.value)}
+          onBlur={() => handleBlur('description')}
+          error={getFieldError('description')}
         />
       </FormField>
 
-      {/* Permissions matrix header */}
       <div className={roleStyles.permissionsHeader}>
         <div className={roleStyles.permissionsHeaderLeft}>
           <Checkbox label="All Module" />
@@ -102,7 +105,17 @@ export const CreateRoleSidebar = ({ isOpen, onClose, role, isEditing, onChange, 
       ))}
 
       <p className={classNames(mainStyles.helpText, roleStyles.helpTextMain)}>
-        For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick?.(); }} className={mainStyles.link}>Creating New Role</a>
+        For more information:{' '}
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            onInfoClick?.();
+          }}
+          className={mainStyles.link}
+        >
+          Creating New Role
+        </a>
       </p>
       <p className={classNames(mainStyles.helpText, roleStyles.helpTextMain)}>
         * fields are mandatory

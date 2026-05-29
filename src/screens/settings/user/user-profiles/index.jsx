@@ -135,27 +135,14 @@ const UserProfiles = () => {
     <>
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
-          {/* Page header with Breadcrumbs and Actions */}
+          {/* Header Bar */}
           <div className={styles.contentHeader}>
-            <div>
-              <div className={styles.breadcrumbs}>
-                Settings / User / <span>User Profiles</span>
-              </div>
-              <h2 className={styles.pageTitle}>User Profiles</h2>
-              <p className={styles.pageDescription}>
-                Create and manage user profiles to bundle scopes. For more information:{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
-                  User Profiles Overview <Icon icon="mdi:open-in-new" width={14} height={14} />
-                </a>
-              </p>
-            </div>
-
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search user profiles..."
+            />
             <div className={styles.headerActions}>
-              <SearchInput
-                tags={searchTags}
-                onTagsChange={setSearchTags}
-                placeholder="Search user profiles..."
-              />
               <Button variant="cyan" onClick={() => {
                 setEditingItem(null);
                 setNewProfile(EMPTY_PROFILE);
@@ -167,8 +154,9 @@ const UserProfiles = () => {
             </div>
           </div>
 
-          {/* Data Table */}
+          <div className={styles.listPageBody}>
           <Table
+            className={styles.settingsListTable}
             columns={PROFILE_COLUMNS}
             data={tableData}
             keyExtractor={(p) => p.id}
@@ -178,12 +166,14 @@ const UserProfiles = () => {
 
           {/* Pagination */}
           <Pagination
+            className={styles.settingsListPagination}
             currentPage={currentPage}
             totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
           />
+          </div>
         </div>
       </div>
 

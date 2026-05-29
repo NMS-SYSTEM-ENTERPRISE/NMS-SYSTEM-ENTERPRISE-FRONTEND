@@ -140,27 +140,14 @@ const PersonalAccessToken = () => {
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
 
-          {/* Page header with Breadcrumbs and Actions */}
+          {/* Header Bar */}
           <div className={styles.contentHeader}>
-            <div>
-              <div className={styles.breadcrumbs}>
-                Settings / User / <span>Personal Access Tokens</span>
-              </div>
-              <h2 className={styles.pageTitle}>Personal Access Tokens</h2>
-              <p className={styles.pageDescription}>
-                Manage programmatic access tokens for API integrations and scripts. For more information:{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
-                  Personal Access Token <Icon icon="mdi:open-in-new" width={14} height={14} />
-                </a>
-              </p>
-            </div>
-
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search tokens..."
+            />
             <div className={styles.headerActions}>
-              <SearchInput
-                tags={searchTags}
-                onTagsChange={setSearchTags}
-                placeholder="Search tokens..."
-              />
               <Button variant="cyan" onClick={() => {
                 setEditingItem(null);
                 setNewToken(EMPTY_TOKEN);
@@ -172,8 +159,9 @@ const PersonalAccessToken = () => {
             </div>
           </div>
 
-          {/* Data Table */}
+          <div className={styles.listPageBody}>
           <Table
+            className={styles.settingsListTable}
             columns={COLUMNS}
             data={tableData}
             keyExtractor={(t) => t.id}
@@ -183,12 +171,14 @@ const PersonalAccessToken = () => {
 
           {/* Pagination */}
           <Pagination
+            className={styles.settingsListPagination}
             currentPage={currentPage}
             totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
           />
+          </div>
         </div>
       </div>
 

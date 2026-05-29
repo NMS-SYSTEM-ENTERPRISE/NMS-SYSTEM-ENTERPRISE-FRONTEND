@@ -32,8 +32,10 @@
   background-color: var(--color-bg-secondary);
 }
 
-.input_error {
+.input_error,
+.input_error:focus {
   border-color: var(--color-danger) !important;
+  box-shadow: none;
 }
 
 .errorMessage {

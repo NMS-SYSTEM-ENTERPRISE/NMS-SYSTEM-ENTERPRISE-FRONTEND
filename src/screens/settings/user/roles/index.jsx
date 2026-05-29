@@ -129,27 +129,14 @@ const Roles = () => {
     <>
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
-          {/* Page header with Breadcrumbs and Actions */}
+          {/* Header Bar */}
           <div className={styles.contentHeader}>
-            <div>
-              <div className={styles.breadcrumbs}>
-                Settings / User / <span>Roles</span>
-              </div>
-              <h2 className={styles.pageTitle}>Role Management</h2>
-              <p className={styles.pageDescription}>
-                Define access levels and granular permissions for internal team members. For more information:{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
-                  Roles Overview <Icon icon="mdi:open-in-new" width={14} height={14} />
-                </a>
-              </p>
-            </div>
-            
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search roles..."
+            />
             <div className={styles.headerActions}>
-              <SearchInput
-                tags={searchTags}
-                onTagsChange={setSearchTags}
-                placeholder="Search roles..."
-              />
               <Button variant="cyan" onClick={() => {
                 setEditingItem(null);
                 setNewRole(EMPTY_ROLE);
@@ -161,8 +148,9 @@ const Roles = () => {
             </div>
           </div>
 
-          {/* Data Table */}
+          <div className={styles.listPageBody}>
           <Table
+            className={styles.settingsListTable}
             columns={COLUMNS}
             data={tableData}
             keyExtractor={(r) => r.id}
@@ -172,12 +160,14 @@ const Roles = () => {
 
           {/* Pagination */}
           <Pagination
+            className={styles.settingsListPagination}
             currentPage={currentPage}
             totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
           />
+          </div>
         </div>
       </div>
 

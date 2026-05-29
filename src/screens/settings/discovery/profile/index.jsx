@@ -12,8 +12,7 @@ import { DISCOVERY_PROFILE_COLUMNS } from '@/utils/constants/settings/discovery/
 import { MOCK_DISCOVERY_PROFILES } from '@/utils/dummy-data/settings/discovery';
 import { Icon } from '@iconify/react';
 import { useMemo, useState } from 'react';
-import sharedStyles from '../../shared-settings-styles.module.css';
-import styles from './styles.module.css';
+import styles from '../../shared-settings-styles.module.css';
 
 export default function DiscoveryProfile() {
   const [searchTags, setSearchTags] = useState([]);
@@ -82,59 +81,64 @@ export default function DiscoveryProfile() {
 
   return (
     <>
-      <div className={sharedStyles.mainContent}>
-        <div className={styles.mainContent_header}>
-          <SearchInput
-            tags={searchTags}
-            onTagsChange={setSearchTags}
-            placeholder="Search discovery profiles..."
-          />
-          <Button
-            variant="cyan"
-            className={styles.createButton}
-            onClick={() => {
-              setSelectedProfile(null);
-              setShowCreateModal(true);
-            }}
-          >
-            <Icon icon="mdi:plus" width={18} height={18} />
-            Create Discovery Profile
-          </Button>
-        </div>
+      <div className={styles.mainContent}>
+        <div className={styles.contentArea}>
+          <div className={styles.contentHeader}>
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search discovery profiles..."
+            />
+            <div className={styles.headerActions}>
+              <Button
+                variant="cyan"
+                onClick={() => {
+                  setSelectedProfile(null);
+                  setShowCreateModal(true);
+                }}
+              >
+                <Icon icon="mdi:plus" width={18} height={18} />
+                Create Discovery Profile
+              </Button>
+            </div>
+          </div>
 
-        <div className={styles.tableContainer}>
-          <Table
-            columns={DISCOVERY_PROFILE_COLUMNS}
-            data={filteredProfiles}
-            keyExtractor={(profile) => profile.id}
-            renderCell={(row, col) =>
-              renderProfileCell(
-                row,
-                col,
-                handleRun,
-                handleAssignCredential,
-                handleSchedule,
-                handleEdit,
-                handleDuplicate,
-                handleDelete,
-                showActionsMenu,
-                setShowActionsMenu
-              )
-            }
-            emptyMessage="No discovery profiles found."
-          />
-        </div>
+          <div className={styles.listPageBody}>
+            <Table
+              className={styles.settingsListTable}
+              columns={DISCOVERY_PROFILE_COLUMNS}
+              data={filteredProfiles}
+              keyExtractor={(profile) => profile.id}
+              renderCell={(row, col) =>
+                renderProfileCell(
+                  row,
+                  col,
+                  handleRun,
+                  handleAssignCredential,
+                  handleSchedule,
+                  handleEdit,
+                  handleDuplicate,
+                  handleDelete,
+                  showActionsMenu,
+                  setShowActionsMenu
+                )
+              }
+              emptyMessage="No discovery profiles found."
+            />
 
-        <Pagination
-          currentPage={currentPage}
-          totalItems={filteredProfiles.length}
-          pageSize={pageSize}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={(size) => {
-            setPageSize(size);
-            setCurrentPage(1);
-          }}
-        />
+            <Pagination
+              className={styles.settingsListPagination}
+              currentPage={currentPage}
+              totalItems={filteredProfiles.length}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       {showCreateModal && (

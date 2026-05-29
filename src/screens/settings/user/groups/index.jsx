@@ -124,27 +124,14 @@ const Groups = () => {
     <>
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
-          {/* Page header with Breadcrumbs and Actions */}
+          {/* Header Bar */}
           <div className={styles.contentHeader}>
-            <div>
-              <div className={styles.breadcrumbs}>
-                Settings / User / <span>Groups</span>
-              </div>
-              <h2 className={styles.pageTitle}>Group Profiles</h2>
-              <p className={styles.pageDescription}>
-                Create and manage profile groups to bundle permissions. For more information:{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
-                  Groups Overview <Icon icon="mdi:open-in-new" width={14} height={14} />
-                </a>
-              </p>
-            </div>
-
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search groups..."
+            />
             <div className={styles.headerActions}>
-              <SearchInput
-                tags={searchTags}
-                onTagsChange={setSearchTags}
-                placeholder="Search groups..."
-              />
               <Button variant="cyan" onClick={() => {
                 setEditingItem(null);
                 setNewGroup(EMPTY_GROUP);
@@ -156,8 +143,9 @@ const Groups = () => {
             </div>
           </div>
 
-          {/* Data Table */}
+          <div className={styles.listPageBody}>
           <Table
+            className={styles.settingsListTable}
             columns={COLUMNS}
             data={tableData}
             keyExtractor={(p) => p.id}
@@ -167,12 +155,14 @@ const Groups = () => {
 
           {/* Pagination */}
           <Pagination
+            className={styles.settingsListPagination}
             currentPage={currentPage}
             totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
           />
+          </div>
         </div>
       </div>
 

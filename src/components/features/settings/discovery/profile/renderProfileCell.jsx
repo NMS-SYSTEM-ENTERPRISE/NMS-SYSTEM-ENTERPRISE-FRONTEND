@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@iconify/react';
-import styles from '@/screens/settings/discovery/profile/styles.module.css';
+import styles from '@/screens/settings/shared-settings-styles.module.css';
 
 export const renderProfileCell = (
   profile,
@@ -16,48 +16,48 @@ export const renderProfileCell = (
 ) => {
   switch (col.key) {
     case 'name':
-      return <span className={styles.table_name}>{profile.name}</span>;
+      return <span className={styles.tableLinkName}>{profile.name}</span>;
     case 'host':
       return profile.host;
     case 'type':
       return (
-        <div className={styles.table_icon}>
+        <div className={styles.actions}>
           {profile.type === 'network' && (
-            <Icon icon="mdi:wifi" width={20} height={20} className={styles.iconNetwork} />
+            <Icon icon="mdi:wifi" width={20} height={20} />
           )}
           {profile.type === 'server' && (
-            <Icon icon="mdi:database" width={20} height={20} className={styles.iconServer} />
+            <Icon icon="mdi:database" width={20} height={20} />
           )}
           {profile.type === 'virtualization' && (
-            <Icon icon="mdi:package-variant" width={20} height={20} className={styles.iconVirtualization} />
+            <Icon icon="mdi:package-variant" width={20} height={20} />
           )}
         </div>
       );
     case 'discovered':
       return <Badge variant={profile.discovered > 0 ? 'success' : 'secondary'}>{profile.discovered}</Badge>;
     case 'status':
-      return <span className={styles.table_status}>{profile.status}</span>;
+      return <span className={styles.tableMuted}>{profile.status}</span>;
     case 'scheduler':
       return profile.scheduler ? (
-        <Icon icon="mdi:activity" width={18} height={18} className={styles.iconScheduler} />
+        <Icon icon="mdi:activity" width={18} height={18} />
       ) : null;
     case 'groups':
       return <Badge variant="cyan">{profile.groups}</Badge>;
     case 'actions':
       return (
-        <div className={styles.table_actions}>
-          <button className={styles.actionButton} onClick={() => handleRun(profile)} title="Run Now">
+        <div className={styles.actions}>
+          <button className={styles.actionBtn} onClick={() => handleRun(profile)} title="Run Now">
             <Icon icon="mdi:play" width={18} height={18} />
           </button>
-          <button className={styles.actionButton} onClick={() => handleAssignCredential(profile)} title="Assign Credentials">
+          <button className={styles.actionBtn} onClick={() => handleAssignCredential(profile)} title="Assign Credentials">
             <Icon icon="mdi:refresh" width={18} height={18} />
           </button>
-          <button className={styles.actionButton} onClick={() => handleSchedule(profile)} title="Schedule">
+          <button className={styles.actionBtn} onClick={() => handleSchedule(profile)} title="Schedule">
             <Icon icon="mdi:clock-outline" width={18} height={18} />
           </button>
-          <div style={{ position: 'relative' }}>
+          <div className={styles.actionsMenuWrapper}>
             <button
-              className={styles.actionButton}
+              className={styles.actionBtn}
               onClick={() => setShowActionsMenu(showActionsMenu === profile.id ? null : profile.id)}
               title="More Actions"
             >

@@ -34,3 +34,26 @@ export const DEFAULT_SSO_SETTINGS = {
   identityProviderLogoutURL:  'https://rahit-test-dev.onelogin.com/trust/saml2/http-redirect/slo/3643535',
   nameIdFormat:               'Unspecified',
 };
+
+export const SSO_TIMELINE_STEPS = [
+  {
+    title: 'Service Provider Setup',
+    description: 'Copy entity ID, redirect URL, and login/logout URLs into your identity provider.',
+  },
+  {
+    title: 'Choose Identity Provider',
+    description: 'Select OneLogin, Okta, or Azure AD and upload metadata or configure manually.',
+  },
+  {
+    title: 'Configure SAML Endpoints',
+    description: 'Enter identity provider entity ID, login URL, logout URL, and NameID format.',
+  },
+  {
+    title: 'Upload Certificate',
+    description: 'Add the X.509 certificate or fingerprint to complete the trust relationship.',
+  },
+  {
+    title: 'Save & Test',
+    description: 'Save the configuration and verify SSO login with a test user account.',
+  },
+];

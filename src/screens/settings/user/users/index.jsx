@@ -148,27 +148,14 @@ const Users = () => {
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
 
-          {/* Page header with Breadcrumbs and Actions */}
+          {/* Header Bar */}
           <div className={styles.contentHeader}>
-            <div>
-              <div className={styles.breadcrumbs}>
-                Settings / User / <span>Users</span>
-              </div>
-              <h2 className={styles.pageTitle}>User Management</h2>
-              <p className={styles.pageDescription}>
-                Manage internal access, assign operational roles, and enforce security policies globally. For more information:{' '}
-                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
-                  Enterprise User Settings <Icon icon="mdi:open-in-new" width={14} height={14} />
-                </a>
-              </p>
-            </div>
-
+            <SearchInput
+              tags={searchTags}
+              onTagsChange={setSearchTags}
+              placeholder="Search users..."
+            />
             <div className={styles.headerActions}>
-              <SearchInput
-                tags={searchTags}
-                onTagsChange={setSearchTags}
-                placeholder="Search users..."
-              />
               <Button variant="cyan" onClick={() => {
                 setEditingItem(null);
                 setNewUser(EMPTY_USER);
@@ -180,8 +167,9 @@ const Users = () => {
             </div>
           </div>
 
-          {/* Data Table */}
+          <div className={styles.listPageBody}>
           <Table
+            className={styles.settingsListTable}
             columns={COLUMNS}
             data={tableData}
             keyExtractor={(u) => u.id}
@@ -191,12 +179,14 @@ const Users = () => {
 
           {/* Pagination */}
           <Pagination
+            className={styles.settingsListPagination}
             currentPage={currentPage}
             totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
           />
+          </div>
         </div>
       </div>
 

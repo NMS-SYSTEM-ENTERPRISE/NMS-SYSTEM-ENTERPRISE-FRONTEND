@@ -1,11 +1,18 @@
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@iconify/react';
-import styles from '@/screens/settings/discovery/credential/styles.module.css';
+import styles from '@/screens/settings/shared-settings-styles.module.css';
 
-export const renderCredentialCell = (credential, col, handleEdit, handleDuplicate, handleDelete) => {
+export const renderCredentialCell = (
+  credential,
+  col,
+  handleEdit,
+  handleCopy,
+  handleDuplicate,
+  handleDelete
+) => {
   switch (col.key) {
     case 'name':
-      return <span className={styles.table_name}>{credential.name}</span>;
+      return <span className={styles.tableLinkName}>{credential.name}</span>;
     case 'type':
       return credential.type;
     case 'protocol':
@@ -22,14 +29,49 @@ export const renderCredentialCell = (credential, col, handleEdit, handleDuplicat
       );
     case 'actions':
       return (
-        <div className={styles.table_actions}>
-          <button className={styles.actionButton} onClick={() => handleEdit(credential)} title="Edit">
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.actionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(credential);
+            }}
+            title="Edit"
+          >
             <Icon icon="mdi:pencil" width={18} height={18} />
           </button>
-          <button className={styles.actionButton} onClick={() => handleDuplicate(credential)} title="Duplicate">
+          <button
+            type="button"
+            className={styles.actionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCopy(credential);
+            }}
+            title="Copy to clipboard"
+          >
             <Icon icon="mdi:content-copy" width={18} height={18} />
           </button>
-          <button className={styles.actionButton} onClick={() => handleDelete(credential)} title="Delete">
+          <button
+            type="button"
+            className={styles.actionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDuplicate(credential);
+            }}
+            title="Duplicate"
+          >
+            <Icon icon="mdi:duplicate" width={18} height={18} />
+          </button>
+          <button
+            type="button"
+            className={styles.actionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(credential);
+            }}
+            title="Delete"
+          >
             <Icon icon="mdi:trash-can" width={18} height={18} className={styles.textDanger} />
           </button>
         </div>

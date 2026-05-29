@@ -4,58 +4,60 @@ import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { GROUP_OPTIONS, ROLE_OPTIONS } from '@/utils/constants/settings/users';
+import { useFormValidation, required } from '@/hooks/useFormValidation';
 import Link from 'next/link';
 import mainStyles from '@/screens/settings/shared-settings-styles.module.css';
 import localStyles from './styles.module.css';
 import classNames from 'classnames';
-
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 
 /** Create User slide-in sidebar form */
-export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, onSubmit, onReset, onInfoClick }) => {
-  const [errors, setErrors] = useState({});
+export const CreateUserSidebar = ({
+  isOpen,
+  onClose,
+  user,
+  isEditing,
+  onChange,
+  onSubmit,
+  onReset,
+  onInfoClick,
+}) => {
+  const validationRules = useMemo(
+    () => ({
+      firstName: required('First Name is required'),
+      lastName: required('Last Name is required'),
+      email: required('Email Address is required'),
+      username: required('User Name is required'),
+      password: required('Password is required'),
+      confirmPassword: (value, values) => {
+        if (!value?.trim()) return 'Confirm Password is required';
+        if (values.password !== value) return 'Passwords do not match';
+        return null;
+      },
+      groupId: required('Groups selection is required'),
+      roleId: required('Role selection is required'),
+    }),
+    []
+  );
 
-  // Clear errors when the modal opens or closes
-  useEffect(() => {
-    if (!isOpen) {
-      setErrors({});
-    }
-  }, [isOpen]);
+  const { getFieldError, handleBlur, validateAll, revalidateField } = useFormValidation(
+    user,
+    validationRules,
+    { isActive: isOpen }
+  );
 
-  const validate = () => {
-    const newErrors = {};
-    if (!user.firstName?.trim()) newErrors.firstName = 'First Name is required';
-    if (!user.lastName?.trim()) newErrors.lastName = 'Last Name is required';
-    if (!user.email?.trim()) newErrors.email = 'Email Address is required';
-    if (!user.username?.trim()) newErrors.username = 'User Name is required';
-    if (!user.password?.trim()) newErrors.password = 'Password is required';
-    if (!user.confirmPassword?.trim()) newErrors.confirmPassword = 'Confirm Password is required';
-    else if (user.password !== user.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-
-    if (!user.groupId) newErrors.groupId = 'Groups selection is required';
-    if (!user.roleId) newErrors.roleId = 'Role selection is required';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const updateField = (field, value) => {
+    onChange(field, value);
+    revalidateField(field);
+    if (field === 'password') revalidateField('confirmPassword');
   };
 
   const handleSubmit = () => {
-    if (validate()) {
+    if (validateAll()) {
       onSubmit();
       return true;
     }
     return false;
-  };
-
-  const handleFieldChange = (field, value) => {
-    onChange(field, value);
-    clearError(field);
-  };
-
-  const clearError = (field) => {
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
   };
 
   return (
@@ -73,9 +75,9 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
           <Input
             type="text"
             value={user.firstName}
-            onChange={(e) => handleFieldChange('firstName', e.target.value)}
-            onFocus={() => clearError('firstName')}
-            error={errors.firstName}
+            onChange={(e) => updateField('firstName', e.target.value)}
+            onBlur={() => handleBlur('firstName')}
+            error={getFieldError('firstName')}
           />
         </FormField>
 
@@ -83,9 +85,9 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
           <Input
             type="text"
             value={user.lastName}
-            onChange={(e) => handleFieldChange('lastName', e.target.value)}
-            onFocus={() => clearError('lastName')}
-            error={errors.lastName}
+            onChange={(e) => updateField('lastName', e.target.value)}
+            onBlur={() => handleBlur('lastName')}
+            error={getFieldError('lastName')}
           />
         </FormField>
 
@@ -93,9 +95,9 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
           <Input
             type="email"
             value={user.email}
-            onChange={(e) => handleFieldChange('email', e.target.value)}
-            onFocus={() => clearError('email')}
-            error={errors.email}
+            onChange={(e) => updateField('email', e.target.value)}
+            onBlur={() => handleBlur('email')}
+            error={getFieldError('email')}
           />
         </FormField>
 
@@ -103,9 +105,9 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
           <Input
             type="tel"
             value={user.mobile}
-            onChange={(e) => handleFieldChange('mobile', e.target.value)}
-            onFocus={() => clearError('mobile')}
-            error={errors.mobile}
+            onChange={(e) => updateField('mobile', e.target.value)}
+            onBlur={() => handleBlur('mobile')}
+            error={getFieldError('mobile')}
           />
         </FormField>
 
@@ -114,9 +116,9 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
             type="text"
             placeholder="Must be unique"
             value={user.username}
-            onChange={(e) => handleFieldChange('username', e.target.value)}
-            onFocus={() => clearError('username')}
-            error={errors.username}
+            onChange={(e) => updateField('username', e.target.value)}
+            onBlur={() => handleBlur('username')}
+            error={getFieldError('username')}
           />
         </FormField>
 
@@ -125,9 +127,9 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
             type="password"
             placeholder="Do not use simple password"
             value={user.password}
-            onChange={(e) => handleFieldChange('password', e.target.value)}
-            onFocus={() => clearError('password')}
-            error={errors.password}
+            onChange={(e) => updateField('password', e.target.value)}
+            onBlur={() => handleBlur('password')}
+            error={getFieldError('password')}
           />
         </FormField>
 
@@ -136,16 +138,16 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
             type="password"
             placeholder="Same as the password field"
             value={user.confirmPassword}
-            onChange={(e) => handleFieldChange('confirmPassword', e.target.value)}
-            onFocus={() => clearError('confirmPassword')}
-            error={errors.confirmPassword}
+            onChange={(e) => updateField('confirmPassword', e.target.value)}
+            onBlur={() => handleBlur('confirmPassword')}
+            error={getFieldError('confirmPassword')}
           />
         </FormField>
 
         <FormField label="Status">
           <ToggleSwitch
             checked={user.status}
-            onChange={(val) => handleFieldChange('status', val)}
+            onChange={(val) => updateField('status', val)}
             showInlineLabel
           />
         </FormField>
@@ -154,11 +156,11 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
           <SelectComponent
             className={mainStyles.formSelect}
             value={user.groupId}
-            onChange={(e) => handleFieldChange('groupId', e.target.value)}
-            onFocus={() => clearError('groupId')}
+            onChange={(e) => updateField('groupId', e.target.value)}
+            onBlur={() => handleBlur('groupId')}
             options={GROUP_OPTIONS}
             placeholder="Select"
-            error={errors.groupId || errors.groups}
+            error={getFieldError('groupId')}
           />
           <Link href="/settings/user/groups" className={classNames(mainStyles.link, localStyles.smallLink)}>
             Create Group
@@ -169,11 +171,11 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
           <SelectComponent
             className={mainStyles.formSelect}
             value={user.roleId}
-            onChange={(e) => handleFieldChange('roleId', e.target.value)}
-            onFocus={() => clearError('roleId')}
+            onChange={(e) => updateField('roleId', e.target.value)}
+            onBlur={() => handleBlur('roleId')}
             options={ROLE_OPTIONS}
             placeholder="Select"
-            error={errors.roleId || errors.role}
+            error={getFieldError('roleId')}
           />
           <Link href="/settings/user/roles" className={classNames(mainStyles.link, localStyles.smallLink)}>
             Create Role
@@ -183,7 +185,16 @@ export const CreateUserSidebar = ({ isOpen, onClose, user, isEditing, onChange, 
 
       <p className={classNames(mainStyles.helpText, localStyles.helpTextMain)}>
         For more information:{' '}
-        <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick?.(); }} className={mainStyles.link}>Creating New User</a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            onInfoClick?.();
+          }}
+          className={mainStyles.link}
+        >
+          Creating New User
+        </a>
       </p>
       <p className={classNames(mainStyles.helpText, localStyles.helpTextSub)}>
         * fields are mandatory

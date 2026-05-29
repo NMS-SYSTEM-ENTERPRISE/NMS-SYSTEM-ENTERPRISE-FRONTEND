@@ -11,6 +11,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  height: 100%;
+  min-height: 0;
 }
 
 .header {
@@ -37,17 +39,20 @@
 
 .contentArea {
   flex: 1;
-  padding: var(--padding-xl);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .contentHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--margin-lg);
-  flex-wrap: wrap;
+  align-items: center;
   gap: var(--gap-md);
+  padding: var(--padding-lg) var(--padding-xl);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+  flex-shrink: 0;
 }
 
 .breadcrumbs {
@@ -68,7 +73,7 @@
   display: flex;
   align-items: center;
   gap: var(--gap-md);
-  margin-top: 24px; /* Align with title roughly */
+  margin-left: auto;
 }
 
 .pageTitle {
@@ -104,6 +109,7 @@
   align-items: center;
   gap: var(--gap-xs);
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .linkBlue:hover {
@@ -193,10 +199,13 @@
 }
 
 .tableContainer {
-  background-color: var(--color-bg-secondary);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   overflow: hidden;
+  min-height: 0;
 }
 
 .table {
@@ -424,11 +433,12 @@
 }
 
 .settingsSection {
+  flex: 1;
+  overflow-y: auto;
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--padding-xl);
-  margin-bottom: var(--margin-xl);
 }
 
 .settingRow {
@@ -540,4 +550,281 @@
 .helpText {
   font-size: var(--font-xs);
   color: var(--color-text-muted);
+}
+
+/* ── Page layout variants ───────────────────────────────── */
+.landingContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--padding-xl);
+  min-height: 0;
+}
+
+.formPageContent {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: var(--padding-lg) var(--padding-xl);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+
+.listPageBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Scrollable table area — grows to fill viewport, scrolls when content overflows */
+.listPageBody > .settingsListTable,
+.listPageBody > .tableContainer {
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: auto;
+  border: none;
+  border-radius: 0;
+}
+
+.listPageBody > .settingsListTable thead th,
+.listPageBody > .tableContainer thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--color-bg-tertiary);
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
+/* Pagination bar — pinned below table, aligned with content header */
+.listPageBody > .settingsListPagination {
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  padding: var(--padding-md) var(--padding-xl);
+  border: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  background-color: var(--color-bg-secondary);
+}
+
+/* Form pages (SSO, password settings) — full-width balanced layout */
+.formPageContent .contentHeader {
+  width: 100%;
+  background-color: transparent;
+  border-bottom: none;
+  padding: 0 0 var(--padding-md);
+  flex-shrink: 0;
+}
+
+.formPageContent .settingsFormPanel {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+
+.formPageContent .settingsSection {
+  width: 100%;
+  flex: none;
+  border: none;
+  border-radius: var(--radius-md);
+  overflow: visible;
+  background-color: var(--color-bg-secondary);
+  padding: var(--padding-xl);
+  box-sizing: border-box;
+}
+
+.formPageContent .sectionTitle {
+  color: var(--color-chart-cyan);
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--margin-lg);
+}
+
+.formPageContent .formGrid {
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-lg) var(--gap-xl);
+  margin-bottom: 0;
+}
+
+.formPageContent .formGroup {
+  min-width: 0;
+}
+
+.formPageContent .formInput,
+.formPageContent .formTextarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formPageContent .formInputWrap {
+  position: relative;
+  width: 100%;
+}
+
+.formPageContent .formInputWrap .formInput {
+  padding-right: 2.75rem;
+}
+
+.formPageContent .formCopyBtn {
+  position: absolute;
+  right: var(--padding-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-xs);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.formPageContent .formCopyBtn:hover {
+  color: var(--color-chart-cyan);
+}
+
+.formPageContent .certificateBlock {
+  padding: var(--padding-md);
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-top: var(--margin-md);
+}
+
+.formPageContent .certificateBlock p {
+  margin: 0 0 var(--margin-sm);
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+}
+
+.formPageContent .certificateBlock p:last-child {
+  margin-bottom: 0;
+}
+
+.formPageContent .certificateBlock .certificateBody {
+  word-break: break-all;
+}
+
+.formPageContent .settingRow {
+  padding: var(--padding-lg) 0;
+}
+
+.formPageContent .settingControl {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.formPageContent .formNumberInput {
+  width: 100px;
+  min-width: 80px;
+  padding: var(--padding-sm) var(--padding-md);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  text-align: center;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.formPageContent .formNumberInput:focus {
+  border-color: var(--color-chart-cyan);
+  background-color: var(--color-bg-primary);
+}
+
+.formPageContent .fieldSuffix {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.formPageContent .requiredMark {
+  color: var(--color-danger);
+}
+
+.formPageContent .actionButtons {
+  width: 100%;
+  margin-top: 0;
+  padding-top: var(--padding-md);
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 900px) {
+  .formPageContent .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Table cell helpers (discovery & list screens) ──────── */
+.tableLinkName {
+  color: var(--color-chart-cyan);
+  font-weight: var(--font-weight-medium);
+}
+
+.tableMuted {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+.groupTags {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  flex-wrap: wrap;
+}
+
+.actionsMenuWrapper {
+  position: relative;
+}
+
+.actionsMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--margin-xs);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.actionsMenu button {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-sm) var(--padding-md);
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.actionsMenu button:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.textDanger {
+  color: var(--color-danger);
 }

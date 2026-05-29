@@ -14,7 +14,7 @@ import classNames from 'classnames';
 import { useState, useEffect } from 'react';
 
 /** Create Personal Access Token slide-in sidebar */
-export const CreateTokenSidebar = ({ isOpen, onClose, token, isEditing, onChange, onSubmit, onReset, onInfoClick }) => {
+export const CreateTokenSidebar = ({ isOpen, onClose, token, isEditing, onChange, onSubmit, onReset, onInfoClick, onGenerate }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -51,73 +51,73 @@ export const CreateTokenSidebar = ({ isOpen, onClose, token, isEditing, onChange
   };
 
   return (
-  <FilterSidebar
-    isOpen={isOpen}
-    onClose={onClose}
-    title={isEditing ? 'Edit Personal Access Token' : 'Create Personal Access Token'}
-    filters={[]}
-    onApply={handleSubmit}
-    onReset={onReset}
-    applyButtonText={isEditing ? 'Update Token' : 'Create Token'}
-    resetButtonText="Reset"
-  >
-    <FormField label="Token Name" required>
-      <Input
-        type="text"
-        value={token.name}
-        onChange={(e) => handleFieldChange('name', e.target.value)}
-        onFocus={() => clearError('name')}
-        error={errors.name}
-      />
-    </FormField>
+    <FilterSidebar
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEditing ? 'Edit Personal Access Token' : 'Create Personal Access Token'}
+      filters={[]}
+      onApply={handleSubmit}
+      onReset={onReset}
+      applyButtonText={isEditing ? 'Update Token' : 'Create Token'}
+      resetButtonText="Reset"
+    >
+      <FormField label="Token Name" required>
+        <Input
+          type="text"
+          value={token.name}
+          onChange={(e) => handleFieldChange('name', e.target.value)}
+          onFocus={() => clearError('name')}
+          error={errors.name}
+        />
+      </FormField>
 
-    <FormField label="Description" className={localStyles.fieldWithTopMargin}>
-      <Input
-        type="text"
-        value={token.description}
-        onChange={(e) => handleFieldChange('description', e.target.value)}
-        onFocus={() => clearError('description')}
-        error={errors.description}
-      />
-    </FormField>
+      <FormField label="Description" className={localStyles.fieldWithTopMargin}>
+        <Input
+          type="text"
+          value={token.description}
+          onChange={(e) => handleFieldChange('description', e.target.value)}
+          onFocus={() => clearError('description')}
+          error={errors.description}
+        />
+      </FormField>
 
-    <FormField label="User" required className={localStyles.fieldWithTopMargin}>
-      <SelectComponent
-        className={mainStyles.formSelect}
-        value={token.user}
-        onChange={(e) => handleFieldChange('user', e.target.value)}
-        onFocus={() => clearError('user')}
-        options={USER_OPTIONS}
-        placeholder="Select"
-        error={errors.user}
-      />
-    </FormField>
+      <FormField label="User" required className={localStyles.fieldWithTopMargin}>
+        <SelectComponent
+          className={mainStyles.formSelect}
+          value={token.user}
+          onChange={(e) => handleFieldChange('user', e.target.value)}
+          onFocus={() => clearError('user')}
+          options={USER_OPTIONS}
+          placeholder="Select"
+          error={errors.user}
+        />
+      </FormField>
 
-    <FormField label="Validity" required className={localStyles.fieldWithTopMargin}>
-      <SelectComponent
-        className={mainStyles.formSelect}
-        value={token.validity}
-        onChange={(e) => handleFieldChange('validity', e.target.value)}
-        onFocus={() => clearError('validity')}
-        options={VALIDITY_OPTIONS}
-        placeholder="Select"
-        error={errors.validity}
-      />
-    </FormField>
+      <FormField label="Validity" required className={localStyles.fieldWithTopMargin}>
+        <SelectComponent
+          className={mainStyles.formSelect}
+          value={token.validity}
+          onChange={(e) => handleFieldChange('validity', e.target.value)}
+          onFocus={() => clearError('validity')}
+          options={VALIDITY_OPTIONS}
+          placeholder="Select"
+          error={errors.validity}
+        />
+      </FormField>
 
-    <FormField label="Personal Access Token" className={localStyles.fieldWithTopMargin}>
-      <TokenInputRow
-        value={token.token}
-        onGenerate={() => onChange('token', 'generated-token-123')}
-      />
-    </FormField>
+      <FormField label="Personal Access Token" className={localStyles.fieldWithTopMargin}>
+        <TokenInputRow
+          value={token.token}
+          onGenerate={() => onGenerate?.()}
+        />
+      </FormField>
 
-    <p className={classNames(mainStyles.helpText, localStyles.helpTextMain)}>
-      For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick?.(); }} className={mainStyles.link}>Personal Access Token</a>
-    </p>
-    <p className={classNames(mainStyles.helpText, localStyles.helpTextSub)}>
-      * fields are mandatory
-    </p>
-  </FilterSidebar>
+      <p className={classNames(mainStyles.helpText, localStyles.helpTextMain)}>
+        For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick?.(); }} className={mainStyles.link}>Personal Access Token</a>
+      </p>
+      <p className={classNames(mainStyles.helpText, localStyles.helpTextSub)}>
+        * fields are mandatory
+      </p>
+    </FilterSidebar>
   );
 };

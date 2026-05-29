@@ -138,7 +138,7 @@ const Groups = () => {
                 </a>
               </p>
             </div>
-            
+
             <div className={styles.headerActions}>
               <SearchInput
                 tags={searchTags}

@@ -47,16 +47,10 @@ export const CreateGroupSidebar = ({
       isOpen={isOpen}
       onClose={onClose}
       title={isEditing ? 'Edit Group' : 'Create Group'}
-      footer={
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', borderTop: '1px solid var(--border-subtle)' }}>
-          <Button variant="secondary" onClick={onReset}>
-            <Icon icon="mdi:refresh" width={16} /> Reset
-          </Button>
-          <Button variant="cyan" onClick={handleSave}>
-            <Icon icon="mdi:check" width={16} /> {isEditing ? 'Update Group' : 'Create Group'}
-          </Button>
-        </div>
-      }
+      onApply={handleSave}
+      onReset={onReset}
+      applyButtonText={isEditing ? 'Update Group' : 'Create Group'}
+      resetButtonText="Reset"
     >
       <div style={{ padding: '24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
@@ -76,10 +70,12 @@ export const CreateGroupSidebar = ({
           </FormField>
         </div>
 
-        <div className={mainStyles.infoText}>
-          For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick(); }}>Creating New Group</a>
-        </div>
-        <div className={mainStyles.mandatoryNote}>* fields are mandatory</div>
+        <p className={mainStyles.helpText} style={{ marginTop: '24px' }}>
+          For more information: <a href="#" onClick={(e) => { e.preventDefault(); onInfoClick(); }} className={mainStyles.linkBlue}>Creating New Group</a>
+        </p>
+        <p className={mainStyles.helpText} style={{ marginTop: '8px' }}>
+          * fields are mandatory
+        </p>
       </div>
     </FilterSidebar>
   );

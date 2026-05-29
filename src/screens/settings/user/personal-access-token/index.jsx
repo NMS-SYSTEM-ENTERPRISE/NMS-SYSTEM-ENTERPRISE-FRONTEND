@@ -7,20 +7,25 @@ import { CreateTokenSidebar } from '@/components/features/settings/user/personal
 import { renderTokenCell } from '@/components/features/settings/user/personal-access-token/renderTokenCell';
 import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { TimelineModal } from '@/components/ui/timeline-modal';
-import { MOCK_TOKENS } from '@/utils/dummy-data/settings/users';
+
 import {
   TOKEN_COLUMNS as COLUMNS,
   EMPTY_TOKEN,
   TOKEN_TIMELINE_STEPS,
 } from '@/utils/constants/settings/users';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../../shared-settings-styles.module.css';
+import { usePat } from '@/hooks/settings/user/personal-access-token/usePat';
 
 // ─── Main Screen ──────────────────────────────────────────────
 
 const PersonalAccessToken = () => {
+  const { getAllPats, generatePat, createPat, editPat, deletePat } = usePat();
+
   const [searchTags, setSearchTags] = useState([]);
+  const [tokensList, setTokensList] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [showCreate, setShowCreate] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -30,23 +35,77 @@ const PersonalAccessToken = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const filteredTokens = MOCK_TOKENS.filter((t) => {
-    if (searchTags.length === 0) return true;
-    return searchTags.every(tag => {
-      const lowerTag = tag.toLowerCase();
-      return t.name.toLowerCase().includes(lowerTag) ||
-        t.description.toLowerCase().includes(lowerTag);
-    });
-  });
+  const fetchTokens = async () => {
+    const params = {
+      page: currentPage,
+      limit: pageSize,
+    };
+    if (searchTags.length > 0) {
+      params.search = searchTags.join(' ');
+    }
+    const data = await getAllPats(params);
+    if (data) {
+      setTokensList(data.items || []);
+      setTotalRecords(data.total_records || 0);
+    }
+  };
+
+  useEffect(() => {
+    fetchTokens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, searchTags]);
 
   const handleFieldChange = (key, value) =>
     setNewToken((prev) => ({ ...prev, [key]: value }));
 
-  const handleSubmit = () => {
-    console.log(editingItem ? 'Update Token:' : 'Create Token:', newToken);
-    setShowCreate(false);
-    setEditingItem(null);
+  const handleSubmit = async () => {
+    const payload = {
+      name: newToken.name,
+      description: newToken.description,
+      token: newToken.token,
+      user_id: parseInt(newToken.user) || 9,
+      validity_days: parseInt(newToken.validity) || 30,
+      status: true,
+    };
+
+    if (editingItem) {
+      payload.id = editingItem.id;
+      const success = await editPat(payload);
+      if (success) {
+        setShowCreate(false);
+        setEditingItem(null);
+        fetchTokens();
+      }
+    } else {
+      const success = await createPat(payload);
+      if (success) {
+        setShowCreate(false);
+        setNewToken(EMPTY_TOKEN);
+        fetchTokens();
+      }
+    }
   };
+
+  const handleGenerateToken = async () => {
+    const data = await generatePat();
+    if (data?.token) {
+      handleFieldChange('token', data.token);
+    }
+  };
+
+  const mapTokenToFrontend = (t) => ({
+    id: t.id,
+    name: t.name || '',
+    description: t.description || '',
+    user: t.user_id || '',
+    userName: t.user?.username || `User ID: ${t.user_id}`,
+    createdBy: 'System Admin',
+    validity: t.validity_days || '',
+    token: t.token || '',
+    createdTime: t.created_at ? new Date(t.created_at).toLocaleString() : '',
+    expiresAt: t.expires_at ? new Date(t.expires_at).toLocaleString() : '',
+    status: t.status ? 'Active' : 'Inactive',
+  });
 
   const handleReset = () => {
     setNewToken(editingItem || EMPTY_TOKEN);
@@ -63,11 +122,18 @@ const PersonalAccessToken = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    console.log('Deleted token:', itemToDelete);
-    setShowDeleteModal(false);
-    setItemToDelete(null);
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      const success = await deletePat(itemToDelete.id);
+      if (success) {
+        setShowDeleteModal(false);
+        setItemToDelete(null);
+        fetchTokens();
+      }
+    }
   };
+
+  const tableData = tokensList.map(mapTokenToFrontend);
 
   return (
     <>
@@ -109,7 +175,7 @@ const PersonalAccessToken = () => {
           {/* Data Table */}
           <Table
             columns={COLUMNS}
-            data={filteredTokens}
+            data={tableData}
             keyExtractor={(t) => t.id}
             renderCell={(row, col) => renderTokenCell(row, col, handleEdit, handleDelete)}
             emptyMessage="No access tokens found."
@@ -118,7 +184,7 @@ const PersonalAccessToken = () => {
           {/* Pagination */}
           <Pagination
             currentPage={currentPage}
-            totalItems={filteredTokens.length}
+            totalItems={totalRecords}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
@@ -139,6 +205,7 @@ const PersonalAccessToken = () => {
         onSubmit={handleSubmit}
         onReset={handleReset}
         onInfoClick={() => setShowTimeline(true)}
+        onGenerate={handleGenerateToken}
       />
 
       {/* Creation Process Timeline Modal */}

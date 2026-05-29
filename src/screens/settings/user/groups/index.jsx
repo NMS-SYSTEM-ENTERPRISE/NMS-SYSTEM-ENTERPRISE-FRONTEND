@@ -1,133 +1,193 @@
 'use client';
-import { CreateProfileSidebar } from '@/components/features/settings/user/groups/CreateProfileSidebar';
-import { PreviewModal } from '@/components/features/settings/user/groups/PreviewModal';
-import { renderProfileCell } from '@/components/features/settings/user/groups/renderProfileCell';
+import { CreateGroupSidebar } from '@/components/features/settings/user/groups/CreateGroupSidebar';
+import { renderGroupCell } from '@/components/features/settings/user/groups/renderGroupCell';
 import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { TimelineModal } from '@/components/ui/timeline-modal';
+import { Pagination } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import { SearchInput } from '@/components/ui/search-input';
 import { Table } from '@/components/ui/table';
 import {
-  EMPTY_PROFILE,
-  GROUPS_COLUMNS as PROFILE_COLUMNS,
+  EMPTY_GROUP,
+  GROUPS_COLUMNS as COLUMNS,
   GROUP_TIMELINE_STEPS,
-} from '@/utils/constants/settings/users';
-import { MOCK_PROFILES } from '@/utils/dummy-data/settings/users';
+} from '@/utils/constants/settings/users/groups';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../../shared-settings-styles.module.css';
+
+import { useGroup } from '@/hooks/settings/user/groups/useGroup';
 
 // ─── Main Screen ──────────────────────────────────────────────
 
 const Groups = () => {
+  const { getAllGroups, createGroup, editGroup, deleteGroup } = useGroup();
+
+  const [groupsList, setGroupsList] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+
   const [searchTags, setSearchTags] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
-  const [newProfile, setNewProfile] = useState(EMPTY_PROFILE);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [newGroup, setNewGroup] = useState(EMPTY_GROUP);
   const [editingItem, setEditingItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const filteredProfiles = MOCK_PROFILES.filter((p) => {
-    if (searchTags.length === 0) return true;
-    return searchTags.every(tag => {
-      const lowerTag = tag.toLowerCase();
-      return p.name.toLowerCase().includes(lowerTag) ||
-             p.description.toLowerCase().includes(lowerTag);
-    });
-  });
+  const fetchGroups = async () => {
+    const params = {
+      page: currentPage,
+      limit: pageSize,
+    };
+    if (searchTags.length > 0) {
+      params.search = searchTags.join(' ');
+    }
+    const data = await getAllGroups(params);
+    if (data) {
+      setGroupsList(data.items || []);
+      setTotalRecords(data.total_records || 0);
+    }
+  };
+
+  useEffect(() => {
+    fetchGroups();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, searchTags]);
 
   const handleFieldChange = (key, value) =>
-    setNewProfile((prev) => ({ ...prev, [key]: value }));
+    setNewGroup((prev) => ({ ...prev, [key]: value }));
 
-  const handleSubmit = () => {
-    console.log(editingItem ? 'Update user profile:' : 'Create user profile:', newProfile);
-    setShowCreate(false);
-    setEditingItem(null);
+  const handleSubmit = async () => {
+    const payload = {
+      name: newGroup.name,
+      description: newGroup.description,
+    };
+
+    if (editingItem) {
+      payload.id = editingItem.id;
+      const success = await editGroup(payload);
+      if (success) {
+        setShowCreate(false);
+        setEditingItem(null);
+        fetchGroups();
+      }
+    } else {
+      const success = await createGroup(payload);
+      if (success) {
+        setShowCreate(false);
+        setNewGroup(EMPTY_GROUP);
+        fetchGroups();
+      }
+    }
+  };
+
+  const mapGroupToFrontend = (group) => {
+    return {
+      id: group.id,
+      name: group.name || '',
+      description: group.description || '',
+      userCount: group.user_count || 0,
+    };
   };
 
   const handleReset = () => {
-    setNewProfile(editingItem || EMPTY_PROFILE);
+    setNewGroup(editingItem ? { ...EMPTY_GROUP, ...editingItem } : EMPTY_GROUP);
   };
 
-  const handleEdit = (profile) => {
-    setEditingItem(profile);
-    setNewProfile(profile);
+  const handleEdit = (group) => {
+    setEditingItem(group);
+    setNewGroup({ ...EMPTY_GROUP, ...group });
     setShowCreate(true);
   };
 
-  const handleDelete = (profile) => {
-    setItemToDelete(profile);
+  const handleDelete = (group) => {
+    setItemToDelete(group);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    console.log('Deleted group:', itemToDelete);
-    setShowDeleteModal(false);
-    setItemToDelete(null);
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      const success = await deleteGroup(itemToDelete.id);
+      if (success) {
+        setShowDeleteModal(false);
+        setItemToDelete(null);
+        fetchGroups();
+      }
+    }
   };
+
+  const tableData = groupsList.map(mapGroupToFrontend);
 
   return (
     <>
       <div className={styles.mainContent}>
         <div className={styles.contentArea}>
-        {/* Page header with Breadcrumbs and Actions */}
-        <div className={styles.contentHeader}>
-          <div>
-            <div className={styles.breadcrumbs}>
-              Settings / User / <span>Groups</span>
+          {/* Page header with Breadcrumbs and Actions */}
+          <div className={styles.contentHeader}>
+            <div>
+              <div className={styles.breadcrumbs}>
+                Settings / User / <span>Groups</span>
+              </div>
+              <h2 className={styles.pageTitle}>Group Profiles</h2>
+              <p className={styles.pageDescription}>
+                Create and manage profile groups to bundle permissions. For more information:{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
+                  Groups Overview <Icon icon="mdi:open-in-new" width={14} height={14} />
+                </a>
+              </p>
             </div>
-            <h2 className={styles.pageTitle}>Group Profiles</h2>
-            <p className={styles.pageDescription}>
-              Create and manage profile groups to bundle permissions. For more information:{' '}
-              <a href="#" onClick={(e) => { e.preventDefault(); setShowTimeline(true); }} className={styles.linkBlue}>
-                Groups Overview <Icon icon="mdi:open-in-new" width={14} height={14} />
-              </a>
-            </p>
+            
+            <div className={styles.headerActions}>
+              <SearchInput
+                tags={searchTags}
+                onTagsChange={setSearchTags}
+                placeholder="Search groups..."
+              />
+              <Button variant="cyan" onClick={() => {
+                setEditingItem(null);
+                setNewGroup(EMPTY_GROUP);
+                setShowCreate(true);
+              }}>
+                <Icon icon="mdi:plus" width={18} />
+                Create Group
+              </Button>
+            </div>
           </div>
-          
-          <div className={styles.headerActions}>
-            <SearchInput
-              tags={searchTags}
-              onTagsChange={setSearchTags}
-              placeholder="Search groups..."
-            />
-            <Button variant="cyan" onClick={() => {
-              setEditingItem(null);
-              setNewProfile(EMPTY_PROFILE);
-              setShowCreate(true);
-            }}>
-              <Icon icon="mdi:plus" width={18} />
-              Create Group
-            </Button>
-          </div>
-        </div>
 
           {/* Data Table */}
           <Table
-            columns={PROFILE_COLUMNS}
-            data={filteredProfiles}
+            columns={COLUMNS}
+            data={tableData}
             keyExtractor={(p) => p.id}
-            renderCell={(row, col) => renderProfileCell(row, col, handleEdit, handleDelete)}
-            emptyMessage="No user profiles found."
+            renderCell={(row, col) => renderGroupCell(row, col, handleEdit, handleDelete)}
+            emptyMessage="No groups found."
           />
-      </div>
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={totalRecords}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+          />
+        </div>
       </div>
 
       {/* Create Sidebar */}
-      <CreateProfileSidebar
+      <CreateGroupSidebar
         isOpen={showCreate}
         onClose={() => {
           setShowCreate(false);
           setEditingItem(null);
         }}
-        profile={newProfile}
+        group={newGroup}
         isEditing={!!editingItem}
         onChange={handleFieldChange}
         onSubmit={handleSubmit}
         onReset={handleReset}
-        onPreview={() => setShowPreview(true)}
         onInfoClick={() => setShowTimeline(true)}
       />
 
@@ -135,14 +195,8 @@ const Groups = () => {
       <TimelineModal
         isOpen={showTimeline}
         onClose={() => setShowTimeline(false)}
-        title="User Profile Creation Process"
+        title="Group Creation Process"
         steps={GROUP_TIMELINE_STEPS}
-      />
-
-      {/* Preview Modal */}
-      <PreviewModal
-        isOpen={showPreview}
-        onClose={() => setShowPreview(false)}
       />
 
       {/* Delete Confirmation Modal */}

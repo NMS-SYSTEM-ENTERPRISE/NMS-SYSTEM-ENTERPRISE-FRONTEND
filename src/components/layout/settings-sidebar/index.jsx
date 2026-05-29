@@ -13,7 +13,8 @@ const settingsMenuItems = [
     path: '/settings/user',
     subItems: [
       { label: 'User', path: '/settings/user/users' },
-      { label: 'User Profile', path: '/settings/user/groups' },
+      { label: 'User Profile', path: '/settings/user/user-profiles' },
+      { label: 'Group', path: '/settings/user/groups' },
       {
         label: 'Personal Access Token',
         path: '/settings/user/personal-access-token',

@@ -10,6 +10,6 @@
 
 export * from './users';
 export * from './roles';
-export * from './groups';
+export * from './user-profiles';
 export * from './ldap-server';
 export * from './personal-access-token';

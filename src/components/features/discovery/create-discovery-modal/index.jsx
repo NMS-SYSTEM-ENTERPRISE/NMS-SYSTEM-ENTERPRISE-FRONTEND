@@ -170,10 +170,43 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onSave({
-        ...formData,
-        groups: formData.groups.join(', '),
-      });
+      // Map inputMode to API-expected target_input_method string
+      const targetInputMethodMap = {
+        single: 'Single IP',
+        range: 'IP Range',
+        cidr: 'CIDR Notation',
+        csv: 'CSV Upload',
+      };
+
+      // Map frontend type to API-expected discovery_type string
+      const discoveryTypeMap = {
+        network: 'Network Device',
+        server: 'Server',
+        virtualization: 'Virtualization',
+        storage: 'Storage',
+        application: 'Application',
+        other: formData.otherType || 'Other',
+      };
+
+      // Build the API-compliant payload
+      const apiPayload = {
+        name: formData.name,
+        description: formData.description || '',
+        discovery_type: discoveryTypeMap[formData.type] || formData.type,
+        target_input_method: targetInputMethodMap[inputMode] || inputMode,
+        ip_address_or_hostname: formData.host || '',
+        start_ip: formData.startIP || '',
+        end_ip: formData.endIP || '',
+        cidr_notation: formData.cidr || '',
+        csv_file_path: formData.csvFile?.name || '',
+        port: formData.port ? parseInt(formData.port, 10) : 0,
+        timeout: formData.timeout ? parseInt(formData.timeout, 10) : 30,
+        credential_ids: Array.isArray(formData.credentials) ? formData.credentials : [],
+        group_ids: Array.isArray(formData.groups) ? formData.groups : [],
+        tag_ids: Array.isArray(formData.tags) ? formData.tags : [],
+      };
+
+      onSave(apiPayload);
     }
   };
 

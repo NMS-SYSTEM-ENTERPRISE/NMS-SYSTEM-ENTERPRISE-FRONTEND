@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 /**
@@ -177,6 +178,78 @@ export const SelectComponent = ({
 
   const Component = isCreatable ? CreatableSelect : Select;
 
+  // Custom Option to render Edit/Delete icons
+  const CustomOption = (props) => {
+    return (
+      <components.Option {...props}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <span>{props.label}</span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {restProps.onEditOption && (
+              <Icon
+                icon="mdi:pencil"
+                width={16}
+                height={16}
+                color="var(--color-chart-cyan)"
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  restProps.onEditOption(props.data);
+                }}
+              />
+            )}
+            {restProps.onDeleteOption && (
+              <Icon
+                icon="mdi:trash-can"
+                width={16}
+                height={16}
+                color="var(--color-danger)"
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  restProps.onDeleteOption(props.data);
+                }}
+              />
+            )}
+          </div>
+        </div>
+      </components.Option>
+    );
+  };
+
+  // Custom MenuList to append a static "Create New" button
+  const CustomMenuList = (props) => {
+    return (
+      <components.MenuList {...props}>
+        {props.children}
+        {restProps.onCreateStaticClick && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              restProps.onCreateStaticClick();
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 12px',
+              cursor: 'pointer',
+              borderTop: '1px solid var(--color-border)',
+              color: 'var(--color-chart-cyan)',
+              backgroundColor: 'var(--color-bg-primary)',
+              marginTop: '4px'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}
+          >
+            <Icon icon="mdi:plus-circle" width={16} height={16} />
+            <span>{restProps.createStaticText || 'Create New'}</span>
+          </div>
+        )}
+      </components.MenuList>
+    );
+  };
+
   return (
     <div className={`${styles.selectWrapper} ${className}`}>
       <Component
@@ -188,6 +261,17 @@ export const SelectComponent = ({
         isMulti={isMulti}
         isClearable={isClearable}
         isSearchable={isSearchable}
+        components={{ Option: CustomOption, MenuList: CustomMenuList }}
+        formatCreateLabel={
+          isCreatable
+            ? (inputValue) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon icon="mdi:plus-circle" width={16} height={16} color="var(--color-chart-cyan)" />
+                  <span style={{ color: 'var(--color-chart-cyan)' }}>Create "{inputValue}"</span>
+                </div>
+              )
+            : undefined
+        }
         styles={customStyles}
         menuPortalTarget={mounted ? document.body : null} // Render menu in body to avoid z-index issues
         menuPosition="fixed" // Fixed positioning for better z-index handling

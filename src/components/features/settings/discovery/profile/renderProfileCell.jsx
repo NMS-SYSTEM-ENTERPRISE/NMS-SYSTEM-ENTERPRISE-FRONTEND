@@ -21,7 +21,7 @@ export const renderProfileCell = (
       return profile.host;
     case 'type':
       return (
-        <div className={styles.actions}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-sm)' }}>
           {profile.type === 'network' && (
             <Icon icon="mdi:wifi" width={20} height={20} />
           )}
@@ -46,9 +46,6 @@ export const renderProfileCell = (
     case 'actions':
       return (
         <div className={styles.actions}>
-          <button className={styles.actionBtn} onClick={() => handleRun(profile)} title="Run Now">
-            <Icon icon="mdi:play" width={18} height={18} />
-          </button>
           <button className={styles.actionBtn} onClick={() => handleAssignCredential(profile)} title="Assign Credentials">
             <Icon icon="mdi:refresh" width={18} height={18} />
           </button>
@@ -65,13 +62,10 @@ export const renderProfileCell = (
             </button>
             {showActionsMenu === profile.id && (
               <div className={styles.actionsMenu}>
-                <button onClick={() => handleEdit(profile)}>
+                <button onClick={() => handleEdit(profile)} className={styles.editMenuBtn}>
                   <Icon icon="mdi:pencil" width={16} height={16} /> Edit
                 </button>
-                <button onClick={() => handleDuplicate(profile)}>
-                  <Icon icon="mdi:content-copy" width={16} height={16} /> Duplicate
-                </button>
-                <button onClick={() => handleDelete(profile)} className={styles.textDanger}>
+                <button onClick={() => handleDelete(profile)} className={styles.deleteMenuBtn}>
                   <Icon icon="mdi:trash-can" width={16} height={16} /> Delete
                 </button>
               </div>

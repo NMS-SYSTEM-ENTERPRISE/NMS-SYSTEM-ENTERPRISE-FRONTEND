@@ -102,27 +102,11 @@ const monitors = [
 export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
   const [activeTab, setActiveTab] = useState('monitor');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedItems, setSelectedItems] = useState([2]);
-
   const filteredMonitors = monitors.filter(
     (monitor) =>
       monitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       monitor.ip.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleSelectAll = () => {
-    if (selectedItems.length === filteredMonitors.length) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(filteredMonitors.map((m) => m.id));
-    }
-  };
-
-  const handleSelectItem = (id) => {
-    setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -214,26 +198,12 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
           />
         </div>
 
-        {selectedItems.length > 0 && (
-          <div className={styles.selectedInfo}>
-            <span>{selectedItems.length} items selected</span>
-            <button onClick={() => setSelectedItems([])}>
-              <Icon icon="mdi:close" width={16} height={16} />
-            </button>
-          </div>
-        )}
+
 
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>
-                  <input
-                    type="checkbox"
-                    checked={selectedItems.length === filteredMonitors.length}
-                    onChange={handleSelectAll}
-                  />
-                </th>
                 <th>MONITOR</th>
                 <th>IP</th>
                 <th>TYPE</th>
@@ -244,19 +214,7 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
               {filteredMonitors.map((monitor) => (
                 <tr
                   key={monitor.id}
-                  className={
-                    selectedItems.includes(monitor.id)
-                      ? styles.row_selected
-                      : ''
-                  }
                 >
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(monitor.id)}
-                      onChange={() => handleSelectItem(monitor.id)}
-                    />
-                  </td>
                   <td className={styles.table_name}>{monitor.name}</td>
                   <td>{monitor.ip}</td>
                   <td>
@@ -306,11 +264,8 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
       </div>
 
       <div className={styles.modal_footer}>
-        <Button variant="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button onClick={() => onAssign(selectedItems)}>
-          Assign Credential Profile
+        <Button onClick={onClose}>
+          Close
         </Button>
       </div>
     </Modal>

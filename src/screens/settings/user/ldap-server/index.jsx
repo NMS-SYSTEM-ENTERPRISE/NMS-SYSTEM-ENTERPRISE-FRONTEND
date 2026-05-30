@@ -1,59 +1,116 @@
 'use client';
+
 import { Button } from '@/components/ui/button';
-import { FilterSidebar } from '@/components/ui/filter-sidebar';
 import { Pagination } from '@/components/ui/pagination';
 import { SearchInput } from '@/components/ui/search-input';
-import { SelectComponent } from '@/components/ui/select';
+import { Table } from '@/components/ui/table';
 import { Icon } from '@iconify/react';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
-const MOCK_LDAP_SERVERS = [
-  {
-    id: 1,
-    ipHost: '172.16.8.57',
-    fqdn: 'snr-edatasqa.local',
-    ldapGroups: 'snr-edatas users',
-    lastSyncAt: 'Last sync at Thu, Apr 17, 2025 08:01:56 AM',
-  },
+
+import { LdapProvider } from '@/contexts/settings/user/ldap-server/ldap-context';
+import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
+import { useLdap } from '@/hooks/settings/user/ldap-server/useLdap';
+import { CreateLdapSidebar } from '@/components/features/settings/user/ldap-server/create-ldap-sidebar';
+import { renderLdapCell } from '@/components/features/settings/user/ldap-server/renderLdapCell';
+
+const COLUMNS = [
+  { key: 'primary_host', label: 'IP/HOST' },
+  { key: 'domain_name', label: 'DOMAIN' },
+  { key: 'server_type', label: 'SERVER TYPE' },
+  { key: 'ldap_groups', label: 'LDAP GROUPS' },
+  { key: 'actions', label: 'ACTIONS' },
 ];
-const LDAPServerSettings = () => {
+
+const EMPTY_SERVER = {
+  primary_host: '',
+  secondary_host: '',
+  domain_name: '',
+  server_type: 'Microsoft AD',
+  secure_ldap: false,
+  port: '389',
+  user_name: '',
+  password: '',
+  ldap_auth: false,
+  auto_sync: false,
+  ldap_groups: '',
+};
+
+const LdapServerContent = () => {
+  const { isLoading, getAllLdaps, createLdap, editLdap, deleteLdap, testLdap } = useLdap();
+
   const [searchTags, setSearchTags] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const [ldapServers, setLdapServers] = useState([]);
+
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newServer, setNewServer] = useState({
-    primaryIpHost: '',
-    secondaryIpHost: '',
-    domainName: '',
-    serverType: 'Microsoft AD',
-    secureLdap: false,
-    port: '389',
-    userName: '',
-    password: '',
-    ldapAuthentication: false,
-    autoSync: false,
-    ldapGroups: '',
-  });
-  const handleToggle = (key) => {
-    setNewServer((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+  const [editingItem, setEditingItem] = useState(null);
+  const [newServer, setNewServer] = useState(EMPTY_SERVER);
+
+  const fetchLdaps = useCallback(async () => {
+    const params = {
+      page: currentPage,
+      records_per_page: pageSize,
+      search: searchTags.join(' ') || undefined,
+    };
+    const res = await getAllLdaps(params);
+    if (res) {
+      setLdapServers(res.items || []);
+      setTotalRecords(res.total_records || 0);
+    }
+  }, [currentPage, pageSize, searchTags, getAllLdaps]);
+
+  useEffect(() => {
+    fetchLdaps();
+  }, [fetchLdaps]);
+
+  const handleEdit = (server) => {
+    setEditingItem(server);
+    setNewServer({ ...EMPTY_SERVER, ...server, password: '' }); // Don't prefill password
+    setShowAddModal(true);
   };
 
-  const filteredServers = useMemo(() => {
-    if (searchTags.length === 0) return MOCK_LDAP_SERVERS;
-    return MOCK_LDAP_SERVERS.filter((server) =>
-      searchTags.every((tag) => {
-        const lowerTag = tag.toLowerCase();
-        return (
-          server.ipHost.toLowerCase().includes(lowerTag) ||
-          server.fqdn.toLowerCase().includes(lowerTag) ||
-          server.ldapGroups.toLowerCase().includes(lowerTag)
-        );
-      })
-    );
-  }, [searchTags]);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDelete = (server) => {
+    setItemToDelete(server);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      const res = await deleteLdap(itemToDelete.id);
+      if (res) {
+        fetchLdaps();
+      }
+      setShowDeleteModal(false);
+      setItemToDelete(null);
+    }
+  };
+
+  const handleApply = async () => {
+    let res;
+    if (editingItem) {
+      res = await editLdap(editingItem.id, newServer);
+    } else {
+      res = await createLdap(newServer);
+    }
+
+    if (res) {
+      setShowAddModal(false);
+      setEditingItem(null);
+      setNewServer(EMPTY_SERVER);
+      fetchLdaps();
+    }
+  };
+
+  const handleReset = () => {
+    setNewServer(editingItem ? { ...EMPTY_SERVER, ...editingItem, password: '' } : EMPTY_SERVER);
+  };
 
   return (
     <>
@@ -66,7 +123,14 @@ const LDAPServerSettings = () => {
               placeholder="Search LDAP servers..."
             />
             <div className={styles.headerActions}>
-              <Button variant="cyan" onClick={() => setShowAddModal(true)}>
+              <Button
+                variant="cyan"
+                onClick={() => {
+                  setEditingItem(null);
+                  setNewServer(EMPTY_SERVER);
+                  setShowAddModal(true);
+                }}
+              >
                 <Icon icon="mdi:plus" width={18} height={18} />
                 Add LDAP Server
               </Button>
@@ -74,59 +138,19 @@ const LDAPServerSettings = () => {
           </div>
 
           <div className={styles.listPageBody}>
-            <div className={styles.tableContainer}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>IP/HOST</th>
-                    <th>FQDN</th>
-                    <th>LDAP GROUPS</th>
-                    <th>LAST SYNC AT</th>
-                    <th>SYNC</th>
-                    <th>ACTIONS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredServers.map((server) => (
-                    <tr key={server.id}>
-                      <td>{server.ipHost}</td>
-                      <td>{server.fqdn}</td>
-                      <td>
-                        <span className={styles.destinationBadge}>
-                          {server.ldapGroups}
-                        </span>
-                      </td>
-                      <td>{server.lastSyncAt}</td>
-                      <td>
-                        <button className={styles.actionBtn} type="button" title="Sync">
-                          <Icon
-                            icon="mdi:play-circle-outline"
-                            width={20}
-                            height={20}
-                          />
-                        </button>
-                      </td>
-                      <td>
-                        <div className={styles.actions}>
-                          <button className={styles.actionBtn} type="button" title="More">
-                            <Icon
-                              icon="mdi:dots-vertical"
-                              width={18}
-                              height={18}
-                            />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Table
+              className={styles.settingsListTable}
+              columns={COLUMNS}
+              data={ldapServers}
+              keyExtractor={(s) => s.id}
+              renderCell={(row, col) => renderLdapCell(row, col, handleEdit, handleDelete)}
+              emptyMessage="No LDAP servers found."
+            />
 
             <Pagination
               className={styles.settingsListPagination}
               currentPage={currentPage}
-              totalItems={filteredServers.length}
+              totalItems={totalRecords}
               pageSize={pageSize}
               onPageChange={setCurrentPage}
               onPageSizeChange={(size) => {
@@ -137,254 +161,40 @@ const LDAPServerSettings = () => {
           </div>
         </div>
       </div>
-      {/* Add LDAP Server Sidebar */}
-      <FilterSidebar
+
+      <CreateLdapSidebar
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add LDAP Server"
-        filters={[]}
-        onApply={() => {
-          console.log('Add LDAP Server:', newServer);
+        onClose={() => {
           setShowAddModal(false);
+          setEditingItem(null);
         }}
-        onReset={() =>
-          setNewServer({
-            primaryIpHost: '',
-            secondaryIpHost: '',
-            domainName: '',
-            serverType: 'Microsoft AD',
-            secureLdap: false,
-            port: '389',
-            userName: '',
-            password: '',
-            ldapAuthentication: false,
-            autoSync: false,
-            ldapGroups: '',
-          })
-        }
-        applyButtonText="Add LDAP Server"
-        resetButtonText="Reset"
-      >
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Primary IP/Host{' '}
-            <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <input
-            type="text"
-            className={styles.formInput}
-            placeholder="e.g. 192.168.1.1 or fd00::1 or prod.snr-edatas.com"
-            value={newServer.primaryIpHost}
-            onChange={(e) =>
-              setNewServer({ ...newServer, primaryIpHost: e.target.value })
-            }
-          />
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>Secondary IP/Host</label>
-          <input
-            type="text"
-            className={styles.formInput}
-            placeholder="e.g. 192.168.1.1 or fd00::1 or prod.snr-edatas.com"
-            value={newServer.secondaryIpHost}
-            onChange={(e) =>
-              setNewServer({ ...newServer, secondaryIpHost: e.target.value })
-            }
-          />
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Domain Name <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <input
-            type="text"
-            className={styles.formInput}
-            placeholder="e.g. prod.snr-edatas.com"
-            value={newServer.domainName}
-            onChange={(e) =>
-              setNewServer({ ...newServer, domainName: e.target.value })
-            }
-          />
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Server Type <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <SelectComponent
-            className={styles.formSelect}
-            value={newServer.serverType}
-            onChange={(e) =>
-              setNewServer({ ...newServer, serverType: e.target.value })
-            }
-            options={[
-              { value: 'Microsoft AD', label: 'Microsoft AD' },
-              { value: 'OpenLDAP', label: 'OpenLDAP' },
-            ]}
-            placeholder="Select"
-          />
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Secure LDAP <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <button
-            className={`${styles.toggleBtn} ${newServer.secureLdap ? styles.toggleBtnOn : ''
-              }`}
-            onClick={() => handleToggle('secureLdap')}
-          >
-            <span className={styles.toggleSlider}></span>
-            <span className={styles.toggleLabel}>
-              {newServer.secureLdap ? 'ON' : 'OFF'}
-            </span>
-          </button>
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Port <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <input
-            type="text"
-            className={styles.formInput}
-            value={newServer.port}
-            onChange={(e) =>
-              setNewServer({ ...newServer, port: e.target.value })
-            }
-          />
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            User Name <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <input
-            type="text"
-            className={styles.formInput}
-            placeholder="e.g. johndoe@domain.com or domain/johndoe"
-            value={newServer.userName}
-            onChange={(e) =>
-              setNewServer({ ...newServer, userName: e.target.value })
-            }
-          />
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Password <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input
-              type="password"
-              className={styles.formInput}
-              style={{ flex: 1 }}
-              value={newServer.password}
-              onChange={(e) =>
-                setNewServer({ ...newServer, password: e.target.value })
-              }
-            />
-            <button className={styles.btnPrimary} style={{ padding: '0 12px' }}>
-              Test
-            </button>
-          </div>
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            LDAP Authentication{' '}
-            <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <button
-            className={`${styles.toggleBtn} ${newServer.ldapAuthentication ? styles.toggleBtnOn : ''
-              }`}
-            onClick={() => handleToggle('ldapAuthentication')}
-          >
-            <span className={styles.toggleSlider}></span>
-            <span className={styles.toggleLabel}>
-              {newServer.ldapAuthentication ? 'ON' : 'OFF'}
-            </span>
-          </button>
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            Auto Sync <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <button
-            className={`${styles.toggleBtn} ${newServer.autoSync ? styles.toggleBtnOn : ''
-              }`}
-            onClick={() => handleToggle('autoSync')}
-          >
-            <span className={styles.toggleSlider}></span>
-            <span className={styles.toggleLabel}>
-              {newServer.autoSync ? 'ON' : 'OFF'}
-            </span>
-          </button>
-        </div>
-        <div
-          className={styles.formGroup}
-          style={{ marginBottom: 'var(--margin-lg)' }}
-        >
-          <label className={styles.formLabel}>
-            LDAP Groups <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <input
-            type="text"
-            className={styles.formInput}
-            placeholder="ldap groups"
-            value={newServer.ldapGroups}
-            onChange={(e) =>
-              setNewServer({ ...newServer, ldapGroups: e.target.value })
-            }
-          />
-        </div>
-        <p
-          style={{
-            fontSize: 'var(--font-xs)',
-            color: 'var(--color-text-secondary)',
-            marginTop: 'var(--margin-lg)',
-          }}
-        >
-          For more information:{' '}
-          <a href="#" className={styles.link}>
-            LDAP Server
-          </a>
-        </p>
-        <p
-          style={{
-            fontSize: 'var(--font-xs)',
-            color: 'var(--color-text-muted)',
-            marginTop: 'var(--margin-sm)',
-          }}
-        >
-          * fields are mandatory
-        </p>
-      </FilterSidebar>
+        server={newServer}
+        setServer={setNewServer}
+        onApply={handleApply}
+        onReset={handleReset}
+        isEditing={!!editingItem}
+        onTest={testLdap}
+      />
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.primary_host || ''}
+        itemType="LDAP Server"
+      />
     </>
   );
 };
+
+const LDAPServerSettings = () => {
+  return (
+    <LdapProvider>
+      <LdapServerContent />
+    </LdapProvider>
+  );
+};
+
 export default LDAPServerSettings;

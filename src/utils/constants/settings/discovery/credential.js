@@ -8,5 +8,5 @@ export const CREDENTIAL_PROFILE_COLUMNS = [
   { key: 'protocol', label: 'PROTOCOL' },
   { key: 'devices', label: 'DEVICES USING' },
   { key: 'groups', label: 'GROUPS' },
-  { key: 'actions', label: 'ACTIONS' },
+  { key: 'actions', label: 'ACTIONS', align: 'right' },
 ];

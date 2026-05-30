@@ -38,6 +38,26 @@ export function useFormValidation(values, rules, { isActive = true } = {}) {
     [touched, submitAttempted, errors]
   );
 
+  // Automatically revalidate fields that are already touched or when submit is attempted
+  useEffect(() => {
+    if (submitAttempted || Object.keys(touched).length > 0) {
+      setErrors((prev) => {
+        let hasChanges = false;
+        const next = { ...prev };
+        Object.keys(rules).forEach((field) => {
+          if (touched[field] || submitAttempted) {
+            const currentErr = validateField(field);
+            if (next[field] !== currentErr) {
+              next[field] = currentErr;
+              hasChanges = true;
+            }
+          }
+        });
+        return hasChanges ? next : prev;
+      });
+    }
+  }, [values, touched, submitAttempted, rules, validateField]);
+
   const handleBlur = useCallback(
     (field) => {
       setTouched((prev) => ({ ...prev, [field]: true }));

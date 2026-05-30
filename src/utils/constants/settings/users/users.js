@@ -17,7 +17,7 @@ export const USERS_COLUMNS = [
   { key: 'status', label: 'Status' },
   { key: 'groups', label: 'Group' },
   { key: 'role', label: 'Role' },
-  { key: 'actions', label: 'Actions' },
+  { key: 'actions', label: 'Actions', align: 'right' },
 ];
 
 // ─── Select options ───────────────────────────────────────────

@@ -74,7 +74,7 @@ export const CreateRoleSidebar = ({
         />
       </FormField>
 
-      <FormField label="Role Description" className={roleStyles.fieldWithTopMargin}>
+      <FormField label="Role Description">
         <Input
           type="text"
           value={role.description}

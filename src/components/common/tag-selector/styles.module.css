@@ -195,21 +195,26 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  background: none;
-  border: none;
+  background-color: rgba(0, 174, 239, 0.1);
+  border: 1px solid rgba(0, 174, 239, 0.2);
   border-radius: var(--radius-sm);
-  color: var(--color-text-secondary);
+  color: var(--color-chart-cyan);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .tagListItemAction:hover {
-  background-color: var(--color-bg-tertiary);
-  color: var(--color-chart-cyan);
+  background-color: rgba(0, 174, 239, 0.2);
 }
 
-.tagListItemActionDanger:hover {
+.tagListItemAction.tagListItemActionDanger {
+  background-color: rgba(255, 77, 79, 0.1);
+  border: 1px solid rgba(255, 77, 79, 0.2);
   color: var(--color-danger);
+}
+
+.tagListItemAction.tagListItemActionDanger:hover {
+  background-color: rgba(255, 77, 79, 0.2);
 }
 
 .noResults {

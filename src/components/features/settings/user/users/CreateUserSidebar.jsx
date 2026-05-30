@@ -3,13 +3,14 @@ import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
-import { GROUP_OPTIONS, ROLE_OPTIONS } from '@/utils/constants/settings/users';
 import { useFormValidation, required } from '@/hooks/useFormValidation';
 import Link from 'next/link';
 import mainStyles from '@/screens/settings/shared-settings-styles.module.css';
 import localStyles from './styles.module.css';
 import classNames from 'classnames';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { allGroupsApi } from '@/networking/settings/user/groups/group-apis';
+import { allRolesApi } from '@/networking/settings/user/roles/role-apis';
 
 /** Create User slide-in sidebar form */
 export const CreateUserSidebar = ({
@@ -22,6 +23,35 @@ export const CreateUserSidebar = ({
   onReset,
   onInfoClick,
 }) => {
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [roleOptions, setRoleOptions] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchOptions = async () => {
+        try {
+          const [groupsRes, rolesRes] = await Promise.all([
+            allGroupsApi({ limit: 100 }),
+            allRolesApi({ limit: 100 }),
+          ]);
+          if (groupsRes?.data?.items) {
+            setGroupOptions(
+              groupsRes.data.items.map((g) => ({ value: g.id, label: g.name }))
+            );
+          }
+          if (rolesRes?.data?.items) {
+            setRoleOptions(
+              rolesRes.data.items.map((r) => ({ value: r.id, label: r.name }))
+            );
+          }
+        } catch (err) {
+          console.error('Failed to load group/role options:', err);
+        }
+      };
+      fetchOptions();
+    }
+  }, [isOpen]);
+
   const validationRules = useMemo(
     () => ({
       firstName: required('First Name is required'),
@@ -158,7 +188,7 @@ export const CreateUserSidebar = ({
             value={user.groupId}
             onChange={(e) => updateField('groupId', e.target.value)}
             onBlur={() => handleBlur('groupId')}
-            options={GROUP_OPTIONS}
+            options={groupOptions}
             placeholder="Select"
             error={getFieldError('groupId')}
           />
@@ -173,7 +203,7 @@ export const CreateUserSidebar = ({
             value={user.roleId}
             onChange={(e) => updateField('roleId', e.target.value)}
             onBlur={() => handleBlur('roleId')}
-            options={ROLE_OPTIONS}
+            options={roleOptions}
             placeholder="Select"
             error={getFieldError('roleId')}
           />

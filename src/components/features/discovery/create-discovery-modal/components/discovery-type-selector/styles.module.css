@@ -1,0 +1,72 @@
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md); /* Increased gap for better spacing */
+}
+
+.formGroup label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--gap-xs); /* Small gap under label as requested */
+}
+
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-sm);
+}
+
+.typeButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--gap-sm);
+  padding: 10px 12px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.typeButton:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-text-muted);
+}
+
+.typeButton_active {
+  border-color: var(--color-chart-cyan);
+  background-color: rgba(0, 174, 239, 0.1);
+  color: var(--color-chart-cyan);
+}
+
+.typeIcon {
+  font-size: 18px;
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+
+.typeButton:hover .typeIcon {
+  color: var(--color-text-primary);
+}
+
+.typeButton_active .typeIcon {
+  color: var(--color-chart-cyan);
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: var(--font-xs);
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .typeGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

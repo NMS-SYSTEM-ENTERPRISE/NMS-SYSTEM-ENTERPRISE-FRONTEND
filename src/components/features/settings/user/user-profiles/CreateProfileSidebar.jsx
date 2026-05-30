@@ -3,17 +3,15 @@ import { FilterSidebar } from '@/components/ui/filter-sidebar';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
-import {
-  PROFILE_USER_OPTIONS as USER_OPTIONS,
-  PROFILE_ROLE_OPTIONS as ROLE_OPTIONS,
-  PROFILE_GROUP_OPTIONS as GROUP_OPTIONS,
-} from '@/utils/constants/settings/users';
 import { useFormValidation, required, selectRequired } from '@/hooks/useFormValidation';
 import mainStyles from '@/screens/settings/shared-settings-styles.module.css';
 import localStyles from './styles.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { allGroupsApi } from '@/networking/settings/user/groups/group-apis';
+import { allRolesApi } from '@/networking/settings/user/roles/role-apis';
+import { allUsersApi } from '@/networking/settings/user/users/user-apis';
 
 /** Create User Profile slide-in sidebar */
 export const CreateProfileSidebar = ({
@@ -27,6 +25,41 @@ export const CreateProfileSidebar = ({
   onPreview,
   onInfoClick,
 }) => {
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [roleOptions, setRoleOptions] = useState([]);
+  const [userOptions, setUserOptions] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchOptions = async () => {
+        try {
+          const [groupsRes, rolesRes, usersRes] = await Promise.all([
+            allGroupsApi({ limit: 100 }),
+            allRolesApi({ limit: 100 }),
+            allUsersApi({ limit: 100 }),
+          ]);
+          if (groupsRes?.data?.items) {
+            setGroupOptions(
+              groupsRes.data.items.map((g) => ({ value: g.id, label: g.name }))
+            );
+          }
+          if (rolesRes?.data?.items) {
+            setRoleOptions(
+              rolesRes.data.items.map((r) => ({ value: r.id, label: r.name }))
+            );
+          }
+          if (usersRes?.data?.items) {
+            setUserOptions(
+              usersRes.data.items.map((u) => ({ value: u.id, label: u.username }))
+            );
+          }
+        } catch (err) {
+          console.error('Failed to load profile options:', err);
+        }
+      };
+      fetchOptions();
+    }
+  }, [isOpen]);
   const validationRules = useMemo(
     () => ({
       name: required('Profile Name is required'),
@@ -66,11 +99,6 @@ export const CreateProfileSidebar = ({
       onReset={onReset}
       applyButtonText={isEditing ? 'Update User Profile' : 'Create User Profile'}
       resetButtonText="Reset"
-      customFooterButtons={
-        <Button variant="secondary" onClick={onPreview} className={localStyles.previewButton}>
-          Preview
-        </Button>
-      }
     >
       <FormField label="User Profile Name" required>
         <Input
@@ -83,7 +111,7 @@ export const CreateProfileSidebar = ({
         />
       </FormField>
 
-      <FormField label="Description" className={localStyles.fieldWithTopMargin}>
+      <FormField label="Description">
         <Input
           type="text"
           value={profile.description}
@@ -93,13 +121,13 @@ export const CreateProfileSidebar = ({
         />
       </FormField>
 
-      <FormField label="User" required className={localStyles.fieldWithTopMargin}>
+      <FormField label="User" required>
         <SelectComponent
           className={mainStyles.formSelect}
           value={profile.user}
           onChange={(e) => updateField('user', e.target.value)}
           onBlur={() => handleBlur('user')}
-          options={USER_OPTIONS}
+          options={userOptions}
           placeholder="Select User"
           error={getFieldError('user')}
         />
@@ -108,13 +136,13 @@ export const CreateProfileSidebar = ({
         </Link>
       </FormField>
 
-      <FormField label="Role" required className={localStyles.fieldWithTopMargin}>
+      <FormField label="Role" required>
         <SelectComponent
           className={mainStyles.formSelect}
           value={profile.role}
           onChange={(e) => updateField('role', e.target.value)}
           onBlur={() => handleBlur('role')}
-          options={ROLE_OPTIONS}
+          options={roleOptions}
           placeholder="Select"
           error={getFieldError('role')}
         />
@@ -123,13 +151,13 @@ export const CreateProfileSidebar = ({
         </Link>
       </FormField>
 
-      <FormField label="Groups" required className={localStyles.fieldWithTopMargin}>
+      <FormField label="Groups" required>
         <SelectComponent
           className={mainStyles.formSelect}
           value={profile.groups}
           onChange={(e) => updateField('groups', e.target.value)}
           onBlur={() => handleBlur('groups')}
-          options={GROUP_OPTIONS}
+          options={groupOptions}
           placeholder="Select"
           error={getFieldError('groups')}
         />

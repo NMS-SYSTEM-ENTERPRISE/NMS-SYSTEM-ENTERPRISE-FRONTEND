@@ -4,12 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
+import { DiscoveryTypeSelector } from './components/discovery-type-selector';
+import { TargetInputMethod } from './components/target-input-method';
+import { CsvUploader } from './components/csv-uploader';
 import styles from './styles.module.css';
 
 export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     name: profile?.name || '',
     type: profile?.type || 'network',
+    otherType: '',
     host: profile?.host || '',
     startIP: '',
     endIP: '',
@@ -19,25 +23,50 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
     timeout: '30',
     retries: '3',
     credentials: [],
-    groups: profile?.groups || 'Network',
+    groups: profile?.groups ? profile.groups.split(', ') : [],
     tags: profile?.tags || [],
     description: '',
   });
 
   const [inputMode, setInputMode] = useState(null);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Profile Name is required.';
+    if (!formData.type) newErrors.type = 'Discovery Type is required.';
+    if (formData.type === 'other' && !formData.otherType.trim()) newErrors.otherType = 'Custom Device Type is required.';
+    if (!inputMode) newErrors.inputMode = 'Target Input Method is required.';
+
+    if (inputMode === 'single' && !formData.host.trim()) newErrors.host = 'IP Address or Hostname is required.';
+    if (inputMode === 'range') {
+      if (!formData.startIP.trim()) newErrors.startIP = 'Start IP is required.';
+      if (!formData.endIP.trim()) newErrors.endIP = 'End IP is required.';
+    }
+    if (inputMode === 'cidr' && !formData.cidr.trim()) newErrors.cidr = 'CIDR Notation is required.';
+    if (inputMode === 'csv' && !formData.csvFile) newErrors.csvFile = 'CSV File is required.';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    if (validateForm()) {
+      onSave({
+        ...formData,
+        groups: formData.groups.join(', '),
+      });
+    }
   };
 
-  const discoveryTypes = [
-    { value: 'network', label: 'Network Device', icon: 'mdi:network' },
-    { value: 'server', label: 'Server', icon: 'mdi:server' },
-    { value: 'virtualization', label: 'Virtualization', icon: 'mdi:cloud' },
-    { value: 'storage', label: 'Storage', icon: 'mdi:harddisk' },
-    { value: 'application', label: 'Application', icon: 'mdi:cellphone' },
-  ];
+  const clearError = (field) => {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -51,90 +80,50 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.modal_body}>
+        <form onSubmit={handleSubmit} className={styles.modal_body} noValidate>
           <div className={styles.formGroup}>
             <label>Profile Name *</label>
             <Input
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onFocus={() => clearError('name')}
               placeholder="Enter profile name"
-              required
+              error={errors.name}
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label>Discovery Type *</label>
-            <div className={styles.typeGrid}>
-              {discoveryTypes.map((type) => (
-                <button
-                  key={type.value}
-                  type="button"
-                  className={`${styles.typeButton} ${
-                    formData.type === type.value ? styles.typeButton_active : ''
-                  }`}
-                  onClick={() => setFormData({ ...formData, type: type.value })}
-                >
-                  <Icon icon={type.icon} className={styles.typeIcon} width={24} height={24} />
-                  <span>{type.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <DiscoveryTypeSelector
+            value={formData.type}
+            otherValue={formData.otherType}
+            onChange={(val) => {
+              setFormData({ ...formData, type: val });
+              clearError('type');
+            }}
+            onOtherChange={(val) => {
+              setFormData({ ...formData, otherType: val });
+              clearError('otherType');
+            }}
+            error={errors.type || errors.otherType}
+          />
 
-          <div className={styles.formGroup}>
-            <label>Target Input Method *</label>
-            <div className={styles.inputModeButtons}>
-              <button
-                type="button"
-                className={`${styles.modeButton} ${
-                  inputMode === 'single' ? styles.modeButton_active : ''
-                }`}
-                onClick={() => setInputMode('single')}
-              >
-                Single IP/Host
-              </button>
-              <button
-                type="button"
-                className={`${styles.modeButton} ${
-                  inputMode === 'range' ? styles.modeButton_active : ''
-                }`}
-                onClick={() => setInputMode('range')}
-              >
-                IP Range
-              </button>
-              <button
-                type="button"
-                className={`${styles.modeButton} ${
-                  inputMode === 'cidr' ? styles.modeButton_active : ''
-                }`}
-                onClick={() => setInputMode('cidr')}
-              >
-                CIDR
-              </button>
-              <button
-                type="button"
-                className={`${styles.modeButton} ${
-                  inputMode === 'csv' ? styles.modeButton_active : ''
-                }`}
-                onClick={() => setInputMode('csv')}
-              >
-                CSV File
-              </button>
-            </div>
-          </div>
+          <TargetInputMethod
+            value={inputMode}
+            onChange={(val) => {
+              setInputMode(val);
+              clearError('inputMode');
+            }}
+            error={errors.inputMode}
+          />
 
           {inputMode === 'single' && (
             <div className={styles.formGroup}>
               <label>IP Address or Hostname *</label>
               <Input
                 value={formData.host}
-                onChange={(e) =>
-                  setFormData({ ...formData, host: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, host: e.target.value })}
+                onFocus={() => clearError('host')}
                 placeholder="192.168.1.1 or hostname.domain.com"
-                required
+                error={errors.host}
               />
             </div>
           )}
@@ -145,22 +134,20 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
                 <label>Start IP *</label>
                 <Input
                   value={formData.startIP}
-                  onChange={(e) =>
-                    setFormData({ ...formData, startIP: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, startIP: e.target.value })}
+                  onFocus={() => clearError('startIP')}
                   placeholder="192.168.1.1"
-                  required
+                  error={errors.startIP}
                 />
               </div>
               <div className={styles.formGroup}>
                 <label>End IP *</label>
                 <Input
                   value={formData.endIP}
-                  onChange={(e) =>
-                    setFormData({ ...formData, endIP: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, endIP: e.target.value })}
+                  onFocus={() => clearError('endIP')}
                   placeholder="192.168.1.254"
-                  required
+                  error={errors.endIP}
                 />
               </div>
             </div>
@@ -171,34 +158,23 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
               <label>CIDR Notation *</label>
               <Input
                 value={formData.cidr}
-                onChange={(e) =>
-                  setFormData({ ...formData, cidr: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, cidr: e.target.value })}
+                onFocus={() => clearError('cidr')}
                 placeholder="192.168.1.0/24"
-                required
+                error={errors.cidr}
               />
             </div>
           )}
 
           {inputMode === 'csv' && (
-            <div className={styles.formGroup}>
-              <label>CSV File *</label>
-              <input
-                type="file"
-                accept=".csv"
-                className={styles.fileInput}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    csvFile: e.target.files?.[0] || null,
-                  })
-                }
-                required
-              />
-              <p className={styles.helpText}>
-                Upload a CSV file with IP addresses or hostnames
-              </p>
-            </div>
+            <CsvUploader
+              file={formData.csvFile}
+              onFileChange={(file) => {
+                setFormData({ ...formData, csvFile: file });
+                clearError('csvFile');
+              }}
+              error={errors.csvFile}
+            />
           )}
 
           <div className={styles.formRow}>
@@ -206,9 +182,7 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
               <label>Port (optional)</label>
               <Input
                 value={formData.port}
-                onChange={(e) =>
-                  setFormData({ ...formData, port: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, port: e.target.value })}
                 placeholder="Leave empty for default"
               />
             </div>
@@ -217,9 +191,7 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
               <Input
                 type="number"
                 value={formData.timeout}
-                onChange={(e) =>
-                  setFormData({ ...formData, timeout: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, timeout: e.target.value })}
                 placeholder="30"
               />
             </div>
@@ -244,19 +216,16 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
               ]}
               placeholder="Select credentials"
             />
-            <p className={styles.helpText}>
-              Select multiple credentials
-            </p>
+            <p className={styles.helpText}>Select multiple credentials</p>
           </div>
 
           <div className={styles.formGroup}>
             <label>Groups</label>
-            <Input
-              value={formData.groups}
-              onChange={(e) =>
-                setFormData({ ...formData, groups: e.target.value })
-              }
-              placeholder="Network, Production"
+            <TagSelector
+              selectedTags={formData.groups}
+              onChange={(groups) => setFormData({ ...formData, groups })}
+              placeholder="Add Groups"
+              noun="group"
             />
           </div>
 
@@ -274,19 +243,17 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
             <textarea
               className={styles.textarea}
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Enter description for this discovery profile"
               rows={3}
             />
           </div>
 
           <div className={styles.modal_footer}>
-            <Button type="button" onClick={onClose}>
+            <Button type="button" onClick={onClose} variant="secondary">
               Cancel
             </Button>
-            <Button type="submit">
+            <Button type="submit" variant="cyan">
               {profile ? 'Update' : 'Create'} Profile
             </Button>
           </div>

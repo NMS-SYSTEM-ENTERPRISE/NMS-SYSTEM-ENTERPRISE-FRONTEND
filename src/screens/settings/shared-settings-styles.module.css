@@ -352,6 +352,7 @@
 .actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: var(--gap-sm);
 }
 
@@ -503,7 +504,7 @@
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--gap-lg);
+  gap: var(--gap-xl);
   margin-bottom: var(--margin-lg);
 }
 
@@ -581,8 +582,8 @@
 }
 
 /* Scrollable table area — grows to fill viewport, scrolls when content overflows */
-.listPageBody > .settingsListTable,
-.listPageBody > .tableContainer {
+.listPageBody>.settingsListTable,
+.listPageBody>.tableContainer {
   flex: 1;
   min-height: 0;
   overflow-x: auto;
@@ -591,8 +592,8 @@
   border-radius: 0;
 }
 
-.listPageBody > .settingsListTable thead th,
-.listPageBody > .tableContainer thead th {
+.listPageBody>.settingsListTable thead th,
+.listPageBody>.tableContainer thead th {
   position: sticky;
   top: 0;
   z-index: 2;
@@ -601,7 +602,7 @@
 }
 
 /* Pagination bar — pinned below table, aligned with content header */
-.listPageBody > .settingsListPagination {
+.listPageBody>.settingsListPagination {
   flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
@@ -827,4 +828,21 @@
 
 .textDanger {
   color: var(--color-danger);
+}
+
+.actionsMenu button.editMenuBtn {
+  color: var(--color-chart-cyan);
+  /* Theme accent color */
+}
+
+.actionsMenu button.editMenuBtn:hover {
+  background-color: rgba(0, 174, 239, 0.1);
+}
+
+.actionsMenu button.deleteMenuBtn {
+  color: var(--color-danger);
+}
+
+.actionsMenu button.deleteMenuBtn:hover {
+  background-color: rgba(244, 67, 54, 0.1);
 }

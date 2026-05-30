@@ -12,7 +12,7 @@ export const GROUPS_COLUMNS = [
   { key: 'name', label: 'User Profile Name' },
   { key: 'description', label: 'Description' },
   { key: 'scopeBy', label: 'Scope By' },
-  { key: 'actions', label: 'Actions' },
+  { key: 'actions', label: 'Actions', align: 'right' },
 ];
 
 /** Column definitions for the Preview Results modal table. */

@@ -1,19 +1,19 @@
 'use client';
 import { CreateGroupSidebar } from '@/components/features/settings/user/groups/CreateGroupSidebar';
 import { renderGroupCell } from '@/components/features/settings/user/groups/renderGroupCell';
-import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
-import { TimelineModal } from '@/components/ui/timeline-modal';
-import { Pagination } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
+import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
+import { Pagination } from '@/components/ui/pagination';
 import { SearchInput } from '@/components/ui/search-input';
 import { Table } from '@/components/ui/table';
+import { TimelineModal } from '@/components/ui/timeline-modal';
 import {
-  EMPTY_GROUP,
   GROUPS_COLUMNS as COLUMNS,
+  EMPTY_GROUP,
   GROUP_TIMELINE_STEPS,
 } from '@/utils/constants/settings/users/groups';
 import { Icon } from '@iconify/react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
 
 import { useGroup } from '@/hooks/settings/user/groups/useGroup';
@@ -132,11 +132,14 @@ const Groups = () => {
               placeholder="Search groups..."
             />
             <div className={styles.headerActions}>
-              <Button variant="cyan" onClick={() => {
-                setEditingItem(null);
-                setNewGroup(EMPTY_GROUP);
-                setShowCreate(true);
-              }}>
+              <Button
+                variant="cyan"
+                onClick={() => {
+                  setEditingItem(null);
+                  setNewGroup(EMPTY_GROUP);
+                  setShowCreate(true);
+                }}
+              >
                 <Icon icon="mdi:plus" width={18} />
                 Create Group
               </Button>
@@ -144,24 +147,29 @@ const Groups = () => {
           </div>
 
           <div className={styles.listPageBody}>
-          <Table
-            className={styles.settingsListTable}
-            columns={COLUMNS}
-            data={tableData}
-            keyExtractor={(p) => p.id}
-            renderCell={(row, col) => renderGroupCell(row, col, handleEdit, handleDelete)}
-            emptyMessage="No groups found."
-          />
+            <Table
+              className={styles.settingsListTable}
+              columns={COLUMNS}
+              data={tableData}
+              keyExtractor={(p) => p.id}
+              renderCell={(row, col) =>
+                renderGroupCell(row, col, handleEdit, handleDelete)
+              }
+              emptyMessage="No groups found."
+            />
 
-          {/* Pagination */}
-          <Pagination
-            className={styles.settingsListPagination}
-            currentPage={currentPage}
-            totalItems={totalRecords}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
-          />
+            {/* Pagination */}
+            <Pagination
+              className={styles.settingsListPagination}
+              currentPage={currentPage}
+              totalItems={totalRecords}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         </div>
       </div>

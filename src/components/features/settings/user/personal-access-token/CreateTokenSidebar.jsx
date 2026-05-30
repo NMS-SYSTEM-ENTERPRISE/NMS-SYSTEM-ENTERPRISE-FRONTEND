@@ -74,7 +74,7 @@ export const CreateTokenSidebar = ({
         />
       </FormField>
 
-      <FormField label="Description" className={localStyles.fieldWithTopMargin}>
+      <FormField label="Description">
         <Input
           type="text"
           value={token.description}
@@ -84,7 +84,7 @@ export const CreateTokenSidebar = ({
         />
       </FormField>
 
-      <FormField label="User" required className={localStyles.fieldWithTopMargin}>
+      <FormField label="User" required>
         <SelectComponent
           className={mainStyles.formSelect}
           value={token.user}
@@ -96,7 +96,7 @@ export const CreateTokenSidebar = ({
         />
       </FormField>
 
-      <FormField label="Validity" required className={localStyles.fieldWithTopMargin}>
+      <FormField label="Validity" required>
         <SelectComponent
           className={mainStyles.formSelect}
           value={token.validity}
@@ -108,7 +108,7 @@ export const CreateTokenSidebar = ({
         />
       </FormField>
 
-      <FormField label="Personal Access Token" className={localStyles.fieldWithTopMargin}>
+      <FormField label="Personal Access Token">
         <TokenInputRow value={token.token} onGenerate={() => onGenerate?.()} />
       </FormField>
 

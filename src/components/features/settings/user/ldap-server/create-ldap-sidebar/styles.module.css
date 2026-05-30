@@ -1,0 +1,26 @@
+.passwordRow {
+  display: flex;
+  gap: var(--gap-sm);
+  align-items: flex-start;
+}
+
+.passwordInput {
+  flex: 1;
+}
+
+.testButton {
+  padding: 0 var(--padding-md);
+  height: 36px; /* typical input height */
+}
+
+.helpTextMain {
+  margin-top: var(--margin-lg);
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+}
+
+.helpTextSub {
+  margin-top: var(--margin-sm);
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}

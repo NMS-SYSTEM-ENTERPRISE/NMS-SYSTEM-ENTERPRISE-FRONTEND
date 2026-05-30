@@ -14,6 +14,7 @@ export const TagSelector = ({
   placeholder = 'Add Tags',
   availableTags: controlledAvailableTags,
   onAvailableTagsChange,
+  noun = 'tag',
 }) => {
   const [internalAvailableTags, setInternalAvailableTags] = useState(DEFAULT_AVAILABLE_TAGS);
   const availableTags = controlledAvailableTags ?? internalAvailableTags;
@@ -21,11 +22,12 @@ export const TagSelector = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
   const [tagForm, setTagForm] = useState({ open: false, mode: 'create', initialName: '' });
   const [tagToDelete, setTagToDelete] = useState(null);
   const dropdownRef = useRef(null);
 
-  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const normalizedQuery = appliedSearchQuery.trim().toLowerCase();
 
   const filteredTags = availableTags.filter(
     (tag) =>
@@ -42,6 +44,7 @@ export const TagSelector = ({
       onChange([...selectedTags, tag]);
     }
     setSearchQuery('');
+    setAppliedSearchQuery('');
   };
 
   const handleRemoveTag = (tagToRemove) => {
@@ -64,6 +67,7 @@ export const TagSelector = ({
       onChange([...selectedTags, tagName]);
     }
     setSearchQuery('');
+    setAppliedSearchQuery('');
   };
 
   const openCreateModal = () => {
@@ -81,6 +85,7 @@ export const TagSelector = ({
       }
       handleAddTag(newName);
       setSearchQuery('');
+      setAppliedSearchQuery('');
       return;
     }
 
@@ -155,33 +160,25 @@ export const TagSelector = ({
                   <input
                     type="text"
                     className={styles.searchInput}
-                    placeholder="Search or create tag..."
+                    placeholder={`Search or create ${noun}...`}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        if (canCreateFromQuery) {
-                          handleCreateFromInput();
-                        } else if (filteredTags.length > 0) {
-                          handleAddTag(filteredTags[0]);
-                        }
+                        setAppliedSearchQuery(searchQuery);
                       }
                     }}
                   />
                   <button
                     type="button"
                     className={styles.sendBtn}
-                    title="Create tag"
+                    title="Search"
                     onClick={() => {
-                      if (canCreateFromQuery) {
-                        handleCreateFromInput();
-                      } else {
-                        openCreateModal();
-                      }
+                      setAppliedSearchQuery(searchQuery);
                     }}
                   >
-                    <Icon icon="mdi:send" width={18} height={18} />
+                    <Icon icon="mdi:magnify" width={18} height={18} />
                   </button>
                 </div>
               </div>
@@ -201,10 +198,10 @@ export const TagSelector = ({
                   <div className={styles.noResults}>
                     {canCreateFromQuery ? (
                       <p className={styles.noResultsHint}>
-                        Press send or Enter to create &quot;{searchQuery.trim()}&quot;
+                        No matching {noun}s found. Click &quot;Create new {noun}&quot; below.
                       </p>
                     ) : (
-                      <span className={styles.noResultsText}>No matching tags</span>
+                      <span className={styles.noResultsText}>No matching {noun}s</span>
                     )}
                   </div>
                 )}
@@ -217,7 +214,7 @@ export const TagSelector = ({
                   onClick={openCreateModal}
                 >
                   <Icon icon="mdi:plus" width={16} height={16} />
-                  Create new tag
+                  Create new {noun}
                 </button>
               </div>
             </div>
@@ -239,8 +236,8 @@ export const TagSelector = ({
         onClose={() => setTagToDelete(null)}
         onConfirm={confirmDeleteTag}
         itemName={tagToDelete || ''}
-        itemType="Tag"
-        warningText="This tag will be removed from the list and from any current selection."
+        itemType={noun.charAt(0).toUpperCase() + noun.slice(1)}
+        warningText={`This ${noun} will be removed from the list and from any current selection.`}
       />
     </>
   );

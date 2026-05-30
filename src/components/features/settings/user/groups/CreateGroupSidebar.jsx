@@ -50,15 +50,7 @@ export const CreateGroupSidebar = ({
       applyButtonText={isEditing ? 'Update Group' : 'Create Group'}
       resetButtonText="Reset"
     >
-      <div style={{ padding: '24px' }}>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '24px',
-            marginBottom: '24px',
-          }}
-        >
+      <div className={mainStyles.formGrid}>
           <FormField label="Group Name" required>
             <Input
               value={group.name}
@@ -77,7 +69,7 @@ export const CreateGroupSidebar = ({
           </FormField>
         </div>
 
-        <p className={mainStyles.helpText} style={{ marginTop: '24px' }}>
+        <p className={mainStyles.helpText} style={{ marginTop: 'var(--margin-lg)' }}>
           For more information:{' '}
           <a
             href="#"
@@ -90,10 +82,9 @@ export const CreateGroupSidebar = ({
             Creating New Group
           </a>
         </p>
-        <p className={mainStyles.helpText} style={{ marginTop: '8px' }}>
+        <p className={mainStyles.helpText} style={{ marginTop: 'var(--margin-sm)' }}>
           * fields are mandatory
         </p>
-      </div>
     </FilterSidebar>
   );
 };

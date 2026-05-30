@@ -1,6 +1,5 @@
 'use client';
 import { CreateProfileSidebar } from '@/components/features/settings/user/user-profiles/CreateProfileSidebar';
-import { PreviewModal } from '@/components/features/settings/user/user-profiles/PreviewModal';
 import { renderProfileCell } from '@/components/features/settings/user/user-profiles/renderProfileCell';
 import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { TimelineModal } from '@/components/ui/timeline-modal';
@@ -29,7 +28,6 @@ const UserProfiles = () => {
 
   const [searchTags, setSearchTags] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -155,24 +153,24 @@ const UserProfiles = () => {
           </div>
 
           <div className={styles.listPageBody}>
-          <Table
-            className={styles.settingsListTable}
-            columns={PROFILE_COLUMNS}
-            data={tableData}
-            keyExtractor={(p) => p.id}
-            renderCell={(row, col) => renderProfileCell(row, col, handleEdit, handleDelete)}
-            emptyMessage="No user profiles found."
-          />
+            <Table
+              className={styles.settingsListTable}
+              columns={PROFILE_COLUMNS}
+              data={tableData}
+              keyExtractor={(p) => p.id}
+              renderCell={(row, col) => renderProfileCell(row, col, handleEdit, handleDelete)}
+              emptyMessage="No user profiles found."
+            />
 
-          {/* Pagination */}
-          <Pagination
-            className={styles.settingsListPagination}
-            currentPage={currentPage}
-            totalItems={totalRecords}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
-          />
+            {/* Pagination */}
+            <Pagination
+              className={styles.settingsListPagination}
+              currentPage={currentPage}
+              totalItems={totalRecords}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+            />
           </div>
         </div>
       </div>
@@ -189,7 +187,6 @@ const UserProfiles = () => {
         onChange={handleFieldChange}
         onSubmit={handleSubmit}
         onReset={handleReset}
-        onPreview={() => setShowPreview(true)}
         onInfoClick={() => setShowTimeline(true)}
       />
 
@@ -201,11 +198,7 @@ const UserProfiles = () => {
         steps={GROUP_TIMELINE_STEPS}
       />
 
-      {/* Preview Modal */}
-      <PreviewModal
-        isOpen={showPreview}
-        onClose={() => setShowPreview(false)}
-      />
+
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal

@@ -12,7 +12,7 @@ export const GROUPS_COLUMNS = [
   { key: 'name', label: 'Group Name' },
   { key: 'description', label: 'Description' },
   { key: 'userCount', label: 'User Count' },
-  { key: 'actions', label: 'Actions' },
+  { key: 'actions', label: 'Actions', align: 'right' },
 ];
 
 // ─── Form defaults ────────────────────────────────────────────

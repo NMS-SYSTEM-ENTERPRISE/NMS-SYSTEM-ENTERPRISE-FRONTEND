@@ -10,5 +10,5 @@ export const DISCOVERY_PROFILE_COLUMNS = [
   { key: 'status', label: 'STATUS' },
   { key: 'scheduler', label: 'SCHEDULER' },
   { key: 'groups', label: 'GROUPS' },
-  { key: 'actions', label: 'ACTIONS' },
+  { key: 'actions', label: 'ACTIONS', align: 'right' },
 ];

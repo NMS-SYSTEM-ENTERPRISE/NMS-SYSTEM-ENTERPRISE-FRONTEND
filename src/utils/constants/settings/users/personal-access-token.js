@@ -17,7 +17,7 @@ export const TOKEN_COLUMNS = [
   { key: 'createdTime', label: 'Created Time' },
   { key: 'expiresAt',   label: 'Expires At' },
   { key: 'status',      label: 'Status' },
-  { key: 'actions',     label: 'Actions' },
+  { key: 'actions',     label: 'Actions', align: 'right' },
 ];
 
 // ─── Select options ───────────────────────────────────────────

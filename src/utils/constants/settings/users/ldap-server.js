@@ -14,7 +14,7 @@ export const LDAP_COLUMNS = [
   { key: 'ldapGroups', label: 'LDAP Groups' },
   { key: 'lastSyncAt', label: 'Last Sync At' },
   { key: 'sync',       label: 'Sync' },
-  { key: 'actions',    label: 'Actions' },
+  { key: 'actions',    label: 'Actions', align: 'right' },
 ];
 
 // ─── Select options ───────────────────────────────────────────

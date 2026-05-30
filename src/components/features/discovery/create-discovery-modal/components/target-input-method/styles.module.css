@@ -1,0 +1,84 @@
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.formGroup label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--gap-xs);
+}
+
+.inputModeButtons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-xs);
+}
+
+.modeButton {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: 8px var(--padding-sm);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+}
+
+.modeButton:hover {
+  border-color: var(--color-chart-cyan);
+  background-color: var(--color-bg-hover);
+}
+
+.modeButton_active {
+  border-color: var(--color-chart-cyan);
+  background-color: rgba(0, 174, 239, 0.1);
+  color: var(--color-chart-cyan);
+}
+
+/* Custom radio circle */
+.radioCircle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.modeButton_active .radioCircle {
+  border-color: var(--color-chart-cyan);
+}
+
+.radioCircleInner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: all var(--transition-fast);
+}
+
+.modeButton_active .radioCircleInner {
+  background-color: var(--color-chart-cyan);
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: var(--font-xs);
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .inputModeButtons {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -162,7 +162,7 @@ export const FilterSidebar = ({
           })}
 
           {/* Custom Children Content */}
-          {children}
+          {children && <div className={styles.customContent}>{children}</div>}
         </div>
 
         {/* Footer Actions */}

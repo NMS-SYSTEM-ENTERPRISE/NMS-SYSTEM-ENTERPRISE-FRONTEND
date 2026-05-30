@@ -1,0 +1,97 @@
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.formGroup label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--gap-xs);
+}
+
+.csvDropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--padding-xl);
+  background-color: var(--color-bg-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.csvDropzone:hover {
+  border-color: var(--color-chart-cyan);
+  background-color: rgba(0, 174, 239, 0.05);
+}
+
+.csvDropzone.hasError {
+  border-color: var(--color-danger);
+}
+
+.csvPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  color: var(--color-text-secondary);
+}
+
+.csvPreview {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+.csvIcon {
+  color: var(--color-chart-cyan);
+}
+
+.csvDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  overflow: hidden;
+}
+
+.csvName {
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.csvSize {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+.csvChangeBtn {
+  padding: 6px 12px;
+  background-color: transparent;
+  border: 1px solid var(--color-chart-cyan);
+  border-radius: var(--radius-sm);
+  color: var(--color-chart-cyan);
+  font-size: var(--font-xs);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.csvChangeBtn:hover {
+  background-color: rgba(0, 174, 239, 0.1);
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: var(--font-xs);
+  margin-top: 4px;
+}

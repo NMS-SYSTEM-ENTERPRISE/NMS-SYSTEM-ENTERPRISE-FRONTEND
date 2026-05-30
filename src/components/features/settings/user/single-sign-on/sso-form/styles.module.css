@@ -1,0 +1,75 @@
+.certificateBlock {
+  background: var(--color-bg-secondary);
+  padding: var(--padding-lg);
+  border-radius: var(--radius-md);
+  margin-top: var(--margin-lg);
+  font-family: monospace;
+  font-size: var(--font-sm);
+  word-break: break-all;
+}
+
+.certificateBody {
+  color: var(--color-text-muted);
+  margin: var(--margin-sm) 0;
+}
+
+.infoIcon {
+  color: var(--color-chart-cyan);
+  vertical-align: middle;
+  margin-left: var(--margin-xs);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--gap-sm);
+  align-items: center;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap-md);
+  margin-top: var(--margin-xl);
+  padding-top: var(--padding-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.inputWithCopy {
+  display: flex;
+  align-items: stretch;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 38px;
+}
+
+.inputWithCopy > input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0 var(--padding-md);
+  color: var(--color-text-primary);
+}
+
+.inputWithCopy > input:focus {
+  outline: none;
+}
+
+.copyButton {
+  background: var(--color-bg-secondary);
+  border: none;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--padding-sm);
+  transition: all 0.2s ease;
+}
+
+.copyButton:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-primary);
+}

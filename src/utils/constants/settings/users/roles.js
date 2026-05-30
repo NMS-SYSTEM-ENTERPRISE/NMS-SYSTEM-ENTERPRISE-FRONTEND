@@ -12,7 +12,7 @@ export const ROLES_COLUMNS = [
   { key: 'name', label: 'Role Name' },
   { key: 'description', label: 'Role Description' },
   { key: 'userCount', label: 'User Count' },
-  { key: 'actions', label: 'Actions' },
+  { key: 'actions', label: 'Actions', align: 'right' },
 ];
 
 // ─── Permission modules ───────────────────────────────────────

@@ -9,6 +9,10 @@ import { UserProfileProvider } from '@/contexts/settings/user/user-profiles/user
 import { PatProvider } from '@/contexts/settings/user/personal-access-token/pat-context';
 import { PasswordPolicyProvider } from '@/contexts/settings/user/password-settings/password-policy-context';
 
+import { CredentialTagsProvider } from '@/contexts/discovery-settings/credential-profile/tags-context';
+import { CredentialGroupsProvider } from '@/contexts/discovery-settings/credential-profile/groups-context';
+import { CredentialProfileProvider } from '@/contexts/discovery-settings/credential-profile/profile-context';
+
 export function Providers({ children }) {
   return (
     <ToastProvider>
@@ -19,7 +23,13 @@ export function Providers({ children }) {
               <UserProfileProvider>
                 <PatProvider>
                   <PasswordPolicyProvider>
-                    {children}
+                    <CredentialTagsProvider>
+                      <CredentialGroupsProvider>
+                        <CredentialProfileProvider>
+                          {children}
+                        </CredentialProfileProvider>
+                      </CredentialGroupsProvider>
+                    </CredentialTagsProvider>
                   </PasswordPolicyProvider>
                 </PatProvider>
               </UserProfileProvider>

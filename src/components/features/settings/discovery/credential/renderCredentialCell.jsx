@@ -14,17 +14,23 @@ export const renderCredentialCell = (
     case 'name':
       return <span className={styles.tableLinkName}>{credential.name}</span>;
     case 'type':
-      return credential.type;
+      return credential.type || <span style={{ opacity: 0.5 }}>N/A</span>;
     case 'protocol':
-      return credential.protocol;
+      const protocolVal = credential.protocol || credential.auth_protocol || credential.type;
+      return protocolVal ? protocolVal : <span style={{ opacity: 0.5 }}>N/A</span>;
     case 'devices':
-      return <Badge variant="cyan">{credential.devices}</Badge>;
+      return <Badge variant="cyan">{credential.devices_using ?? credential.devices ?? 0}</Badge>;
     case 'groups':
+      const groupsList = credential.groups || [];
       return (
         <div className={styles.groupTags}>
-          {credential.groups.map((group, idx) => (
-            <Badge key={idx} variant="secondary">{group}</Badge>
-          ))}
+          {groupsList.length > 0 ? (
+            groupsList.map((group, idx) => (
+              <Badge key={idx} variant="secondary">{group.name || group}</Badge>
+            ))
+          ) : (
+            <span style={{ opacity: 0.5 }}>N/A</span>
+          )}
         </div>
       );
     case 'actions':

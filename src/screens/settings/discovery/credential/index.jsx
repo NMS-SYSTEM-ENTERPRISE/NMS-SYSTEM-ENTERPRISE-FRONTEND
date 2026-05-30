@@ -9,13 +9,17 @@ import { Table } from '@/components/ui/table';
 import { CREDENTIAL_PROFILE_COLUMNS } from '@/utils/constants/settings/discovery/credential';
 import { MOCK_CREDENTIAL_PROFILES } from '@/utils/dummy-data/settings/discovery';
 import { Icon } from '@iconify/react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { copyToClipboard } from '@/utils/copyToClipboard';
 import { useToast } from '@/hooks/useToast';
 import styles from '../../shared-settings-styles.module.css';
 
+import { useCredentialProfile } from '@/hooks/discovery-settings/credential-profile/profile/useCredentialProfile';
+
 export default function CredentialProfile() {
   const { showSuccess, showError } = useToast();
+  const { getAllCredentialProfiles, createCredentialProfile, editCredentialProfile, deleteCredentialProfile, isLoading } = useCredentialProfile();
+
   const [searchTags, setSearchTags] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -23,18 +27,28 @@ export default function CredentialProfile() {
   const [selectedCredential, setSelectedCredential] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const filteredCredentials = useMemo(() => {
-    return MOCK_CREDENTIAL_PROFILES.filter((cred) => {
-      if (searchTags.length === 0) return true;
-      return searchTags.every((tag) => {
-        const lowerTag = tag.toLowerCase();
-        return (
-          cred.name.toLowerCase().includes(lowerTag) ||
-          cred.type.toLowerCase().includes(lowerTag)
-        );
-      });
-    });
-  }, [searchTags]);
+  const [credentialsList, setCredentialsList] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const fetchCredentials = async () => {
+    const params = {
+      page: currentPage,
+      limit: pageSize,
+    };
+    if (searchTags.length > 0) {
+      params.search = searchTags.join(' ');
+    }
+    const data = await getAllCredentialProfiles(params);
+    if (data) {
+      setCredentialsList(data.items || []);
+      setTotalRecords(data.total_records || 0);
+    }
+  };
+
+  useEffect(() => {
+    fetchCredentials();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, searchTags]);
 
   const handleEdit = (credential) => {
     setSelectedCredential(credential);
@@ -67,14 +81,33 @@ export default function CredentialProfile() {
   };
 
   const handleDuplicate = (credential) => {
-    setSelectedCredential({ ...credential, name: `${credential.name} (Copy)` });
+    setSelectedCredential({ ...credential, name: `${credential.name} (Copy)`, id: null });
     setShowCreateModal(true);
   };
 
-  const confirmDelete = () => {
-    console.log('Deleting credential:', selectedCredential);
+  const confirmDelete = async () => {
+    if (selectedCredential) {
+      const res = await deleteCredentialProfile(selectedCredential.id);
+      if (res) {
+        fetchCredentials();
+      }
+    }
     setShowDeleteConfirm(false);
     setSelectedCredential(null);
+  };
+
+  const handleSaveModal = async (formData) => {
+    let res;
+    if (selectedCredential && selectedCredential.id) {
+      res = await editCredentialProfile({ ...formData, id: selectedCredential.id });
+    } else {
+      res = await createCredentialProfile(formData);
+    }
+    if (res) {
+      setShowCreateModal(false);
+      setSelectedCredential(null);
+      fetchCredentials();
+    }
   };
 
   return (
@@ -105,17 +138,17 @@ export default function CredentialProfile() {
             <Table
               className={styles.settingsListTable}
               columns={CREDENTIAL_PROFILE_COLUMNS}
-              data={filteredCredentials}
+              data={credentialsList}
               keyExtractor={(cred) => cred.id}
               renderCell={(row, col) =>
-              renderCredentialCell(
-                row,
-                col,
-                handleEdit,
-                handleCopy,
-                handleDuplicate,
-                handleDelete
-              )
+                renderCredentialCell(
+                  row,
+                  col,
+                  handleEdit,
+                  handleCopy,
+                  handleDuplicate,
+                  handleDelete
+                )
               }
               emptyMessage="No credential profiles found."
             />
@@ -123,7 +156,7 @@ export default function CredentialProfile() {
             <Pagination
               className={styles.settingsListPagination}
               currentPage={currentPage}
-              totalItems={filteredCredentials.length}
+              totalItems={totalRecords}
               pageSize={pageSize}
               onPageChange={setCurrentPage}
               onPageSizeChange={(size) => {
@@ -142,10 +175,7 @@ export default function CredentialProfile() {
             setShowCreateModal(false);
             setSelectedCredential(null);
           }}
-          onSave={() => {
-            setShowCreateModal(false);
-            setSelectedCredential(null);
-          }}
+          onSave={handleSaveModal}
         />
       )}
 

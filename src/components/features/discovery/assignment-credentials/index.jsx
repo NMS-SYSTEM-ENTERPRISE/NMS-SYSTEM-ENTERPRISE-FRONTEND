@@ -100,7 +100,6 @@ const monitors = [
 ];
 
 export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
-  const [activeTab, setActiveTab] = useState('monitor');
   const [searchTerm, setSearchTerm] = useState('');
   const filteredMonitors = monitors.filter(
     (monitor) =>
@@ -157,33 +156,6 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
         <h2 className={styles.modal_title}>Assign {profileName}</h2>
         <button className={styles.modal_close} onClick={onClose}>
           <Icon icon="mdi:close" width={20} height={20} />
-        </button>
-      </div>
-
-      <div className={styles.modal_tabs}>
-        <button
-          className={`${styles.tab} ${
-            activeTab === 'monitor' ? styles.tab_active : ''
-          }`}
-          onClick={() => setActiveTab('monitor')}
-        >
-          Monitor
-        </button>
-        <button
-          className={`${styles.tab} ${
-            activeTab === 'application' ? styles.tab_active : ''
-          }`}
-          onClick={() => setActiveTab('application')}
-        >
-          Application
-        </button>
-        <button
-          className={`${styles.tab} ${
-            activeTab === 'metric' ? styles.tab_active : ''
-          }`}
-          onClick={() => setActiveTab('metric')}
-        >
-          Metric
         </button>
       </div>
 
@@ -250,7 +222,7 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
           <SelectComponent
             className={styles.pagination_select}
             value={50}
-            onChange={() => {}}
+            onChange={() => { }}
             options={[
               { value: 50, label: '50' },
               { value: 100, label: '100' },

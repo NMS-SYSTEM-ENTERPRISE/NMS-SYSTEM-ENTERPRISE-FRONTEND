@@ -18,54 +18,100 @@ export const renderProfileCell = (
     case 'name':
       return <span className={styles.tableLinkName}>{profile.name}</span>;
     case 'host':
-      return profile.host;
+      return profile.host || profile.ip_address_or_hostname || profile.csv_file_path || profile.start_ip || profile.cidr_notation || <span style={{ opacity: 0.5 }}>N/A</span>;
     case 'type':
+      const dType = profile.type || profile.discovery_type;
       return (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-sm)' }}>
-          {profile.type === 'network' && (
+          {dType === 'network' && (
             <Icon icon="mdi:wifi" width={20} height={20} />
           )}
-          {profile.type === 'server' && (
+          {dType === 'server' && (
             <Icon icon="mdi:database" width={20} height={20} />
           )}
-          {profile.type === 'virtualization' && (
+          {dType === 'virtualization' && (
             <Icon icon="mdi:package-variant" width={20} height={20} />
+          )}
+          {!['network', 'server', 'virtualization'].includes(dType) && (
+            dType || <span style={{ opacity: 0.5 }}>N/A</span>
           )}
         </div>
       );
     case 'discovered':
-      return <Badge variant={profile.discovered > 0 ? 'success' : 'secondary'}>{profile.discovered}</Badge>;
+      return <Badge variant={profile.discovered > 0 ? 'success' : 'secondary'}>{profile.discovered ?? '-'}</Badge>;
     case 'status':
-      return <span className={styles.tableMuted}>{profile.status}</span>;
+      return <span className={styles.tableMuted}>{profile.status || <span style={{ opacity: 0.5 }}>N/A</span>}</span>;
     case 'scheduler':
-      return profile.scheduler ? (
+      return (profile.scheduler || (profile.schedule_type && profile.schedule_type !== 'Once')) ? (
         <Icon icon="mdi:activity" width={18} height={18} />
-      ) : null;
+      ) : <span style={{ opacity: 0.5 }}>-</span>;
     case 'groups':
-      return <Badge variant="cyan">{profile.groups}</Badge>;
+      const groupsList = Array.isArray(profile.groups) ? profile.groups : (profile.groups ? [profile.groups] : []);
+      return (
+        <div className={styles.groupTags}>
+          {groupsList.length > 0 ? (
+            groupsList.map((group, idx) => (
+              <Badge key={idx} variant="cyan">{group.name || group}</Badge>
+            ))
+          ) : (
+            <span style={{ opacity: 0.5 }}>N/A</span>
+          )}
+        </div>
+      );
     case 'actions':
       return (
         <div className={styles.actions}>
-          <button className={styles.actionBtn} onClick={() => handleAssignCredential(profile)} title="Assign Credentials">
-            <Icon icon="mdi:refresh" width={18} height={18} />
-          </button>
-          <button className={styles.actionBtn} onClick={() => handleSchedule(profile)} title="Schedule">
-            <Icon icon="mdi:clock-outline" width={18} height={18} />
-          </button>
           <div className={styles.actionsMenuWrapper}>
             <button
               className={styles.actionBtn}
-              onClick={() => setShowActionsMenu(showActionsMenu === profile.id ? null : profile.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowActionsMenu(showActionsMenu === profile.id ? null : profile.id);
+              }}
               title="More Actions"
             >
               <Icon icon="mdi:dots-vertical" width={18} height={18} />
             </button>
             {showActionsMenu === profile.id && (
               <div className={styles.actionsMenu}>
-                <button onClick={() => handleEdit(profile)} className={styles.editMenuBtn}>
+                <button
+                  type="button"
+                  className={styles.assignMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAssignCredential(profile);
+                  }}
+                >
+                  <Icon icon="mdi:refresh" width={16} height={16} /> Assign
+                </button>
+                <button
+                  type="button"
+                  className={styles.scheduleMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSchedule(profile);
+                  }}
+                >
+                  <Icon icon="mdi:clock-outline" width={16} height={16} /> Schedule
+                </button>
+                <button
+                  type="button"
+                  className={styles.editMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(profile);
+                  }}
+                >
                   <Icon icon="mdi:pencil" width={16} height={16} /> Edit
                 </button>
-                <button onClick={() => handleDelete(profile)} className={styles.deleteMenuBtn}>
+                <button
+                  type="button"
+                  className={styles.deleteMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(profile);
+                  }}
+                >
                   <Icon icon="mdi:trash-can" width={16} height={16} /> Delete
                 </button>
               </div>

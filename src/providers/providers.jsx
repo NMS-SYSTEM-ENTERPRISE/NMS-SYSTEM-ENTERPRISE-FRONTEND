@@ -12,6 +12,9 @@ import { PasswordPolicyProvider } from '@/contexts/settings/user/password-settin
 import { CredentialTagsProvider } from '@/contexts/discovery-settings/credential-profile/tags-context';
 import { CredentialGroupsProvider } from '@/contexts/discovery-settings/credential-profile/groups-context';
 import { CredentialProfileProvider } from '@/contexts/discovery-settings/credential-profile/profile-context';
+import { DiscoveryTagsProvider } from '@/contexts/discovery-settings/discovery-profile/tags-context';
+import { DiscoveryGroupsProvider } from '@/contexts/discovery-settings/discovery-profile/groups-context';
+import { DiscoveryProfileProvider } from '@/contexts/discovery-settings/discovery-profile/profile-context';
 
 export function Providers({ children }) {
   return (
@@ -26,7 +29,13 @@ export function Providers({ children }) {
                     <CredentialTagsProvider>
                       <CredentialGroupsProvider>
                         <CredentialProfileProvider>
-                          {children}
+                          <DiscoveryTagsProvider>
+                            <DiscoveryGroupsProvider>
+                              <DiscoveryProfileProvider>
+                                {children}
+                              </DiscoveryProfileProvider>
+                            </DiscoveryGroupsProvider>
+                          </DiscoveryTagsProvider>
                         </CredentialProfileProvider>
                       </CredentialGroupsProvider>
                     </CredentialTagsProvider>

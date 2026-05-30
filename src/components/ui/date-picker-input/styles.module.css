@@ -1,0 +1,56 @@
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dateInput {
+  cursor: pointer !important;
+  padding-right: 36px !important;
+  caret-color: transparent;
+}
+
+.calendarIcon {
+  position: absolute;
+  right: 12px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.popupContainer {
+  background-color: var(--color-bg-primary, #0f172a) !important;
+  border: 1px solid var(--color-border, #334155) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+  z-index: 99999 !important;
+}
+
+.calendarWrapper {
+  padding: 8px;
+  background-color: var(--color-bg-primary, #0f172a);
+  border-radius: var(--radius-md);
+}
+
+.calendarWrapper :global(.rdp) {
+  --rdp-cell-size: 32px;
+  --rdp-accent-color: var(--primary-cyan);
+  --rdp-background-color: rgba(0, 240, 255, 0.1);
+  --rdp-outline: 2px solid var(--primary-cyan);
+  --rdp-outline-selected: 2px solid var(--primary-cyan);
+  margin: 0;
+}
+
+.calendarWrapper :global(.rdp-day_selected) {
+  background-color: var(--primary-cyan);
+  color: #000;
+  font-weight: 600;
+}
+
+.calendarWrapper :global(.rdp-day_selected:hover) {
+  background-color: var(--primary-cyan);
+}
+
+.calendarWrapper :global(.rdp-button:hover:not([disabled]):not(.rdp-day_selected)) {
+  background-color: var(--bg-hover);
+}

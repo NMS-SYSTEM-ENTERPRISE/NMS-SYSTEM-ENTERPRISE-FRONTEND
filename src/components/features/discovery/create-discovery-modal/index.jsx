@@ -1,4 +1,3 @@
-import { TagSelector } from '@/components/common/tag-selector';
 import { SelectComponent } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,29 +6,61 @@ import { useState } from 'react';
 import { DiscoveryTypeSelector } from './components/discovery-type-selector';
 import { TargetInputMethod } from './components/target-input-method';
 import { CsvUploader } from './components/csv-uploader';
+import { useCredentialProfile } from '@/hooks/discovery-settings/credential-profile/profile/useCredentialProfile';
+import { useDiscoveryGroups } from '@/hooks/discovery-settings/discovery-profile/groups/useDiscoveryGroups';
+import { useDiscoveryTags } from '@/hooks/discovery-settings/discovery-profile/tags/useDiscoveryTags';
+import { useEffect } from 'react';
 import styles from './styles.module.css';
 
 export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     name: profile?.name || '',
-    type: profile?.type || 'network',
+    type: profile?.discovery_type || profile?.type || 'network',
     otherType: '',
-    host: profile?.host || '',
-    startIP: '',
-    endIP: '',
-    cidr: '',
-    csvFile: null,
-    port: '',
-    timeout: '30',
+    host: profile?.ip_address_or_hostname || profile?.host || '',
+    startIP: profile?.start_ip || '',
+    endIP: profile?.end_ip || '',
+    cidr: profile?.cidr_notation || '',
+    csvFile: profile?.csv_file_path ? { name: profile.csv_file_path } : null,
+    port: profile?.port || '',
+    timeout: profile?.timeout || '30',
     retries: '3',
-    credentials: [],
-    groups: profile?.groups ? profile.groups.split(', ') : [],
-    tags: profile?.tags || [],
-    description: '',
+    credentials: Array.isArray(profile?.credential_profiles) ? profile.credential_profiles.map(c => c.id || c) : [],
+    groups: Array.isArray(profile?.groups) ? profile.groups.map(g => g.id || g) : [],
+    tags: Array.isArray(profile?.tags) ? profile.tags.map(t => t.id || t) : [],
+    description: profile?.description || '',
   });
 
-  const [inputMode, setInputMode] = useState(null);
+  const [inputMode, setInputMode] = useState(
+    profile?.target_input_method === 'Single IP' ? 'single' :
+      profile?.target_input_method === 'IP Range' ? 'range' :
+        profile?.target_input_method === 'CIDR Notation' ? 'cidr' :
+          profile?.target_input_method === 'CSV Upload' ? 'csv' :
+            null
+  );
   const [errors, setErrors] = useState({});
+
+  const { getAllCredentialProfiles } = useCredentialProfile();
+  const { getAllDiscoveryGroups } = useDiscoveryGroups();
+  const { getAllDiscoveryTags } = useDiscoveryTags();
+
+  const [credentialOptions, setCredentialOptions] = useState([]);
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [tagOptions, setTagOptions] = useState([]);
+
+  useEffect(() => {
+    const loadDropdownData = async () => {
+      const [creds, groups, tags] = await Promise.all([
+        getAllCredentialProfiles({ limit: 1000 }),
+        getAllDiscoveryGroups({ limit: 1000 }),
+        getAllDiscoveryTags({ limit: 1000 })
+      ]);
+      if (creds?.items) setCredentialOptions(creds.items.map(c => ({ value: c.id, label: c.name })));
+      if (groups?.items) setGroupOptions(groups.items.map(g => ({ value: g.id, label: g.name })));
+      if (tags?.items) setTagOptions(tags.items.map(t => ({ value: t.id, label: t.name })));
+    };
+    loadDropdownData();
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -207,34 +238,42 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
                 const values = e.target.value || [];
                 setFormData({ ...formData, credentials: values });
               }}
-              options={[
-                { value: 'cred1', label: 'Network-SNMP-v2' },
-                { value: 'cred2', label: 'Network-SNMP-v3' },
-                { value: 'cred3', label: 'Linux-SSH' },
-                { value: 'cred4', label: 'Windows-WMI' },
-                { value: 'cred5', label: 'VMware-API' },
-              ]}
+              options={credentialOptions}
               placeholder="Select credentials"
+              noOptionsMessage={() => "No data found"}
             />
             <p className={styles.helpText}>Select multiple credentials</p>
           </div>
 
           <div className={styles.formGroup}>
             <label>Groups</label>
-            <TagSelector
-              selectedTags={formData.groups}
-              onChange={(groups) => setFormData({ ...formData, groups })}
+            <SelectComponent
+              className={styles.select}
+              isMulti
+              value={formData.groups || []}
+              onChange={(e) => {
+                const values = e.target.value || [];
+                setFormData({ ...formData, groups: values });
+              }}
+              options={groupOptions}
               placeholder="Add Groups"
-              noun="group"
+              noOptionsMessage={() => "No data found"}
             />
           </div>
 
           <div className={styles.formGroup}>
             <label>Tags</label>
-            <TagSelector
-              selectedTags={formData.tags}
-              onChange={(tags) => setFormData({ ...formData, tags })}
+            <SelectComponent
+              className={styles.select}
+              isMulti
+              value={formData.tags || []}
+              onChange={(e) => {
+                const values = e.target.value || [];
+                setFormData({ ...formData, tags: values });
+              }}
+              options={tagOptions}
               placeholder="Add Tags"
+              noOptionsMessage={() => "No data found"}
             />
           </div>
 

@@ -26,6 +26,7 @@ export default function CredentialProfile() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCredential, setSelectedCredential] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showActionsMenu, setShowActionsMenu] = useState(null);
 
   const [credentialsList, setCredentialsList] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -65,12 +66,8 @@ export default function CredentialProfile() {
       `Credential: ${credential.name}`,
       `Type: ${credential.type}`,
       credential.protocol ? `Protocol: ${credential.protocol}` : null,
-      credential.groups?.length
-        ? `Groups: ${credential.groups.join(', ')}`
-        : null,
-    ]
-      .filter(Boolean)
-      .join('\n');
+      credential.groups?.length ? `Groups: ${credential.groups.join(', ')}` : null,
+    ].filter(Boolean).join('\n');
 
     const ok = await copyToClipboard(text);
     if (ok) {
@@ -106,7 +103,7 @@ export default function CredentialProfile() {
     if (res) {
       setShowCreateModal(false);
       setSelectedCredential(null);
-      fetchCredentials();
+      fetchCredentials({ page: currentPage, limit: pageSize });
     }
   };
 
@@ -147,7 +144,9 @@ export default function CredentialProfile() {
                   handleEdit,
                   handleCopy,
                   handleDuplicate,
-                  handleDelete
+                  handleDelete,
+                  showActionsMenu,
+                  setShowActionsMenu
                 )
               }
               emptyMessage="No credential profiles found."

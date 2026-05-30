@@ -11,10 +11,16 @@ import { Table } from '@/components/ui/table';
 import { DISCOVERY_PROFILE_COLUMNS } from '@/utils/constants/settings/discovery/profile';
 import { MOCK_DISCOVERY_PROFILES } from '@/utils/dummy-data/settings/discovery';
 import { Icon } from '@iconify/react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { useToast } from '@/hooks/useToast';
 import styles from '../../shared-settings-styles.module.css';
 
+import { useDiscoveryProfile } from '@/hooks/discovery-settings/discovery-profile/profile/useDiscoveryProfile';
+
 export default function DiscoveryProfile() {
+  const { showSuccess, showError } = useToast();
+  const { getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, isLoading } = useDiscoveryProfile();
+
   const [searchTags, setSearchTags] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
@@ -25,18 +31,28 @@ export default function DiscoveryProfile() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showActionsMenu, setShowActionsMenu] = useState(null);
 
-  const filteredProfiles = useMemo(() => {
-    return MOCK_DISCOVERY_PROFILES.filter((profile) => {
-      if (searchTags.length === 0) return true;
-      return searchTags.every((tag) => {
-        const lowerTag = tag.toLowerCase();
-        return (
-          profile.name.toLowerCase().includes(lowerTag) ||
-          profile.host.toLowerCase().includes(lowerTag)
-        );
-      });
-    });
-  }, [searchTags]);
+  const [profilesList, setProfilesList] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const fetchProfiles = async () => {
+    const params = {
+      page: currentPage,
+      limit: pageSize,
+    };
+    if (searchTags.length > 0) {
+      params.search = searchTags.join(' ');
+    }
+    const data = await getAllDiscoveryProfiles(params);
+    if (data) {
+      setProfilesList(data.items || []);
+      setTotalRecords(data.total_records || 0);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfiles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize, searchTags]);
 
   const handleAssignCredential = (profile) => {
     setSelectedProfile(profile);
@@ -62,7 +78,7 @@ export default function DiscoveryProfile() {
   };
 
   const handleDuplicate = (profile) => {
-    setSelectedProfile({ ...profile, name: `${profile.name} (Copy)` });
+    setSelectedProfile({ ...profile, name: `${profile.name} (Copy)`, id: null });
     setShowCreateModal(true);
     setShowActionsMenu(null);
   };
@@ -73,10 +89,29 @@ export default function DiscoveryProfile() {
     setShowActionsMenu(null);
   };
 
-  const confirmDelete = () => {
-    console.log('Deleting profile:', selectedProfile);
+  const confirmDelete = async () => {
+    if (selectedProfile) {
+      const res = await deleteDiscoveryProfile(selectedProfile.id);
+      if (res) {
+        fetchProfiles();
+      }
+    }
     setShowDeleteConfirm(false);
     setSelectedProfile(null);
+  };
+
+  const handleSaveModal = async (formData) => {
+    let res;
+    if (selectedProfile && selectedProfile.id) {
+      res = await editDiscoveryProfile({ ...formData, id: selectedProfile.id });
+    } else {
+      res = await createDiscoveryProfile(formData);
+    }
+    if (res) {
+      setShowCreateModal(false);
+      setSelectedProfile(null);
+      fetchProfiles();
+    }
   };
 
   return (
@@ -107,7 +142,7 @@ export default function DiscoveryProfile() {
             <Table
               className={styles.settingsListTable}
               columns={DISCOVERY_PROFILE_COLUMNS}
-              data={filteredProfiles}
+              data={profilesList}
               keyExtractor={(profile) => profile.id}
               renderCell={(row, col) =>
                 renderProfileCell(
@@ -129,7 +164,7 @@ export default function DiscoveryProfile() {
             <Pagination
               className={styles.settingsListPagination}
               currentPage={currentPage}
-              totalItems={filteredProfiles.length}
+              totalItems={totalRecords}
               pageSize={pageSize}
               onPageChange={setCurrentPage}
               onPageSizeChange={(size) => {
@@ -148,10 +183,7 @@ export default function DiscoveryProfile() {
             setShowCreateModal(false);
             setSelectedProfile(null);
           }}
-          onSave={() => {
-            setShowCreateModal(false);
-            setSelectedProfile(null);
-          }}
+          onSave={handleSaveModal}
         />
       )}
 

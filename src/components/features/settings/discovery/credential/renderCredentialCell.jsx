@@ -8,7 +8,9 @@ export const renderCredentialCell = (
   handleEdit,
   handleCopy,
   handleDuplicate,
-  handleDelete
+  handleDelete,
+  showActionsMenu,
+  setShowActionsMenu
 ) => {
   switch (col.key) {
     case 'name':
@@ -36,50 +38,52 @@ export const renderCredentialCell = (
     case 'actions':
       return (
         <div className={styles.actions}>
-          <button
-            type="button"
-            className={styles.actionBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEdit(credential);
-            }}
-            title="Edit"
-          >
-            <Icon icon="mdi:pencil" width={18} height={18} />
-          </button>
-          <button
-            type="button"
-            className={styles.actionBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCopy(credential);
-            }}
-            title="Copy to clipboard"
-          >
-            <Icon icon="mdi:content-copy" width={18} height={18} />
-          </button>
-          <button
-            type="button"
-            className={styles.actionBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDuplicate(credential);
-            }}
-            title="Duplicate"
-          >
-            <Icon icon="mdi:duplicate" width={18} height={18} />
-          </button>
-          <button
-            type="button"
-            className={styles.actionBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(credential);
-            }}
-            title="Delete"
-          >
-            <Icon icon="mdi:trash-can" width={18} height={18} className={styles.textDanger} />
-          </button>
+          <div className={styles.actionsMenuWrapper}>
+            <button
+              className={styles.actionBtn}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowActionsMenu(showActionsMenu === credential.id ? null : credential.id);
+              }}
+              title="More Actions"
+            >
+              <Icon icon="mdi:dots-vertical" width={18} height={18} />
+            </button>
+            {showActionsMenu === credential.id && (
+              <div className={styles.actionsMenu}>
+                <button
+                  type="button"
+                  className={styles.editMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(credential);
+                  }}
+                >
+                  <Icon icon="mdi:pencil" width={16} height={16} /> Edit
+                </button>
+                <button
+                  type="button"
+                  className={styles.duplicateMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopy(credential);
+                  }}
+                >
+                  <Icon icon="mdi:content-copy" width={16} height={16} /> Copy
+                </button>
+                <button
+                  type="button"
+                  className={styles.deleteMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(credential);
+                  }}
+                >
+                  <Icon icon="mdi:trash-can" width={16} height={16} /> Delete
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       );
     default:

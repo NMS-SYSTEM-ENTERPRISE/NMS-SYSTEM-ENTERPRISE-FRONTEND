@@ -372,7 +372,52 @@
 
 .actionBtn:hover {
   background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.actionEditBtn {
+  color: var(--color-text-secondary);
+}
+
+.actionEditBtn:hover {
+  background-color: rgba(0, 200, 255, 0.1);
   color: var(--color-chart-cyan);
+}
+
+.actionDuplicateBtn {
+  color: var(--color-text-secondary);
+}
+
+.actionDuplicateBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.actionDeleteBtn {
+  color: var(--color-text-secondary);
+}
+
+.actionDeleteBtn:hover {
+  background-color: rgba(255, 71, 87, 0.1);
+  color: #ff4757;
+}
+
+.actionAssignBtn {
+  color: var(--color-text-secondary);
+}
+
+.actionAssignBtn:hover {
+  background-color: rgba(46, 213, 115, 0.1);
+  color: #2ed573;
+}
+
+.actionScheduleBtn {
+  color: var(--color-text-secondary);
+}
+
+.actionScheduleBtn:hover {
+  background-color: rgba(255, 165, 2, 0.1);
+  color: #ffa502;
 }
 
 .pagination {
@@ -815,11 +860,16 @@
   padding: var(--padding-sm) var(--padding-md);
   background: none;
   border: none;
+  border-bottom: 1px solid var(--color-border);
   color: var(--color-text-primary);
   font-size: var(--font-sm);
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
+}
+
+.actionsMenu button:last-child {
+  border-bottom: none;
 }
 
 .actionsMenu button:hover {
@@ -832,7 +882,6 @@
 
 .actionsMenu button.editMenuBtn {
   color: var(--color-chart-cyan);
-  /* Theme accent color */
 }
 
 .actionsMenu button.editMenuBtn:hover {
@@ -840,9 +889,33 @@
 }
 
 .actionsMenu button.deleteMenuBtn {
-  color: var(--color-danger);
+  color: var(--color-danger, #f44336);
 }
 
 .actionsMenu button.deleteMenuBtn:hover {
   background-color: rgba(244, 67, 54, 0.1);
+}
+
+.actionsMenu button.duplicateMenuBtn {
+  color: var(--color-chart-purple, #9b59b6);
+}
+
+.actionsMenu button.duplicateMenuBtn:hover {
+  background-color: rgba(155, 89, 182, 0.1);
+}
+
+.actionsMenu button.assignMenuBtn {
+  color: var(--color-success, #2ed573);
+}
+
+.actionsMenu button.assignMenuBtn:hover {
+  background-color: rgba(46, 213, 115, 0.1);
+}
+
+.actionsMenu button.scheduleMenuBtn {
+  color: var(--color-warning, #ffa502);
+}
+
+.actionsMenu button.scheduleMenuBtn:hover {
+  background-color: rgba(255, 165, 2, 0.1);
 }

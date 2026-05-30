@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
+import { DatePickerInput } from '@/components/ui/date-picker-input';
 import styles from './styles.module.css';
 
 export const ScheduleModal = ({ profileName, onClose, onSave }) => {
@@ -101,7 +102,10 @@ export const ScheduleModal = ({ profileName, onClose, onSave }) => {
                 scheduleData.frequency === 'weekly' ||
                 scheduleData.frequency === 'monthly') && (
                 <div className={styles.formGroup}>
-                  <label>Time *</label>
+                  <label className={styles.fieldLabel}>
+                    <Icon icon="mdi:clock-time-four-outline" width={14} height={14} className={styles.labelIcon} />
+                    Time *
+                  </label>
                   <Input
                     type="time"
                     value={scheduleData.time}
@@ -160,34 +164,32 @@ export const ScheduleModal = ({ profileName, onClose, onSave }) => {
 
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>
-                    <Icon icon="mdi:calendar" width={14} height={14} style={{ marginRight: '4px' }} />
+                  <label className={styles.fieldLabel}>
+                    <Icon icon="mdi:calendar" width={14} height={14} className={styles.labelIcon} />
                     Start Date *
                   </label>
-                  <Input
-                    type="date"
+                  <DatePickerInput
                     value={scheduleData.startDate}
-                    onChange={(e) =>
+                    onChange={(date) =>
                       setScheduleData({
                         ...scheduleData,
-                        startDate: e.target.value,
+                        startDate: date,
                       })
                     }
                     required
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>
-                    <Icon icon="mdi:calendar" width={14} height={14} style={{ marginRight: '4px' }} />
+                  <label className={styles.fieldLabel}>
+                    <Icon icon="mdi:calendar" width={14} height={14} className={styles.labelIcon} />
                     End Date (optional)
                   </label>
-                  <Input
-                    type="date"
+                  <DatePickerInput
                     value={scheduleData.endDate}
-                    onChange={(e) =>
+                    onChange={(date) =>
                       setScheduleData({
                         ...scheduleData,
-                        endDate: e.target.value,
+                        endDate: date,
                       })
                     }
                   />

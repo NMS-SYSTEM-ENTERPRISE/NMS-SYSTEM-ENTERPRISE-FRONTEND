@@ -230,3 +230,16 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.fieldLabel {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--gap-xs);
+}
+
+.labelIcon {
+  margin-right: 4px;
+}

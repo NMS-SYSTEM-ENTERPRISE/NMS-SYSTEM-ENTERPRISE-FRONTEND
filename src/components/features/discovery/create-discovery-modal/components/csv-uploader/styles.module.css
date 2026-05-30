@@ -95,3 +95,105 @@
   font-size: var(--font-xs);
   margin-top: 4px;
 }
+.csvActions {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.csvPreviewBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-xs);
+  background: rgba(0, 200, 255, 0.1);
+  color: var(--color-chart-cyan);
+  border: 1px solid var(--color-chart-cyan);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.csvPreviewBtn:hover {
+  background: var(--color-chart-cyan);
+  color: var(--color-bg-primary);
+}
+
+.previewModal {
+  max-width: 900px !important;
+  width: 90% !important;
+}
+
+.previewModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.previewModalTitle {
+  font-size: var(--font-lg);
+  color: var(--color-chart-cyan);
+  margin: 0;
+}
+
+.previewModalClose {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.previewModalClose:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
+.previewModalContent {
+  padding: var(--padding-lg);
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.previewTableWrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.previewTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-sm);
+}
+
+.previewTable th,
+.previewTable td {
+  padding: var(--padding-sm) var(--padding-md);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.previewTable th {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.previewTable td {
+  color: var(--color-text-primary);
+}
+
+.previewTable tr:last-child td {
+  border-bottom: none;
+}
+
+.previewEmpty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--padding-xl);
+}

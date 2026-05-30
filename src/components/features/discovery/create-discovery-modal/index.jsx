@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
+import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
-import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { useCredentialProfile } from '@/hooks/discovery-settings/credential-profile/profile/useCredentialProfile';
 import { useDiscoveryGroups } from '@/hooks/discovery-settings/discovery-profile/groups/useDiscoveryGroups';
 import { useDiscoveryTags } from '@/hooks/discovery-settings/discovery-profile/tags/useDiscoveryTags';
@@ -51,8 +51,18 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
   const [errors, setErrors] = useState({});
 
   const { getAllCredentialProfiles } = useCredentialProfile();
-  const { getAllDiscoveryGroups, createDiscoveryGroup, editDiscoveryGroup, deleteDiscoveryGroup } = useDiscoveryGroups();
-  const { getAllDiscoveryTags, createDiscoveryTag, editDiscoveryTag, deleteDiscoveryTag } = useDiscoveryTags();
+  const {
+    getAllDiscoveryGroups,
+    createDiscoveryGroup,
+    editDiscoveryGroup,
+    deleteDiscoveryGroup,
+  } = useDiscoveryGroups();
+  const {
+    getAllDiscoveryTags,
+    createDiscoveryTag,
+    editDiscoveryTag,
+    deleteDiscoveryTag,
+  } = useDiscoveryTags();
 
   const [credentialOptions, setCredentialOptions] = useState([]);
   const [groupOptions, setGroupOptions] = useState([]);
@@ -178,236 +188,247 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
   return (
     <>
       <div className={styles.modalOverlay} onClick={onClose}>
-        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.modal_header}>
-          <h2 className={styles.modal_title}>
-            {profile ? 'Edit Discovery Profile' : 'Create Discovery Profile'}
-          </h2>
-          <button className={styles.modal_close} onClick={onClose}>
-            <Icon icon="mdi:close" width={20} height={20} />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className={styles.modal_body} noValidate>
-          <div className={styles.formGroup}>
-            <label>Profile Name *</label>
-            <Input
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              onFocus={() => clearError('name')}
-              placeholder="Enter profile name"
-              error={errors.name}
-            />
+        <div
+          className={styles.modalContent}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className={styles.modal_header}>
+            <h2 className={styles.modal_title}>
+              {profile ? 'Edit Discovery Profile' : 'Create Discovery Profile'}
+            </h2>
+            <button className={styles.modal_close} onClick={onClose}>
+              <Icon icon="mdi:close" width={20} height={20} />
+            </button>
           </div>
 
-          <DiscoveryTypeSelector
-            value={formData.type}
-            otherValue={formData.otherType}
-            onChange={(val) => {
-              setFormData({ ...formData, type: val });
-              clearError('type');
-            }}
-            onOtherChange={(val) => {
-              setFormData({ ...formData, otherType: val });
-              clearError('otherType');
-            }}
-            error={errors.type || errors.otherType}
-          />
-
-          <TargetInputMethod
-            value={inputMode}
-            onChange={(val) => {
-              setInputMode(val);
-              clearError('inputMode');
-            }}
-            error={errors.inputMode}
-          />
-
-          {inputMode === 'single' && (
+          <form
+            onSubmit={handleSubmit}
+            className={styles.modal_body}
+            noValidate
+          >
             <div className={styles.formGroup}>
-              <label>IP Address or Hostname *</label>
+              <label>Profile Name *</label>
               <Input
-                value={formData.host}
+                value={formData.name}
                 onChange={(e) =>
-                  setFormData({ ...formData, host: e.target.value })
+                  setFormData({ ...formData, name: e.target.value })
                 }
-                onFocus={() => clearError('host')}
-                placeholder="192.168.1.1 or hostname.domain.com"
-                error={errors.host}
+                onFocus={() => clearError('name')}
+                placeholder="Enter profile name"
+                error={errors.name}
               />
             </div>
-          )}
 
-          {inputMode === 'range' && (
+            <DiscoveryTypeSelector
+              value={formData.type}
+              otherValue={formData.otherType}
+              onChange={(val) => {
+                setFormData({ ...formData, type: val });
+                clearError('type');
+              }}
+              onOtherChange={(val) => {
+                setFormData({ ...formData, otherType: val });
+                clearError('otherType');
+              }}
+              error={errors.type || errors.otherType}
+            />
+
+            <TargetInputMethod
+              value={inputMode}
+              onChange={(val) => {
+                setInputMode(val);
+                clearError('inputMode');
+              }}
+              error={errors.inputMode}
+            />
+
+            {inputMode === 'single' && (
+              <div className={styles.formGroup}>
+                <label>IP Address or Hostname *</label>
+                <Input
+                  value={formData.host}
+                  onChange={(e) =>
+                    setFormData({ ...formData, host: e.target.value })
+                  }
+                  onFocus={() => clearError('host')}
+                  placeholder="192.168.1.1 or hostname.domain.com"
+                  error={errors.host}
+                />
+              </div>
+            )}
+
+            {inputMode === 'range' && (
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Start IP *</label>
+                  <Input
+                    value={formData.startIP}
+                    onChange={(e) =>
+                      setFormData({ ...formData, startIP: e.target.value })
+                    }
+                    onFocus={() => clearError('startIP')}
+                    placeholder="192.168.1.1"
+                    error={errors.startIP}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>End IP *</label>
+                  <Input
+                    value={formData.endIP}
+                    onChange={(e) =>
+                      setFormData({ ...formData, endIP: e.target.value })
+                    }
+                    onFocus={() => clearError('endIP')}
+                    placeholder="192.168.1.254"
+                    error={errors.endIP}
+                  />
+                </div>
+              </div>
+            )}
+
+            {inputMode === 'cidr' && (
+              <div className={styles.formGroup}>
+                <label>CIDR Notation *</label>
+                <Input
+                  value={formData.cidr}
+                  onChange={(e) =>
+                    setFormData({ ...formData, cidr: e.target.value })
+                  }
+                  onFocus={() => clearError('cidr')}
+                  placeholder="192.168.1.0/24"
+                  error={errors.cidr}
+                />
+              </div>
+            )}
+
+            {inputMode === 'csv' && (
+              <CsvUploader
+                file={formData.csvFile}
+                onFileChange={(file) => {
+                  setFormData({ ...formData, csvFile: file });
+                  clearError('csvFile');
+                }}
+                error={errors.csvFile}
+              />
+            )}
+
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label>Start IP *</label>
+                <label>Port (optional)</label>
                 <Input
-                  value={formData.startIP}
+                  value={formData.port}
                   onChange={(e) =>
-                    setFormData({ ...formData, startIP: e.target.value })
+                    setFormData({ ...formData, port: e.target.value })
                   }
-                  onFocus={() => clearError('startIP')}
-                  placeholder="192.168.1.1"
-                  error={errors.startIP}
+                  placeholder="Leave empty for default"
                 />
               </div>
               <div className={styles.formGroup}>
-                <label>End IP *</label>
+                <label>Timeout (seconds)</label>
                 <Input
-                  value={formData.endIP}
+                  type="number"
+                  value={formData.timeout}
                   onChange={(e) =>
-                    setFormData({ ...formData, endIP: e.target.value })
+                    setFormData({ ...formData, timeout: e.target.value })
                   }
-                  onFocus={() => clearError('endIP')}
-                  placeholder="192.168.1.254"
-                  error={errors.endIP}
+                  placeholder="30"
                 />
               </div>
             </div>
-          )}
 
-          {inputMode === 'cidr' && (
             <div className={styles.formGroup}>
-              <label>CIDR Notation *</label>
-              <Input
-                value={formData.cidr}
-                onChange={(e) =>
-                  setFormData({ ...formData, cidr: e.target.value })
+              <label>Credentials (select multiple)</label>
+              <SelectComponent
+                className={styles.select}
+                isMulti
+                value={formData.credentials || []}
+                onChange={(e) => {
+                  const values = e.target.value || [];
+                  setFormData({ ...formData, credentials: values });
+                }}
+                options={credentialOptions}
+                placeholder="Select credentials"
+                noOptionsMessage={() => 'No data found'}
+              />
+              <p className={styles.helpText}>Select multiple credentials</p>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Groups</label>
+              <SelectComponent
+                className={styles.select}
+                isMulti
+                isCreatable
+                onCreateOption={handleCreateGroup}
+                onCreateStaticClick={handleStaticCreateGroup}
+                createStaticText="Create New Group"
+                onEditOption={handleEditGroupClick}
+                onDeleteOption={handleDeleteGroupClick}
+                value={formData.groups || []}
+                onChange={(e) => {
+                  const values = e.target.value || [];
+                  setFormData({ ...formData, groups: values });
+                }}
+                options={groupOptions}
+                placeholder="Add Groups"
+                noOptionsMessage={({ inputValue }) =>
+                  inputValue
+                    ? `No groups found matching "${inputValue}".`
+                    : 'No groups found.'
                 }
-                onFocus={() => clearError('cidr')}
-                placeholder="192.168.1.0/24"
-                error={errors.cidr}
               />
             </div>
-          )}
 
-          {inputMode === 'csv' && (
-            <CsvUploader
-              file={formData.csvFile}
-              onFileChange={(file) => {
-                setFormData({ ...formData, csvFile: file });
-                clearError('csvFile');
-              }}
-              error={errors.csvFile}
-            />
-          )}
-
-          <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label>Port (optional)</label>
-              <Input
-                value={formData.port}
-                onChange={(e) =>
-                  setFormData({ ...formData, port: e.target.value })
+              <label>Tags</label>
+              <SelectComponent
+                className={styles.select}
+                isMulti
+                isCreatable
+                onCreateOption={handleCreateTag}
+                onCreateStaticClick={handleStaticCreateTag}
+                createStaticText="Create New Tag"
+                onEditOption={handleEditTagClick}
+                onDeleteOption={handleDeleteTagClick}
+                value={formData.tags || []}
+                onChange={(e) => {
+                  const values = e.target.value || [];
+                  setFormData({ ...formData, tags: values });
+                }}
+                options={tagOptions}
+                placeholder="Add Tags"
+                noOptionsMessage={({ inputValue }) =>
+                  inputValue
+                    ? `No tags found matching "${inputValue}".`
+                    : 'No tags found.'
                 }
-                placeholder="Leave empty for default"
               />
             </div>
+
             <div className={styles.formGroup}>
-              <label>Timeout (seconds)</label>
-              <Input
-                type="number"
-                value={formData.timeout}
+              <label>Description</label>
+              <textarea
+                className={styles.textarea}
+                value={formData.description}
                 onChange={(e) =>
-                  setFormData({ ...formData, timeout: e.target.value })
+                  setFormData({ ...formData, description: e.target.value })
                 }
-                placeholder="30"
+                placeholder="Enter description for this discovery profile"
+                rows={3}
               />
             </div>
-          </div>
 
-          <div className={styles.formGroup}>
-            <label>Credentials (select multiple)</label>
-            <SelectComponent
-              className={styles.select}
-              isMulti
-              value={formData.credentials || []}
-              onChange={(e) => {
-                const values = e.target.value || [];
-                setFormData({ ...formData, credentials: values });
-              }}
-              options={credentialOptions}
-              placeholder="Select credentials"
-              noOptionsMessage={() => 'No data found'}
-            />
-            <p className={styles.helpText}>Select multiple credentials</p>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Groups</label>
-            <SelectComponent
-              className={styles.select}
-              isMulti
-              isCreatable
-              onCreateOption={handleCreateGroup}
-              onCreateStaticClick={handleStaticCreateGroup}
-              createStaticText="Create New Group"
-              onEditOption={handleEditGroupClick}
-              onDeleteOption={handleDeleteGroupClick}
-              value={formData.groups || []}
-              onChange={(e) => {
-                const values = e.target.value || [];
-                setFormData({ ...formData, groups: values });
-              }}
-              options={groupOptions}
-              placeholder="Add Groups"
-              noOptionsMessage={({ inputValue }) => 
-                inputValue ? `No groups found matching "${inputValue}".` : "No groups found."
-              }
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Tags</label>
-            <SelectComponent
-              className={styles.select}
-              isMulti
-              isCreatable
-              onCreateOption={handleCreateTag}
-              onCreateStaticClick={handleStaticCreateTag}
-              createStaticText="Create New Tag"
-              onEditOption={handleEditTagClick}
-              onDeleteOption={handleDeleteTagClick}
-              value={formData.tags || []}
-              onChange={(e) => {
-                const values = e.target.value || [];
-                setFormData({ ...formData, tags: values });
-              }}
-              options={tagOptions}
-              placeholder="Add Tags"
-              noOptionsMessage={({ inputValue }) => 
-                inputValue ? `No tags found matching "${inputValue}".` : "No tags found."
-              }
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Description</label>
-            <textarea
-              className={styles.textarea}
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              placeholder="Enter description for this discovery profile"
-              rows={3}
-            />
-          </div>
-
-          <div className={styles.modal_footer}>
-            <Button type="button" onClick={onClose} variant="secondary">
-              Cancel
-            </Button>
-            <Button type="submit" variant="cyan">
-              {profile ? 'Update' : 'Create'} Profile
-            </Button>
-          </div>
-        </form>
+            <div className={styles.modal_footer}>
+              <Button type="button" onClick={onClose} variant="secondary">
+                Cancel
+              </Button>
+              <Button type="submit" variant="cyan">
+                {profile ? 'Update' : 'Create'} Profile
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
 
       {/* Delete Confirmation Modal */}
       {activeInlineModal?.type?.startsWith('delete-') && (
@@ -415,22 +436,32 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
           isOpen={true}
           onClose={() => setActiveInlineModal(null)}
           onConfirm={async () => {
-             const type = activeInlineModal.type;
-             const opt = activeInlineModal.opt;
-             if (type === 'delete-group') {
-                const res = await deleteDiscoveryGroup(opt.value);
-                if (res) {
-                  setGroupOptions((prev) => prev.filter((g) => g.value !== opt.value));
-                  setFormData((prev) => ({ ...prev, groups: (prev.groups || []).filter(id => id !== opt.value) }));
-                }
-             } else {
-                const res = await deleteDiscoveryTag(opt.value);
-                if (res) {
-                  setTagOptions((prev) => prev.filter((t) => t.value !== opt.value));
-                  setFormData((prev) => ({ ...prev, tags: (prev.tags || []).filter(id => id !== opt.value) }));
-                }
-             }
-             setActiveInlineModal(null);
+            const type = activeInlineModal.type;
+            const opt = activeInlineModal.opt;
+            if (type === 'delete-group') {
+              const res = await deleteDiscoveryGroup(opt.value);
+              if (res) {
+                setGroupOptions((prev) =>
+                  prev.filter((g) => g.value !== opt.value)
+                );
+                setFormData((prev) => ({
+                  ...prev,
+                  groups: (prev.groups || []).filter((id) => id !== opt.value),
+                }));
+              }
+            } else {
+              const res = await deleteDiscoveryTag(opt.value);
+              if (res) {
+                setTagOptions((prev) =>
+                  prev.filter((t) => t.value !== opt.value)
+                );
+                setFormData((prev) => ({
+                  ...prev,
+                  tags: (prev.tags || []).filter((id) => id !== opt.value),
+                }));
+              }
+            }
+            setActiveInlineModal(null);
           }}
           itemName={activeInlineModal.opt.label}
           itemType={activeInlineModal.type === 'delete-group' ? 'Group' : 'Tag'}
@@ -439,64 +470,108 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
 
       {/* Create/Edit Text Modal */}
       {activeInlineModal && !activeInlineModal.type.startsWith('delete-') && (
-        <div className={styles.modalOverlay} style={{ zIndex: 1100 }} onClick={() => setActiveInlineModal(null)}>
-          <div 
-            className={styles.modalContent} 
-            style={{ width: '400px', minWidth: '300px', height: 'fit-content', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', bottom: 'auto', right: 'auto', borderRadius: 'var(--radius-md)' }}
+        <div
+          className={styles.modalOverlay}
+          style={{ zIndex: 1100 }}
+          onClick={() => setActiveInlineModal(null)}
+        >
+          <div
+            className={styles.modalContent}
+            style={{
+              width: '400px',
+              minWidth: '300px',
+              height: 'fit-content',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              bottom: 'auto',
+              right: 'auto',
+              borderRadius: 'var(--radius-md)',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className={styles.modal_header}>
-               <h2 className={styles.modal_title}>
-                 {activeInlineModal.type.includes('create') ? 'Create' : 'Edit'} {activeInlineModal.type.includes('group') ? 'Group' : 'Tag'}
-               </h2>
-               <button className={styles.modal_close} onClick={() => setActiveInlineModal(null)}>
-                 <Icon icon="mdi:close" width={20} />
-               </button>
+              <h2 className={styles.modal_title}>
+                {activeInlineModal.type.includes('create') ? 'Create' : 'Edit'}{' '}
+                {activeInlineModal.type.includes('group') ? 'Group' : 'Tag'}
+              </h2>
+              <button
+                className={styles.modal_close}
+                onClick={() => setActiveInlineModal(null)}
+              >
+                <Icon icon="mdi:close" width={20} />
+              </button>
             </div>
             <div className={styles.modal_body}>
-               <div className={styles.formGroup}>
-                  <label>Name</label>
-                  <Input 
-                    autoFocus
-                    value={inlineModalInputValue} 
-                    onChange={(e) => setInlineModalInputValue(e.target.value)} 
-                    placeholder={`Enter ${activeInlineModal.type.includes('group') ? 'group' : 'tag'} name...`}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        document.getElementById('inlineModalSaveBtn').click();
-                      }
-                    }}
-                  />
-               </div>
+              <div className={styles.formGroup}>
+                <label>Name</label>
+                <Input
+                  autoFocus
+                  value={inlineModalInputValue}
+                  onChange={(e) => setInlineModalInputValue(e.target.value)}
+                  placeholder={`Enter ${activeInlineModal.type.includes('group') ? 'group' : 'tag'} name...`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      document.getElementById('inlineModalSaveBtn').click();
+                    }
+                  }}
+                />
+              </div>
             </div>
             <div className={styles.modal_footer}>
-               <Button variant="secondary" onClick={() => setActiveInlineModal(null)}>
-                 Cancel
-               </Button>
-               <Button id="inlineModalSaveBtn" onClick={async () => {
+              <Button
+                variant="secondary"
+                onClick={() => setActiveInlineModal(null)}
+              >
+                Cancel
+              </Button>
+              <Button
+                id="inlineModalSaveBtn"
+                onClick={async () => {
                   const val = inlineModalInputValue.trim();
                   if (!val) return;
-                  
+
                   if (activeInlineModal.type === 'create-group') {
-                     await handleCreateGroup(val);
+                    await handleCreateGroup(val);
                   } else if (activeInlineModal.type === 'edit-group') {
-                     if (val !== activeInlineModal.opt.label) {
-                        const res = await editDiscoveryGroup({ id: activeInlineModal.opt.value, name: val });
-                        if (res) setGroupOptions((prev) => prev.map((g) => g.value === activeInlineModal.opt.value ? { ...g, label: val } : g));
-                     }
+                    if (val !== activeInlineModal.opt.label) {
+                      const res = await editDiscoveryGroup({
+                        id: activeInlineModal.opt.value,
+                        name: val,
+                      });
+                      if (res)
+                        setGroupOptions((prev) =>
+                          prev.map((g) =>
+                            g.value === activeInlineModal.opt.value
+                              ? { ...g, label: val }
+                              : g
+                          )
+                        );
+                    }
                   } else if (activeInlineModal.type === 'create-tag') {
-                     await handleCreateTag(val);
+                    await handleCreateTag(val);
                   } else if (activeInlineModal.type === 'edit-tag') {
-                     if (val !== activeInlineModal.opt.label) {
-                        const res = await editDiscoveryTag({ id: activeInlineModal.opt.value, name: val });
-                        if (res) setTagOptions((prev) => prev.map((t) => t.value === activeInlineModal.opt.value ? { ...t, label: val } : t));
-                     }
+                    if (val !== activeInlineModal.opt.label) {
+                      const res = await editDiscoveryTag({
+                        id: activeInlineModal.opt.value,
+                        name: val,
+                      });
+                      if (res)
+                        setTagOptions((prev) =>
+                          prev.map((t) =>
+                            t.value === activeInlineModal.opt.value
+                              ? { ...t, label: val }
+                              : t
+                          )
+                        );
+                    }
                   }
                   setActiveInlineModal(null);
-               }}>
-                 Save
-               </Button>
+                }}
+              >
+                Save
+              </Button>
             </div>
           </div>
         </div>

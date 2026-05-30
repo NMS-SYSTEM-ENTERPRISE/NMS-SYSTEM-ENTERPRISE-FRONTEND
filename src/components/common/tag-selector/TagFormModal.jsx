@@ -63,7 +63,7 @@ export const TagFormModal = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.body} noValidate>
+        <div className={styles.body}>
           <FormField label="Tag Name" required>
             <Input
               value={name}
@@ -73,6 +73,12 @@ export const TagFormModal = ({
               }}
               onBlur={() => {
                 if (!name.trim()) setError('Tag name is required');
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
               }}
               error={error}
               placeholder="Enter tag name"
@@ -84,11 +90,11 @@ export const TagFormModal = ({
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" variant="cyan">
+            <Button type="button" variant="cyan" onClick={handleSubmit}>
               {mode === 'edit' ? 'Save Changes' : 'Create Tag'}
             </Button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

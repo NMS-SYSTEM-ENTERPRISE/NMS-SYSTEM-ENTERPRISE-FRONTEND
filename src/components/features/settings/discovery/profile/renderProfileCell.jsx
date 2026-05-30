@@ -18,7 +18,12 @@ export const renderProfileCell = (
     case 'name':
       return <span className={styles.tableLinkName}>{profile.name}</span>;
     case 'host':
-      return profile.host || profile.ip_address_or_hostname || profile.csv_file_path || profile.start_ip || profile.cidr_notation || <span style={{ opacity: 0.5 }}>N/A</span>;
+      if (profile.ip_address_or_hostname) return profile.ip_address_or_hostname;
+      if (profile.cidr_notation) return profile.cidr_notation;
+      if (profile.start_ip && profile.end_ip) return `${profile.start_ip} - ${profile.end_ip}`;
+      if (profile.start_ip) return profile.start_ip;
+      if (profile.csv_file_path) return profile.csv_file_path;
+      return profile.host || <span style={{ opacity: 0.5 }}>N/A</span>;
     case 'type':
       const dType = profile.type || profile.discovery_type;
       return (
@@ -38,11 +43,23 @@ export const renderProfileCell = (
         </div>
       );
     case 'discovered':
-      return <Badge variant={profile.discovered > 0 ? 'success' : 'secondary'}>{profile.discovered ?? '-'}</Badge>;
+      const count = profile.discovered ?? profile.discovered_count ?? 0;
+      return <Badge variant={count > 0 ? 'success' : 'secondary'}>{count || '-'}</Badge>;
     case 'status':
       return <span className={styles.tableMuted}>{profile.status || <span style={{ opacity: 0.5 }}>N/A</span>}</span>;
     case 'scheduler':
-      return (profile.scheduler || (profile.schedule_type && profile.schedule_type !== 'Once')) ? (
+      if (profile.schedule_type) {
+        if (profile.schedule_type !== 'Once' && profile.schedule_interval) {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Icon icon="mdi:clock-outline" width={14} height={14} />
+              <span>{profile.schedule_type} ({profile.schedule_interval}m)</span>
+            </div>
+          );
+        }
+        return <span>{profile.schedule_type}</span>;
+      }
+      return profile.scheduler ? (
         <Icon icon="mdi:activity" width={18} height={18} />
       ) : <span style={{ opacity: 0.5 }}>-</span>;
     case 'groups':
@@ -55,6 +72,36 @@ export const renderProfileCell = (
             ))
           ) : (
             <span style={{ opacity: 0.5 }}>N/A</span>
+          )}
+        </div>
+      );
+    case 'tags':
+      const tagsList = Array.isArray(profile.tags) ? profile.tags : (profile.tags ? [profile.tags] : []);
+      return (
+        <div className={styles.groupTags}>
+          {tagsList.length > 0 ? (
+            tagsList.map((tag, idx) => (
+              <Badge key={idx} variant="outline" className={styles.tagBadge}>
+                {tag.name || tag}
+              </Badge>
+            ))
+          ) : (
+            <span style={{ opacity: 0.5 }}>-</span>
+          )}
+        </div>
+      );
+    case 'credentials':
+      const credsList = Array.isArray(profile.credential_profiles) ? profile.credential_profiles : (profile.credential_profiles ? [profile.credential_profiles] : []);
+      return (
+        <div className={styles.groupTags}>
+          {credsList.length > 0 ? (
+            credsList.map((cred, idx) => (
+              <Badge key={idx} variant="primary" className={styles.tagBadge}>
+                {cred.name || cred}
+              </Badge>
+            ))
+          ) : (
+            <span style={{ opacity: 0.5 }}>-</span>
           )}
         </div>
       );

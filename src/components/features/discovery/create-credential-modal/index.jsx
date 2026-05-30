@@ -35,7 +35,7 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
     name: credential?.name || '',
     type: credential?.type || 'Ping',
     protocol: credential?.protocol || 'SNMP',
-    community: '',
+    community_string: credential?.community_string || '',
     username: '',
     password: '',
     authProtocol: 'SHA',
@@ -87,8 +87,8 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
     () => ({
       name: required('Credential Name is required'),
       type: required('Credential Type is required'),
-      community: (value, values) =>
-        values.type === 'SNMP v2'
+      community_string: (value, values) =>
+        values.type === 'SNMP v2c'
           ? required('Community String is required')(value)
           : null,
       username: (value, values) =>
@@ -112,7 +112,7 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
   };
 
   useEffect(() => {
-    revalidateField('community');
+    revalidateField('community_string');
     revalidateField('username');
     revalidateField('password');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,7 +121,18 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateAll()) return;
-    onSave(formData);
+
+    const payload = {
+      ...formData,
+      community_string: formData.community_string,
+      auth_protocol: formData.authProtocol,
+      priv_protocol: formData.privProtocol,
+      priv_password: formData.privPassword,
+      tag_ids: formData.tags,
+      group_ids: Array.isArray(formData.groups) ? formData.groups : [],
+    };
+
+    onSave(payload);
   };
 
   return (
@@ -178,18 +189,16 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
             />
           </FormField>
 
-          {formData.type === 'SNMP v2' && (
-            <FormField label="Community String" required>
-              <Input
-                type="password"
-                value={formData.community}
-                onChange={(e) => updateField('community', e.target.value)}
-                onBlur={() => handleBlur('community')}
-                error={getFieldError('community')}
-                placeholder="public"
-              />
-            </FormField>
-          )}
+          <FormField label="Community String" required={formData.type === 'SNMP v2c'}>
+            <Input
+              type="password"
+              value={formData.community_string}
+              onChange={(e) => updateField('community_string', e.target.value)}
+              onBlur={() => handleBlur('community_string')}
+              error={getFieldError('community_string')}
+              placeholder="public"
+            />
+          </FormField>
 
           {AUTH_TYPES.includes(formData.type) && (
             <>

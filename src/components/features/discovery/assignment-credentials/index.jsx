@@ -2,10 +2,21 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { Pagination } from '@/components/ui/pagination';
 import { SearchInput } from '@/components/ui/search-input';
+import { Table } from '@/components/ui/table';
 import { useDiscoveryProfile } from '@/hooks/discovery-settings/discovery-profile/profile/useDiscoveryProfile';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
+
+const DEVICES_COLUMNS = [
+  { key: 'monitor', label: 'MONITOR' },
+  { key: 'ip', label: 'IP' },
+  { key: 'mac', label: 'MAC ADDRESS' },
+  { key: 'type', label: 'TYPE' },
+  { key: 'status', label: 'STATUS' },
+  { key: 'last_seen', label: 'LAST SEEN' },
+  { key: 'groups', label: 'GROUPS' },
+];
 
 export const AssignCredentialModal = ({ profile, onClose, onAssign }) => {
   const { getProfileDevices, isLoading } = useDiscoveryProfile();
@@ -54,6 +65,57 @@ export const AssignCredentialModal = ({ profile, onClose, onAssign }) => {
 
   const profileGroups = Array.isArray(profile?.groups) ? profile.groups : (profile?.groups ? [profile.groups] : []);
 
+  const renderCell = (device, col) => {
+    switch (col.key) {
+      case 'monitor':
+        return <span className={styles.table_name}>{device.hostname || device.sys_name || device.ip_address}</span>;
+      case 'ip':
+        return device.ip_address;
+      case 'mac':
+        return device.mac_address ? <span className={styles.monoText}>{device.mac_address}</span> : <span className={styles.mutedText}>N/A</span>;
+      case 'type':
+        return (
+          <div className={styles.typeWrapper}>
+            <div className={styles.table_icon}>
+              {getTypeIcon(device.protocol_type || device.device_type)}
+            </div>
+            <span>{device.protocol_type || device.device_type || <span className={styles.mutedText}>N/A</span>}</span>
+          </div>
+        );
+      case 'status':
+        const statusLabel = device.status || 'Unknown';
+        const statusVariant = statusLabel === 'Alive' ? 'success' : statusLabel === 'Dead' ? 'danger' : 'neutral';
+        return (
+          <div className={styles.statusIndicator} style={{ color: `var(--color-${statusVariant})` }}>
+            <div className={styles.statusDot} style={{ backgroundColor: `var(--color-${statusVariant})` }} />
+            {statusLabel}
+          </div>
+        );
+      case 'last_seen':
+        return device.last_seen_at ? (
+          <span className={styles.mutedDate}>{new Date(device.last_seen_at).toLocaleString()}</span>
+        ) : (
+          <span className={styles.mutedText}>N/A</span>
+        );
+      case 'groups':
+        return (
+          <div className={styles.table_groups}>
+            {profileGroups.length > 0 ? (
+              profileGroups.map((group, index) => (
+                <span key={index} className={styles.group_badge}>
+                  {group.name || group}
+                </span>
+              ))
+            ) : (
+              <span className={styles.mutedText}>-</span>
+            )}
+          </div>
+        );
+      default:
+        return device[col.key];
+    }
+  };
+
   return (
     <Modal
       isOpen
@@ -69,7 +131,7 @@ export const AssignCredentialModal = ({ profile, onClose, onAssign }) => {
       </div>
 
       <div className={styles.modal_content}>
-        <div style={{ marginBottom: '16px' }}>
+        <div className={styles.searchInputWrapper}>
           <SearchInput
             tags={searchTags}
             onTagsChange={setSearchTags}
@@ -77,79 +139,14 @@ export const AssignCredentialModal = ({ profile, onClose, onAssign }) => {
           />
         </div>
 
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>MONITOR</th>
-                <th>IP</th>
-                <th>MAC ADDRESS</th>
-                <th>TYPE</th>
-                <th>STATUS</th>
-                <th>LAST SEEN</th>
-                <th>GROUPS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {devices.length > 0 ? (
-                devices.map((device) => {
-                  const statusLabel = device.status || 'Unknown';
-                  const statusVariant = statusLabel === 'Alive' ? 'success' : statusLabel === 'Dead' ? 'danger' : 'neutral';
-                  
-                  return (
-                    <tr key={device.id}>
-                      <td className={styles.table_name}>{device.hostname || device.sys_name || device.ip_address}</td>
-                      <td>{device.ip_address}</td>
-                      <td>{device.mac_address ? <span style={{ fontFamily: 'monospace' }}>{device.mac_address}</span> : <span style={{ opacity: 0.5 }}>N/A</span>}</td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <div className={styles.table_icon} style={{ display: 'flex' }}>
-                            {getTypeIcon(device.protocol_type || device.device_type)}
-                          </div>
-                          <span>{device.protocol_type || device.device_type || <span style={{ opacity: 0.5 }}>N/A</span>}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: `var(--color-${statusVariant})`, fontWeight: 500, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                          <div style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: `var(--color-${statusVariant})` }} />
-                          {statusLabel}
-                        </div>
-                      </td>
-                      <td>
-                        {device.last_seen_at ? (
-                          <span style={{ fontSize: '0.9em', color: 'var(--color-text-muted)' }}>
-                            {new Date(device.last_seen_at).toLocaleString()}
-                          </span>
-                        ) : (
-                          <span style={{ opacity: 0.5 }}>N/A</span>
-                        )}
-                      </td>
-                      <td>
-                        <div className={styles.table_groups}>
-                          {profileGroups.length > 0 ? (
-                            profileGroups.map((group, index) => (
-                              <span key={index} className={styles.group_badge}>
-                                {group.name || group}
-                              </span>
-                            ))
-                          ) : (
-                            <span style={{ opacity: 0.5 }}>-</span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', opacity: 0.7 }}>
-                    {isLoading ? 'Loading devices...' : 'No devices found.'}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <Table
+          className={styles.tableContainer}
+          columns={DEVICES_COLUMNS}
+          data={devices}
+          keyExtractor={(d) => d.id}
+          renderCell={renderCell}
+          emptyMessage={isLoading ? "Loading devices..." : "No devices found."}
+        />
 
         <Pagination
           currentPage={currentPage}

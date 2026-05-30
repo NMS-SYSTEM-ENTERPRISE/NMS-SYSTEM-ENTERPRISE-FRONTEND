@@ -62,7 +62,7 @@ export const renderProfileCell = (
       else if (st === 'Scheduled') stVariant = 'cyan';
       else if (st === 'Failed' || st === 'Error') stVariant = 'danger';
       else if (st === 'Idle') stVariant = 'neutral';
-      
+
       return (
         <Badge variant={stVariant} dot>
           {st}
@@ -74,7 +74,7 @@ export const renderProfileCell = (
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <Icon icon="mdi:clock-outline" width={14} height={14} />
-              <span>{profile.schedule_type} ({profile.schedule_interval}m)</span>
+              <span>{profile.schedule_interval}m</span>
             </div>
           );
         }

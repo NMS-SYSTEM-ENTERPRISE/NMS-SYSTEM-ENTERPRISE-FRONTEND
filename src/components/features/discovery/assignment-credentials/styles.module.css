@@ -268,3 +268,42 @@
     align-items: flex-start;
   }
 }
+
+.searchInputWrapper {
+  margin-bottom: var(--margin-md);
+}
+
+.monoText {
+  font-family: monospace;
+}
+
+.mutedText {
+  opacity: 0.5;
+}
+
+.mutedDate {
+  font-size: 0.9em;
+  color: var(--color-text-muted);
+}
+
+.typeWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}

@@ -41,8 +41,8 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
   const [errors, setErrors] = useState({});
 
   const { getAllCredentialProfiles } = useCredentialProfile();
-  const { getAllDiscoveryGroups } = useDiscoveryGroups();
-  const { getAllDiscoveryTags } = useDiscoveryTags();
+  const { getAllDiscoveryGroups, createDiscoveryGroup } = useDiscoveryGroups();
+  const { getAllDiscoveryTags, createDiscoveryTag } = useDiscoveryTags();
 
   const [credentialOptions, setCredentialOptions] = useState([]);
   const [groupOptions, setGroupOptions] = useState([]);
@@ -61,6 +61,24 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
     };
     loadDropdownData();
   }, []);
+
+  const handleCreateGroup = async (inputValue) => {
+    const res = await createDiscoveryGroup({ name: inputValue });
+    if (res && res.id) {
+      const newOption = { value: res.id, label: res.name || inputValue };
+      setGroupOptions((prev) => [...prev, newOption]);
+      setFormData((prev) => ({ ...prev, groups: [...(prev.groups || []), res.id] }));
+    }
+  };
+
+  const handleCreateTag = async (inputValue) => {
+    const res = await createDiscoveryTag({ name: inputValue });
+    if (res && res.id) {
+      const newOption = { value: res.id, label: res.name || inputValue };
+      setTagOptions((prev) => [...prev, newOption]);
+      setFormData((prev) => ({ ...prev, tags: [...(prev.tags || []), res.id] }));
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -250,6 +268,8 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
             <SelectComponent
               className={styles.select}
               isMulti
+              isCreatable
+              onCreateOption={handleCreateGroup}
               value={formData.groups || []}
               onChange={(e) => {
                 const values = e.target.value || [];
@@ -266,6 +286,8 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
             <SelectComponent
               className={styles.select}
               isMulti
+              isCreatable
+              onCreateOption={handleCreateTag}
               value={formData.tags || []}
               onChange={(e) => {
                 const values = e.target.value || [];

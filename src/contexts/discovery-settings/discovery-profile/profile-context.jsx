@@ -11,6 +11,25 @@ import {
 
 export const DiscoveryProfileContext = createContext(null);
 
+/**
+ * Safely extracts a human-readable error message from API error responses.
+ * Handles FastAPI 422 validation errors ({ detail: [{ msg }] }), plain strings, etc.
+ */
+const extractErrorMessage = (error, fallback = 'An error occurred.') => {
+  if (typeof error === 'string') return error;
+  if (error?.detail) {
+    if (typeof error.detail === 'string') return error.detail;
+    if (Array.isArray(error.detail)) {
+      const msgs = error.detail
+        .map((e) => (typeof e === 'string' ? e : e?.msg))
+        .filter(Boolean);
+      return msgs.length > 0 ? msgs.join('; ') : fallback;
+    }
+  }
+  if (typeof error?.message === 'string') return error.message;
+  return fallback;
+};
+
 export const DiscoveryProfileProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSuccess, showError } = useToast();
@@ -28,7 +47,7 @@ export const DiscoveryProfileProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error fetching profiles.');
+        showError(extractErrorMessage(error, 'Error fetching profiles.'));
         console.error('Get all discovery profiles error:', error);
         return null;
       } finally {
@@ -52,7 +71,7 @@ export const DiscoveryProfileProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error creating profile.');
+        showError(extractErrorMessage(error, 'Error creating profile.'));
         console.error('Create discovery profile error:', error);
         return null;
       } finally {
@@ -76,7 +95,7 @@ export const DiscoveryProfileProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error updating profile.');
+        showError(extractErrorMessage(error, 'Error updating profile.'));
         console.error('Edit discovery profile error:', error);
         return null;
       } finally {
@@ -100,7 +119,7 @@ export const DiscoveryProfileProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error deleting profile.');
+        showError(extractErrorMessage(error, 'Error deleting profile.'));
         console.error('Delete discovery profile error:', error);
         return null;
       } finally {
@@ -127,3 +146,4 @@ export const DiscoveryProfileProvider = ({ children }) => {
     </DiscoveryProfileContext.Provider>
   );
 };
+

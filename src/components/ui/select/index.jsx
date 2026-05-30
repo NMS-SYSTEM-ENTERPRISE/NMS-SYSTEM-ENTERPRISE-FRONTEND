@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import styles from './styles.module.css';
 
 /**
@@ -9,6 +10,7 @@ import styles from './styles.module.css';
  * @param {Object} props - All react-select props plus custom className
  * @param {string} props.className - Additional CSS class name
  * @param {boolean} props.isMulti - Enable multi-select
+ * @param {boolean} props.isCreatable - Enable creatable options
  * @param {Array} props.options - Array of {value, label} objects
  * @param {string|Array} props.value - Selected value(s)
  * @param {Function} props.onChange - Change handler
@@ -20,6 +22,7 @@ export const SelectComponent = ({
   onChange,
   placeholder = 'Select...',
   isMulti = false,
+  isCreatable = false,
   isClearable = true,
   isSearchable = true,
   variant = 'default',
@@ -172,9 +175,11 @@ export const SelectComponent = ({
 
   const instanceId = useId();
 
+  const Component = isCreatable ? CreatableSelect : Select;
+
   return (
     <div className={`${styles.selectWrapper} ${className}`}>
-      <Select
+      <Component
         instanceId={instanceId}
         options={options}
         value={getSelectValue()}

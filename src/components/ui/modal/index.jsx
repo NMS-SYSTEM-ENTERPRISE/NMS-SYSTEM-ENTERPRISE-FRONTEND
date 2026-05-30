@@ -1,9 +1,17 @@
+import { Icon } from '@iconify/react';
+import classNames from 'classnames';
 import clsx from 'clsx';
 import { useEffect } from 'react';
-import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
-export const Modal = ({ isOpen, onClose, children, title, className }) => {
+export const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  title,
+  className,
+  customModelBodyStyle,
+}) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -31,7 +39,9 @@ export const Modal = ({ isOpen, onClose, children, title, className }) => {
             </button>
           </div>
         )}
-        <div className={styles.modalBody}>{children}</div>
+        <div className={classNames(styles.modalBody, customModelBodyStyle)}>
+          {children}
+        </div>
       </div>
     </div>
   );

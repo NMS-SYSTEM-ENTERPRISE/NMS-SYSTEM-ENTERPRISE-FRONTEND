@@ -239,6 +239,10 @@
   font-size: var(--font-sm);
 }
 
+.modal_body {
+  padding: 0px !important;
+}
+
 .modal_footer {
   display: flex;
   align-items: center;

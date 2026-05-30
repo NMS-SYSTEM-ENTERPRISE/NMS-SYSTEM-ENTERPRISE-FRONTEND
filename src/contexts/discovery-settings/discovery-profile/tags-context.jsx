@@ -11,6 +11,21 @@ import {
 
 export const DiscoveryTagsContext = createContext(null);
 
+const extractErrorMessage = (error, fallback = 'An error occurred.') => {
+  if (typeof error === 'string') return error;
+  if (error?.detail) {
+    if (typeof error.detail === 'string') return error.detail;
+    if (Array.isArray(error.detail)) {
+      const msgs = error.detail
+        .map((e) => (typeof e === 'string' ? e : e?.msg))
+        .filter(Boolean);
+      return msgs.length > 0 ? msgs.join('; ') : fallback;
+    }
+  }
+  if (typeof error?.message === 'string') return error.message;
+  return fallback;
+};
+
 export const DiscoveryTagsProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSuccess, showError } = useToast();
@@ -28,7 +43,7 @@ export const DiscoveryTagsProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error fetching tags.');
+        showError(extractErrorMessage(error, 'Error fetching tags.'));
         console.error('Get all discovery tags error:', error);
         return null;
       } finally {
@@ -52,7 +67,7 @@ export const DiscoveryTagsProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error creating tag.');
+        showError(extractErrorMessage(error, 'Error creating tag.'));
         console.error('Create discovery tag error:', error);
         return null;
       } finally {
@@ -76,7 +91,7 @@ export const DiscoveryTagsProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error updating tag.');
+        showError(extractErrorMessage(error, 'Error updating tag.'));
         console.error('Edit discovery tag error:', error);
         return null;
       } finally {
@@ -100,7 +115,7 @@ export const DiscoveryTagsProvider = ({ children }) => {
           return null;
         }
       } catch (error) {
-        showError(error?.detail || error?.message || 'Error deleting tag.');
+        showError(extractErrorMessage(error, 'Error deleting tag.'));
         console.error('Delete discovery tag error:', error);
         return null;
       } finally {

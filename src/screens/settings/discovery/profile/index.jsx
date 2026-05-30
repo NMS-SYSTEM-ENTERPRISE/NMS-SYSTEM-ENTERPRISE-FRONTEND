@@ -8,18 +8,23 @@ import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { Pagination } from '@/components/ui/pagination';
 import { SearchInput } from '@/components/ui/search-input';
 import { Table } from '@/components/ui/table';
-import { DISCOVERY_PROFILE_COLUMNS } from '@/utils/constants/settings/discovery/profile';
-import { MOCK_DISCOVERY_PROFILES } from '@/utils/dummy-data/settings/discovery';
-import { Icon } from '@iconify/react';
-import { useMemo, useState, useEffect } from 'react';
 import { useToast } from '@/hooks/useToast';
+import { DISCOVERY_PROFILE_COLUMNS } from '@/utils/constants/settings/discovery/profile';
+import { Icon } from '@iconify/react';
+import { useEffect, useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
 
 import { useDiscoveryProfile } from '@/hooks/discovery-settings/discovery-profile/profile/useDiscoveryProfile';
 
 export default function DiscoveryProfile() {
   const { showSuccess, showError } = useToast();
-  const { getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, isLoading } = useDiscoveryProfile();
+  const {
+    getAllDiscoveryProfiles,
+    createDiscoveryProfile,
+    editDiscoveryProfile,
+    deleteDiscoveryProfile,
+    isLoading,
+  } = useDiscoveryProfile();
 
   const [searchTags, setSearchTags] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +83,11 @@ export default function DiscoveryProfile() {
   };
 
   const handleDuplicate = (profile) => {
-    setSelectedProfile({ ...profile, name: `${profile.name} (Copy)`, id: null });
+    setSelectedProfile({
+      ...profile,
+      name: `${profile.name} (Copy)`,
+      id: null,
+    });
     setShowCreateModal(true);
     setShowActionsMenu(null);
   };

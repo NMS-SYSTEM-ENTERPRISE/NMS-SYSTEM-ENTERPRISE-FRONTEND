@@ -151,7 +151,12 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
   };
 
   return (
-    <Modal isOpen onClose={onClose} className={styles.assignModal}>
+    <Modal
+      isOpen
+      onClose={onClose}
+      className={styles.assignModal}
+      customModelBodyStyle={styles.modal_body}
+    >
       <div className={styles.modal_header}>
         <h2 className={styles.modal_title}>Assign {profileName}</h2>
         <button className={styles.modal_close} onClick={onClose}>
@@ -170,8 +175,6 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
           />
         </div>
 
-
-
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
@@ -184,9 +187,7 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
             </thead>
             <tbody>
               {filteredMonitors.map((monitor) => (
-                <tr
-                  key={monitor.id}
-                >
+                <tr key={monitor.id}>
                   <td className={styles.table_name}>{monitor.name}</td>
                   <td>{monitor.ip}</td>
                   <td>
@@ -222,7 +223,7 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
           <SelectComponent
             className={styles.pagination_select}
             value={50}
-            onChange={() => { }}
+            onChange={() => {}}
             options={[
               { value: 50, label: '50' },
               { value: 100, label: '100' },
@@ -236,9 +237,7 @@ export const AssignCredentialModal = ({ profileName, onClose, onAssign }) => {
       </div>
 
       <div className={styles.modal_footer}>
-        <Button onClick={onClose}>
-          Close
-        </Button>
+        <Button onClick={onClose}>Close</Button>
       </div>
     </Modal>
   );

@@ -7,6 +7,7 @@ import {
   createDiscoveryProfileApi,
   deleteDiscoveryProfileApi,
   editDiscoveryProfileApi,
+  profileDevicesApi,
 } from '@/networking/discovery-settings/discovery-profile/profile/profile-apis';
 
 export const DiscoveryProfileContext = createContext(null);
@@ -129,6 +130,29 @@ export const DiscoveryProfileProvider = ({ children }) => {
     [showSuccess, showError]
   );
 
+  const getProfileDevices = useCallback(
+    async (id, params = {}) => {
+      setIsLoading(true);
+      try {
+        const response = await profileDevicesApi(id, params);
+        const { status, data } = response;
+        if (status === 200 || status === 201) {
+          return data;
+        } else {
+          showError(data?.message || 'Failed to fetch devices list.');
+          return null;
+        }
+      } catch (error) {
+        showError(extractErrorMessage(error, 'Error fetching devices.'));
+        console.error('Get profile devices error:', error);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [showError]
+  );
+
   const memoizedValue = useMemo(
     () => ({
       isLoading,
@@ -136,8 +160,9 @@ export const DiscoveryProfileProvider = ({ children }) => {
       createDiscoveryProfile,
       editDiscoveryProfile,
       deleteDiscoveryProfile,
+      getProfileDevices,
     }),
-    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile]
+    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices]
   );
 
   return (

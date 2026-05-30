@@ -3,4 +3,5 @@ export const DISCOVERY_PROFILE_ENDPOINTS = {
   CREATE_PROFILE: 'discovery-settings/discovery_profile/profile/',
   EDIT_PROFILE: 'discovery-settings/discovery_profile/profile/',
   DELETE_PROFILE: 'discovery-settings/discovery_profile/profile/{id}',
+  GET_DEVICES: 'discovery-settings/discovery_profile/profile/{id}/devices',
 };

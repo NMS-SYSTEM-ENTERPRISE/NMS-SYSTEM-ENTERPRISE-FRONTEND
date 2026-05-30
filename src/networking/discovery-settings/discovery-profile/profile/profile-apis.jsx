@@ -14,3 +14,8 @@ export const deleteDiscoveryProfileApi = async (id) => {
   const endpoint = DISCOVERY_PROFILE_ENDPOINTS.DELETE_PROFILE.replace('{id}', id);
   return authApi.delete(endpoint);
 };
+
+export const profileDevicesApi = async (id, params = {}) => {
+  const endpoint = DISCOVERY_PROFILE_ENDPOINTS.GET_DEVICES.replace('{id}', id);
+  return authApi.get(endpoint, { params });
+};

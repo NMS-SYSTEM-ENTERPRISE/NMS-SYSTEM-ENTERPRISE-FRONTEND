@@ -11,6 +11,7 @@ export const renderProfileCell = (
   handleEdit,
   handleDuplicate,
   handleDelete,
+  handleViewDevices,
   showActionsMenu,
   setShowActionsMenu
 ) => {
@@ -44,9 +45,29 @@ export const renderProfileCell = (
       );
     case 'discovered':
       const count = profile.discovered ?? profile.discovered_count ?? 0;
-      return <Badge variant={count > 0 ? 'success' : 'secondary'}>{count || '-'}</Badge>;
+      return (
+        <Badge
+          variant={count > 0 ? 'success' : 'secondary'}
+          className={count > 0 ? styles.clickableBadge : ''}
+          onClick={count > 0 ? () => handleViewDevices(profile) : undefined}
+          style={count > 0 ? { cursor: 'pointer' } : {}}
+        >
+          {count || '-'}
+        </Badge>
+      );
     case 'status':
-      return <span className={styles.tableMuted}>{profile.status || <span style={{ opacity: 0.5 }}>N/A</span>}</span>;
+      const st = profile.status || 'Unknown';
+      let stVariant = 'neutral';
+      if (st === 'Running' || st === 'Active' || st === 'Completed') stVariant = 'success';
+      else if (st === 'Scheduled') stVariant = 'cyan';
+      else if (st === 'Failed' || st === 'Error') stVariant = 'danger';
+      else if (st === 'Idle') stVariant = 'neutral';
+      
+      return (
+        <Badge variant={stVariant} dot>
+          {st}
+        </Badge>
+      );
     case 'scheduler':
       if (profile.schedule_type) {
         if (profile.schedule_type !== 'Once' && profile.schedule_interval) {
@@ -81,7 +102,7 @@ export const renderProfileCell = (
         <div className={styles.groupTags}>
           {tagsList.length > 0 ? (
             tagsList.map((tag, idx) => (
-              <Badge key={idx} variant="outline" className={styles.tagBadge}>
+              <Badge key={idx} variant="neutral" className={styles.tagBadge}>
                 {tag.name || tag}
               </Badge>
             ))
@@ -96,7 +117,8 @@ export const renderProfileCell = (
         <div className={styles.groupTags}>
           {credsList.length > 0 ? (
             credsList.map((cred, idx) => (
-              <Badge key={idx} variant="primary" className={styles.tagBadge}>
+              <Badge key={idx} variant="info" className={styles.tagBadge}>
+                <Icon icon="mdi:key" width={12} height={12} style={{ marginRight: 4 }} />
                 {cred.name || cred}
               </Badge>
             ))

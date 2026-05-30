@@ -1,6 +1,7 @@
 'use client';
 import { AssignCredentialModal } from '@/components/features/discovery/assignment-credentials';
 import { CreateDiscoveryModal } from '@/components/features/discovery/create-discovery-modal';
+import { DiscoveredDevicesModal } from '@/components/features/discovery/discovered-devices-modal';
 import { ScheduleModal } from '@/components/features/discovery/schdule-modal';
 import { renderProfileCell } from '@/components/features/settings/discovery/profile/renderProfileCell';
 import { Button } from '@/components/ui/button';
@@ -34,6 +35,7 @@ export default function DiscoveryProfile() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDevicesModal, setShowDevicesModal] = useState(false);
   const [showActionsMenu, setShowActionsMenu] = useState(null);
 
   const [profilesList, setProfilesList] = useState([]);
@@ -80,6 +82,11 @@ export default function DiscoveryProfile() {
     setSelectedProfile(profile);
     setShowScheduleModal(true);
     setShowActionsMenu(null);
+  };
+
+  const handleViewDevices = (profile) => {
+    setSelectedProfile(profile);
+    setShowDevicesModal(true);
   };
 
   const handleDuplicate = (profile) => {
@@ -163,6 +170,7 @@ export default function DiscoveryProfile() {
                   handleEdit,
                   handleDuplicate,
                   handleDelete,
+                  handleViewDevices,
                   showActionsMenu,
                   setShowActionsMenu
                 )
@@ -198,10 +206,10 @@ export default function DiscoveryProfile() {
 
       {showAssignModal && (
         <AssignCredentialModal
-          profileName={selectedProfile?.host}
-          onClose={() => setShowAssignModal(false)}
-          onAssign={() => {
+          profile={selectedProfile}
+          onClose={() => {
             setShowAssignModal(false);
+            setSelectedProfile(null);
           }}
         />
       )}
@@ -230,6 +238,16 @@ export default function DiscoveryProfile() {
         itemName={selectedProfile?.name || ''}
         itemType="Discovery Profile"
       />
+
+      {showDevicesModal && (
+        <DiscoveredDevicesModal
+          profile={selectedProfile}
+          onClose={() => {
+            setShowDevicesModal(false);
+            setSelectedProfile(null);
+          }}
+        />
+      )}
     </>
   );
 }

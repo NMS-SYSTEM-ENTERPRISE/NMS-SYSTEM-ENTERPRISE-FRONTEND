@@ -3,109 +3,144 @@
 import { DeleteConfirmationModal } from '@/components/ui/delete-modal';
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
-import { DEFAULT_AVAILABLE_TAGS } from './constants';
 import { TagFormModal } from './TagFormModal';
-import { TagListItem } from './TagListItem';
 import styles from './styles.module.css';
 
+/**
+ * TagSelector — Fully dynamic, API-driven tag picker with Create/Edit/Delete modals.
+ *
+ * Props:
+ * @param {Array}    selectedTags   — Currently selected tag IDs
+ * @param {Function} onChange       — Called with updated array of selected tag IDs
+ * @param {string}   [placeholder]  — Placeholder text
+ * @param {string}   [noun]         — Label noun ("tag", "group", etc.)
+ * @param {Function} onFetchTags    — Async fn that returns array of { id, name } from API
+ * @param {Function} onCreateTag    — Async fn(name) that creates a tag via API, returns { id, name }
+ * @param {Function} [onEditTag]    — Async fn({ id, name }) that edits a tag via API
+ * @param {Function} [onDeleteTag]  — Async fn(id) that deletes a tag via API
+ */
 export const TagSelector = ({
   selectedTags = [],
   onChange,
   placeholder = 'Add Tags',
-  availableTags: controlledAvailableTags,
-  onAvailableTagsChange,
   noun = 'tag',
+  onFetchTags,
+  onCreateTag,
+  onEditTag,
+  onDeleteTag,
 }) => {
-  const [internalAvailableTags, setInternalAvailableTags] = useState(DEFAULT_AVAILABLE_TAGS);
-  const availableTags = controlledAvailableTags ?? internalAvailableTags;
-  const setAvailableTags = onAvailableTagsChange ?? setInternalAvailableTags;
-
+  const [availableTags, setAvailableTags] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
-  const [tagForm, setTagForm] = useState({ open: false, mode: 'create', initialName: '' });
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Modal states
+  const [tagForm, setTagForm] = useState({ open: false, mode: 'create', initialName: '', editId: null });
   const [tagToDelete, setTagToDelete] = useState(null);
+
   const dropdownRef = useRef(null);
+
+  // Fetch tags from API on mount
+  useEffect(() => {
+    const loadTags = async () => {
+      if (!onFetchTags) return;
+      setIsLoading(true);
+      try {
+        const tags = await onFetchTags();
+        if (Array.isArray(tags)) {
+          setAvailableTags(tags);
+        }
+      } catch (err) {
+        console.error('Failed to fetch tags:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadTags();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const normalizedQuery = appliedSearchQuery.trim().toLowerCase();
 
   const filteredTags = availableTags.filter(
     (tag) =>
-      !selectedTags.includes(tag) &&
-      tag.toLowerCase().includes(normalizedQuery)
+      !selectedTags.includes(tag.id) &&
+      tag.name.toLowerCase().includes(normalizedQuery)
   );
 
-  const canCreateFromQuery =
-    normalizedQuery &&
-    !availableTags.some((t) => t.toLowerCase() === normalizedQuery);
-
   const handleAddTag = (tag) => {
-    if (!selectedTags.includes(tag)) {
-      onChange([...selectedTags, tag]);
+    if (!selectedTags.includes(tag.id)) {
+      onChange([...selectedTags, tag.id]);
     }
     setSearchQuery('');
     setAppliedSearchQuery('');
   };
 
-  const handleRemoveTag = (tagToRemove) => {
-    onChange(selectedTags.filter((tag) => tag !== tagToRemove));
+  const handleRemoveTag = (tagId) => {
+    onChange(selectedTags.filter((id) => id !== tagId));
   };
 
-  const handleCreateFromInput = () => {
-    const trimmed = searchQuery.trim();
-    if (!trimmed) return;
-
-    const existing = availableTags.find(
-      (t) => t.toLowerCase() === trimmed.toLowerCase()
-    );
-    const tagName = existing || trimmed;
-
-    if (!existing) {
-      setAvailableTags([...availableTags, trimmed]);
-    }
-    if (!selectedTags.includes(tagName)) {
-      onChange([...selectedTags, tagName]);
-    }
-    setSearchQuery('');
-    setAppliedSearchQuery('');
+  const getTagName = (tagId) => {
+    const found = availableTags.find((t) => t.id === tagId);
+    return found ? found.name : tagId;
   };
 
+  // ── Create Modal ──
   const openCreateModal = () => {
-    setTagForm({ open: true, mode: 'create', initialName: searchQuery.trim() });
+    setTagForm({ open: true, mode: 'create', initialName: '', editId: null });
   };
 
+  // ── Edit Modal ──
   const openEditModal = (tag) => {
-    setTagForm({ open: true, mode: 'edit', initialName: tag });
+    setTagForm({ open: true, mode: 'edit', initialName: tag.name, editId: tag.id });
   };
 
-  const handleTagFormSave = (newName) => {
+  // ── Delete Confirmation ──
+  const openDeleteConfirm = (tag) => {
+    setTagToDelete(tag);
+  };
+
+  // ── Handle TagFormModal Save (Create or Edit) ──
+  const handleTagFormSave = async (newName) => {
     if (tagForm.mode === 'create') {
-      if (!availableTags.includes(newName)) {
-        setAvailableTags([...availableTags, newName]);
+      if (!onCreateTag) return;
+      const newTag = await onCreateTag(newName);
+      if (newTag && newTag.id) {
+        setAvailableTags((prev) => [...prev, newTag]);
+        if (!selectedTags.includes(newTag.id)) {
+          onChange([...selectedTags, newTag.id]);
+        }
       }
-      handleAddTag(newName);
-      setSearchQuery('');
-      setAppliedSearchQuery('');
-      return;
+    } else if (tagForm.mode === 'edit') {
+      if (!onEditTag || !tagForm.editId) return;
+      const res = await onEditTag({ id: tagForm.editId, name: newName });
+      if (res) {
+        setAvailableTags((prev) =>
+          prev.map((t) => (t.id === tagForm.editId ? { ...t, name: newName } : t))
+        );
+      }
     }
-
-    const oldName = tagForm.initialName;
-    if (oldName === newName) return;
-
-    setAvailableTags(
-      availableTags.map((t) => (t === oldName ? newName : t))
-    );
-    onChange(
-      selectedTags.map((t) => (t === oldName ? newName : t))
-    );
   };
 
-  const confirmDeleteTag = () => {
-    if (!tagToDelete) return;
-    setAvailableTags(availableTags.filter((t) => t !== tagToDelete));
-    onChange(selectedTags.filter((t) => t !== tagToDelete));
+  // ── Handle Delete Confirm ──
+  const handleDeleteConfirm = async () => {
+    if (!tagToDelete || !onDeleteTag) return;
+    const res = await onDeleteTag(tagToDelete.id);
+    if (res) {
+      setAvailableTags((prev) => prev.filter((t) => t.id !== tagToDelete.id));
+      onChange(selectedTags.filter((id) => id !== tagToDelete.id));
+    }
     setTagToDelete(null);
   };
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchQuery('');
+      setAppliedSearchQuery('');
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -122,14 +157,14 @@ export const TagSelector = ({
       <div className={styles.tagSelector} ref={dropdownRef}>
         {selectedTags.length > 0 && (
           <div className={styles.selectedTags}>
-            {selectedTags.map((tag) => (
-              <span key={tag} className={styles.tag}>
-                {tag}
+            {selectedTags.map((tagId) => (
+              <span key={tagId} className={styles.tag}>
+                {getTagName(tagId)}
                 <button
                   type="button"
                   className={styles.tagRemove}
-                  onClick={() => handleRemoveTag(tag)}
-                  aria-label={`Remove ${tag}`}
+                  onClick={() => handleRemoveTag(tagId)}
+                  aria-label={`Remove ${getTagName(tagId)}`}
                 >
                   <Icon icon="mdi:close" width={14} height={14} />
                 </button>
@@ -160,7 +195,7 @@ export const TagSelector = ({
                   <input
                     type="text"
                     className={styles.searchInput}
-                    placeholder={`Search or create ${noun}...`}
+                    placeholder={`Search ${noun}s...`}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => {
@@ -174,9 +209,7 @@ export const TagSelector = ({
                     type="button"
                     className={styles.sendBtn}
                     title="Search"
-                    onClick={() => {
-                      setAppliedSearchQuery(searchQuery);
-                    }}
+                    onClick={() => setAppliedSearchQuery(searchQuery)}
                   >
                     <Icon icon="mdi:magnify" width={18} height={18} />
                   </button>
@@ -184,60 +217,94 @@ export const TagSelector = ({
               </div>
 
               <div className={styles.tagList}>
-                {filteredTags.length > 0 ? (
+                {isLoading ? (
+                  <div className={styles.noResults}>
+                    <span className={styles.noResultsText}>Loading {noun}s...</span>
+                  </div>
+                ) : filteredTags.length > 0 ? (
                   filteredTags.map((tag) => (
-                    <TagListItem
-                      key={tag}
-                      tag={tag}
-                      onSelect={() => handleAddTag(tag)}
-                      onEdit={() => openEditModal(tag)}
-                      onDelete={() => setTagToDelete(tag)}
-                    />
+                    <div key={tag.id} className={styles.tagListItem}>
+                      <button
+                        type="button"
+                        className={styles.tagListItemSelect}
+                        onClick={() => handleAddTag(tag)}
+                      >
+                        {tag.name}
+                      </button>
+                      <div className={styles.tagListItemActions}>
+                        {onEditTag && (
+                          <button
+                            type="button"
+                            className={styles.tagListItemAction}
+                            title={`Edit ${noun}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openEditModal(tag);
+                            }}
+                          >
+                            <Icon icon="mdi:pencil" width={16} height={16} />
+                          </button>
+                        )}
+                        {onDeleteTag && (
+                          <button
+                            type="button"
+                            className={`${styles.tagListItemAction} ${styles.tagListItemActionDanger}`}
+                            title={`Delete ${noun}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openDeleteConfirm(tag);
+                            }}
+                          >
+                            <Icon icon="mdi:trash-can-outline" width={16} height={16} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   ))
                 ) : (
                   <div className={styles.noResults}>
-                    {canCreateFromQuery ? (
-                      <p className={styles.noResultsHint}>
-                        No matching {noun}s found. Click &quot;Create new {noun}&quot; below.
-                      </p>
-                    ) : (
-                      <span className={styles.noResultsText}>No matching {noun}s</span>
-                    )}
+                    <span className={styles.noResultsText}>
+                      No matching {noun}s found.
+                    </span>
                   </div>
                 )}
               </div>
 
-              <div className={styles.dropdownFooter}>
-                <button
-                  type="button"
-                  className={styles.footerAction}
-                  onClick={openCreateModal}
-                >
-                  <Icon icon="mdi:plus" width={16} height={16} />
-                  Create new {noun}
-                </button>
-              </div>
+              {onCreateTag && (
+                <div className={styles.dropdownFooter}>
+                  <button
+                    type="button"
+                    className={styles.footerAction}
+                    onClick={openCreateModal}
+                  >
+                    <Icon icon="mdi:plus" width={16} height={16} />
+                    Create New {noun.charAt(0).toUpperCase() + noun.slice(1)}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
 
+      {/* Create / Edit Modal */}
       <TagFormModal
         isOpen={tagForm.open}
-        onClose={() => setTagForm({ open: false, mode: 'create', initialName: '' })}
+        onClose={() => setTagForm({ open: false, mode: 'create', initialName: '', editId: null })}
         onSave={handleTagFormSave}
         mode={tagForm.mode}
         initialName={tagForm.initialName}
-        existingTags={availableTags}
+        existingTags={availableTags.map((t) => t.name)}
       />
 
+      {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={Boolean(tagToDelete)}
         onClose={() => setTagToDelete(null)}
-        onConfirm={confirmDeleteTag}
-        itemName={tagToDelete || ''}
+        onConfirm={handleDeleteConfirm}
+        itemName={tagToDelete?.name || ''}
         itemType={noun.charAt(0).toUpperCase() + noun.slice(1)}
-        warningText={`This ${noun} will be removed from the list and from any current selection.`}
+        warningText={`This ${noun} will be permanently deleted. This action cannot be undone.`}
       />
     </>
   );

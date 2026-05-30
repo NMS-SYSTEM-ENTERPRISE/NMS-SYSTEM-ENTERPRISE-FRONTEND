@@ -27,7 +27,7 @@ export const TagFormModal = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) {
@@ -41,7 +41,7 @@ export const TagFormModal = ({
       setError('A tag with this name already exists');
       return;
     }
-    onSave(trimmed);
+    await onSave(trimmed);
     onClose();
   };
 

@@ -1,15 +1,17 @@
 import { TagSelector } from '@/components/common/tag-selector';
-import { SelectComponent } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { useFormValidation, required } from '@/hooks/useFormValidation';
-import { useEffect, useMemo, useState } from 'react';
+import { SelectComponent } from '@/components/ui/select';
+import { useCredentialTags } from '@/hooks/discovery-settings/credential-profile/tags/useCredentialTags';
+import { required, useFormValidation } from '@/hooks/useFormValidation';
 import { Icon } from '@iconify/react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './styles.module.css';
 
 const CREDENTIAL_TYPES = [
-  'SNMP v2',
+  'Ping',
+  'SNMP v2c',
   'SNMP v3',
   'SSH',
   'Telnet',
@@ -22,9 +24,16 @@ const CREDENTIAL_TYPES = [
 const AUTH_TYPES = ['SNMP v3', 'SSH', 'Telnet', 'WMI'];
 
 export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
+  const {
+    getAllCredentialTags,
+    createCredentialTag,
+    editCredentialTag,
+    deleteCredentialTag,
+  } = useCredentialTags();
+
   const [formData, setFormData] = useState({
     name: credential?.name || '',
-    type: credential?.type || 'SNMP v2',
+    type: credential?.type || 'Ping',
     protocol: credential?.protocol || 'SNMP',
     community: '',
     username: '',
@@ -34,8 +43,45 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
     privPassword: '',
     port: '161',
     groups: credential?.groups?.join(', ') || '',
-    tags: credential?.tags || [],
+    tags: Array.isArray(credential?.tags)
+      ? credential.tags.map((t) => t.id || t)
+      : [],
   });
+
+  const handleFetchTags = useCallback(async () => {
+    const res = await getAllCredentialTags({ limit: 1000 });
+    if (res?.items) {
+      return res.items.map((t) => ({ id: t.id, name: t.name }));
+    }
+    return [];
+  }, [getAllCredentialTags]);
+
+  const handleCreateTag = useCallback(
+    async (name) => {
+      const res = await createCredentialTag({ name });
+      if (res && res.id) {
+        return { id: res.id, name: res.name || name };
+      }
+      return null;
+    },
+    [createCredentialTag]
+  );
+
+  const handleEditTag = useCallback(
+    async ({ id, name }) => {
+      const res = await editCredentialTag({ id, name });
+      return res;
+    },
+    [editCredentialTag]
+  );
+
+  const handleDeleteTag = useCallback(
+    async (id) => {
+      const res = await deleteCredentialTag(id);
+      return res;
+    },
+    [deleteCredentialTag]
+  );
 
   const validationRules = useMemo(
     () => ({
@@ -57,11 +103,8 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
     []
   );
 
-  const { getFieldError, handleBlur, validateAll, revalidateField } = useFormValidation(
-    formData,
-    validationRules,
-    { isActive: true }
-  );
+  const { getFieldError, handleBlur, validateAll, revalidateField } =
+    useFormValidation(formData, validationRules, { isActive: true });
 
   const updateField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -86,9 +129,15 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modal_header}>
           <h2 className={styles.modal_title}>
-            {credential ? 'Edit Credential Profile' : 'Create Credential Profile'}
+            {credential
+              ? 'Edit Credential Profile'
+              : 'Create Credential Profile'}
           </h2>
-          <button type="button" className={styles.modal_close} onClick={onClose}>
+          <button
+            type="button"
+            className={styles.modal_close}
+            onClick={onClose}
+          >
             <Icon icon="mdi:close" width={20} height={20} />
           </button>
         </div>
@@ -104,28 +153,30 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
             />
           </FormField>
 
-          <div className={styles.formRow}>
-            <FormField label="Credential Type" required>
-              <SelectComponent
-                className={styles.select}
-                value={formData.type}
-                onChange={(e) => updateField('type', e.target.value)}
-                onBlur={() => handleBlur('type')}
-                options={CREDENTIAL_TYPES.map((type) => ({ value: type, label: type }))}
-                placeholder="Select credential type"
-                error={getFieldError('type')}
-                isClearable={false}
-              />
-            </FormField>
+          <FormField label="Credential Type" required>
+            <SelectComponent
+              className={styles.select}
+              compact
+              value={formData.type}
+              onChange={(e) => updateField('type', e.target.value)}
+              onBlur={() => handleBlur('type')}
+              options={CREDENTIAL_TYPES.map((type) => ({
+                value: type,
+                label: type,
+              }))}
+              placeholder="Select credential type"
+              error={getFieldError('type')}
+              isClearable={false}
+            />
+          </FormField>
 
-            <FormField label="Port">
-              <Input
-                value={formData.port}
-                onChange={(e) => updateField('port', e.target.value)}
-                placeholder="161"
-              />
-            </FormField>
-          </div>
+          <FormField label="Port">
+            <Input
+              value={formData.port}
+              onChange={(e) => updateField('port', e.target.value)}
+              placeholder="161"
+            />
+          </FormField>
 
           {formData.type === 'SNMP v2' && (
             <FormField label="Community String" required>
@@ -171,8 +222,11 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
                 <FormField label="Auth Protocol">
                   <SelectComponent
                     className={styles.select}
+                    compact
                     value={formData.authProtocol}
-                    onChange={(e) => updateField('authProtocol', e.target.value)}
+                    onChange={(e) =>
+                      updateField('authProtocol', e.target.value)
+                    }
                     options={[
                       { value: 'MD5', label: 'MD5' },
                       { value: 'SHA', label: 'SHA' },
@@ -187,8 +241,11 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
                 <FormField label="Priv Protocol">
                   <SelectComponent
                     className={styles.select}
+                    compact
                     value={formData.privProtocol}
-                    onChange={(e) => updateField('privProtocol', e.target.value)}
+                    onChange={(e) =>
+                      updateField('privProtocol', e.target.value)
+                    }
                     options={[
                       { value: 'DES', label: 'DES' },
                       { value: 'AES', label: 'AES' },
@@ -225,6 +282,10 @@ export const CreateCredentialModal = ({ credential, onClose, onSave }) => {
               selectedTags={formData.tags}
               onChange={(tags) => updateField('tags', tags)}
               placeholder="Add Tags"
+              onFetchTags={handleFetchTags}
+              onCreateTag={handleCreateTag}
+              onEditTag={handleEditTag}
+              onDeleteTag={handleDeleteTag}
             />
           </FormField>
 

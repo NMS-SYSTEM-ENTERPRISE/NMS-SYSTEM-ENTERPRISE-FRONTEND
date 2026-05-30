@@ -1,7 +1,7 @@
+import { Icon } from '@iconify/react';
 import { useEffect, useId, useState } from 'react';
 import Select, { components } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 /**
@@ -27,6 +27,7 @@ export const SelectComponent = ({
   isClearable = true,
   isSearchable = true,
   variant = 'default',
+  compact = false,
   error,
   ...restProps
 }) => {
@@ -73,24 +74,36 @@ export const SelectComponent = ({
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
-      backgroundColor: variant === 'borderless' ? 'transparent' : 'var(--color-bg-secondary)',
-      borderColor: error 
+      backgroundColor:
+        variant === 'borderless' ? 'transparent' : 'var(--color-bg-secondary)',
+      borderColor: error
         ? 'var(--color-danger)'
-        : variant === 'borderless' 
-        ? 'transparent' 
-        : state.isFocused ? 'var(--color-accent-blue)' : 'var(--color-border)',
+        : variant === 'borderless'
+          ? 'transparent'
+          : state.isFocused
+            ? 'var(--color-accent-blue)'
+            : 'var(--color-border)',
       borderRadius: 'var(--radius-md)',
-      minHeight: variant === 'borderless' ? '30px' : '36px',
-      boxShadow: error && state.isFocused
-        ? '0 0 0 1px var(--color-danger)'
-        : state.isFocused && variant !== 'borderless'
-        ? '0 0 0 1px var(--color-accent-blue)'
-        : 'none',
+      minHeight: variant === 'borderless' ? '30px' : compact ? '34px' : '36px',
+      padding: compact ? '0 4px' : provided.padding,
+      boxShadow:
+        error && state.isFocused
+          ? '0 0 0 1px var(--color-danger)'
+          : state.isFocused && variant !== 'borderless'
+            ? '0 0 0 1px var(--color-accent-blue)'
+            : 'none',
       borderWidth: variant === 'borderless' ? '0' : '1px',
-      borderBottom: variant === 'borderless' ? '1px solid rgba(255, 255, 255, 0.1)' : provided.borderBottom,
+      borderBottom:
+        variant === 'borderless'
+          ? '1px solid rgba(255, 255, 255, 0.1)'
+          : provided.borderBottom,
       '&:hover': {
-        borderColor: variant === 'borderless' ? 'transparent' : 'var(--color-accent-blue)',
-        borderBottomColor: variant === 'borderless' ? 'var(--color-accent-cyan)' : provided.borderBottomColor,
+        borderColor:
+          variant === 'borderless' ? 'transparent' : 'var(--color-accent-blue)',
+        borderBottomColor:
+          variant === 'borderless'
+            ? 'var(--color-accent-cyan)'
+            : provided.borderBottomColor,
       },
     }),
     menu: (provided) => ({
@@ -111,8 +124,8 @@ export const SelectComponent = ({
       backgroundColor: state.isSelected
         ? 'var(--color-accent-blue)'
         : state.isFocused
-        ? 'var(--color-bg-hover)'
-        : 'transparent',
+          ? 'var(--color-bg-hover)'
+          : 'transparent',
       color: state.isSelected ? 'white' : 'var(--color-text-primary)',
       cursor: 'pointer',
       '&:active': {
@@ -182,7 +195,14 @@ export const SelectComponent = ({
   const CustomOption = (props) => {
     return (
       <components.Option {...props}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
           <span>{props.label}</span>
           <div style={{ display: 'flex', gap: '8px' }}>
             {restProps.onEditOption && (
@@ -237,10 +257,15 @@ export const SelectComponent = ({
               borderTop: '1px solid var(--color-border)',
               color: 'var(--color-chart-cyan)',
               backgroundColor: 'var(--color-bg-primary)',
-              marginTop: '4px'
+              marginTop: '4px',
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')
+            }
+            onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor =
+              'var(--color-bg-primary)')
+            }
           >
             <Icon icon="mdi:plus-circle" width={16} height={16} />
             <span>{restProps.createStaticText || 'Create New'}</span>
@@ -265,11 +290,20 @@ export const SelectComponent = ({
         formatCreateLabel={
           isCreatable
             ? (inputValue) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Icon icon="mdi:plus-circle" width={16} height={16} color="var(--color-chart-cyan)" />
-                  <span style={{ color: 'var(--color-chart-cyan)' }}>Create "{inputValue}"</span>
-                </div>
-              )
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Icon
+                  icon="mdi:plus-circle"
+                  width={16}
+                  height={16}
+                  color="var(--color-chart-cyan)"
+                />
+                <span style={{ color: 'var(--color-chart-cyan)' }}>
+                  Create "{inputValue}"
+                </span>
+              </div>
+            )
             : undefined
         }
         styles={customStyles}

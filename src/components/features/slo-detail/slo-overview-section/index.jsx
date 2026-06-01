@@ -1,7 +1,7 @@
 'use client';
 
-import { Icon } from '@iconify/react';
 import sharedStyles from '@/components/features/slo-detail/shared/styles.module.css';
+import { Icon } from '@iconify/react';
 
 export const SloOverviewSection = ({ sloData, trendChartRef }) => {
   const summaryFields = [

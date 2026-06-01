@@ -37,4 +37,4 @@ export default function SloPage() {
       <SloContent />
     </SloProvider>
   );
-};
+}

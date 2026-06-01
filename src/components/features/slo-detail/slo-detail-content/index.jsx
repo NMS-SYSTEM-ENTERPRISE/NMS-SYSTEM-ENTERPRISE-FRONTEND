@@ -1,27 +1,28 @@
 'use client';
 
+import sharedStyles from '@/components/features/slo-detail/shared/styles.module.css';
 import { SloDetailAccordion } from '@/components/features/slo-detail/slo-detail-accordion';
 import { SloDetailHeader } from '@/components/features/slo-detail/slo-detail-header';
 import { SloHistorySection } from '@/components/features/slo-detail/slo-history-section';
 import { SloMetricsSection } from '@/components/features/slo-detail/slo-metrics-section';
 import { SloMonitorsSection } from '@/components/features/slo-detail/slo-monitors-section';
 import { SloOverviewSection } from '@/components/features/slo-detail/slo-overview-section';
-import sharedStyles from '@/components/features/slo-detail/shared/styles.module.css';
 import { useSloDetail } from '@/hooks/slo-detail';
 import { useSloDetailCharts } from '@/hooks/slo-detail/useSloDetailCharts';
 import { SLO_DETAIL_SECTIONS } from '@/utils/constants/slo-detail';
 import { SLO_DETAILS, SLO_MONITOR_DATA } from '@/utils/dummy-data/slo-detail';
-import { useParams } from 'next/navigation';
 import clsx from 'clsx';
+import { useParams } from 'next/navigation';
 
 export const SloDetailContent = () => {
   const { sloId } = useParams();
   const { openSections, toggleSection } = useSloDetail();
   const sloData = SLO_DETAILS[sloId] || SLO_DETAILS[1];
-  const { trendChartRef, burndownChartRef, burnRateChartRef } = useSloDetailCharts({
-    sloData,
-    openSections,
-  });
+  const { trendChartRef, burndownChartRef, burnRateChartRef } =
+    useSloDetailCharts({
+      sloData,
+      openSections,
+    });
 
   const achievedMet = sloData.achieved >= sloData.target;
 
@@ -39,7 +40,10 @@ export const SloDetailContent = () => {
             badge={sloData.type}
             badgeClassName={sharedStyles.badgeAccentBlue}
           >
-            <SloOverviewSection sloData={sloData} trendChartRef={trendChartRef} />
+            <SloOverviewSection
+              sloData={sloData}
+              trendChartRef={trendChartRef}
+            />
           </SloDetailAccordion>
 
           <SloDetailAccordion

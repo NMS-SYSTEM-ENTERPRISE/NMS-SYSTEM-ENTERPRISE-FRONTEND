@@ -4,14 +4,14 @@ import { SloTimelineView } from '@/components/features/slo/slo-timeline-view';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
-import { Icon } from '@iconify/react';
-import { useState } from 'react';
 import { useSlo } from '@/hooks/slo';
 import {
   CATEGORY_FILTER_OPTIONS,
   FREQUENCY_FILTER_OPTIONS,
   STATUS_FILTER_OPTIONS,
 } from '@/utils/constants/slo';
+import { Icon } from '@iconify/react';
+import { useState } from 'react';
 import styles from './styles.module.css';
 
 export const SloActionSidebar = () => {
@@ -36,7 +36,11 @@ export const SloActionSidebar = () => {
 
   return (
     <>
-      <div className={styles.overlay} onClick={() => setShowActionSidebar(false)} role="presentation" />
+      <div
+        className={styles.overlay}
+        onClick={() => setShowActionSidebar(false)}
+        role="presentation"
+      />
 
       <aside className={styles.sidebar}>
         <div className={styles.header}>
@@ -95,7 +99,12 @@ export const SloActionSidebar = () => {
                   <label className={styles.filterLabel}>Status</label>
                   <SelectComponent
                     value={filters.status || ''}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, status: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        status: e.target.value,
+                      }))
+                    }
                     options={STATUS_FILTER_OPTIONS}
                   />
                 </div>
@@ -104,7 +113,12 @@ export const SloActionSidebar = () => {
                   <label className={styles.filterLabel}>Category</label>
                   <SelectComponent
                     value={filters.sloType || ''}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, sloType: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        sloType: e.target.value,
+                      }))
+                    }
                     options={CATEGORY_FILTER_OPTIONS}
                   />
                 </div>
@@ -113,30 +127,46 @@ export const SloActionSidebar = () => {
                   <label className={styles.filterLabel}>Reporting Period</label>
                   <SelectComponent
                     value={filters.frequency || ''}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, frequency: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        frequency: e.target.value,
+                      }))
+                    }
                     options={FREQUENCY_FILTER_OPTIONS}
                   />
                 </div>
 
                 <div className={styles.filterGroup}>
-                  <span className={styles.filterLabel}>Objective Range (%)</span>
+                  <span className={styles.filterLabel}>
+                    Objective Range (%)
+                  </span>
                   <div className={styles.rangeGroup}>
                     <Input
                       type="number"
                       className={styles.rangeInput}
                       value={filters.targetMin || ''}
                       onChange={(e) =>
-                        setFilters((prev) => ({ ...prev, targetMin: e.target.value }))
+                        setFilters((prev) => ({
+                          ...prev,
+                          targetMin: e.target.value,
+                        }))
                       }
                       placeholder="Min"
                     />
-                    <Icon icon="ph:minus-bold" className={styles.rangeDivider} />
+                    <Icon
+                      icon="ph:minus-bold"
+                      className={styles.rangeDivider}
+                    />
                     <Input
                       type="number"
                       className={styles.rangeInput}
                       value={filters.targetMax || ''}
                       onChange={(e) =>
-                        setFilters((prev) => ({ ...prev, targetMax: e.target.value }))
+                        setFilters((prev) => ({
+                          ...prev,
+                          targetMax: e.target.value,
+                        }))
                       }
                       placeholder="Max"
                     />
@@ -151,11 +181,19 @@ export const SloActionSidebar = () => {
 
         {activeView === 'filters' && (
           <div className={styles.footer}>
-            <Button variant="ghost" className={styles.resetBtn} onClick={handleResetFilters}>
+            <Button
+              variant="ghost"
+              className={styles.resetBtn}
+              onClick={handleResetFilters}
+            >
               <Icon icon="ph:arrow-counter-clockwise-bold" />
               Reset All
             </Button>
-            <Button variant="cyan" className={styles.applyBtn} onClick={handleApply}>
+            <Button
+              variant="cyan"
+              className={styles.applyBtn}
+              onClick={handleApply}
+            >
               <Icon icon="ph:check-bold" />
               Apply
             </Button>

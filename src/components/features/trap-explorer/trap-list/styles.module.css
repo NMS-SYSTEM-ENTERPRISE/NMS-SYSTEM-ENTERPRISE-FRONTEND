@@ -35,6 +35,33 @@
   accent-color: var(--color-accent-cyan);
 }
 
+/* Severity tokens */
+.severityIcon_critical { color: var(--color-danger); }
+.severityIcon_major { color: var(--color-chart-orange); }
+.severityIcon_minor { color: var(--color-warning); }
+.severityIcon_warning { color: var(--color-accent-blue); }
+.severityIcon_info { color: var(--color-success); }
+
+.rowIconExpanded_critical { color: var(--color-bg-primary); background: var(--color-danger); }
+.rowIconExpanded_major { color: var(--color-bg-primary); background: var(--color-chart-orange); }
+.rowIconExpanded_minor { color: var(--color-bg-primary); background: var(--color-warning); }
+.rowIconExpanded_warning { color: var(--color-bg-primary); background: var(--color-accent-blue); }
+.rowIconExpanded_info { color: var(--color-bg-primary); background: var(--color-success); }
+
+.rowIconDefault {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.timelinePoint_critical { background: var(--color-danger); }
+.timelinePoint_major { background: var(--color-chart-orange); }
+.timelinePoint_minor { background: var(--color-warning); }
+.timelinePoint_warning { background: var(--color-accent-blue); }
+.timelinePoint_info { background: var(--color-success); }
+
+.metaValueAccent {
+  color: var(--color-accent-cyan);
+}
+
 /* List Body */
 .listBody {
   display: flex;

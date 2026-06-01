@@ -1,0 +1,138 @@
+/* Re-export live viewer block styles from action sidebar pattern */
+.liveViewer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+
+.liveControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  margin: 0;
+}
+
+.controlButtons {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.refreshIconBtn {
+  color: var(--color-text-muted) !important;
+}
+
+.liveStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+}
+
+.statCard {
+  padding: var(--padding-md);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.statValue {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.statLabel {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--margin-xs);
+}
+
+.statValue_success { color: var(--color-success); }
+.statValue_danger { color: var(--color-danger); }
+
+.trapStream {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.trapItem {
+  display: flex;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.trapSeverityBar {
+  width: 4px;
+  flex-shrink: 0;
+}
+
+.severityBar_critical { background: var(--color-danger); }
+.severityBar_major { background: var(--color-chart-orange); }
+.severityBar_minor { background: var(--color-warning); }
+.severityBar_warning { background: var(--color-warning); }
+.severityBar_info { background: var(--color-accent-cyan); }
+
+.trapContent {
+  flex: 1;
+  padding: var(--padding-md);
+}
+
+.trapHeader {
+  display: flex;
+  gap: var(--gap-lg);
+  margin-bottom: var(--margin-xs);
+}
+
+.trapTime,
+.trapSource {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+.trapName {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--margin-xs);
+}
+
+.trapMessage {
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--margin-sm);
+}
+
+.trapFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.acknowledgeBtn {
+  font-size: var(--font-xs) !important;
+}
+
+.acknowledgedBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-size: var(--font-xs);
+  color: var(--color-success);
+}

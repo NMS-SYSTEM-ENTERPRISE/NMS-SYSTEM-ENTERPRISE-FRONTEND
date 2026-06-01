@@ -472,6 +472,21 @@
   box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
 }
 
+.statValue_success { color: var(--color-success); }
+.statValue_danger { color: var(--color-danger); }
+
+.severityBar_critical { background: var(--color-danger); }
+.severityBar_major { background: var(--color-chart-orange); }
+.severityBar_minor { background: var(--color-warning); }
+.severityBar_warning { background: var(--color-warning); }
+.severityBar_info { background: var(--color-accent-cyan); }
+
+.severityText_critical { color: var(--color-danger); }
+.severityText_major { color: var(--color-chart-orange); }
+.severityText_minor { color: var(--color-warning); }
+.severityText_warning { color: var(--color-warning); }
+.severityText_info { color: var(--color-accent-cyan); }
+
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;

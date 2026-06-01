@@ -1,0 +1,14 @@
+.sourceBar {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.sourceProgress {
+  height: 100%;
+  width: var(--source-pct, 0%);
+  background: linear-gradient(to right, var(--color-chart-teal), var(--color-chart-cyan));
+  border-radius: 1px;
+}

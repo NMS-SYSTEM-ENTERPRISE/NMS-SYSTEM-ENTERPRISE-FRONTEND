@@ -1,31 +1,77 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
+import { useTrapExplorer } from '@/hooks/trap-explorer';
 import styles from './styles.module.css';
 
-const TrapHistorySidebar = ({ isOpen, onClose, trap }) => {
-  if (!isOpen || !trap) return null;
-
-  // Generate more realistic localized logs based on current trap
+const buildTrapLogs = (trap) => {
   const now = new Date();
-  const logs = [
-    { id: 1, time: new Date(now.getTime() - 7200000).toLocaleString(), status: 'Received', message: 'Trap PDU packet decoded successfully.', detail: `Source: ${trap.source}` },
-    { id: 2, time: new Date(now.getTime() - 7100000).toLocaleString(), status: 'Analyzed', message: 'OID matched against local MIB database.', detail: `Match: ${trap.name}` },
-    { id: 3, time: new Date(now.getTime() - 7000000).toLocaleString(), status: 'Enriched', message: 'Added mnemonic and facility labels.', detail: `Mnemonic: ${trap.mnemonic || 'N/A'}` },
-    { id: 4, time: new Date(now.getTime() - 6500000).toLocaleString(), status: 'Broadcast', message: 'Notification event emitted to subscribers.', detail: 'Websocket, Dashboard' },
-    { id: 5, time: new Date(now.getTime() - 600000).toLocaleString(), status: 'Updated', message: 'Sequence count incremented.', detail: `Current Count: ${trap.count}` },
+  return [
+    {
+      id: 1,
+      time: new Date(now.getTime() - 7200000).toLocaleString(),
+      status: 'Received',
+      message: 'Trap PDU packet decoded successfully.',
+      detail: `Source: ${trap.source}`,
+    },
+    {
+      id: 2,
+      time: new Date(now.getTime() - 7100000).toLocaleString(),
+      status: 'Analyzed',
+      message: 'OID matched against local MIB database.',
+      detail: `Match: ${trap.name}`,
+    },
+    {
+      id: 3,
+      time: new Date(now.getTime() - 7000000).toLocaleString(),
+      status: 'Enriched',
+      message: 'Added mnemonic and facility labels.',
+      detail: `Mnemonic: ${trap.mnemonic || 'N/A'}`,
+    },
+    {
+      id: 4,
+      time: new Date(now.getTime() - 6500000).toLocaleString(),
+      status: 'Broadcast',
+      message: 'Notification event emitted to subscribers.',
+      detail: 'Websocket, Dashboard',
+    },
+    {
+      id: 5,
+      time: new Date(now.getTime() - 600000).toLocaleString(),
+      status: 'Updated',
+      message: 'Sequence count incremented.',
+      detail: `Current Count: ${trap.count}`,
+    },
   ];
+};
+
+export const TrapHistorySidebar = () => {
+  const { selectedTrapForHistory, setSelectedTrapForHistory } = useTrapExplorer();
+  const trap = selectedTrapForHistory;
+
+  if (!trap) return null;
+
+  const logs = buildTrapLogs(trap);
 
   return (
     <>
-      <div className={styles.overlay} onClick={onClose} />
-      <div className={styles.sidebar}>
+      <div className={styles.overlay} onClick={() => setSelectedTrapForHistory(null)} role="presentation" />
+      <aside className={styles.sidebar}>
         <div className={styles.header}>
           <div className={styles.headerTitle}>
             <Icon icon="mdi:history" width={22} />
             <span>Trap Detail & History</span>
           </div>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={styles.closeBtn}
+            onClick={() => setSelectedTrapForHistory(null)}
+            aria-label="Close"
+          >
             <Icon icon="mdi:close" width={22} />
-          </button>
+          </Button>
         </div>
 
         <div className={styles.content}>
@@ -58,7 +104,7 @@ const TrapHistorySidebar = ({ isOpen, onClose, trap }) => {
 
           <div className={styles.logList}>
             <h3 className={styles.sectionTitle}>
-              <Icon icon="mdi:format-list-checks" /> 
+              <Icon icon="mdi:format-list-checks" />
               Detailed Log Sequence
             </h3>
             <div className={styles.logContainer}>
@@ -85,15 +131,11 @@ const TrapHistorySidebar = ({ isOpen, onClose, trap }) => {
               Raw PDU Payload
             </h3>
             <div className={styles.rawContainer}>
-              <pre className={styles.rawPayload}>
-{JSON.stringify(trap, null, 2)}
-              </pre>
+              <pre className={styles.rawPayload}>{JSON.stringify(trap, null, 2)}</pre>
             </div>
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 };
-
-export default TrapHistorySidebar;

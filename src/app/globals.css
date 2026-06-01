@@ -43,6 +43,16 @@
   --slo-sidebar-width: 240px;
   --slo-sidebar-width-collapsed: 60px;
 
+  /* Trap Explorer layout */
+  --trap-sidebar-width: 240px;
+  --trap-sidebar-width-collapsed: 60px;
+
+  /* Alerts layout */
+  --alerts-sidebar-width: 240px;
+  --alerts-sidebar-width-collapsed: 60px;
+
+  --color-chart-purple-rgb: 168, 85, 247;
+
   --color-accent-cyan-rgb: 6, 182, 212;
   --color-accent-blue-rgb: 59, 130, 246;
   --color-success-rgb: 16, 185, 129;

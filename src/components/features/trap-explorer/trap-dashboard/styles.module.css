@@ -292,7 +292,7 @@
 .timelineTitle {
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .timelineTime {
@@ -370,7 +370,7 @@
 .sourceIP {
   font-size: 14px;
   font-weight: 700;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: -0.5px;
 }
@@ -392,10 +392,28 @@
 
 .sourceProgress {
   height: 100%;
-  background: linear-gradient(to right, #0891b2, #22d3ee);
+  width: var(--source-pct, 0%);
+  background: linear-gradient(to right, var(--color-chart-teal), var(--color-chart-cyan));
   border-radius: 1px;
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+  box-shadow: 0 0 10px rgba(var(--color-accent-cyan-rgb), 0.3);
 }
+
+.metricVal_critical { color: var(--color-danger); }
+.metricVal_major { color: var(--color-chart-orange); }
+.metricVal_cyan { color: var(--color-chart-cyan); }
+.metricVal_info { color: var(--color-success); }
+
+.legendColor_critical { background: var(--color-danger); }
+.legendColor_major { background: var(--color-chart-orange); }
+.legendColor_minor { background: var(--color-warning); }
+.legendColor_warning { background: var(--color-accent-blue); }
+.legendColor_info { background: var(--color-success); }
+
+.timelineNode_critical { border-color: var(--color-danger); }
+.timelineNode_major { border-color: var(--color-chart-orange); }
+.timelineNode_minor { border-color: var(--color-warning); }
+.timelineNode_warning { border-color: var(--color-accent-blue); }
+.timelineNode_info { border-color: var(--color-success); }
 
 @media (max-width: 1200px) {
   .metricGrid { grid-template-columns: repeat(2, 1fr); }

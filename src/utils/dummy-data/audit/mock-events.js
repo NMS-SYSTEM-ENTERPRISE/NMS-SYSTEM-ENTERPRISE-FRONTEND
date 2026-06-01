@@ -1,0 +1,32 @@
+export const MOCK_AUDIT_EVENTS = [
+  {
+    id: '1',
+    timestamp: 'Mon, Jun 23, 2025 08:16:20 PM',
+    module: 'Monitors',
+    operationType: 'Update',
+    user: 'system',
+    remoteIp: '127.0.0.1',
+    message: 'ubuntu8165 Monitor modified successfully',
+    status: 'Success',
+  },
+  {
+    id: '2',
+    timestamp: 'Mon, Jun 23, 2025 08:16:18 PM',
+    module: 'Monitors',
+    operationType: 'Update',
+    user: 'system',
+    remoteIp: '127.0.0.1',
+    message: 'ubuntu8165 Monitor modified successfully',
+    status: 'Success',
+  },
+  {
+    id: '3',
+    timestamp: 'Mon, Jun 23, 2025 08:11:20 PM',
+    module: 'Monitors',
+    operationType: 'Update',
+    user: 'system',
+    remoteIp: '127.0.0.1',
+    message: 'ubuntu8165 Monitor modified successfully',
+    status: 'Success',
+  },
+];

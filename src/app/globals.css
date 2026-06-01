@@ -56,6 +56,15 @@
   --reports-sidebar-width-collapsed: 60px;
   --reports-sidebar-bg: #0b0f19;
 
+  /* Audit layout */
+  --audit-sidebar-width: 240px;
+  --audit-sidebar-width-collapsed: 60px;
+  --audit-sidebar-bg: #0b0f19;
+  --audit-content-bg: #0b0f19;
+  --audit-header-bg: #0b0f19;
+  --audit-accent-sky: #22d3ee;
+  --audit-accent-rose: #f43f5e;
+
   --color-chart-purple-rgb: 168, 85, 247;
 
   --color-accent-cyan-rgb: 6, 182, 212;

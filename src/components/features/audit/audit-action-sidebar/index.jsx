@@ -1,7 +1,11 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
-import styles from './audit-action-sidebar.module.css';
+import styles from './styles.module.css';
 
 export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', auditData = [] }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
@@ -27,32 +31,40 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
   };
 
   return (
-    <div className={styles.sidebarOverlay} onClick={onClose}>
-      <div className={styles.sidebar} onClick={(e) => e.stopPropagation()}>
+    <div className={styles.sidebarOverlay} onClick={onClose} role="presentation">
+      <div
+        className={styles.sidebar}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-label="Audit actions"
+      >
         <div className={styles.header}>
           <div className={styles.headerTitle}>
             <Icon icon="mdi:cog" width={24} height={24} className={styles.headerIcon} />
             <h2>Audit Actions</h2>
           </div>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <Button variant="ghost" size="icon" className={styles.closeBtn} onClick={onClose}>
             <Icon icon="mdi:close" width={24} height={24} />
-          </button>
+          </Button>
         </div>
 
         <div className={styles.tabs}>
-          <button 
+          <button
+            type="button"
             className={`${styles.tab} ${currentTab === 'details' ? styles.tabActive : ''}`}
             onClick={() => setCurrentTab('details')}
           >
             Details
           </button>
-          <button 
+          <button
+            type="button"
             className={`${styles.tab} ${currentTab === 'export' ? styles.tabActive : ''}`}
             onClick={() => setCurrentTab('export')}
           >
             Export
           </button>
-          <button 
+          <button
+            type="button"
             className={`${styles.tab} ${currentTab === 'settings' ? styles.tabActive : ''}`}
             onClick={() => setCurrentTab('settings')}
           >
@@ -81,54 +93,52 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
                 <label>Format</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioLabel}>
-                    <input 
-                      type="radio" 
-                      name="format" 
-                      checked={exportFormat === 'csv'} 
+                    <input
+                      type="radio"
+                      name="format"
+                      checked={exportFormat === 'csv'}
                       onChange={() => setExportFormat('csv')}
                     />
                     CSV
                   </label>
                   <label className={styles.radioLabel}>
-                    <input 
-                      type="radio" 
-                      name="format" 
-                      checked={exportFormat === 'pdf'} 
+                    <input
+                      type="radio"
+                      name="format"
+                      checked={exportFormat === 'pdf'}
                       onChange={() => setExportFormat('pdf')}
                     />
                     PDF
                   </label>
                   <label className={styles.radioLabel}>
-                    <input 
-                      type="radio" 
-                      name="format" 
-                      checked={exportFormat === 'json'} 
+                    <input
+                      type="radio"
+                      name="format"
+                      checked={exportFormat === 'json'}
                       onChange={() => setExportFormat('json')}
                     />
                     JSON
                   </label>
                 </div>
               </div>
-              
+
               <div className={styles.formGroup}>
                 <label>Data Range</label>
-                <div className={styles.infoBox}>
-                  Current View (Today)
-                </div>
+                <div className={styles.infoBox}>Current View (Today)</div>
               </div>
 
-              <button className={styles.primaryBtn} onClick={handleExport}>
+              <Button className={styles.primaryBtn} onClick={handleExport}>
                 <Icon icon="mdi:download" width={18} height={18} />
                 Download Report
-              </button>
+              </Button>
 
-              <div className={styles.divider}></div>
+              <div className={styles.divider} />
 
               <h3>Clipboard</h3>
-              <button className={styles.secondaryBtn} onClick={handleCopy}>
+              <Button variant="secondary" className={styles.secondaryBtn} onClick={handleCopy}>
                 <Icon icon="mdi:content-copy" width={18} height={18} />
                 Copy All to Clipboard
-              </button>
+              </Button>
             </div>
           )}
 
@@ -136,14 +146,11 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
             <div className={styles.section}>
               <h3>Data Refresh</h3>
               <div className={styles.formGroup}>
-                <label className={styles.checkboxLabel}>
-                  <input 
-                    type="checkbox" 
-                    checked={autoRefresh} 
-                    onChange={(e) => setAutoRefresh(e.target.checked)}
-                  />
-                  Enable Auto-refresh
-                </label>
+                <Checkbox
+                  checked={autoRefresh}
+                  onChange={(e) => setAutoRefresh(e.target.checked)}
+                  label="Enable Auto-refresh"
+                />
               </div>
 
               {autoRefresh && (
@@ -162,10 +169,14 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
                 </div>
               )}
 
-              <button className={styles.secondaryBtn} onClick={() => alert('Refreshing data...')}>
+              <Button
+                variant="secondary"
+                className={styles.secondaryBtn}
+                onClick={() => alert('Refreshing data...')}
+              >
                 <Icon icon="mdi:refresh" width={18} height={18} />
                 Refresh Now
-              </button>
+              </Button>
             </div>
           )}
         </div>

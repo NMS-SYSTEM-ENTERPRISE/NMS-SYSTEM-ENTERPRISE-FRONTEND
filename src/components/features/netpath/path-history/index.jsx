@@ -152,7 +152,7 @@ export const PathHistory = () => {
             <div className={`${styles.chartLabel} ${styles.blueTitle}`}>
               <span className={`${styles.chartTitle} ${styles.blueTitle}`}>Latency (ms)</span>
               <div className={styles.chartScale}>
-                <span style={{ color: '#22d3ee' }}>AVG 0.44ms</span>
+                <span className={styles.highlightCyan}>AVG 0.44ms</span>
                 <span>FLUCTUATION</span>
               </div>
             </div>
@@ -164,7 +164,7 @@ export const PathHistory = () => {
             <div className={`${styles.chartLabel} ${styles.redTitle}`}>
               <span className={`${styles.chartTitle} ${styles.redTitle}`}>Packet Loss (%)</span>
               <div className={styles.chartScale}>
-                <span style={{ color: '#f43f5e' }}>0.0% LOSS</span>
+                <span className={styles.highlightDanger}>0.0% LOSS</span>
                 <span>CRITICAL</span>
               </div>
             </div>
@@ -173,10 +173,10 @@ export const PathHistory = () => {
 
           {/* Error Packets Graph */}
           <div className={styles.chartRow}>
-            <div className={styles.chartLabel} style={{ color: '#fbbf24' }}>
-              <span className={styles.chartTitle} style={{ color: '#fbbf24' }}>Error Packets</span>
+            <div className={`${styles.chartLabel} ${styles.warningTitle}`}>
+              <span className={`${styles.chartTitle} ${styles.warningTitle}`}>Error Packets</span>
               <div className={styles.chartScale}>
-                <span style={{ color: '#f59e0b' }}>0 TOTAL</span>
+                <span className={styles.highlightWarning}>0 TOTAL</span>
                 <span>WARNINGS</span>
               </div>
             </div>

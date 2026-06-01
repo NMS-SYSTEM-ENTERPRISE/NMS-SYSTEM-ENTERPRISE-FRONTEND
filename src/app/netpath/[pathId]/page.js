@@ -1,5 +1,5 @@
-import Screen from '@/screens/netpath-detail';
+import NetPathDetail from '@/components/features/netpath/netpath-detail';
 
 export default function Page({ params }) {
-  return <Screen pathId={params.pathId} />;
+  return <NetPathDetail pathId={params.pathId} />;
 }

@@ -1,139 +1,81 @@
-"use client";
+'use client';
+import NetPathDetail from '@/components/features/netpath/netpath-detail';
+import { Button } from '@/components/ui/button';
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
+import { Input } from '@/components/ui/input';
+import { NetPathProvider } from '@/contexts/netpath';
+import { useNetPath } from '@/hooks/netpath';
+import { FILTER_SIDEBAR_CONFIG } from '@/utils/dummy-data/netpath';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import NetPathDetail from '../netpath-detail';
 import styles from './styles.module.css';
 
-// Mock data for network paths
-const NETWORK_PATHS = [
-  {
-    id: '1',
-    name: 'Local Machine - Mydevice',
-    source: 'DESKTOP-K2M5DQG',
-    destination: '10.20.40.206',
-    port: '443',
-    status: 'online',
-    lastPolled: 'Tue, Nov 12, 2024 04:55:33 PM',
-  },
-  {
-    id: '2',
-    name: 'Google DNS',
-    source: 'Localhost',
-    destination: '8.8.8.8',
-    port: '53',
-    status: 'online',
-    lastPolled: 'Tue, Nov 12, 2024 04:55:33 PM',
-  },
-  {
-    id: '3',
-    name: 'Microsoft Azure',
-    source: '172.16.16.1',
-    destination: 'www.microsoft.com',
-    port: '443',
-    status: 'online',
-    lastPolled: 'Tue, Nov 12, 2024 04:55:33 PM',
-  },
-  {
-    id: '4',
-    name: 'Internal DNS',
-    source: 'Localhost',
-    destination: '192.168.1.5',
-    port: '53',
-    status: 'error',
-    lastPolled: 'Tue, Nov 12, 2024 04:55:33 PM',
-  },
-  {
-    id: '5',
-    name: 'Corporate Web Server',
-    source: 'Localhost',
-    destination: 'www.snr-edatas.com',
-    port: '80',
-    status: 'warning',
-    lastPolled: 'Tue, Nov 12, 2024 04:55:33 PM',
-  },
-];
-
-const NetPath = () => {
-  const [activePathId, setActivePathId] = useState(NETWORK_PATHS[0].id);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Collapsed by default
-  const [filters, setFilters] = useState({
-    search: '',
-    status: '',
-    source: '',
-    destination: '',
-    portMin: '',
-    portMax: '',
-  });
+const NetPathContent = () => {
+  const {
+    activePathId,
+    setActivePathId,
+    searchQuery,
+    setSearchQuery,
+    showFilterSidebar,
+    setShowFilterSidebar,
+    isSidebarOpen,
+    setIsSidebarOpen,
+    filters,
+    setFilters,
+    filteredPaths,
+  } = useNetPath();
   const router = useRouter();
 
-  const filteredPaths = NETWORK_PATHS.filter(
-    (path) =>
-      path.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      path.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      path.destination.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const activePath = NETWORK_PATHS.find((p) => p.id === activePathId) || NETWORK_PATHS[0];
-
-  const handleViewDetails = (pathId) => {
-    router.push(`/netpath/${pathId}`);
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'online':
-        return '#10b981';
-      case 'error':
-        return '#ef4444';
-      case 'warning':
-        return '#f59e0b';
-      default:
-        return '#9ca3af';
-    }
-  };
-
-  // Get first 2 letters for avatar
   const getInitials = (name) => {
     return name.substring(0, 2).toUpperCase();
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      search: '',
+      status: '',
+      source: '',
+      destination: '',
+      portMin: '',
+      portMax: '',
+    });
   };
 
   return (
     <div className={styles.netPathPage}>
       {/* Left Sidebar - Path List */}
-      <div 
+      <div
         className={`${styles.leftSidebar} ${!isSidebarOpen ? styles.sidebarCollapsed : ''}`}
       >
         <div className={styles.sidebarHeader}>
-          <span className={`${styles.sidebarTitle} ${!isSidebarOpen ? styles.hidden : ''}`}>
+          <span
+            className={`${styles.sidebarTitle} ${!isSidebarOpen ? styles.hidden : ''}`}
+          >
             CATEGORIES
           </span>
-          <button 
+          <Button
+            variant="ghost"
             className={styles.collapseBtn}
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            title={isSidebarOpen ? "Collapse" : "Expand"}
+            title={isSidebarOpen ? 'Collapse' : 'Expand'}
           >
-            <Icon 
-              icon={isSidebarOpen ? "mdi:chevron-left" : "mdi:chevron-right"} 
-              width={20} 
+            <Icon
+              icon={isSidebarOpen ? 'mdi:chevron-left' : 'mdi:chevron-right'}
+              width={20}
             />
-          </button>
+          </Button>
         </div>
-        
+
         <div className={styles.sidebarNav}>
           {/* Search */}
           {isSidebarOpen && (
             <div className={styles.sidebarSearch}>
-              <Icon icon="mdi:magnify" className={styles.searchIcon} />
-              <input 
-                type="text" 
-                placeholder="Search paths..." 
+              <Input
+                type="text"
+                placeholder="Search paths..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
+                icon={<Icon icon="mdi:magnify" />}
               />
             </div>
           )}
@@ -151,32 +93,29 @@ const NetPath = () => {
               >
                 {/* Tree Branch */}
                 <div className={styles.treeBranch} />
-                
+
                 {/* Icon with status or Avatar */}
                 <div className={styles.itemIconWrapper}>
                   {isSidebarOpen ? (
                     <div 
-                      className={styles.statusDot} 
-                      style={{ backgroundColor: getStatusColor(path.status) }}
+                      className={`${styles.statusDot} ${styles[`status_${path.status}`]}`} 
                     />
                   ) : (
                     <div 
-                      className={styles.avatarText}
-                      style={{ 
-                        backgroundColor: getStatusColor(path.status) + '30',
-                        color: getStatusColor(path.status)
-                      }}
+                      className={`${styles.avatarText} ${styles[`avatar_${path.status}`]}`}
                     >
                       {getInitials(path.name)}
                     </div>
                   )}
                 </div>
-                
+
                 {/* Path details */}
                 <div className={styles.navContent}>
                   <span className={styles.navText}>{path.name}</span>
                   {isSidebarOpen && (
-                    <span className={styles.navSubtext}>{path.destination}:{path.port}</span>
+                    <span className={styles.navSubtext}>
+                      {path.destination}:{path.port}
+                    </span>
                   )}
                 </div>
               </div>
@@ -187,9 +126,31 @@ const NetPath = () => {
 
       {/* Main Content Wrapper */}
       <div className={styles.mainContentWrapper}>
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>{/* Header left */}</div>
+          <div className={styles.headerRight}>
+            <div className={styles.headerActions}>
+              <Button
+                variant="ghost"
+                className={styles.actionBtn}
+                onClick={() => setShowFilterSidebar(true)}
+                title="Filters"
+              >
+                <Icon icon="mdi:filter-variant" width={20} height={20} />
+              </Button>
+            </div>
+          </div>
+        </div>
         {/* Content Area */}
         <div className={styles.contentArea}>
-          <NetPathDetail pathId={activePathId} />
+          {activePathId ? (
+            <NetPathDetail pathId={activePathId} />
+          ) : (
+            <div className={styles.emptyState}>
+              <h2>Select a Path</h2>
+              <p>Choose a network path from the sidebar to view details.</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -198,26 +159,7 @@ const NetPath = () => {
         isOpen={showFilterSidebar}
         onClose={() => setShowFilterSidebar(false)}
         title="NetPath Filters"
-        filters={[
-          {
-            key: 'status',
-            type: 'select',
-            label: 'Status',
-            options: [
-              { value: '', label: 'All' },
-              { value: 'online', label: 'Online' },
-              { value: 'error', label: 'Error' },
-              { value: 'warning', label: 'Warning' },
-            ],
-            placeholder: 'Select status',
-          },
-          {
-            key: 'source',
-            type: 'input',
-            label: 'Source',
-            placeholder: 'Enter source',
-          },
-        ]}
+        filters={FILTER_SIDEBAR_CONFIG}
         filterValues={filters}
         onFilterChange={(key, value) => {
           setFilters((prev) => ({ ...prev, [key]: value }));
@@ -225,19 +167,16 @@ const NetPath = () => {
         onApply={(appliedFilters) => {
           // Apply filters logic here
         }}
-        onReset={() => {
-          setFilters({
-            search: '',
-            status: '',
-            source: '',
-            destination: '',
-            portMin: '',
-            portMax: '',
-          });
-        }}
+        onReset={handleResetFilters}
       />
     </div>
   );
 };
 
-export default NetPath;
+export default function NetPath() {
+  return (
+    <NetPathProvider>
+      <NetPathContent />
+    </NetPathProvider>
+  );
+}

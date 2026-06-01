@@ -4,7 +4,6 @@
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.05); /* Balanced frame */
   border-radius: var(--radius-lg);
-  overflow: hidden; /* Prevent overflow */
 }
 
 .historyHeader {
@@ -43,7 +42,7 @@
   height: 32px;
   border-radius: 8px;
   background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
+  color: var(--color-chart-cyan);
 }
 
 .historyTitle {
@@ -60,7 +59,7 @@
   background: rgba(56, 189, 248, 0.15);
   padding: 2px 8px;
   border-radius: 4px;
-  color: #38bdf8;
+  color: var(--color-chart-cyan);
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -119,7 +118,7 @@
 
 .chartTitle {
   font-size: 11px;
-  color: #c084fc; /* Unique Purple for Availability */
+  color: var(--color-chart-purple); /* Unique Purple for Availability */
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -127,11 +126,11 @@
 }
 
 .blueTitle {
-  color: #22d3ee !important;
+  color: var(--color-chart-cyan) !important;
 }
 
 .redTitle {
-  color: #f43f5e !important;
+  color: var(--color-danger) !important;
 }
 
 .chartScale {
@@ -139,7 +138,7 @@
   flex-direction: column;
   gap: 2px;
   font-size: 10px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
 }
@@ -188,7 +187,7 @@
 
 .timeLabel {
   font-size: 10px;
-  color: #475569;
+  color: var(--color-text-secondary);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
   width: 0;
@@ -196,3 +195,9 @@
   justify-content: center;
   white-space: nowrap;
 }
+
+.highlightCyan { color: var(--color-chart-cyan) !important; }
+.highlightDanger { color: var(--color-danger) !important; }
+.warningTitle { color: var(--color-warning) !important; }
+.highlightWarning { color: var(--color-warning) !important; }
+

@@ -56,18 +56,18 @@
 .nodeSource .nodeIconWrapper {
   border-color: rgba(239, 68, 68, 0.3);
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .nodeDestination .nodeIconWrapper {
   border-color: rgba(34, 211, 238, 0.3);
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
 }
 
 .nodeIntermediate .nodeIconWrapper {
   border-color: rgba(249, 115, 22, 0.3);
-  color: #f97316;
+  color: var(--color-warning);
 }
 
 .nodeCount .nodeIconWrapper {
@@ -75,7 +75,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
   font-size: 20px;
-  color: #f97316;
+  color: var(--color-warning);
 }
 
 .nodeLabel {
@@ -90,7 +90,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-primary);
   opacity: 0.9;
 }
 
@@ -131,8 +131,8 @@
 
 /* Data Packet Pulse */
 .dataPacket {
-  fill: #fff;
-  filter: drop-shadow(0 0 4px #fff);
+  fill: var(--color-text-primary);
+  filter: drop-shadow(0 0 4px var(--color-text-primary));
 }
 
 /* Latency Badges */
@@ -146,7 +146,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-primary);
   z-index: 15;
   pointer-events: auto;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -154,8 +154,8 @@
 }
 
 .latencyBadge:hover {
-  border-color: #f97316;
-  color: #f97316;
+  border-color: var(--color-warning);
+  color: var(--color-warning);
   transform: translateY(-2px);
 }
 
@@ -165,4 +165,9 @@
   background: currentColor;
   border-radius: 1px;
   box-shadow: 0 0 8px currentColor;
+}
+
+.clockIcon {
+  margin-right: 4px;
+  opacity: 0.6;
 }

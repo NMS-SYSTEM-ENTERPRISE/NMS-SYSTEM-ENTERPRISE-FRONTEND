@@ -105,7 +105,7 @@ export const PathVisualization = ({ pathInfo }) => {
       lines.push({ 
         d, 
         id: `seg-${i}`, 
-        color: node.type === 'destination' ? '#22d3ee' : '#f97316',
+        color: node.type === 'destination' ? 'var(--color-chart-cyan)' : 'var(--color-warning)',
         latency: node.latency,
         midX,
         y1,
@@ -166,7 +166,7 @@ export const PathVisualization = ({ pathInfo }) => {
               </path>
 
               {/* Precise Single Data Pulse */}
-              <circle r="4" fill="#fff" fillOpacity="0.9">
+              <circle r="4" fill="var(--color-text-primary)" fillOpacity="0.9">
                 <animateMotion 
                   dur={`${2.2 + Math.random() * 0.5}s`} 
                   repeatCount="indefinite" 
@@ -216,7 +216,7 @@ export const PathVisualization = ({ pathInfo }) => {
                   transform: 'translate(-50%, -150%)'
                 }}
               >
-                <Icon icon="mdi:clock-fast" width={10} style={{ marginRight: '4px', opacity: 0.6 }} />
+                <Icon icon="mdi:clock-fast" width={10} className={styles.clockIcon} />
                 {conn.latency}ms
               </div>
             )

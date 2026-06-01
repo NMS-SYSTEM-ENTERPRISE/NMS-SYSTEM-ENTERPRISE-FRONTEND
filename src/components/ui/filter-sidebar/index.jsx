@@ -1,5 +1,5 @@
-import { Icon } from '@iconify/react';
 import { SelectComponent } from '@/components/ui/select';
+import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 /**
@@ -66,10 +66,14 @@ export const FilterSidebar = ({
         </div>
 
         {/* Search Bar (if needed) */}
-        {filters.some(f => f.type === 'search') && (
+        {filters.some((f) => f.type === 'search') && (
           <div className={styles.searchSection}>
             <div className={styles.searchBar}>
-              <Icon icon="mdi:magnify" className={styles.searchIcon} width={18} />
+              <Icon
+                icon="mdi:magnify"
+                className={styles.searchIcon}
+                width={18}
+              />
               <input
                 type="text"
                 placeholder="Search..."
@@ -90,13 +94,17 @@ export const FilterSidebar = ({
               <div key={filter.key} className={styles.filterGroup}>
                 <label className={styles.filterLabel}>
                   {filter.label}
-                  {filter.required && <span className={styles.required}>*</span>}
+                  {filter.required && (
+                    <span className={styles.required}>*</span>
+                  )}
                 </label>
 
                 {filter.type === 'select' && (
                   <SelectComponent
                     value={filterValues[filter.key] || ''}
-                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange(filter.key, e.target.value)
+                    }
                     options={filter.options || []}
                     placeholder={filter.placeholder || 'Select...'}
                     isMulti={filter.isMulti}
@@ -107,7 +115,9 @@ export const FilterSidebar = ({
                 {filter.type === 'multiselect' && (
                   <SelectComponent
                     value={filterValues[filter.key] || []}
-                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange(filter.key, e.target.value)
+                    }
                     options={filter.options || []}
                     placeholder={filter.placeholder || 'Select...'}
                     isMulti={true}
@@ -120,7 +130,9 @@ export const FilterSidebar = ({
                     type={filter.inputType || 'text'}
                     className={styles.input}
                     value={filterValues[filter.key] || ''}
-                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange(filter.key, e.target.value)
+                    }
                     placeholder={filter.placeholder}
                   />
                 )}
@@ -130,7 +142,9 @@ export const FilterSidebar = ({
                     <input
                       type="checkbox"
                       checked={filterValues[filter.key] || false}
-                      onChange={(e) => handleFilterChange(filter.key, e.target.checked)}
+                      onChange={(e) =>
+                        handleFilterChange(filter.key, e.target.checked)
+                      }
                     />
                     <span>{filter.checkboxLabel}</span>
                   </label>
@@ -142,7 +156,9 @@ export const FilterSidebar = ({
                       type="number"
                       className={styles.rangeInput}
                       value={filterValues[`${filter.key}_min`] || ''}
-                      onChange={(e) => handleFilterChange(`${filter.key}_min`, e.target.value)}
+                      onChange={(e) =>
+                        handleFilterChange(`${filter.key}_min`, e.target.value)
+                      }
                       placeholder="Min"
                     />
                     <span className={styles.rangeSeparator}>-</span>
@@ -150,13 +166,17 @@ export const FilterSidebar = ({
                       type="number"
                       className={styles.rangeInput}
                       value={filterValues[`${filter.key}_max`] || ''}
-                      onChange={(e) => handleFilterChange(`${filter.key}_max`, e.target.value)}
+                      onChange={(e) =>
+                        handleFilterChange(`${filter.key}_max`, e.target.value)
+                      }
                       placeholder="Max"
                     />
                   </div>
                 )}
 
-                {filter.type === 'custom' && filter.render && filter.render(filterValues, handleFilterChange)}
+                {filter.type === 'custom' &&
+                  filter.render &&
+                  filter.render(filterValues, handleFilterChange)}
               </div>
             );
           })}
@@ -181,7 +201,3 @@ export const FilterSidebar = ({
     </>
   );
 };
-
-
-
-

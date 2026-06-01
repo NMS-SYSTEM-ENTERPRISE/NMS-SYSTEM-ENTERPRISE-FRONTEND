@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
+import { Popup } from '@/components/ui/popup';
+import { Button } from '@/components/ui/button';
 import styles from './styles.module.css';
 
 const TIME_RANGES = [
@@ -23,52 +24,38 @@ const TIME_RANGES = [
 ];
 
 export const TimeRangeSelector = ({ value, onChange }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
   const selectedRange = TIME_RANGES.find((range) => range.value === value);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSelect = (rangeValue) => {
-    onChange(rangeValue);
-    setIsOpen(false);
-  };
-
   return (
-    <div className={styles.timeRangeSelector} ref={dropdownRef}>
-      <button className={styles.trigger} onClick={() => setIsOpen(!isOpen)}>
-        <span className={styles.triggerLabel}>
-          {selectedRange?.shortLabel || '6h'}
-        </span>
-        <Icon icon="mdi:chevron-down" width={14} height={14} />
-      </button>
-
-      {isOpen && (
-        <div className={styles.dropdown}>
-          {TIME_RANGES.map((range) => (
-            <button
-              key={range.value}
-              className={`${styles.option} ${
-                value === range.value ? styles.optionActive : ''
-              }`}
-              onClick={() => handleSelect(range.value)}
-            >
-              <span className={styles.optionLabel}>{range.label}</span>
-              <span className={styles.optionShort}>{range.shortLabel}</span>
-            </button>
-          ))}
-        </div>
-      )}
+    <div className={styles.timeRangeSelector}>
+      <Popup
+        placement="bottom-end"
+        trigger={
+          <Button variant="ghost" className={styles.trigger}>
+            <span className={styles.triggerLabel}>
+              {selectedRange?.shortLabel || '6h'}
+            </span>
+            <Icon icon="mdi:chevron-down" width={14} height={14} />
+          </Button>
+        }
+        content={
+          <div className={styles.dropdown}>
+            {TIME_RANGES.map((range) => (
+              <Button
+                key={range.value}
+                variant="ghost"
+                className={`${styles.option} ${
+                  value === range.value ? styles.optionActive : ''
+                }`}
+                onClick={() => onChange(range.value)}
+              >
+                <span className={styles.optionLabel}>{range.label}</span>
+                <span className={styles.optionShort}>{range.shortLabel}</span>
+              </Button>
+            ))}
+          </div>
+        }
+      />
     </div>
   );
 };

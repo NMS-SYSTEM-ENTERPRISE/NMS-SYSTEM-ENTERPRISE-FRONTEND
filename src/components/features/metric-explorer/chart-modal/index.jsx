@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import styles from './styles.module.css';
 
 export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
@@ -156,8 +157,8 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
           </div>
           <div className={styles.modalActions}>
             <div className={styles.timeControls}>
-              <button className={styles.timeBtn}>24h</button>
-              <button className={styles.timeBtn}>Last 24 Hours</button>
+              <Button variant="ghost" className={styles.timeBtn}>24h</Button>
+              <Button variant="ghost" className={styles.timeBtn}>Last 24 Hours</Button>
               <div className={styles.dateRange}>
                 {formatDateRange()
                   .split('\n')
@@ -166,12 +167,12 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
                   ))}
               </div>
             </div>
-            <button className={styles.saveBtn} onClick={onSaveAsWidget}>
+            <Button variant="primary" className={styles.saveBtn} onClick={onSaveAsWidget}>
               Save as Widget
-            </button>
-            <button className={styles.closeBtn} onClick={onClose}>
+            </Button>
+            <Button variant="ghost" className={styles.closeBtn} onClick={onClose}>
               <Icon icon="mdi:close" width={20} height={20} />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -186,7 +187,7 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
           </div>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Monitor</span>
-            <span className={styles.statValue} style={{ color: '#06b6d4' }}>
+            <span className={styles.statValue} style={{ color: 'var(--color-chart-cyan)' }}>
               {monitor || 'N/A'}
             </span>
           </div>

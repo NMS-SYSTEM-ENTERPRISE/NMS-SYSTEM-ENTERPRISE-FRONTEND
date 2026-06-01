@@ -4,6 +4,8 @@ import { Icon } from '@iconify/react';
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
 import { TimeRangeSelector } from '../time-range-selector';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import styles from './styles.module.css';
 
 export const MetricChart = ({
@@ -158,32 +160,33 @@ export const MetricChart = ({
         <div className={styles.chartTitle}>
           <Icon icon="mdi:clipboard-text" className={styles.metricIcon} width={16} height={16} />
           <span className={styles.metricName}>{name}</span>
-          <button className={styles.removeMetric} onClick={onRemove}>
+          <Button variant="ghost" className={styles.removeMetric} onClick={onRemove}>
             <Icon icon="mdi:close" width={16} height={16} />
-          </button>
+          </Button>
         </div>
         <div className={styles.chartActions}>
           <TimeRangeSelector
             value={timeRange}
             onChange={(value) => onUpdate({ timeRange: value })}
           />
-          <button className={styles.actionBtn} onClick={onExpand}>
+          <Button variant="ghost" className={styles.actionBtn} onClick={onExpand}>
             <Icon icon="mdi:fullscreen" width={16} height={16} />
-          </button>
-          <button className={styles.actionBtn} onClick={onShare}>
+          </Button>
+          <Button variant="ghost" className={styles.actionBtn} onClick={onShare}>
             <Icon icon="mdi:share-variant" width={16} height={16} />
-          </button>
+          </Button>
           
           <Popup
             placement="bottom-end"
             trigger={
-              <button className={styles.actionBtn}>
+              <Button variant="ghost" className={styles.actionBtn}>
                 <Icon icon="mdi:dots-vertical" width={16} height={16} />
-              </button>
+              </Button>
             }
             content={
               <div className={styles.menuContent}>
-                <button 
+                <Button 
+                  variant="ghost"
                   className={styles.menuItem} 
                   onClick={() => {
                     setNewName(name);
@@ -192,8 +195,9 @@ export const MetricChart = ({
                 >
                   <Icon icon="mdi:pencil" width={14} />
                   Rename Metric
-                </button>
-                 <button 
+                </Button>
+                 <Button 
+                  variant="ghost"
                   className={styles.menuItem} 
                   onClick={() => {
                     alert('Exporting data as CSV...');
@@ -201,16 +205,16 @@ export const MetricChart = ({
                 >
                   <Icon icon="mdi:download" width={14} />
                   Export Data
-                </button>
-                <div style={{ height: 1, background: '#374151', margin: '4px 0' }} />
-                <button 
+                </Button>
+                <div style={{ height: 1, background: 'var(--color-border)', margin: '4px 0' }} />
+                <Button 
+                  variant="ghost"
                   className={`${styles.menuItem} ${styles.menuItemDanger}`} 
                   onClick={onRemove}
-                   style={{ color: '#ef4444' }}
                 >
                   <Icon icon="mdi:close-circle" width={14} />
                   Remove
-                </button>
+                </Button>
               </div>
             }
           />
@@ -250,7 +254,6 @@ export const MetricChart = ({
         </div>
       </div>
 
-      {/* Rename Modal */}
       <Modal
         isOpen={isRenaming}
         onClose={() => setIsRenaming(false)}
@@ -259,7 +262,7 @@ export const MetricChart = ({
       >
         <div className={styles.modalBody}>
           <label className={styles.statLabel} style={{ marginBottom: 8, display: 'block' }}>Metric Alias</label>
-          <input
+          <Input
             type="text"
             className={styles.modalInput}
             value={newName}
@@ -267,18 +270,18 @@ export const MetricChart = ({
             autoFocus
           />
           <div className={styles.modalActions}>
-            <button 
-              className={`${styles.modalBtn} ${styles.modalBtnCancel}`}
+            <Button 
+              variant="secondary"
               onClick={() => setIsRenaming(false)}
             >
               Cancel
-            </button>
-            <button 
-              className={`${styles.modalBtn} ${styles.modalBtnPrimary}`}
+            </Button>
+            <Button 
+              variant="primary"
               onClick={handleRename}
             >
               Save Changes
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

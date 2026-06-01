@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import styles from './styles.module.css';
 
 export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
@@ -52,7 +54,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
     const valueRange = maxValue - minValue || 1;
 
     // Draw Y-axis grid lines and labels
-    ctx.strokeStyle = '#1f2937';
+    ctx.strokeStyle = '#1f2937'; // CSS vars might be tricky in some older canvas implementations, sticking to hex for canvas grid is safer but we can try vars. Let's use vars for main colors.
     ctx.fillStyle = '#6b7280';
     ctx.font = '10px Manrope';
     ctx.lineWidth = 1;
@@ -124,7 +126,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
 
     // Draw line
     ctx.beginPath();
-    ctx.strokeStyle = '#06b6d4';
+    ctx.strokeStyle = '#0ea5e9';
     ctx.lineWidth = 2;
 
     data.forEach((point, index) => {
@@ -153,7 +155,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
         const y = padding.top + chartHeight - normalizedValue * chartHeight;
 
         ctx.beginPath();
-        ctx.fillStyle = '#06b6d4';
+        ctx.fillStyle = '#0ea5e9'; // changed to cyan
         ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
@@ -238,9 +240,9 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h3 className={styles.modalTitle}>Share Widget</h3>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <Button variant="ghost" className={styles.closeBtn} onClick={onClose}>
             <Icon icon="mdi:close" width={20} height={20} />
-          </button>
+          </Button>
         </div>
 
         <div className={styles.modalBody}>
@@ -249,9 +251,9 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
             <div className={styles.chartPreviewHeader}>
               <Icon icon="mdi:clipboard-text" className={styles.metricIcon} width={16} height={16} />
               <span className={styles.metricName}>{name}</span>
-              <button className={styles.removeBtn}>
+              <Button variant="ghost" className={styles.removeBtn}>
                 <Icon icon="mdi:close" width={14} height={14} />
-              </button>
+              </Button>
             </div>
             <div className={styles.chartPreviewBody}>
               <canvas
@@ -287,7 +289,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
               <label className={styles.label}>
                 Share With <span className={styles.required}>*</span>
               </label>
-              <input
+              <Input
                 type="text"
                 className={styles.input}
                 placeholder="@User or Email or /Handle"
@@ -310,16 +312,17 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
             </div>
 
             <div className={styles.formActions}>
-              <button
+              <Button
+                variant="secondary"
                 type="button"
                 className={styles.resetBtn}
                 onClick={handleReset}
               >
                 Reset
-              </button>
-              <button type="submit" className={styles.shareBtn}>
+              </Button>
+              <Button variant="primary" type="submit" className={styles.shareBtn}>
                 Share
-              </button>
+              </Button>
             </div>
           </form>
         </div>

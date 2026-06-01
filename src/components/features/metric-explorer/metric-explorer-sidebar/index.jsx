@@ -3,38 +3,9 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
-// Mock data for dropdowns
-const MONITORS = [
-  { id: '1', name: 'xen71master(6492031471S)', ip: '172.16.10.231' },
-  { id: '2', name: 'server01(6492031472)', ip: '172.16.10.232' },
-];
-
-const INSTANCE_TYPES = [
-  { id: '1', name: 'citrix.xen.cluster.node' },
-  { id: '2', name: 'system.node' },
-];
-
-const METRICS = [
-  'system.memory.free.percent',
-  'system.memory.free.bytes',
-  'system.load.avg1.min',
-  'system.cpu.percent',
-  'system.load.avg5.min',
-  'system.memory.used.percent',
-  'system.load.avg15.min',
-  'system.memory.available.bytes',
-  'system.memory.used.bytes',
-  'system.blocked.processes',
-  'system.swap.memory.free.bytes',
-  'system.running.processes',
-  'system.cpu.nice.percent',
-  'system.context.switches',
-  'system.cpu.kernel.percent',
-  'system.interrupts',
-  'system.memory.capacity.bytes',
-  'system.cpu.steal.percent',
-  'system.swap.memory.used.bytes',
-];
+import { MONITORS, INSTANCE_TYPES, METRICS } from '@/utils/dummy-data/metric-explorer';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 // Helper to get unique categories from metrics list
 const getCategories = (metricsList) => {
@@ -113,22 +84,24 @@ export const MetricExplorerSidebar = ({
 
       {/* View Tabs */}
       <div className={styles.viewTabs}>
-        <button
+        <Button
+          variant={activeView === 'metric' ? 'primary' : 'ghost'}
           className={`${styles.viewTab} ${
             activeView === 'metric' ? styles.viewTabActive : ''
           }`}
           onClick={() => setActiveView('metric')}
         >
           Metrics
-        </button>
-        <button
+        </Button>
+        <Button
+          variant={activeView === 'instance' ? 'primary' : 'ghost'}
           className={`${styles.viewTab} ${
             activeView === 'instance' ? styles.viewTabActive : ''
           }`}
           onClick={() => setActiveView('instance')}
         >
           Instances
-        </button>
+        </Button>
       </div>
 
       {/* Instance Type Selection */}
@@ -138,13 +111,13 @@ export const MetricExplorerSidebar = ({
       {/* Metrics Section */}
       <div className={styles.metricsSection}>
         <div className={styles.searchBox}>
-          <Icon icon="mdi:magnify" className={styles.searchIcon} width={16} height={16} />
-          <input
+          <Input
             type="text"
             placeholder="Search metrics..."
-            className={styles.searchInput}
+            containerClassName={styles.searchInput}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            icon={<Icon icon="mdi:magnify" width={16} height={16} />}
           />
         </div>
 
@@ -224,9 +197,9 @@ const MetricGroup = ({ category, metrics, onAddMetric }) => {
             >
               <span className={styles.metricItemLine}></span>
               <span className={styles.metricName}>{metric}</span>
-              <button className={styles.metricAdd}>
+              <Button variant="ghost" className={styles.metricAdd}>
                 <Icon icon="mdi:plus" width={14} height={14} />
-              </button>
+              </Button>
             </div>
           ))}
         </div>

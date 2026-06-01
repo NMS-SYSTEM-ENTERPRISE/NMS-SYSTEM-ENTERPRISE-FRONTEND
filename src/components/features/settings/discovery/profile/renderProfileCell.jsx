@@ -165,6 +165,16 @@ export const renderProfileCell = (
                 </button>
                 <button
                   type="button"
+                  className={styles.assignMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewDevices(profile);
+                  }}
+                >
+                  <Icon icon="mdi:server-network" width={16} height={16} /> View Devices
+                </button>
+                <button
+                  type="button"
                   className={styles.editMenuBtn}
                   onClick={(e) => {
                     e.stopPropagation();

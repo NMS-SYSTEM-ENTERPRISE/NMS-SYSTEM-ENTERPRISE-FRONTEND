@@ -22,3 +22,6 @@ export const profileDevicesApi = async (id, params = {}) => {
 
 export const scheduleDiscoveryProfileApi = async (data) =>
   authApi.post(DISCOVERY_PROFILE_ENDPOINTS.SCHEDULE_PROFILE, data);
+
+export const commissionDevicesApi = async (data) =>
+  authApi.post(DISCOVERY_PROFILE_ENDPOINTS.COMMISSION_DEVICES, data);

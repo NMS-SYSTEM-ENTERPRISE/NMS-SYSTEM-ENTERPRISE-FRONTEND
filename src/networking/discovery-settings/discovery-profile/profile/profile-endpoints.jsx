@@ -5,4 +5,5 @@ export const DISCOVERY_PROFILE_ENDPOINTS = {
   DELETE_PROFILE: 'discovery-settings/discovery_profile/profile/{id}',
   GET_DEVICES: 'discovery-settings/discovery_profile/profile/{id}/devices',
   SCHEDULE_PROFILE: 'discovery-settings/discovery_profile/profile/scheduler',
+  COMMISSION_DEVICES: 'discovery-settings/discovery_profile/profile/devices/commission',
 };

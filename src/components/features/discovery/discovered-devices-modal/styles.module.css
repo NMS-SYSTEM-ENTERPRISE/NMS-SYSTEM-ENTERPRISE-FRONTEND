@@ -75,3 +75,17 @@
 .tableMuted {
   color: var(--color-text-muted);
 }
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-md);
+  margin-bottom: var(--gap-sm);
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}

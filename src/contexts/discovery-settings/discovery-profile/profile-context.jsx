@@ -9,6 +9,7 @@ import {
   editDiscoveryProfileApi,
   profileDevicesApi,
   scheduleDiscoveryProfileApi,
+  commissionDevicesApi,
 } from '@/networking/discovery-settings/discovery-profile/profile/profile-apis';
 
 export const DiscoveryProfileContext = createContext(null);
@@ -178,6 +179,30 @@ export const DiscoveryProfileProvider = ({ children }) => {
     [showSuccess, showError]
   );
 
+  const commissionDevices = useCallback(
+    async (deviceIds) => {
+      setIsLoading(true);
+      try {
+        const response = await commissionDevicesApi({ device_ids: deviceIds });
+        const { status, data } = response;
+        if (status === 200 || status === 201) {
+          showSuccess(data?.message || 'Devices commissioned successfully.');
+          return data;
+        } else {
+          showError(data?.message || 'Failed to commission devices.');
+          return null;
+        }
+      } catch (error) {
+        showError(extractErrorMessage(error, 'Error commissioning devices.'));
+        console.error('Commission devices error:', error);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [showSuccess, showError]
+  );
+
   const memoizedValue = useMemo(
     () => ({
       isLoading,
@@ -187,8 +212,9 @@ export const DiscoveryProfileProvider = ({ children }) => {
       deleteDiscoveryProfile,
       getProfileDevices,
       scheduleProfile,
+      commissionDevices,
     }),
-    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices, scheduleProfile]
+    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices, scheduleProfile, commissionDevices]
   );
 
   return (

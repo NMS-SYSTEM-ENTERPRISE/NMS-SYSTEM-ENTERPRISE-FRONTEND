@@ -1,5 +1,5 @@
-import { Icon } from '@iconify/react';
 import { Input } from '@/components/ui/input';
+import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 const discoveryTypes = [
@@ -11,7 +11,13 @@ const discoveryTypes = [
   { value: 'other', label: 'Other', icon: 'mdi:devices' },
 ];
 
-export const DiscoveryTypeSelector = ({ value, otherValue, onChange, onOtherChange, error }) => {
+export const DiscoveryTypeSelector = ({
+  value,
+  otherValue,
+  onChange,
+  onOtherChange,
+  error,
+}) => {
   return (
     <div className={styles.formGroup}>
       <label>Discovery Type *</label>
@@ -20,11 +26,17 @@ export const DiscoveryTypeSelector = ({ value, otherValue, onChange, onOtherChan
           <button
             key={type.value}
             type="button"
-            className={`${styles.typeButton} ${value === type.value ? styles.typeButton_active : ''
-              }`}
+            className={`${styles.typeButton} ${
+              value === type.value ? styles.typeButton_active : ''
+            }`}
             onClick={() => onChange(type.value)}
           >
-            <Icon icon={type.icon} className={styles.typeIcon} width={24} height={24} />
+            <Icon
+              icon={type.icon}
+              className={styles.typeIcon}
+              width={24}
+              height={24}
+            />
             <span>{type.label}</span>
           </button>
         ))}
@@ -40,7 +52,9 @@ export const DiscoveryTypeSelector = ({ value, otherValue, onChange, onOtherChan
           />
         </div>
       )}
-      {error && value !== 'other' && <span className={styles.errorText}>{error}</span>}
+      {error && value !== 'other' && (
+        <span className={styles.errorText}>{error}</span>
+      )}
     </div>
   );
 };

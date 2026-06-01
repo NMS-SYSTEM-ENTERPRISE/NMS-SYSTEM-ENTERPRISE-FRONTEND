@@ -201,7 +201,9 @@ export const CreateDiscoveryModal = ({ profile, onClose, onSave }) => {
         csv_file_path: formData.csvFile?.name || '',
         port: formData.port ? parseInt(formData.port, 10) : 0,
         timeout: formData.timeout ? parseInt(formData.timeout, 10) : 30,
-        credential_ids: Array.isArray(formData.credentials) ? formData.credentials : [],
+        credential_ids: Array.isArray(formData.credentials)
+          ? formData.credentials
+          : [],
         group_ids: Array.isArray(formData.groups) ? formData.groups : [],
         tag_ids: Array.isArray(formData.tags) ? formData.tags : [],
       };

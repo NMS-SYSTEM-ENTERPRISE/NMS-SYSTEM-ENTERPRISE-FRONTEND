@@ -263,8 +263,8 @@ export const SelectComponent = ({
               (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')
             }
             onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              'var(--color-bg-primary)')
+              (e.currentTarget.style.backgroundColor =
+                'var(--color-bg-primary)')
             }
           >
             <Icon icon="mdi:plus-circle" width={16} height={16} />
@@ -290,20 +290,20 @@ export const SelectComponent = ({
         formatCreateLabel={
           isCreatable
             ? (inputValue) => (
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                <Icon
-                  icon="mdi:plus-circle"
-                  width={16}
-                  height={16}
-                  color="var(--color-chart-cyan)"
-                />
-                <span style={{ color: 'var(--color-chart-cyan)' }}>
-                  Create "{inputValue}"
-                </span>
-              </div>
-            )
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <Icon
+                    icon="mdi:plus-circle"
+                    width={16}
+                    height={16}
+                    color="var(--color-chart-cyan)"
+                  />
+                  <span style={{ color: 'var(--color-chart-cyan)' }}>
+                    Create "{inputValue}"
+                  </span>
+                </div>
+              )
             : undefined
         }
         styles={customStyles}

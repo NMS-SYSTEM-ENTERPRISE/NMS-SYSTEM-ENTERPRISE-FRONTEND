@@ -1,6 +1,6 @@
+import { Modal } from '@/components/ui/modal';
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
-import { Modal } from '@/components/ui/modal';
 import styles from './styles.module.css';
 
 export const CsvUploader = ({ file, onFileChange, error }) => {
@@ -14,10 +14,12 @@ export const CsvUploader = ({ file, onFileChange, error }) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target.result;
-      const lines = text.split('\n').filter(line => line.trim());
+      const lines = text.split('\n').filter((line) => line.trim());
       if (lines.length > 0) {
-        const headers = lines[0].split(',').map(h => h.trim());
-        const data = lines.slice(1, 11).map(line => line.split(',').map(c => c.trim())); // Preview first 10 rows
+        const headers = lines[0].split(',').map((h) => h.trim());
+        const data = lines
+          .slice(1, 11)
+          .map((line) => line.split(',').map((c) => c.trim())); // Preview first 10 rows
         setPreviewHeaders(headers);
         setPreviewData(data);
         setShowPreview(true);
@@ -65,10 +67,19 @@ export const CsvUploader = ({ file, onFileChange, error }) => {
 
         {file ? (
           <div className={styles.csvPreview}>
-            <Icon icon="mdi:file-delimited-outline" width={32} height={32} className={styles.csvIcon} />
+            <Icon
+              icon="mdi:file-delimited-outline"
+              width={32}
+              height={32}
+              className={styles.csvIcon}
+            />
             <div className={styles.csvDetails}>
               <span className={styles.csvName}>{file.name}</span>
-              <span className={styles.csvSize}>{file.size ? (file.size / 1024).toFixed(2) + ' KB' : 'Remote File'}</span>
+              <span className={styles.csvSize}>
+                {file.size
+                  ? (file.size / 1024).toFixed(2) + ' KB'
+                  : 'Remote File'}
+              </span>
             </div>
             <div className={styles.csvActions}>
               <button
@@ -98,17 +109,28 @@ export const CsvUploader = ({ file, onFileChange, error }) => {
           <div className={styles.csvPlaceholder}>
             <Icon icon="mdi:cloud-upload-outline" width={32} height={32} />
             <p>Click or drag and drop to upload CSV</p>
-            <span className={styles.helpText}>Only .csv files are supported</span>
+            <span className={styles.helpText}>
+              Only .csv files are supported
+            </span>
           </div>
         )}
       </div>
       {error && <span className={styles.errorText}>{error}</span>}
 
       {showPreview && (
-        <Modal isOpen onClose={() => setShowPreview(false)} className={styles.previewModal}>
+        <Modal
+          isOpen
+          onClose={() => setShowPreview(false)}
+          className={styles.previewModal}
+        >
           <div className={styles.previewModalHeader}>
-            <h3 className={styles.previewModalTitle}>CSV Preview ({file?.name})</h3>
-            <button className={styles.previewModalClose} onClick={() => setShowPreview(false)}>
+            <h3 className={styles.previewModalTitle}>
+              CSV Preview ({file?.name})
+            </h3>
+            <button
+              className={styles.previewModalClose}
+              onClick={() => setShowPreview(false)}
+            >
               <Icon icon="mdi:close" width={20} height={20} />
             </button>
           </div>
@@ -135,7 +157,9 @@ export const CsvUploader = ({ file, onFileChange, error }) => {
                 </table>
               </div>
             ) : (
-              <div className={styles.previewEmpty}>No data could be parsed.</div>
+              <div className={styles.previewEmpty}>
+                No data could be parsed.
+              </div>
             )}
           </div>
         </Modal>

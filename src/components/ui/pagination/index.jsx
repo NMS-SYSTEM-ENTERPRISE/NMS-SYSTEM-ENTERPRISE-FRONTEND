@@ -1,6 +1,6 @@
+import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
-import { SelectComponent } from '@/components/ui/select';
 import styles from './styles.module.css';
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
@@ -60,7 +60,11 @@ const Pagination = ({
 
     addPage(1);
     if (currentPage > 3) addEllipsis();
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    ) {
       addPage(i);
     }
     if (currentPage < totalPages - 2) addEllipsis();
@@ -70,7 +74,9 @@ const Pagination = ({
 
   const chips = buildPageChips();
   const showSelector =
-    showPageSizeSelect !== undefined ? showPageSizeSelect : Boolean(onPageSizeChange);
+    showPageSizeSelect !== undefined
+      ? showPageSizeSelect
+      : Boolean(onPageSizeChange);
 
   return (
     <div className={clsx(styles.pagination, className)}>
@@ -101,12 +107,15 @@ const Pagination = ({
         ) : (
           <button
             key={chip}
-            className={clsx(styles.pageChip, chip === currentPage && styles.pageChip_active)}
+            className={clsx(
+              styles.pageChip,
+              chip === currentPage && styles.pageChip_active
+            )}
             onClick={() => chip !== currentPage && onPageChange?.(chip)}
           >
             {chip}
           </button>
-        ),
+        )
       )}
 
       {/* Next / Last */}
@@ -137,7 +146,10 @@ const Pagination = ({
             className={styles.pageSizeSelectWrapper}
             value={pageSize}
             onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-            options={pageSizeOptions.map((opt) => ({ value: opt, label: String(opt) }))}
+            options={pageSizeOptions.map((opt) => ({
+              value: opt,
+              label: String(opt),
+            }))}
             isSearchable={false}
             isClearable={false}
             menuPlacement="top"

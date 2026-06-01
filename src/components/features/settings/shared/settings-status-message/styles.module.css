@@ -1,0 +1,10 @@
+.message {
+  padding: var(--padding-xl);
+  text-align: center;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-danger);
+}

@@ -127,6 +127,22 @@
   --color-border-light: #374151;
   --color-border-accent: #475569;
 
+  /* Settings landing card accents */
+  --settings-accent-cyan: #00aeef;
+  --settings-accent-purple: #7c4dff;
+  --settings-accent-coral: #ff6b6b;
+  --settings-accent-green: #4caf50;
+  --settings-accent-orange: #ff9800;
+  --settings-accent-violet: #9c27b0;
+  --settings-accent-teal: #00bcd4;
+  --settings-accent-pink: #e91e63;
+  --settings-accent-indigo: #3f51b5;
+  --settings-accent-blue-grey: #607d8b;
+  --settings-accent-brown: #795548;
+  --settings-accent-mint: #009688;
+  --settings-accent-lime: #8bc34a;
+  --settings-accent-yellow-green: #cddc39;
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;

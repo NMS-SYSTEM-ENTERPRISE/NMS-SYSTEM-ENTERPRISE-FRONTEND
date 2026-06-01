@@ -7,15 +7,17 @@
 
 // ─── Table columns ────────────────────────────────────────────
 
-/** Column definitions for the LDAP Servers data table. */
+/** Column definitions for the LDAP Servers data table (API field keys). */
 export const LDAP_COLUMNS = [
-  { key: 'ipHost',     label: 'IP/Host' },
-  { key: 'fqdn',       label: 'FQDN' },
-  { key: 'ldapGroups', label: 'LDAP Groups' },
-  { key: 'lastSyncAt', label: 'Last Sync At' },
-  { key: 'sync',       label: 'Sync' },
-  { key: 'actions',    label: 'Actions', align: 'right' },
+  { key: 'primary_host', label: 'IP/HOST' },
+  { key: 'domain_name', label: 'DOMAIN' },
+  { key: 'server_type', label: 'SERVER TYPE' },
+  { key: 'ldap_groups', label: 'LDAP GROUPS' },
+  { key: 'actions', label: 'ACTIONS' },
 ];
+
+/** @deprecated Use LDAP_COLUMNS */
+export const LDAP_TABLE_COLUMNS = LDAP_COLUMNS;
 
 // ─── Select options ───────────────────────────────────────────
 
@@ -27,19 +29,19 @@ export const SERVER_TYPE_OPTIONS = [
 
 // ─── Form defaults ────────────────────────────────────────────
 
-/** Default (empty) state for the Add LDAP Server form. */
+/** Default (empty) state for the Add LDAP Server form (API field keys). */
 export const EMPTY_LDAP_SERVER = {
-  primaryIpHost:       '',
-  secondaryIpHost:     '',
-  domainName:          '',
-  serverType:          'Microsoft AD',
-  secureLdap:          false,
-  port:                '389',
-  userName:            '',
-  password:            '',
-  ldapAuthentication:  false,
-  autoSync:            false,
-  ldapGroups:          '',
+  primary_host: '',
+  secondary_host: '',
+  domain_name: '',
+  server_type: 'Microsoft AD',
+  secure_ldap: false,
+  port: '389',
+  user_name: '',
+  password: '',
+  ldap_auth: false,
+  auto_sync: false,
+  ldap_groups: '',
 };
 
 export const LDAP_TIMELINE_STEPS = [

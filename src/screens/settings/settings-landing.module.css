@@ -71,6 +71,76 @@
   flex-shrink: 0;
 }
 
+.cardIconAccentCyan {
+  background-color: color-mix(in srgb, var(--settings-accent-cyan) 20%, transparent);
+  color: var(--settings-accent-cyan);
+}
+
+.cardIconAccentPurple {
+  background-color: color-mix(in srgb, var(--settings-accent-purple) 20%, transparent);
+  color: var(--settings-accent-purple);
+}
+
+.cardIconAccentCoral {
+  background-color: color-mix(in srgb, var(--settings-accent-coral) 20%, transparent);
+  color: var(--settings-accent-coral);
+}
+
+.cardIconAccentGreen {
+  background-color: color-mix(in srgb, var(--settings-accent-green) 20%, transparent);
+  color: var(--settings-accent-green);
+}
+
+.cardIconAccentOrange {
+  background-color: color-mix(in srgb, var(--settings-accent-orange) 20%, transparent);
+  color: var(--settings-accent-orange);
+}
+
+.cardIconAccentViolet {
+  background-color: color-mix(in srgb, var(--settings-accent-violet) 20%, transparent);
+  color: var(--settings-accent-violet);
+}
+
+.cardIconAccentTeal {
+  background-color: color-mix(in srgb, var(--settings-accent-teal) 20%, transparent);
+  color: var(--settings-accent-teal);
+}
+
+.cardIconAccentPink {
+  background-color: color-mix(in srgb, var(--settings-accent-pink) 20%, transparent);
+  color: var(--settings-accent-pink);
+}
+
+.cardIconAccentIndigo {
+  background-color: color-mix(in srgb, var(--settings-accent-indigo) 20%, transparent);
+  color: var(--settings-accent-indigo);
+}
+
+.cardIconAccentBlueGrey {
+  background-color: color-mix(in srgb, var(--settings-accent-blue-grey) 20%, transparent);
+  color: var(--settings-accent-blue-grey);
+}
+
+.cardIconAccentBrown {
+  background-color: color-mix(in srgb, var(--settings-accent-brown) 20%, transparent);
+  color: var(--settings-accent-brown);
+}
+
+.cardIconAccentMint {
+  background-color: color-mix(in srgb, var(--settings-accent-mint) 20%, transparent);
+  color: var(--settings-accent-mint);
+}
+
+.cardIconAccentLime {
+  background-color: color-mix(in srgb, var(--settings-accent-lime) 20%, transparent);
+  color: var(--settings-accent-lime);
+}
+
+.cardIconAccentYellowGreen {
+  background-color: color-mix(in srgb, var(--settings-accent-yellow-green) 20%, transparent);
+  color: var(--settings-accent-yellow-green);
+}
+
 .cardContent {
   flex: 1;
 }

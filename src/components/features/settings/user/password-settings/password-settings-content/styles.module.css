@@ -1,0 +1,5 @@
+.expiryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}

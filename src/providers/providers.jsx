@@ -8,7 +8,8 @@ import { GroupProvider } from '@/contexts/settings/user/groups/group-context';
 import { UserProfileProvider } from '@/contexts/settings/user/user-profiles/user-profile-context';
 import { PatProvider } from '@/contexts/settings/user/personal-access-token/pat-context';
 import { PasswordPolicyProvider } from '@/contexts/settings/user/password-settings/password-policy-context';
-
+import { LdapProvider } from '@/contexts/settings/user/ldap-server/ldap-context';
+import { SsoProvider } from '@/contexts/settings/user/single-sign-on/sso-context';
 import { CredentialTagsProvider } from '@/contexts/discovery-settings/credential-profile/tags-context';
 import { CredentialGroupsProvider } from '@/contexts/discovery-settings/credential-profile/groups-context';
 import { CredentialProfileProvider } from '@/contexts/discovery-settings/credential-profile/profile-context';
@@ -26,19 +27,23 @@ export function Providers({ children }) {
               <UserProfileProvider>
                 <PatProvider>
                   <PasswordPolicyProvider>
-                    <CredentialTagsProvider>
-                      <CredentialGroupsProvider>
-                        <CredentialProfileProvider>
-                          <DiscoveryTagsProvider>
-                            <DiscoveryGroupsProvider>
-                              <DiscoveryProfileProvider>
-                                {children}
-                              </DiscoveryProfileProvider>
-                            </DiscoveryGroupsProvider>
-                          </DiscoveryTagsProvider>
-                        </CredentialProfileProvider>
-                      </CredentialGroupsProvider>
-                    </CredentialTagsProvider>
+                    <LdapProvider>
+                      <SsoProvider>
+                        <CredentialTagsProvider>
+                          <CredentialGroupsProvider>
+                            <CredentialProfileProvider>
+                              <DiscoveryTagsProvider>
+                                <DiscoveryGroupsProvider>
+                                  <DiscoveryProfileProvider>
+                                    {children}
+                                  </DiscoveryProfileProvider>
+                                </DiscoveryGroupsProvider>
+                              </DiscoveryTagsProvider>
+                            </CredentialProfileProvider>
+                          </CredentialGroupsProvider>
+                        </CredentialTagsProvider>
+                      </SsoProvider>
+                    </LdapProvider>
                   </PasswordPolicyProvider>
                 </PatProvider>
               </UserProfileProvider>

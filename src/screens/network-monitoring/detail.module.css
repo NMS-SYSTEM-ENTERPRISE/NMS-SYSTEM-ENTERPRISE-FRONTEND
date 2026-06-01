@@ -3,8 +3,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #111827; /* Dark background */
-  color: #e5e7eb;
+  background-color: var(--color-bg-primary); /* Dark background */
+  color: var(--color-text-primary);
 }
 
 .dashboardHeader {
@@ -12,8 +12,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 16px;
-  border-bottom: 1px solid #374151;
-  background: #1f2937;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg-secondary);
 }
 
 .titleSection {
@@ -25,14 +25,14 @@
 .dashboardName {
   font-size: 18px;
   font-weight: 600;
-  color: #f3f4f6;
+  color: var(--color-text-primary);
 }
 
 .iconBtn {
   padding: 8px;
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -41,6 +41,71 @@
 
 .iconBtn:hover {
   color: #fff;
+}
+
+/* Header Device Info */
+.deviceInfoContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.deviceNameWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.deviceName {
+  color: var(--color-accent-cyan);
+  font-size: 18px;
+}
+
+.deviceSubtext {
+  font-size: 12px;
+  color: var(--color-accent-cyan);
+}
+
+.headerRightWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+}
+
+.pollText {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.actionsWrapper {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+/* Tabs */
+.tabsContainer {
+  display: flex;
+  gap: var(--gap-2xl);
+  padding: 0 var(--padding-lg);
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg-tertiary);
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  padding: 12px 0;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-weight: var(--font-weight-normal);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.tabButtonActive {
+  color: var(--color-accent-cyan);
+  border-bottom: 2px solid var(--color-accent-cyan);
+  font-weight: var(--font-weight-semibold);
 }
 
 .dashboard_content {
@@ -61,8 +126,8 @@
 }
 
 .widgetCard {
-  background: #1f2937;
-  border: 1px solid #374151;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
   border-radius: 8px;
   padding: 12px;
   display: flex;
@@ -73,8 +138,8 @@
 
 /* React Grid Layout Placeholder */
 :global(.react-grid-placeholder) {
-  background: rgba(55, 65, 81, 0.5) !important;
-  border: 2px dashed #4b5563 !important;
+  background: var(--color-border-light) !important;
+  border: 2px dashed var(--color-text-muted) !important;
   border-radius: 8px !important;
   opacity: 0.8 !important;
 }
@@ -88,7 +153,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--color-text-muted);
   cursor: grab;
   padding: 4px;
   border-radius: 4px;
@@ -97,8 +162,8 @@
 }
 
 .dragController:hover {
-  background-color: #374151;
-  color: #e5e7eb;
+  background-color: var(--color-border-light);
+  color: var(--color-text-primary);
 }
 
 .dragController:active {
@@ -115,12 +180,12 @@
 .widgetTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #e5e7eb;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .badge {
-  background: #0ea5e9;
+  background: var(--color-accent-cyan);
   color: #fff;
   font-size: 10px;
   padding: 2px 6px;
@@ -141,7 +206,7 @@
 
 .statLabel {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   margin-bottom: 4px;
 }
 
@@ -171,7 +236,7 @@
 
 .listLabel {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
 }
 
 /* Table */
@@ -188,15 +253,15 @@
 .dataTable th {
   text-align: left;
   padding: 8px;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   font-weight: 600;
-  border-bottom: 1px solid #374151;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .dataTable td {
   padding: 8px;
-  color: #e5e7eb;
-  border-bottom: 1px solid #374151;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .dataTable tr:last-child td {
@@ -211,21 +276,21 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--color-accent-blue);
   border: none;
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 12px rgba(var(--color-accent-blue-rgb), 0.4);
   transition: all 0.2s;
   z-index: 100;
 }
 
 .addWidgetBtn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 6px 16px rgba(var(--color-accent-blue-rgb), 0.5);
 }
 
 /* Responsive */
@@ -250,17 +315,17 @@
 
 /* Rack View */
 .rackViewContainer {
-  background: #1f2937; /* Dark background for the rack container */
+  background: var(--color-bg-secondary); /* Dark background for the rack container */
   border-radius: 8px;
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #374151;
+  border: 1px solid var(--color-border-light);
 }
 
 .rackPanel {
-  background: #334155; /* Slate-700 like color for the switch face */
+  background: var(--color-bg-tertiary); /* Slate-700 like color for the switch face */
   flex: 1;
   height: 100px;
   display: flex;
@@ -275,7 +340,7 @@
 .rackEars {
   width: 20px;
   height: 100px;
-  background: #cbd5e1; /* Light grey for rack ears */
+  background: var(--color-text-primary); /* Light grey for rack ears */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -287,7 +352,7 @@
 .rackEarHole {
   width: 8px;
   height: 12px;
-  background: #1f2937;
+  background: var(--color-bg-secondary);
   border-radius: 4px;
 }
 
@@ -310,20 +375,20 @@
 }
 
 .ledGreen {
-  background-color: #22c55e;
-  box-shadow: 0 0 4px #22c55e;
+  background-color: var(--color-success);
+  box-shadow: 0 0 4px var(--color-success);
 }
 
 .ledRed {
-  background-color: #ef4444;
-  box-shadow: 0 0 4px #ef4444;
+  background-color: var(--color-danger);
+  box-shadow: 0 0 4px var(--color-danger);
 }
 
 .portIcon {
   width: 24px;
   height: 24px;
-  background: #1e293b;
-  border: 1px solid #475569;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-accent);
   border-radius: 2px;
   display: flex;
   align-items: center;
@@ -333,13 +398,13 @@
 .portSocket {
   width: 16px;
   height: 12px;
-  background: #0f172a;
+  background: var(--color-bg-primary);
   border-radius: 1px;
 }
 
 .deviceLabelBox {
   background: #fff;
-  color: #0ea5e9;
+  color: var(--color-accent-cyan);
   padding: 8px 16px;
   border-radius: 4px;
   font-weight: bold;
@@ -348,8 +413,8 @@
 
 /* Table Section */
 .tableSection {
-  background: #1f2937;
-  border: 1px solid #374151;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
   border-radius: 8px;
   padding: 16px;
 }
@@ -364,15 +429,15 @@
 .searchWrapper {
   display: flex;
   align-items: center;
-  background: #111827;
-  border: 1px solid #374151;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
   border-radius: 4px;
   padding: 8px 12px;
   width: 300px;
 }
 
 .searchIcon {
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   margin-right: 8px;
 }
 
@@ -386,7 +451,7 @@
 }
 
 .viewIcon {
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 18px;
 }
@@ -404,33 +469,33 @@
 .interfaceTable th {
   text-align: left;
   padding: 12px;
-  color: #e5e7eb;
+  color: var(--color-text-primary);
   font-weight: 600;
-  border-bottom: 1px solid #374151;
-  background: #111827;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg-primary);
 }
 
 .interfaceTable td {
   padding: 12px;
-  border-bottom: 1px solid #374151;
+  border-bottom: 1px solid var(--color-border-light);
   vertical-align: middle;
 }
 
 .interfaceTable tr:hover {
-  background: #374151;
+  background: var(--color-border-light);
 }
 
 .textBlue {
-  color: #0ea5e9;
+  color: var(--color-accent-cyan);
 }
 .textWhite {
-  color: #f3f4f6;
+  color: var(--color-text-primary);
 }
 .textGreen {
-  color: #22c55e;
+  color: var(--color-success);
 }
 .textRed {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .statusCell {
@@ -440,22 +505,22 @@
 }
 
 .iconGreen {
-  color: #22c55e;
+  color: var(--color-success);
 }
 .iconRed {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 .iconOrange {
-  color: #f97316;
+  color: var(--color-chart-orange);
 }
 .iconYellow {
-  color: #eab308;
+  color: var(--color-warning);
 }
 
 .progressBarWrapper {
   width: 100%;
   height: 6px;
-  background: #374151;
+  background: var(--color-border-light);
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 4px;
@@ -463,13 +528,13 @@
 
 .progressBar {
   height: 100%;
-  background: #0ea5e9;
+  background: var(--color-accent-cyan);
   border-radius: 3px;
 }
 
 .progressText {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
 }
 
 .iconCell {
@@ -483,18 +548,20 @@
 .accordionContainer {
   display: flex;
   flex-direction: column;
-  background: #1f2937;
+  background: var(--color-bg-secondary);
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin-bottom: 24px;
-  border: 1px solid #374151;
+  border: 1px solid var(--color-border-light);
   gap: 0; /* Connected sequence */
 }
 
 .accordionItem {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #374151;
+  border-bottom: 1px solid var(--color-border-light);
   background: transparent;
   border-radius: 0 !important;
   position: relative;
@@ -525,8 +592,8 @@
 }
 
 /* Add separator when open */
-.accordionItem[data-open="true"] .accordionHeader {
-  border-bottom: 1px solid #374151;
+.accordionItem[data-open='true'] .accordionHeader {
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .headerLeft {
@@ -542,14 +609,14 @@
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  background: rgba(14, 165, 233, 0.1); /* Subtle Cyan Tint Standard */
-  color: #0ea5e9; /* Standard Theme Cyan */
+  background: rgba(var(--color-accent-cyan-rgb), 0.1); /* Subtle Cyan Tint Standard */
+  color: var(--color-accent-cyan); /* Standard Theme Cyan */
 }
 
 .headerTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #f3f4f6;
+  color: var(--color-text-primary);
   letter-spacing: 0.3px;
 }
 
@@ -569,24 +636,24 @@
   text-align: center;
   color: #fff;
   text-transform: uppercase;
-  background: #3b82f6; /* Default Blue Badge */
+  background: var(--color-accent-blue); /* Default Blue Badge */
   border: none;
 }
 
 /* Optional: Status based override classes can be added if needed, but keeping simple for now */
 
 .chevron {
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   transition: transform 0.3s ease;
 }
 
-.accordionItem[data-open="true"] .chevron {
+.accordionItem[data-open='true'] .chevron {
   transform: rotate(180deg);
 }
 
 /* Content Area */
 .accordionContent {
-  background: #111827; /* Darker inner bg */
+  background: var(--color-bg-primary); /* Darker inner bg */
   padding: 0; /* Remove padding to let widgets touch edges */
   display: flex; /* Flex to handle dividers easier than grid gap */
   flex-wrap: wrap;
@@ -601,7 +668,7 @@
   border-radius: 0;
   flex: 1; /* Distribute evenly */
   min-width: 300px;
-  border-right: 1px solid #374151; /* Vertical Divider */
+  border-right: 1px solid var(--color-border-light); /* Vertical Divider */
   height: 320px;
   padding: 24px; /* Internal padding */
 }
@@ -618,8 +685,8 @@
 /* Responsive adjustment */
 @media (max-width: 1280px) {
   .accordionContent .widgetCard {
-     flex: 1 0 50%; /* 2 per row */
-     border-bottom: 1px solid #374151;
+    flex: 1 0 50%; /* 2 per row */
+    border-bottom: 1px solid var(--color-border-light);
   }
   .accordionContent .widgetCard:nth-child(2n) {
     border-right: none;
@@ -644,7 +711,7 @@
 
 .statBox {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid #374151;
+  border: 1px solid var(--color-border-light);
   border-radius: 6px;
   padding: 14px;
   display: flex;
@@ -659,7 +726,7 @@
 
 .statBoxLabel {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
@@ -669,16 +736,16 @@
 .statBoxValue {
   font-size: 22px;
   font-weight: 700;
-  color: #f3f4f6;
+  color: var(--color-text-primary);
   display: flex;
   align-items: baseline;
   gap: 4px;
 }
 
 .statBoxSub {
-    font-size: 11px;
-    color: #6b7280;
-    font-weight: 400;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 @media (max-width: 768px) {

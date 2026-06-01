@@ -31,9 +31,22 @@
   --color-chart-teal: #14b8a6;
   --color-chart-blue: #3b82f6;
   --color-chart-cyan: #06b6d4;
+  --color-chart-indigo: #6366f1;
+  --color-chart-green-alt: #22c55e;
+  --color-chart-sky: #0ea5e9;
+  --color-chart-lime: #84cc16;
+  --color-chart-fuchsia: #d946ef;
+  --color-chart-slate: #64748b;
+  --color-chart-violet: #8b5cf6;
+
+  --color-accent-cyan-rgb: 6, 182, 212;
+  --color-accent-blue-rgb: 59, 130, 246;
+  --color-success-rgb: 16, 185, 129;
+  --color-danger-rgb: 239, 68, 68;
 
   --color-border: #1f2937;
   --color-border-light: #374151;
+  --color-border-accent: #475569;
 
   /* Spacing */
   --spacing-xs: 4px;

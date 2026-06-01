@@ -1,12 +1,18 @@
-"use client";
+'use client';
 import CategoryFilterSidebar from '@/components/features/networkmonitoring/CategoryFilterSidebar';
-import { CATEGORY_CONFIGS } from '@/components/features/networkmonitoring/constants';
 import DashboardView from '@/components/features/networkmonitoring/DashboardView';
 import { DetailsView } from '@/components/features/networkmonitoring/DetailsView';
+import LeftSidebar from '@/components/features/networkmonitoring/LeftSidebar';
 import styles from '@/components/features/networkmonitoring/styles.module.css';
-import { generateMockData, getProgressBarColor } from '@/components/features/networkmonitoring/utils';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
+
+// Organized Constants and Dummy Data
+import { CATEGORY_CONFIGS } from '@/utils/constants/network-monitoring';
+import {
+  generateMockData,
+  getProgressBarColor,
+} from '@/utils/dummy-data/network-monitoring';
 
 const NetworkMonitoring = () => {
   const [activeCategory, setActiveCategory] = useState('Server & Apps');
@@ -27,55 +33,13 @@ const NetworkMonitoring = () => {
   return (
     <div className={styles.networkMonitoring}>
       {/* Left Sidebar - Categories */}
-      <div className={`${styles.leftSidebar} ${showFilterSidebar ? styles.collapsed : ''} ${isCollapsed ? styles.collapsed : ''}`}>
-        <div className={styles.sidebarHeader}>
-          {!isCollapsed && <span className={styles.sidebarTitle}>Categories</span>}
-          <button 
-            className={styles.collapseBtn} 
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-          >
-            <Icon icon={isCollapsed ? "mdi:chevron-double-right" : "mdi:chevron-double-left"} width={20} height={20} />
-          </button>
-        </div>
-        
-        <div className={styles.categoryList}>
-          {/* Tree Vertical Line */}
-          {/* Tree Vertical Line Removed - Handled per item for balance */}
-          
-          {categories.map((category) => (
-            <div
-              key={category}
-              className={`${styles.categoryItem} ${
-                activeCategory === category ? styles.categoryItemActive : ''
-              }`}
-              onClick={() => setActiveCategory(category)}
-              title={isCollapsed ? category : ''}
-            >
-              {/* Tree Horizontal Branch */}
-              <div className={styles.treeBranch} />
-              
-              <div className={styles.itemContent}>
-                <Icon
-                  icon={CATEGORY_CONFIGS[category].icon}
-                  width={20}
-                  height={20}
-                  className={styles.categoryIcon}
-                  style={{ 
-                    color: activeCategory === category ? 'inherit' : CATEGORY_CONFIGS[category].color 
-                  }}
-                />
-                {!isCollapsed && <span className={styles.categoryText}>{category}</span>}
-              </div>
-              
-               {/* Active Indicator Dot (Right side) */}
-               {activeCategory === category && !isCollapsed && (
-                  <div className={styles.activeDot} />
-               )}
-            </div>
-          ))}
-        </div>
-      </div>
+      <LeftSidebar
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
+        showFilterSidebar={showFilterSidebar}
+      />
 
       {/* Main Content Wrapper */}
       <div className={styles.mainContentWrapper}>
@@ -91,7 +55,12 @@ const NetworkMonitoring = () => {
           <div className={styles.headerRight}>
             {/* Search */}
             <div className={styles.headerSearch}>
-              <Icon icon="mdi:magnify" className={styles.headerSearchIcon} width={18} height={18} />
+              <Icon
+                icon="mdi:magnify"
+                className={styles.headerSearchIcon}
+                width={18}
+                height={18}
+              />
               <input
                 type="text"
                 placeholder="Search devices..."
@@ -104,18 +73,16 @@ const NetworkMonitoring = () => {
             {/* View Mode Toggle */}
             <div className={styles.viewToggle}>
               <button
-                className={`${styles.viewToggleBtn} ${
-                  viewMode === 'details' ? styles.viewToggleBtnActive : ''
-                }`}
+                className={`${styles.viewToggleBtn} ${viewMode === 'details' ? styles.viewToggleBtnActive : ''
+                  }`}
                 onClick={() => setViewMode('details')}
               >
                 <Icon icon="mdi:format-list-bulleted" width={16} height={16} />
                 Details
               </button>
               <button
-                className={`${styles.viewToggleBtn} ${
-                  viewMode === 'dashboard' ? styles.viewToggleBtnActive : ''
-                }`}
+                className={`${styles.viewToggleBtn} ${viewMode === 'dashboard' ? styles.viewToggleBtnActive : ''
+                  }`}
                 onClick={() => setViewMode('dashboard')}
               >
                 <Icon icon="mdi:view-dashboard" width={16} height={16} />

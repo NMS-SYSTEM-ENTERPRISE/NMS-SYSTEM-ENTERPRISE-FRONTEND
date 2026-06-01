@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import CloudDetail from '@/components/features/networkmonitoring/detail-dashboards/CloudDetail';
 import NetworkDetail from '@/components/features/networkmonitoring/detail-dashboards/NetworkDetail';
 import NetworkInterface from '@/components/features/networkmonitoring/detail-dashboards/NetworkInterface';
@@ -6,7 +6,14 @@ import ServerDetail from '@/components/features/networkmonitoring/detail-dashboa
 import styles from '@/screens/network-monitoring/detail.module.css';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { FiArrowLeft, FiImage, FiLogOut, FiMaximize, FiRefreshCw } from 'react-icons/fi';
+import {
+  FiArrowLeft,
+  FiImage,
+  FiLogOut,
+  FiMaximize,
+  FiRefreshCw,
+} from 'react-icons/fi';
+import { NETWORK_DETAIL_TABS } from '@/utils/constants/network-monitoring';
 
 const NetworkMonitoringDetail = () => {
   const router = useRouter();
@@ -32,7 +39,7 @@ const NetworkMonitoringDetail = () => {
     }
   };
 
-  const tabs = ['Overview', 'Interface', 'Metric Explorer', 'Configured Policies', 'Active Policies'];
+  const tabs = NETWORK_DETAIL_TABS;
 
   return (
     <div className={styles.dashboard}>
@@ -42,52 +49,49 @@ const NetworkMonitoringDetail = () => {
           <button className={styles.iconBtn} onClick={() => router.back()}>
             <FiArrowLeft size={20} />
           </button>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: '#0ea5e9', fontSize: '18px' }}>
-                {decodedCategory === 'Network' ? 'Cisco Catalyst 9400' : decodedDeviceId}
+          <div className={styles.deviceInfoContainer}>
+            <div className={styles.deviceNameWrapper}>
+              <span className={styles.deviceName}>
+                {decodedCategory === 'Network'
+                  ? 'Cisco Catalyst 9400'
+                  : decodedDeviceId}
               </span>
             </div>
-            <div style={{ fontSize: '12px', color: '#0ea5e9' }}>
+            <div className={styles.deviceSubtext}>
               {decodedDeviceId} | Cisco
             </div>
           </div>
         </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontSize: '12px', color: '#9ca3af' }}>Last Poll : 29/01/2020 14:15</span>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button className={styles.iconBtn}><FiRefreshCw /></button>
-            <button className={styles.iconBtn}><FiImage /></button>
-            <button className={styles.iconBtn}><FiMaximize /></button>
-            <button className={styles.iconBtn}><FiLogOut /></button>
+
+        <div className={styles.headerRightWrapper}>
+          <span className={styles.pollText}>
+            Last Poll : 29/01/2020 14:15
+          </span>
+          <div className={styles.actionsWrapper}>
+            <button className={styles.iconBtn}>
+              <FiRefreshCw />
+            </button>
+            <button className={styles.iconBtn}>
+              <FiImage />
+            </button>
+            <button className={styles.iconBtn}>
+              <FiMaximize />
+            </button>
+            <button className={styles.iconBtn}>
+              <FiLogOut />
+            </button>
           </div>
         </div>
       </div>
 
       {/* Tabs (Only for Network for now, or generally available) */}
       {decodedCategory === 'Network' && (
-        <div style={{ 
-          display: 'flex', 
-          gap: '24px', 
-          padding: '0 16px', 
-          borderBottom: '1px solid #374151',
-          background: '#1f2937'
-        }}>
-          {tabs.map(tab => (
+        <div className={styles.tabsContainer}>
+          {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: '12px 0',
-                color: activeTab === tab ? '#0ea5e9' : '#9ca3af',
-                borderBottom: activeTab === tab ? '2px solid #0ea5e9' : '2px solid transparent',
-                cursor: 'pointer',
-                fontWeight: activeTab === tab ? '600' : '400',
-                fontSize: '14px'
-              }}
+              className={`${styles.tabButton} ${activeTab === tab ? styles.tabButtonActive : ''}`}
             >
               {tab}
             </button>
@@ -95,9 +99,7 @@ const NetworkMonitoringDetail = () => {
         </div>
       )}
 
-      <main className={styles.dashboard_content}>
-        {renderDashboard()}
-      </main>
+      <main className={styles.dashboard_content}>{renderDashboard()}</main>
     </div>
   );
 };

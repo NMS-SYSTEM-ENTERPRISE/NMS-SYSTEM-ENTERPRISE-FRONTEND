@@ -1,7 +1,7 @@
 export const CATEGORY_CONFIGS = {
   'Server & Apps': {
     icon: 'mdi:server',
-    color: '#06b6d4',
+    color: 'var(--color-chart-cyan)',
     detailColumns: [
       'MONITOR',
       'STATUS',
@@ -24,7 +24,7 @@ export const CATEGORY_CONFIGS = {
   },
   Network: {
     icon: 'mdi:lan',
-    color: '#3b82f6',
+    color: 'var(--color-chart-blue)',
     detailColumns: [
       'DEVICE',
       'STATUS',
@@ -45,7 +45,7 @@ export const CATEGORY_CONFIGS = {
   },
   SDN: {
     icon: 'mdi:network',
-    color: '#8b5cf6',
+    color: 'var(--color-chart-violet)',
     detailColumns: [
       'CONTROLLER',
       'STATUS',
@@ -64,7 +64,7 @@ export const CATEGORY_CONFIGS = {
   },
   Cloud: {
     icon: 'mdi:cloud',
-    color: '#10b981',
+    color: 'var(--color-chart-green)',
     detailColumns: [
       'INSTANCE',
       'STATUS',
@@ -85,7 +85,7 @@ export const CATEGORY_CONFIGS = {
   },
   'Service Check': {
     icon: 'mdi:check-circle',
-    color: '#f59e0b',
+    color: 'var(--color-warning)',
     detailColumns: [
       'SERVICE',
       'STATUS',
@@ -104,7 +104,7 @@ export const CATEGORY_CONFIGS = {
   },
   Virtualization: {
     icon: 'mdi:server-network',
-    color: '#ec4899',
+    color: 'var(--color-chart-pink)',
     detailColumns: [
       'VM NAME',
       'STATUS',
@@ -124,7 +124,7 @@ export const CATEGORY_CONFIGS = {
   },
   HCI: {
     icon: 'mdi:database-cluster',
-    color: '#14b8a6',
+    color: 'var(--color-chart-teal)',
     detailColumns: [
       'CLUSTER',
       'STATUS',
@@ -144,7 +144,7 @@ export const CATEGORY_CONFIGS = {
   },
   Storage: {
     icon: 'mdi:harddisk',
-    color: '#f97316',
+    color: 'var(--color-chart-orange)',
     detailColumns: [
       'STORAGE',
       'STATUS',
@@ -164,7 +164,7 @@ export const CATEGORY_CONFIGS = {
   },
   'Container Orchestration': {
     icon: 'mdi:kubernetes',
-    color: '#6366f1',
+    color: 'var(--color-chart-indigo)',
     detailColumns: [
       'CLUSTER',
       'STATUS',
@@ -184,7 +184,7 @@ export const CATEGORY_CONFIGS = {
   },
   Service: {
     icon: 'mdi:cog',
-    color: '#a855f7',
+    color: 'var(--color-chart-purple)',
     detailColumns: [
       'SERVICE',
       'STATUS',
@@ -203,7 +203,7 @@ export const CATEGORY_CONFIGS = {
   },
   Process: {
     icon: 'mdi:application',
-    color: '#22c55e',
+    color: 'var(--color-chart-green-alt)',
     detailColumns: [
       'PROCESS',
       'STATUS',
@@ -223,7 +223,7 @@ export const CATEGORY_CONFIGS = {
   },
   Container: {
     icon: 'mdi:docker',
-    color: '#0ea5e9',
+    color: 'var(--color-chart-sky)',
     detailColumns: [
       'CONTAINER',
       'STATUS',
@@ -243,7 +243,7 @@ export const CATEGORY_CONFIGS = {
   },
   Interface: {
     icon: 'mdi:ethernet',
-    color: '#84cc16',
+    color: 'var(--color-chart-lime)',
     detailColumns: [
       'INTERFACE',
       'STATUS',
@@ -263,7 +263,7 @@ export const CATEGORY_CONFIGS = {
   },
   'WAN Link': {
     icon: 'mdi:wan',
-    color: '#d946ef',
+    color: 'var(--color-chart-fuchsia)',
     detailColumns: [
       'LINK',
       'STATUS',
@@ -283,7 +283,7 @@ export const CATEGORY_CONFIGS = {
   },
   Other: {
     icon: 'mdi:dots-horizontal',
-    color: '#64748b',
+    color: 'var(--color-chart-slate)',
     detailColumns: ['NAME', 'STATUS', 'TYPE', 'DESCRIPTION', 'LAST UPDATED'],
     dashboardWidgets: [
       'Overview',
@@ -293,3 +293,11 @@ export const CATEGORY_CONFIGS = {
     ],
   },
 };
+
+export const NETWORK_DETAIL_TABS = [
+  'Overview',
+  'Interface',
+  'Metric Explorer',
+  'Configured Policies',
+  'Active Policies',
+];

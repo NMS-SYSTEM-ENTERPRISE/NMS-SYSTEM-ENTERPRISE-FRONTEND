@@ -101,7 +101,7 @@
   top: -8px; /* Connect to item above (gap is 8px) */
   bottom: -8px; /* Connect to item below */
   width: 1px;
-  background: #475569;
+  background: var(--color-border-accent);
   opacity: 0.5;
   z-index: 0;
 }
@@ -128,8 +128,8 @@
   top: -8px; /* Start from above to curve down */
   width: 16px; 
   height: calc(50% + 8px); /* Height to reach center */
-  border-left: 1px solid #475569; /* Vertical part of potential curve overlay or just spacing */
-  border-bottom: 1px solid #475569; /* Horizontal part */
+  border-left: 1px solid var(--color-border-accent); /* Vertical part of potential curve overlay or just spacing */
+  border-bottom: 1px solid var(--color-border-accent); /* Horizontal part */
   border-bottom-left-radius: 12px; /* The Curve */
   opacity: 0.5;
   z-index: 0;
@@ -150,8 +150,8 @@
   top: 0; 
   height: 50%; /* Go to center */
   width: 16px;
-  border-left: 1px solid #475569;
-  border-bottom: 1px solid #475569;
+  border-left: 1px solid var(--color-border-accent);
+  border-bottom: 1px solid var(--color-border-accent);
   border-bottom-left-radius: 10px;
   background: transparent;
 }
@@ -211,12 +211,11 @@
 /* Active State Icon */
 .categoryItemActive .categoryIcon {
   color: var(--color-accent-cyan) !important;
-  filter: drop-shadow(0 0 5px rgba(0, 188, 212, 0.4)); /* Glow for icon only */
+  filter: drop-shadow(0 0 5px rgba(var(--color-accent-cyan-rgb), 0.4)); /* Glow for icon only */
 }
 
-/* Icon Styling */
 .categoryIcon {
-  color: var(--color-text-muted); /* Default dim color */
+  color: var(--category-color); /* Dynamic color passed via style */
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
@@ -259,7 +258,7 @@
 
 .headerIcon {
   color: var(--color-accent-cyan);
-  background: rgba(0, 188, 212, 0.1);
+  background: rgba(var(--color-accent-cyan-rgb), 0.1);
   padding: 8px;
   border-radius: var(--radius-md);
 }
@@ -472,7 +471,7 @@
 
 /* Active State just changes background, no floating */
 .accordionRow[data-expanded="true"] {
-  background: rgba(0, 188, 212, 0.03); 
+  background: rgba(var(--color-accent-cyan-rgb), 0.03); 
   box-shadow: inset 3px 0 0 0 var(--color-accent-cyan); /* Left Accent Line */
   z-index: 1;
 }
@@ -505,7 +504,7 @@
 
 .accordionRow[data-expanded="true"] .rowMain {
   border-bottom: 1px solid var(--color-border);
-  background: rgba(0, 188, 212, 0.05); /* Highlight active */
+  background: rgba(var(--color-accent-cyan-rgb), 0.05); /* Highlight active */
 }
 
 /* Column 1: Identity (Icon + Name + IP) */
@@ -621,15 +620,15 @@
 
 .actionBtn.dashboardBtn {
   color: var(--color-accent-cyan);
-  background: rgba(6, 182, 212, 0.1);
-  border-color: rgba(6, 182, 212, 0.3);
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.1);
+  background: rgba(var(--color-accent-cyan-rgb), 0.1);
+  border-color: rgba(var(--color-accent-cyan-rgb), 0.3);
+  box-shadow: 0 0 10px rgba(var(--color-accent-cyan-rgb), 0.1);
 }
 
 .actionBtn.dashboardBtn:hover {
   background: var(--color-accent-cyan);
   color: #fff;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 15px rgba(var(--color-accent-cyan-rgb), 0.4);
 }
 
 .actionBtn {
@@ -776,8 +775,8 @@
 
 .viewAnalyticsBtn:hover {
   transform: translateY(-1px);
-  background: #22d3ee; 
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+  background: var(--color-accent-cyan); 
+  box-shadow: 0 4px 12px rgba(var(--color-accent-cyan-rgb), 0.3);
 }
 
 /* Animation */
@@ -828,13 +827,13 @@
 }
 
 .statusUp {
-  background-color: #10b981;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+  background-color: var(--color-success);
+  box-shadow: 0 0 8px rgba(var(--color-success-rgb), 0.5);
 }
 
 .statusDown {
-  background-color: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  background-color: var(--color-danger);
+  box-shadow: 0 0 8px rgba(var(--color-danger-rgb), 0.5);
 }
 
 .statusBadge {
@@ -847,13 +846,13 @@
 }
 
 .statusBadgeUp {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  color: var(--color-success);
 }
 
 .statusBadgeDown {
-  background-color: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  background-color: rgba(var(--color-danger-rgb), 0.1);
+  color: var(--color-danger);
 }
 
 .typeCell {
@@ -922,8 +921,8 @@
 
 .tag {
   padding: 2px 8px;
-  background-color: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  background-color: rgba(var(--color-accent-blue-rgb), 0.1);
+  color: var(--color-accent-blue);
   border-radius: var(--radius-sm);
   font-size: var(--font-xs);
 }
@@ -949,8 +948,8 @@
 
 .appTag {
   padding: 2px 8px;
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  color: var(--color-success);
   border-radius: var(--radius-sm);
   font-size: var(--font-xs);
 }
@@ -1054,7 +1053,7 @@
 
 .dashboardCard:hover {
   border-color: var(--color-accent-cyan);
-  box-shadow: 0 4px 16px rgba(0, 188, 212, 0.2);
+  box-shadow: 0 4px 16px rgba(var(--color-accent-cyan-rgb), 0.2);
   transform: translateY(-2px);
 }
 
@@ -1063,8 +1062,8 @@
   border-bottom: 1px solid var(--color-border);
   background: linear-gradient(
     135deg,
-    rgba(0, 188, 212, 0.05),
-    rgba(33, 150, 243, 0.05)
+    rgba(var(--color-accent-cyan-rgb), 0.05),
+    rgba(var(--color-accent-blue-rgb), 0.05)
   );
 }
 
@@ -1196,8 +1195,8 @@
   padding: var(--padding-2xl);
   background: linear-gradient(
     135deg,
-    rgba(0, 188, 212, 0.05),
-    rgba(33, 150, 243, 0.05)
+    rgba(var(--color-accent-cyan-rgb), 0.05),
+    rgba(var(--color-accent-blue-rgb), 0.05)
   );
   border-radius: var(--radius-md);
   border: 1px dashed var(--color-border);
@@ -1445,7 +1444,7 @@
 
 .metricIcon {
   color: var(--color-accent-cyan);
-  background: rgba(0, 188, 212, 0.1);
+  background: rgba(var(--color-accent-cyan-rgb), 0.1);
   padding: 4px;
   border-radius: var(--radius-sm);
   display: flex;
@@ -1508,9 +1507,9 @@
 }
 
 .availabilityFill {
-  background-color: #84cc16;
+  background-color: var(--color-chart-lime);
 }
 
 .availabilityLoss {
-  background-color: #ef4444;
+  background-color: var(--color-danger);
 }

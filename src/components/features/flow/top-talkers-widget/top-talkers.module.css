@@ -43,12 +43,12 @@
   border-radius: var(--radius-full);
   font-size: var(--font-xs);
   font-weight: var(--font-weight-semibold);
-  color: #10b981;
+  color: var(--color-success);
   letter-spacing: 0.5px;
 }
 
 .liveDot {
-  color: #10b981;
+  color: var(--color-success);
   animation: pulse 2s ease-in-out infinite;
 }
 

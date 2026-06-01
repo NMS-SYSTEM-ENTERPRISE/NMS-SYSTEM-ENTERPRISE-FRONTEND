@@ -141,7 +141,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   position: relative;
   z-index: 2;
   box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
@@ -159,7 +159,7 @@
 .badge {
   font-size: 9px;
   font-weight: 700;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   background: rgba(34, 211, 238, 0.1);
   padding: 2px 8px;
   border-radius: 4px;
@@ -174,7 +174,7 @@
 
 .chevronOpen {
   transform: rotate(180deg);
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
 }
 
 .accordionContent {
@@ -286,14 +286,14 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   padding: 10px 16px 10px 40px;
-  color: #fff;
+  color: var(--color-text-primary);
   font-size: 13px;
   outline: none;
   transition: all 0.2s;
 }
 
 .searchInp:focus {
-  border-color: #22d3ee;
+  border-color: var(--color-chart-cyan);
   background: var(--color-bg-secondary);
 }
 
@@ -339,7 +339,7 @@
 }
 
 .accentText {
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
 }
@@ -418,7 +418,7 @@
 .tileName {
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .tilePercent {
@@ -438,7 +438,7 @@
 .tileValue {
   font-size: 20px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-text-primary);
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: -0.5px;
 }

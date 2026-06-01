@@ -236,7 +236,7 @@ export const FlowDashboard = () => {
         <div className={styles.accordion}>
           <div className={styles.accordionHeader} onClick={() => toggleSection('realtime')}>
             <div className={styles.headerLeft}>
-              <div className={styles.iconWrapper} style={{ color: '#22d3ee' }}>
+              <div className={styles.iconWrapper} style={{ color: 'var(--color-chart-cyan)' }}>
                 <Icon icon="mdi:pulse" width={20} />
               </div>
               <span className={styles.headerTitle}>Real-time Analytics <span className={styles.badge}>LIVE</span></span>
@@ -249,7 +249,7 @@ export const FlowDashboard = () => {
                 <div className={styles.timelineMetric}>
                   <div className={styles.metricInfo}>
                     <span className={styles.metricLabel}>EVENTS / SEC</span>
-                    <span className={styles.metricVal} style={{ color: '#22d3ee' }}>1.24</span>
+                    <span className={styles.metricVal} style={{ color: 'var(--color-chart-cyan)' }}>1.24</span>
                   </div>
                   <div className={styles.sparklineBody}>
                     <div ref={eventsPerSecondChartRef} className={styles.miniChart} />
@@ -258,7 +258,7 @@ export const FlowDashboard = () => {
                 <div className={styles.timelineMetric}>
                   <div className={styles.metricInfo}>
                     <span className={styles.metricLabel}>FLOW EVENTS</span>
-                    <span className={styles.metricVal} style={{ color: '#c084fc' }}>1.67K</span>
+                    <span className={styles.metricVal} style={{ color: 'var(--color-chart-purple)' }}>1.67K</span>
                   </div>
                   <div className={styles.sparklineBody}>
                     <div ref={flowEventsChartRef} className={styles.miniChart} />
@@ -267,7 +267,7 @@ export const FlowDashboard = () => {
                 <div className={styles.timelineMetric}>
                   <div className={styles.metricInfo}>
                     <span className={styles.metricLabel}>FLOW VOLUME</span>
-                    <span className={styles.metricVal} style={{ color: '#f43f5e' }}>611.97KB</span>
+                    <span className={styles.metricVal} style={{ color: 'var(--color-danger)' }}>611.97KB</span>
                   </div>
                   <div className={styles.sparklineBody}>
                     <div ref={flowVolumeChartRef} className={styles.miniChart} />
@@ -312,10 +312,10 @@ export const FlowDashboard = () => {
                   <div className={styles.pieWrap}>
                     <div ref={protocolsChartRef} className={styles.pieChart} />
                     <div className={styles.customLegend}>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: '#22d3ee' }} /><span className={styles.legendName}>HTTPS</span><span className={styles.legendVal}>60%</span></div>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: '#c084fc' }} /><span className={styles.legendName}>HTTP</span><span className={styles.legendVal}>25%</span></div>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: '#f43f5e' }} /><span className={styles.legendName}>FTP</span><span className={styles.legendVal}>10%</span></div>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: '#3b82f6' }} /><span className={styles.legendName}>SSH</span><span className={styles.legendVal}>5%</span></div>
+                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-chart-cyan)' }} /><span className={styles.legendName}>HTTPS</span><span className={styles.legendVal}>60%</span></div>
+                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-chart-purple)' }} /><span className={styles.legendName}>HTTP</span><span className={styles.legendVal}>25%</span></div>
+                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-danger)' }} /><span className={styles.legendName}>FTP</span><span className={styles.legendVal}>10%</span></div>
+                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-chart-blue)' }} /><span className={styles.legendName}>SSH</span><span className={styles.legendVal}>5%</span></div>
                     </div>
                   </div>
                 </div>

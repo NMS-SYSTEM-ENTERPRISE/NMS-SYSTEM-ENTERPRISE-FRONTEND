@@ -1,22 +1,23 @@
 import { Icon } from '@iconify/react';
 import { SelectComponent } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
 // Chart Types with icons
 const CHART_TYPES = [
-  { id: 'area', name: 'Area', icon: 'mdi:chart-areaspline', color: '#06b6d4' },
-  { id: 'line', name: 'Line', icon: 'mdi:chart-line', color: '#3b82f6' },
-  { id: 'bar', name: 'Bar', icon: 'mdi:chart-bar', color: '#8b5cf6' },
-  { id: 'column', name: 'Column', icon: 'mdi:chart-bar', color: '#22c55e' },
-  { id: 'spline', name: 'Spline', icon: 'mdi:chart-line-variant', color: '#f59e0b' },
-  { id: 'step', name: 'Step', icon: 'mdi:chart-line-stacked', color: '#10b981' },
-  { id: 'stacked', name: 'Stacked', icon: 'mdi:chart-areaspline', color: '#14b8a6' },
-  { id: 'percentage', name: 'Percentage', icon: 'mdi:chart-areaspline-variant', color: '#6366f1' },
-  { id: 'pie', name: 'Pie', icon: 'mdi:chart-pie', color: '#f97316' },
-  { id: 'donut', name: 'Donut', icon: 'mdi:chart-donut', color: '#ef4444' },
-  { id: 'sankey', name: 'Sankey', icon: 'mdi:chart-sankey', color: '#a855f7' },
-  { id: 'heatmap', name: 'Heat Map', icon: 'mdi:grid', color: '#dc2626' },
+  { id: 'area', name: 'Area', icon: 'mdi:chart-areaspline', color: 'var(--color-chart-cyan)' },
+  { id: 'line', name: 'Line', icon: 'mdi:chart-line', color: 'var(--color-chart-blue, #3b82f6)' },
+  { id: 'bar', name: 'Bar', icon: 'mdi:chart-bar', color: 'var(--color-chart-purple)' },
+  { id: 'column', name: 'Column', icon: 'mdi:chart-bar', color: 'var(--color-success)' },
+  { id: 'spline', name: 'Spline', icon: 'mdi:chart-line-variant', color: 'var(--color-warning)' },
+  { id: 'step', name: 'Step', icon: 'mdi:chart-line-stacked', color: 'var(--color-success)' },
+  { id: 'stacked', name: 'Stacked', icon: 'mdi:chart-areaspline', color: 'var(--color-chart-cyan)' },
+  { id: 'percentage', name: 'Percentage', icon: 'mdi:chart-areaspline-variant', color: 'var(--color-chart-purple)' },
+  { id: 'pie', name: 'Pie', icon: 'mdi:chart-pie', color: 'var(--color-warning)' },
+  { id: 'donut', name: 'Donut', icon: 'mdi:chart-donut', color: 'var(--color-danger)' },
+  { id: 'sankey', name: 'Sankey', icon: 'mdi:chart-sankey', color: 'var(--color-chart-purple)' },
+  { id: 'heatmap', name: 'Heat Map', icon: 'mdi:grid', color: 'var(--color-danger)' },
 ];
 
 /**
@@ -88,9 +89,9 @@ export const FlowActionSidebar = ({
             <Icon icon="mdi:cog" width={20} />
             {mode === 'dashboard' ? 'Dashboard Actions' : 'Explorer Configuration'}
           </h2>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <Button variant="ghost" className={styles.closeBtn} onClick={onClose}>
             <Icon icon="mdi:close" width={24} />
-          </button>
+          </Button>
         </div>
 
         {/* Content */}
@@ -100,7 +101,7 @@ export const FlowActionSidebar = ({
             <>
               <div className={styles.section}>
                 <h3 className={styles.sectionTitle}>Filters</h3>
-                
+
                 <div className={styles.filterGroup}>
                   <label className={styles.filterLabel}>Event Source:</label>
                   <SelectComponent
@@ -219,17 +220,17 @@ export const FlowActionSidebar = ({
                 <h3 className={styles.sectionTitle}>Chart Type</h3>
                 <div className={styles.chartTypeGrid}>
                   {CHART_TYPES.map((chart) => (
-                    <button
+                    <Button
+                      variant="ghost"
                       key={chart.id}
-                      className={`${styles.chartTypeCard} ${
-                        localConfig.chartType === chart.id ? styles.chartTypeCardActive : ''
-                      }`}
+                      className={`${styles.chartTypeCard} ${localConfig.chartType === chart.id ? styles.chartTypeCardActive : ''
+                        }`}
                       onClick={() => handleChartTypeSelect(chart.id)}
                       title={chart.name}
                     >
                       <Icon icon={chart.icon} width={28} style={{ color: chart.color }} />
                       <span>{chart.name}</span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -241,7 +242,7 @@ export const FlowActionSidebar = ({
           {/* Additional Actions Section */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Additional Options</h3>
-            
+
             <div className={styles.checkboxGroup}>
               <label className={styles.checkboxLabel}>
                 <input
@@ -286,20 +287,20 @@ export const FlowActionSidebar = ({
 
         {/* Footer */}
         <div className={styles.footer}>
-          <button className={styles.resetBtn} onClick={handleReset}>
+          <Button variant="ghost" className={styles.resetBtn} onClick={handleReset}>
             <Icon icon="mdi:refresh" width={18} />
             Reset
-          </button>
+          </Button>
           {mode === 'explorer' && (
-            <button className={styles.saveWidgetBtn} onClick={handleSave}>
+            <Button variant="default" className={styles.saveWidgetBtn} onClick={handleSave}>
               <Icon icon="mdi:content-save" width={18} />
               Save as Widget
-            </button>
+            </Button>
           )}
-          <button className={styles.applyBtn} onClick={handleSave}>
+          <Button variant="default" className={styles.applyBtn} onClick={handleSave}>
             <Icon icon="mdi:check" width={18} />
             Apply
-          </button>
+          </Button>
         </div>
       </div>
     </>

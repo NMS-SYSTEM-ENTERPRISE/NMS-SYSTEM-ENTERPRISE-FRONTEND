@@ -1,3 +1,6 @@
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
@@ -108,43 +111,43 @@ export const FlowExplorer = () => {
                   <div className={styles.filterField}>
                     <label>SOURCE IP / SUBNET</label>
                     <div className={styles.inputWrap}>
-                      <Icon icon="mdi:ip-network" className={styles.fieldIcon} />
-                      <input type="text" placeholder="e.g. 192.168.1.0/24" />
+                      <Input type="text" placeholder="e.g. 192.168.1.0/24" icon={<Icon icon="mdi:ip-network" />} />
                     </div>
                   </div>
                   <div className={styles.filterField}>
                     <label>DESTINATION IP</label>
                     <div className={styles.inputWrap}>
-                      <Icon icon="mdi:map-marker-radius" className={styles.fieldIcon} />
-                      <input type="text" placeholder="e.g. 8.8.8.8" />
+                      <Input type="text" placeholder="e.g. 8.8.8.8" icon={<Icon icon="mdi:map-marker-radius" />} />
                     </div>
                   </div>
                   <div className={styles.filterField}>
                     <label>PROTOCOL / APP</label>
                     <div className={styles.inputWrap}>
-                      <Icon icon="mdi:application-cog" className={styles.fieldIcon} />
-                      <select>
-                        <option>All Protocols</option>
-                        <option>TCP</option>
-                        <option>UDP</option>
-                        <option>ICMP</option>
-                      </select>
+                      <SelectComponent
+                        value=""
+                        onChange={() => { }}
+                        options={[
+                          { value: '', label: 'All Protocols' },
+                          { value: 'TCP', label: 'TCP' },
+                          { value: 'UDP', label: 'UDP' },
+                          { value: 'ICMP', label: 'ICMP' }
+                        ]}
+                      />
                     </div>
                   </div>
                   <div className={styles.filterField}>
                     <label>PORT</label>
                     <div className={styles.inputWrap}>
-                      <Icon icon="mdi:door-open" className={styles.fieldIcon} />
-                      <input type="text" placeholder="e.g. 443" />
+                      <Input type="text" placeholder="e.g. 443" icon={<Icon icon="mdi:door-open" />} />
                     </div>
                   </div>
                 </div>
                 <div className={styles.filterActions}>
-                  <button className={styles.clearBtn}>Clear All</button>
-                  <button className={styles.applyBtn}>
+                  <Button variant="ghost" className={styles.clearBtn}>Clear All</Button>
+                  <Button className={styles.applyBtn}>
                     <Icon icon="mdi:play-circle" width={18} />
                     Run Query
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -171,8 +174,8 @@ export const FlowExplorer = () => {
                   <div className={styles.sketchColumn}>
                     <div className={styles.columnLabel}>SOURCES</div>
                     <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: '#22d3ee' }}>
-                        <Icon icon="mdi:desktop-classic" width={22} color="#22d3ee" />
+                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-chart-cyan)' }}>
+                        <Icon icon="mdi:desktop-classic" width={22} color="var(--color-chart-cyan)" />
                       </div>
                       <div className={styles.nodeDetails}>
                         <span className={styles.nodeIp}>192.168.1.15</span>
@@ -180,8 +183,8 @@ export const FlowExplorer = () => {
                       </div>
                     </div>
                     <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: '#22d3ee' }}>
-                        <Icon icon="mdi:server-network" width={22} color="#22d3ee" />
+                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-chart-cyan)' }}>
+                        <Icon icon="mdi:server-network" width={22} color="var(--color-chart-cyan)" />
                       </div>
                       <div className={styles.nodeDetails}>
                         <span className={styles.nodeIp}>172.16.45.10</span>
@@ -225,7 +228,7 @@ export const FlowExplorer = () => {
 
                   {/* Connecting Lines Area */}
                   <div className={styles.flowLinesArea}>
-                     <svg width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="none">
+                    <svg width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="none">
                       <path d="M 0 100 L 200 50" stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
                       <path d="M 0 100 L 200 150" stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
                       <circle r="3" fill="#f43f5e">
@@ -238,8 +241,8 @@ export const FlowExplorer = () => {
                   <div className={styles.sketchColumn}>
                     <div className={styles.columnLabel}>DESTINATIONS</div>
                     <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: '#f43f5e' }}>
-                        <Icon icon="mdi:cloud-check" width={22} color="#f43f5e" />
+                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-danger)' }}>
+                        <Icon icon="mdi:cloud-check" width={22} color="var(--color-danger)" />
                       </div>
                       <div className={styles.nodeDetails}>
                         <span className={styles.nodeIp}>Amazon AWS</span>
@@ -247,8 +250,8 @@ export const FlowExplorer = () => {
                       </div>
                     </div>
                     <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: '#f43f5e' }}>
-                        <Icon icon="mdi:flag-variant" width={22} color="#f43f5e" />
+                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-danger)' }}>
+                        <Icon icon="mdi:flag-variant" width={22} color="var(--color-danger)" />
                       </div>
                       <div className={styles.nodeDetails}>
                         <span className={styles.nodeIp}>104.26.10.233</span>
@@ -280,7 +283,7 @@ export const FlowExplorer = () => {
             </div>
           </div>
           {expandedSections.results && (
-            <div className={styles.accordionContent} style={{ padding: 0 }}>
+            <div className={styles.accordionContentNoPadding}>
               <div className={styles.statsStrip}>
                 <div className={styles.statItem}>
                   <span className={styles.statLabel}>MATCHING FLOWS</span>

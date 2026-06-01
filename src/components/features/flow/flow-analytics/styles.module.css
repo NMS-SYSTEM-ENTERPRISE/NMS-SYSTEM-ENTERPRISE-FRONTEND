@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c084fc;
+  color: var(--color-chart-purple);
   box-shadow: 0 0 10px rgba(192, 132, 252, 0.1);
 }
 
@@ -73,7 +73,7 @@
 .badge {
   font-size: 9px;
   font-weight: 700;
-  color: #c084fc;
+  color: var(--color-chart-purple);
   background: rgba(192, 132, 252, 0.1);
   padding: 2px 8px;
   border-radius: 4px;
@@ -88,7 +88,7 @@
 
 .chevronOpen {
   transform: rotate(180deg);
-  color: #c084fc;
+  color: var(--color-chart-purple);
 }
 
 .accordionContent {
@@ -151,7 +151,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .analyticsGrid::after {
@@ -242,7 +242,7 @@
 .rankName {
   font-size: 13px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .rankSub {
@@ -254,7 +254,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   font-weight: 800;
-  color: #c084fc;
+  color: var(--color-chart-purple);
 }
 
 /* Intelligent Insights simplified */
@@ -297,7 +297,7 @@
   gap: 10px;
   font-size: 11px;
   font-weight: 800;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -313,7 +313,7 @@
   margin-top: auto;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   opacity: 0.6;
   display: flex;
   align-items: center;
@@ -377,14 +377,14 @@
 
 .ribbonIcon {
   font-size: 16px;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
   opacity: 0.8;
 }
 
 .ribbonValue {
   font-size: 24px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-text-primary);
   font-family: 'JetBrains Mono', monospace;
   line-height: 1;
 }
@@ -411,13 +411,13 @@
 .statusDot {
   width: 6px;
   height: 6px;
-  background: #10b981;
+  background: var(--color-success);
   border-radius: 50%;
-  box-shadow: 0 0 8px #10b981;
+  box-shadow: 0 0 8px var(--color-success);
 }
 
-.trendUp { color: #10b981; }
-.trendDown { color: #f43f5e; }
+.trendUp { color: var(--color-success); }
+.trendDown { color: var(--color-danger); }
 
 /* Pattern Recognition List */
 .insightsSmallList {
@@ -446,7 +446,7 @@
 
 .listIcon {
   font-size: 18px;
-  color: #22d3ee;
+  color: var(--color-chart-cyan);
 }
 
 .listTitle {
@@ -460,7 +460,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-text-primary);
   padding: 2px 8px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;

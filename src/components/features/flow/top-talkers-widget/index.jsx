@@ -1,5 +1,6 @@
 "use client";
 import { Icon } from '@iconify/react';
+import { Button } from '@/components/ui/button';
 import {
   Cell,
   Pie,
@@ -95,10 +96,9 @@ export const TopTalkersWidget = () => {
           </div>
 
           <div className={styles.widgetFooter}>
-            <button className={styles.viewAllBtn}>
-              <Icon icon="mdi:arrow-right" width={16} />
-              View All Talkers
-            </button>
+            <Button variant="ghost" className={styles.viewAllBtn}>
+              VIEW ALL <Icon icon="mdi:arrow-right" />
+            </Button>
           </div>
         </div>
       </div>

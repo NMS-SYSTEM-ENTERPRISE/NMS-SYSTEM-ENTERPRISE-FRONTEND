@@ -1,62 +1,55 @@
-"use client";
+'use client';
 import { FlowActionSidebar } from '@/components/features/flow/flow-action-sidebar';
 import { FlowAnalytics } from '@/components/features/flow/flow-analytics';
 import { FlowDashboard } from '@/components/features/flow/flow-dashboard';
 import { FlowExplorer } from '@/components/features/flow/flow-explorer';
 import { SelectComponent } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { FlowProvider } from '@/contexts/flow';
+import { useFlow } from '@/hooks/flow';
+import { SIDEBAR_ITEMS, EVENT_SOURCE_OPTIONS, INTERFACE_OPTIONS } from '@/utils/dummy-data/flow';
 import styles from './styles.module.css';
 
-// Sidebar navigation items
-const SIDEBAR_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'mdi:view-dashboard' },
-  { id: 'explorer', label: 'Explorer', icon: 'mdi:compass' },
-  { id: 'analytics', label: 'Analytics', icon: 'mdi:chart-line' },
-];
-
-const Flow = () => {
-  const [activeView, setActiveView] = useState('dashboard');
-  const [selectedEventSource, setSelectedEventSource] = useState('');
-  const [selectedInterface, setSelectedInterface] = useState('');
-  const [showActionSidebar, setShowActionSidebar] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Collapsed by default
-  const [flowConfig, setFlowConfig] = useState({
-    eventSource: '',
-    interface: '',
-    counter: 'volume.bytes',
-    aggregation: 'sum',
-    flowSource: '',
-    resultBy: 'source.ip',
-    chartType: 'area',
-    showLegend: true,
-    showDataLabels: false,
-    enableZoom: false,
-    autoRefresh: false,
-  });
+const FlowContent = () => {
+  const {
+    activeView,
+    setActiveView,
+    selectedEventSource,
+    setSelectedEventSource,
+    selectedInterface,
+    setSelectedInterface,
+    showActionSidebar,
+    setShowActionSidebar,
+    isSidebarOpen,
+    setIsSidebarOpen,
+    flowConfig,
+    setFlowConfig,
+  } = useFlow();
 
   return (
     <div className={styles.flow}>
       {/* Left Sidebar */}
-      <div 
+      <div
         className={`${styles.leftSidebar} ${!isSidebarOpen ? styles.sidebarCollapsed : ''}`}
       >
         <div className={styles.sidebarHeader}>
           <span className={`${styles.sidebarTitle} ${!isSidebarOpen ? styles.hidden : ''}`}>
             Categories
           </span>
-          <button 
+          <Button
+            variant="ghost"
             className={styles.collapseBtn}
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             title={isSidebarOpen ? "Collapse" : "Expand"}
           >
-            <Icon 
-              icon={isSidebarOpen ? "mdi:menu-open" : "mdi:menu"} 
-              width={22} 
+            <Icon
+              icon={isSidebarOpen ? "mdi:menu-open" : "mdi:menu"}
+              width={22}
             />
-          </button>
+          </Button>
         </div>
-        
+
         <div className={styles.sidebarNav}>
           {/* Root Node */}
           <div className={styles.treeRoot}>
@@ -69,15 +62,14 @@ const Flow = () => {
             {SIDEBAR_ITEMS.map((item) => (
               <div
                 key={item.id}
-                className={`${styles.navItem} ${
-                  activeView === item.id ? styles.navItemActive : ''
-                }`}
+                className={`${styles.navItem} ${activeView === item.id ? styles.navItemActive : ''
+                  }`}
                 onClick={() => setActiveView(item.id)}
                 title={!isSidebarOpen ? item.label : ''}
               >
                 <div className={styles.treeBranch} />
                 <div className={styles.itemIconWrapper}>
-                   <Icon icon={item.icon} width={18} height={18} />
+                  <Icon icon={item.icon} width={18} height={18} />
                 </div>
                 <span className={styles.navText}>{item.label}</span>
               </div>
@@ -102,14 +94,11 @@ const Flow = () => {
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Event Source:</label>
               <SelectComponent
+                variant="borderless"
                 className={styles.select}
                 value={selectedEventSource}
                 onChange={(e) => setSelectedEventSource(e.target.value)}
-                options={[
-                  { value: '', label: 'Select' },
-                  { value: 'source1', label: 'Source 1' },
-                  { value: 'source2', label: 'Source 2' },
-                ]}
+                options={EVENT_SOURCE_OPTIONS}
                 placeholder="Select"
               />
             </div>
@@ -117,30 +106,21 @@ const Flow = () => {
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Interface:</label>
               <SelectComponent
+                variant="borderless"
                 className={styles.select}
                 value={selectedInterface}
                 onChange={(e) => setSelectedInterface(e.target.value)}
-                options={[
-                  { value: '', label: 'Select' },
-                  { value: 'interface-index-1', label: 'Interface-Index-1' },
-                  { value: 'interface-index-2', label: 'Interface-Index-2' },
-                  { value: 'interface-index-3', label: 'Interface-Index-3' },
-                  { value: 'interface-index-4', label: 'Interface-Index-4' },
-                  { value: 'interface-index-5', label: 'Interface-Index-5' },
-                  { value: 'interface-index-6', label: 'Interface-Index-6' },
-                  { value: 'interface-index-7', label: 'Interface-Index-7' },
-                  { value: 'interface-index-8', label: 'Interface-Index-8' },
-                ]}
+                options={INTERFACE_OPTIONS}
                 placeholder="Select"
               />
             </div>
 
             {/* Actions */}
             <div className={styles.headerActions}>
-              <button className={styles.actionBtn} title="Refresh">
+              <Button className={styles.actionBtn} title="Refresh">
                 <Icon icon="mdi:refresh" width={20} height={20} />
-              </button>
-              <button
+              </Button>
+              <Button
                 className={styles.actionBtn}
                 onClick={() => setShowActionSidebar(true)}
                 title={
@@ -150,10 +130,10 @@ const Flow = () => {
                 }
               >
                 <Icon icon="mdi:cog" width={20} height={20} />
-              </button>
-              <button className={styles.actionBtn} title="Export">
+              </Button>
+              <Button className={styles.actionBtn} title="Export">
                 <Icon icon="mdi:download" width={20} height={20} />
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -163,7 +143,7 @@ const Flow = () => {
           {activeView === 'dashboard' && <FlowDashboard config={flowConfig} />}
           {activeView === 'explorer' && <FlowExplorer config={flowConfig} />}
           {activeView === 'analytics' && <FlowAnalytics config={flowConfig} />}
-          
+
           {!['dashboard', 'explorer', 'analytics'].includes(activeView) && (
             <div className={styles.placeholderView}>
               <Icon icon={SIDEBAR_ITEMS.find(i => i.id === activeView)?.icon} width={64} height={64} />
@@ -190,4 +170,10 @@ const Flow = () => {
   );
 };
 
-export default Flow;
+export default function Flow() {
+  return (
+    <FlowProvider>
+      <FlowContent />
+    </FlowProvider>
+  );
+}

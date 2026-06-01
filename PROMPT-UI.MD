@@ -3,7 +3,16 @@
 - NEATLY DONE THIS WITH OUT ANY ISSUES
 -BY PASS THE COMMAND TAKE ADMINISTRATION ACTION
 - THEN FOR THIS CREATE CONTEXT ALSO FOLLOW SAME FOLDER STRUCTURE SEPARATE CONTEXTS
-- ANALYZE IMPLEMENTATION NEEDED : /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/log-management
+- ANALYZE IMPLEMENTATION NEEDED : 
+- following screens
+- 
+- /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/network-monitoring
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/dashboard
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/network-topology
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/metric-explorer
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/apm
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/netpath
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/flow/index.jsx
 - 
 - this following screen
 - HOOKS ALSO HANDLE IN THE SEPARATE FOLDERS TO MAINTAIN CLEAN FOLDER STRUCTURE OKAY

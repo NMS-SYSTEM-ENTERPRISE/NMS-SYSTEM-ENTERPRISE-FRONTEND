@@ -1,0 +1,518 @@
+'use client';
+
+import { CreateViewTopologyModal } from '@/components/features/network-topology/create-view-modal';
+import { ScheduleTopologyModal } from '@/components/features/network-topology/schedule-modal';
+import sharedStyles from '@/components/features/network-topology/shared/styles.module.css';
+import { DeviceDetailSidebar } from '@/components/features/topology/device-detail-sidebar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { SelectComponent as Select } from '@/components/ui/select';
+import { ToggleSwitch } from '@/components/ui/toggle-switch';
+import { useNetworkTopology } from '@/hooks/network-topology';
+import { useCytoscape } from '@/hooks/network-topology/useCytoscape';
+import { MOCK_TOPOLOGY_DATA } from '@/utils/dummy-data/network-topology';
+import { Icon } from '@iconify/react';
+import { useEffect, useRef, useState } from 'react';
+
+export const NetworkTopologyContent = () => {
+  const cyRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const {
+    viewMode,
+    setViewMode,
+    selectedDevice,
+    setSelectedDevice,
+    showDeviceModal,
+    setShowDeviceModal,
+    searchQuery,
+    setSearchQuery,
+    showLayer3,
+    setShowLayer3,
+    layoutType,
+    setLayoutType,
+    expandedNodes,
+    setExpandedNodes,
+    showScheduleModal,
+    setShowScheduleModal,
+    showCreateViewModal,
+    setShowCreateViewModal,
+    focusedNode,
+    setFocusedNode,
+  } = useNetworkTopology();
+
+  const styles = sharedStyles;
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      const isFull = !!document.fullscreenElement;
+      setIsFullscreen(isFull);
+      if (cyRef.current) {
+        setTimeout(() => {
+          cyRef.current.resize();
+          cyRef.current.fit(null, 60);
+        }, 150);
+      }
+    };
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+  }, []);
+
+
+  const { getLayoutConfig, resetFocus, focusOnNode } = useCytoscape({
+    containerRef,
+    cyRef,
+    viewMode,
+    layoutType,
+    setFocusedNode,
+    focusedNode,
+    setSelectedDevice,
+    setShowDeviceModal,
+  });
+
+  const handleZoomIn = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      cyRef.current.animate({
+        zoom: cyRef.current.zoom() * 1.3,
+        duration: 300,
+      });
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      cyRef.current.animate({
+        zoom: cyRef.current.zoom() * 0.7,
+        duration: 300,
+      });
+    }
+  };
+
+  const handleFitView = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      cyRef.current.animate({
+        fit: { padding: 60 },
+        duration: 500,
+        easing: 'ease-in-out-cubic',
+      });
+    }
+  };
+
+  const handleFullscreen = () => {
+    if (containerRef.current) {
+      if (!document.fullscreenElement) {
+        containerRef.current.parentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  const handleResetView = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      resetFocus(cyRef.current);
+      setFocusedNode(null);
+      handleFitView();
+    }
+  };
+
+  const handleRelayout = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      const layout = cyRef.current.layout(getLayoutConfig(layoutType));
+      layout.run();
+    }
+  };
+
+  const handleExportPNG = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      const png = cyRef.current.png({
+        output: 'blob',
+        bg: '#0a0f1a',
+        full: true,
+        scale: 2,
+      });
+      const url = URL.createObjectURL(png);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `topology-${viewMode}-${Date.now()}.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const handleExportJSON = () => {
+    if (cyRef.current && !cyRef.current.destroyed()) {
+      const json = cyRef.current.json();
+      const blob = new Blob([JSON.stringify(json, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `topology-${viewMode}-${Date.now()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  // Render device tree recursively
+  const renderTreeNode = (node, depth = 0) => {
+    const hasChildren = node.children && node.children.length > 0;
+    const isExpanded = expandedNodes[node.name];
+    const isDevice = !!node.id;
+
+    const getStatusColor = (status) => {
+      switch (status) {
+        case 'online':
+          return styles.statusOnline;
+        case 'offline':
+          return styles.statusOffline;
+        case 'warning':
+          return styles.statusWarning;
+        default:
+          return '';
+      }
+    };
+
+    const getNodeIcon = (type) => {
+      if (type === 'group') return 'mdi:folder';
+      if (type === 'vendor') return 'mdi:domain';
+      if (type === 'router') return 'mdi:router';
+      if (type === 'switch') return 'mdi:switch';
+      if (type === 'firewall') return 'mdi:security';
+      if (type === 'controller') return 'mdi:server-network';
+      if (type === 'cloud-provider') return 'mdi:cloud';
+      if (type === 'region') return 'mdi:earth';
+      if (type === 'server') return 'mdi:server';
+      if (type === 'access-point') return 'mdi:wifi';
+      return 'mdi:circle';
+    };
+
+    const handleNodeClick = () => {
+      if (hasChildren) {
+        setExpandedNodes((prev) => ({
+          ...prev,
+          [node.name]: !prev[node.name],
+        }));
+      } else if (isDevice && cyRef.current && !cyRef.current.destroyed()) {
+        // Focus on this device in the topology
+        const cyNode = cyRef.current.getElementById(node.id);
+        if (cyNode) {
+          focusOnNode(cyRef.current, cyNode);
+          setFocusedNode(node.id);
+        }
+      }
+    };
+
+    return (
+      <div key={node.name || node.id} className={styles.treeNode}>
+        <div
+          className={`${styles.treeNodeLabel} ${isDevice ? styles.treeNodeDevice : ''
+            } ${focusedNode === node.id ? styles.treeNodeFocused : ''}`}
+          onClick={handleNodeClick}
+        >
+          {hasChildren && (
+            <Icon
+              icon={isExpanded ? 'mdi:chevron-down' : 'mdi:chevron-right'}
+              width={16}
+              height={16}
+              className={styles.treeNodeChevron}
+            />
+          )}
+          {!hasChildren && <span className={styles.treeNodeSpacer}></span>}
+          <Icon
+            icon={getNodeIcon(node.type)}
+            width={16}
+            height={16}
+            className={`${styles.treeNodeIcon} ${isDevice ? getStatusColor(node.status) : ''
+              }`}
+          />
+          <span className={styles.treeNodeText}>{node.name}</span>
+          {isDevice && node.ip && (
+            <span className={styles.treeNodeIp}>{node.ip}</span>
+          )}
+        </div>
+        {hasChildren && isExpanded && (
+          <div className={styles.treeNodeChildren}>
+            {node.children.map((child) => renderTreeNode(child, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const currentTopologyData = MOCK_TOPOLOGY_DATA[viewMode];
+
+  return (
+    <div className={styles.networkTopology}>
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <Icon
+            icon="mdi:sitemap"
+            width={24}
+            height={24}
+            className={styles.headerIcon}
+          />
+          <h1 className={styles.title}>Network Topology</h1>
+          <div className={styles.headerStats}>
+            <span className={styles.statBadge}>
+              <Icon icon="mdi:server-network" width={16} height={16} />
+              {cyRef.current?.nodes().length || 0} Devices
+            </span>
+            <span className={styles.statBadge}>
+              <Icon icon="mdi:connection" width={16} height={16} />
+              {cyRef.current?.edges().length || 0} Connections
+            </span>
+          </div>
+        </div>
+        <div className={styles.headerRight}>
+          <div className={styles.searchBar}>
+            <Input
+              icon={<Icon icon="mdi:magnify" width={18} height={18} />}
+              type="text"
+              placeholder="Search devices..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              containerClassName={styles.searchInputContainer}
+            />
+          </div>
+          <Button
+            variant="primary"
+            onClick={() => setShowCreateViewModal(true)}
+            title="Create Topology View"
+            className={styles.createViewBtn}
+          >
+            <Icon icon="mdi:plus-circle" width={18} height={18} />
+            Create View
+          </Button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className={styles.content}>
+        {/* Left Sidebar - Device Tree */}
+        <div className={styles.leftSidebar}>
+          {/* View Mode Tabs */}
+          <div className={styles.viewTabs}>
+            <Button
+              variant="outline"
+              className={`${styles.viewTab} ${viewMode === 'network' ? styles.viewTabActive : ''
+                }`}
+              onClick={() => setViewMode('network')}
+              title="Network View"
+            >
+              <Icon icon="mdi:lan" width={20} height={20} />
+            </Button>
+            <Button
+              variant="outline"
+              className={`${styles.viewTab} ${viewMode === 'sdn' ? styles.viewTabActive : ''
+                }`}
+              onClick={() => setViewMode('sdn')}
+              title="SDN View"
+            >
+              <Icon icon="mdi:network-outline" width={20} height={20} />
+            </Button>
+            <Button
+              variant="outline"
+              className={`${styles.viewTab} ${viewMode === 'cloud' ? styles.viewTabActive : ''
+                }`}
+              onClick={() => setViewMode('cloud')}
+              title="Cloud View"
+            >
+              <Icon icon="mdi:cloud" width={20} height={20} />
+            </Button>
+          </div>
+
+          {/* Device Tree Search */}
+          <div className={styles.treeSearch}>
+            <Input
+              icon={<Icon icon="mdi:magnify" width={16} height={16} />}
+              type="text"
+              placeholder="Filter devices..."
+            />
+          </div>
+
+          {/* Device Tree */}
+          <div className={styles.deviceTree}>
+            {currentTopologyData && renderTreeNode(currentTopologyData)}
+          </div>
+
+          {/* Legend */}
+          <div className={styles.legend}>
+            <div className={styles.legendTitle}>Status Legend</div>
+            <div className={styles.legendItems}>
+              <div className={styles.legendItem}>
+                <div className={`${styles.legendDot} ${styles.legendOnline}`}></div>
+                <span>Online</span>
+              </div>
+              <div className={styles.legendItem}>
+                <div className={`${styles.legendDot} ${styles.legendWarning}`}></div>
+                <span>Warning</span>
+              </div>
+              <div className={styles.legendItem}>
+                <div className={`${styles.legendDot} ${styles.legendOffline}`}></div>
+                <span>Offline</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Center - Topology Canvas */}
+        <div className={styles.topologyCanvas}>
+          {/* Top Toolbar */}
+          <div className={styles.canvasToolbar}>
+            <div className={styles.canvasToolbarLeft}>
+              <div className={styles.layoutSelector}>
+                <Select
+                  value={{ value: layoutType, label: layoutType }}
+                  options={[
+                    { value: 'cose', label: 'Force-Directed' },
+                    { value: 'circle', label: 'Circle' },
+                    { value: 'concentric', label: 'Concentric' },
+                    { value: 'grid', label: 'Grid' },
+                    { value: 'breadthfirst', label: 'Hierarchical' },
+                  ]}
+                  onChange={(selected) => setLayoutType(selected.value)}
+                  isSearchable={false}
+                  placeholder="Select Layout"
+                />
+              </div>
+              <Button
+                variant="outline"
+                className={styles.toolbarBtn}
+                onClick={handleRelayout}
+                title="Re-apply Layout"
+              >
+                <Icon icon="mdi:refresh" width={18} height={18} />
+              </Button>
+              <ToggleSwitch
+                checked={showLayer3}
+                onChange={setShowLayer3}
+                label="Layer 3"
+                labelPosition="left"
+                className={styles.layerToggle}
+              />
+            </div>
+            <div className={styles.canvasToolbarRight}>
+              <Button
+                variant="outline"
+                className={styles.toolbarBtn}
+                onClick={() => setShowScheduleModal(true)}
+                title="Schedule Topology"
+              >
+                <Icon icon="mdi:calendar-clock" width={18} height={18} />
+              </Button>
+              <Button
+                variant="outline"
+                className={styles.toolbarBtn}
+                onClick={handleExportPNG}
+                title="Export as PNG"
+              >
+                <Icon icon="mdi:image-outline" width={18} height={18} />
+              </Button>
+              <Button
+                variant="outline"
+                className={styles.toolbarBtn}
+                onClick={handleExportJSON}
+                title="Export as JSON"
+              >
+                <Icon icon="mdi:code-json" width={18} height={18} />
+              </Button>
+            </div>
+          </div>
+
+          {/* Cytoscape Container */}
+          <div ref={containerRef} className={styles.cytoscape} />
+
+          {/* Info Panel */}
+          {focusedNode && (
+            <div className={styles.infoPanel}>
+              <div className={styles.infoPanelHeader}>
+                <Icon icon="mdi:information" width={18} height={18} />
+                <span>Focused Device</span>
+                <Button
+                  variant="outline"
+                  className={styles.infoPanelClose}
+                  onClick={handleResetView}
+                >
+                  <Icon icon="mdi:close" width={16} height={16} />
+                </Button>
+              </div>
+              <div className={styles.infoPanelContent}>
+                <p>Click on neighboring devices to explore connections</p>
+                <p>Double-click to center and zoom</p>
+              </div>
+            </div>
+          )}
+
+          {/* Right Controls */}
+          <div className={styles.rightControls}>
+            <Button
+              variant="outline"
+              className={styles.controlBtn}
+              onClick={handleZoomIn}
+              title="Zoom In"
+            >
+              <Icon icon="mdi:plus" width={20} height={20} />
+            </Button>
+            <Button
+              variant="outline"
+              className={styles.controlBtn}
+              onClick={handleZoomOut}
+              title="Zoom Out"
+            >
+              <Icon icon="mdi:minus" width={20} height={20} />
+            </Button>
+            <Button
+              variant="outline"
+              className={styles.controlBtn}
+              onClick={handleFitView}
+              title="Fit to Screen"
+            >
+              <Icon icon="mdi:fit-to-screen" width={20} height={20} />
+            </Button>
+            <Button
+              variant="outline"
+              className={styles.controlBtn}
+              onClick={handleResetView}
+              title="Reset View"
+            >
+              <Icon icon="mdi:restore" width={20} height={20} />
+            </Button>
+            <Button
+              variant="outline"
+              className={styles.controlBtn}
+              onClick={handleFullscreen}
+              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              <Icon icon={isFullscreen ? "mdi:fullscreen-exit" : "mdi:fullscreen"} width={20} height={20} />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Device Detail Sidebar */}
+      <DeviceDetailSidebar
+        device={selectedDevice}
+        connections={[]}
+        isOpen={showDeviceModal}
+        onClose={() => {
+          setShowDeviceModal(false);
+          setSelectedDevice(null);
+        }}
+      />
+
+      <ScheduleTopologyModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+      />
+
+      <CreateViewTopologyModal
+        isOpen={showCreateViewModal}
+        onClose={() => setShowCreateViewModal(false)}
+      />
+    </div>
+  );
+}

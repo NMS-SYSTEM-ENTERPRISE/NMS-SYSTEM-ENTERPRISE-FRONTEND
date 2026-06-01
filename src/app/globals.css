@@ -65,6 +65,42 @@
   --audit-accent-sky: #22d3ee;
   --audit-accent-rose: #f43f5e;
 
+  /* Flow layout */
+  --flow-sidebar-width: 260px;
+  --flow-sidebar-collapsed: 72px;
+
+  /* APM layout */
+  --apm-sidebar-width: 260px;
+  --apm-sidebar-collapsed: 72px;
+
+  /* NetPath layout */
+  --netpath-sidebar-width: 280px;
+  --netpath-sidebar-collapsed: 72px;
+
+  /* Metric Explorer layout */
+  --metric-explorer-sidebar-width: 320px;
+  --metric-explorer-sidebar-collapsed: 60px;
+
+  /* Network Topology layout */
+  --network-topology-canvas-bg: #0a0f1a;
+
+  /* Dashboard Custom layout */
+  --dashboard-custom-sidebar-width: 260px;
+  --dashboard-custom-sidebar-collapsed: 72px;
+  --dashboard-custom-timeline-gradient: linear-gradient(
+    90deg,
+    var(--color-chart-cyan) 0%,
+    var(--color-chart-blue) 50%,
+    var(--color-chart-violet) 100%
+  );
+
+  /* Ticketing layout */
+  --ticketing-sidebar-width: 240px;
+  --ticketing-sidebar-width-collapsed: 60px;
+  --ticketing-sidebar-bg: #0b0f19;
+  --ticketing-page-bg: #0b0f19;
+  --ticketing-accent-sky: #22d3ee;
+
   /* Log Management layout */
   --log-mgmt-sidebar-width: 260px;
   --log-mgmt-sidebar-width-collapsed: 72px;

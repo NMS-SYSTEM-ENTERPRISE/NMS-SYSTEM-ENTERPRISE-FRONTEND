@@ -1,4 +1,4 @@
-import styles from '@/screens/network-monitoring/detail.module.css';
+import styles from '@/screens/network-monitoring/detail/styles.module.css';
 import { useState } from 'react';
 import { FiAlertCircle, FiCheckCircle, FiEye, FiSearch, FiServer, FiTrash2, FiXCircle } from 'react-icons/fi';
 

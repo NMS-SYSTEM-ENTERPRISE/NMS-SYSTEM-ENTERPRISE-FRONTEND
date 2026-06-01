@@ -3,7 +3,7 @@ import CloudDetail from '@/components/features/networkmonitoring/detail-dashboar
 import NetworkDetail from '@/components/features/networkmonitoring/detail-dashboards/NetworkDetail';
 import NetworkInterface from '@/components/features/networkmonitoring/detail-dashboards/NetworkInterface';
 import ServerDetail from '@/components/features/networkmonitoring/detail-dashboards/ServerDetail';
-import styles from '@/screens/network-monitoring/detail.module.css';
+import styles from './styles.module.css';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {

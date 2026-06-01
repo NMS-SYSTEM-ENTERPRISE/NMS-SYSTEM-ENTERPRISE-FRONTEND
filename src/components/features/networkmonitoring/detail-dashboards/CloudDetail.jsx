@@ -1,4 +1,4 @@
-import styles from '@/screens/network-monitoring/detail.module.css';
+import styles from '@/screens/network-monitoring/detail/styles.module.css';
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
 import 'react-grid-layout/css/styles.css';

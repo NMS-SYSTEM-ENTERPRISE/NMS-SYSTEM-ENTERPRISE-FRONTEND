@@ -1,7 +1,7 @@
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
-import styles from './ticketing-action-sidebar.module.css';
+import styles from './styles.module.css';
 
 export const TicketingActionSidebar = ({
   isOpen,

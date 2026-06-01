@@ -1,0 +1,57 @@
+.progressContainer {
+  position: relative;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--margin-xl);
+  overflow: visible;
+}
+
+.progressFill {
+  height: 100%;
+  width: var(--progress-width, 0%);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+.progressFill_default {
+  background: linear-gradient(90deg, var(--color-accent-cyan), var(--color-chart-green));
+}
+
+.progressFill_gradient {
+  background: linear-gradient(90deg, var(--color-chart-violet), var(--color-chart-cyan));
+}
+
+.targetLine {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: var(--target-position, 0%);
+  width: 2px;
+  background: var(--color-chart-orange);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.targetTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: var(--color-chart-orange);
+  color: var(--color-bg-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-fast);
+}
+
+.targetLine:hover .targetTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-12px);
+}

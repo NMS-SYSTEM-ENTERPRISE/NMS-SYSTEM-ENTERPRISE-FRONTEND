@@ -1,84 +1,91 @@
+'use client';
+
+import { SloTimelineView } from '@/components/features/slo/slo-timeline-view';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
+import { useSlo } from '@/hooks/slo';
+import {
+  CATEGORY_FILTER_OPTIONS,
+  FREQUENCY_FILTER_OPTIONS,
+  STATUS_FILTER_OPTIONS,
+} from '@/utils/constants/slo';
 import styles from './styles.module.css';
 
-/**
- * SLO Action Sidebar with Timeline View
- */
-export const SLOActionSidebar = ({
-  isOpen,
-  onClose,
-  searchQuery = '',
-  onSearchChange,
-  filters = {},
-  onFilterChange,
-  onApply,
-  onReset,
-}) => {
-  const [activeView, setActiveView] = useState('filters'); // 'filters' or 'timeline'
+export const SloActionSidebar = () => {
+  const {
+    showActionSidebar,
+    setShowActionSidebar,
+    searchQuery,
+    setSearchQuery,
+    filters,
+    setFilters,
+    handleResetFilters,
+    handleApplyFilters,
+  } = useSlo();
 
-  if (!isOpen) return null;
+  const [activeView, setActiveView] = useState('filters');
+
+  if (!showActionSidebar) return null;
 
   const handleApply = () => {
-    if (onApply) {
-      onApply(filters);
-    }
-    onClose();
-  };
-
-  const handleReset = () => {
-    if (onReset) {
-      onReset();
-    }
+    handleApplyFilters(filters);
   };
 
   return (
     <>
-      <div className={styles.overlay} onClick={onClose} />
+      <div className={styles.overlay} onClick={() => setShowActionSidebar(false)} role="presentation" />
 
-      <div className={styles.sidebar}>
+      <aside className={styles.sidebar}>
         <div className={styles.header}>
           <h2 className={styles.title}>
             <Icon icon="ph:gear-six-bold" />
             SLO Actions
           </h2>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={styles.closeBtn}
+            onClick={() => setShowActionSidebar(false)}
+            aria-label="Close sidebar"
+          >
             <Icon icon="ph:x-bold" />
-          </button>
+          </Button>
         </div>
 
         <div className={styles.viewToggle}>
-          <button
+          <Button
+            variant="ghost"
             className={`${styles.viewToggleBtn} ${activeView === 'filters' ? styles.viewToggleBtnActive : ''}`}
             onClick={() => setActiveView('filters')}
           >
             <Icon icon="ph:funnel-bold" />
             Filters
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             className={`${styles.viewToggleBtn} ${activeView === 'timeline' ? styles.viewToggleBtnActive : ''}`}
             onClick={() => setActiveView('timeline')}
           >
             <Icon icon="ph:clock-bold" />
             Timeline
-          </button>
+          </Button>
         </div>
 
         <div className={styles.content}>
           {activeView === 'filters' ? (
             <>
               <div className={styles.searchSection}>
-                <div className={styles.searchBar}>
-                  <Icon icon="ph:magnifying-glass-bold" className={styles.searchIcon} />
-                  <input
-                    type="text"
-                    placeholder="Search by SLO name..."
-                    className={styles.searchInput}
-                    value={searchQuery}
-                    onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-                  />
-                </div>
+                <Input
+                  type="text"
+                  placeholder="Search by SLO name..."
+                  className={styles.searchInput}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  icon="ph:magnifying-glass-bold"
+                />
               </div>
 
               <div className={styles.filtersSection}>
@@ -88,13 +95,8 @@ export const SLOActionSidebar = ({
                   <label className={styles.filterLabel}>Status</label>
                   <SelectComponent
                     value={filters.status || ''}
-                    onChange={(e) => onFilterChange && onFilterChange('status', e.target.value)}
-                    options={[
-                      { value: '', label: 'All Statuses' },
-                      { value: 'Ok', label: 'Healthy' },
-                      { value: 'Warning', label: 'Warning' },
-                      { value: 'Breached', label: 'Breached' },
-                    ]}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, status: e.target.value }))}
+                    options={STATUS_FILTER_OPTIONS}
                   />
                 </div>
 
@@ -102,12 +104,8 @@ export const SLOActionSidebar = ({
                   <label className={styles.filterLabel}>Category</label>
                   <SelectComponent
                     value={filters.sloType || ''}
-                    onChange={(e) => onFilterChange && onFilterChange('sloType', e.target.value)}
-                    options={[
-                      { value: '', label: 'All Categories' },
-                      { value: 'Performance', label: 'Performance' },
-                      { value: 'Availability', label: 'Availability' },
-                    ]}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, sloType: e.target.value }))}
+                    options={CATEGORY_FILTER_OPTIONS}
                   />
                 </div>
 
@@ -115,33 +113,31 @@ export const SLOActionSidebar = ({
                   <label className={styles.filterLabel}>Reporting Period</label>
                   <SelectComponent
                     value={filters.frequency || ''}
-                    onChange={(e) => onFilterChange && onFilterChange('frequency', e.target.value)}
-                    options={[
-                      { value: '', label: 'All Periods' },
-                      { value: 'Daily', label: 'Daily' },
-                      { value: 'Weekly', label: 'Weekly' },
-                      { value: 'Monthly', label: 'Monthly' },
-                      { value: 'Quarterly', label: 'Quarterly' },
-                    ]}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, frequency: e.target.value }))}
+                    options={FREQUENCY_FILTER_OPTIONS}
                   />
                 </div>
 
                 <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Objective Range (%)</label>
+                  <span className={styles.filterLabel}>Objective Range (%)</span>
                   <div className={styles.rangeGroup}>
-                    <input
+                    <Input
                       type="number"
                       className={styles.rangeInput}
                       value={filters.targetMin || ''}
-                      onChange={(e) => onFilterChange && onFilterChange('targetMin', e.target.value)}
+                      onChange={(e) =>
+                        setFilters((prev) => ({ ...prev, targetMin: e.target.value }))
+                      }
                       placeholder="Min"
                     />
-                    <Icon icon="ph:minus-bold" style={{color: 'var(--color-text-muted)'}} />
-                    <input
+                    <Icon icon="ph:minus-bold" className={styles.rangeDivider} />
+                    <Input
                       type="number"
                       className={styles.rangeInput}
                       value={filters.targetMax || ''}
-                      onChange={(e) => onFilterChange && onFilterChange('targetMax', e.target.value)}
+                      onChange={(e) =>
+                        setFilters((prev) => ({ ...prev, targetMax: e.target.value }))
+                      }
                       placeholder="Max"
                     />
                   </div>
@@ -149,95 +145,23 @@ export const SLOActionSidebar = ({
               </div>
             </>
           ) : (
-            <TimelineView />
+            <SloTimelineView />
           )}
         </div>
 
         {activeView === 'filters' && (
           <div className={styles.footer}>
-            <button className={styles.resetBtn} onClick={handleReset}>
+            <Button variant="ghost" className={styles.resetBtn} onClick={handleResetFilters}>
               <Icon icon="ph:arrow-counter-clockwise-bold" />
               Reset All
-            </button>
-            <button className={styles.applyBtn} onClick={handleApply}>
+            </Button>
+            <Button variant="cyan" className={styles.applyBtn} onClick={handleApply}>
               <Icon icon="ph:check-bold" />
               Apply
-            </button>
+            </Button>
           </div>
         )}
-      </div>
+      </aside>
     </>
   );
 };
-
-// Timeline View Component
-const TimelineView = () => {
-  const timelineData = [
-    {
-      date: 'Today',
-      items: [
-        { time: '12:30 PM', slo: 'Monitor-SLO-Weekly-Perf-Windows', status: 'Ok', event: 'Target achieved' },
-        { time: '10:15 AM', slo: 'slo-monthly-interface', status: 'Warning', event: 'Approaching threshold' },
-      ],
-    },
-    {
-      date: 'Yesterday',
-      items: [
-        { time: '06:45 PM', slo: 'Interface-SLO-Weekly-Ava-Network', status: 'Breached', event: 'SLO breached' },
-        { time: '02:30 PM', slo: 'slo-tag-coorelation', status: 'Ok', event: 'Target achieved' },
-        { time: '09:00 AM', slo: 'Monitor-SLO-Monthly-Ava-Server', status: 'Warning', event: 'Error budget low' },
-      ],
-    },
-    {
-      date: '2 Days Ago',
-      items: [
-        { time: '04:20 PM', slo: 'Monitor-SLO-Weekly-Perf-Windows', status: 'Ok', event: 'Target achieved' },
-        { time: '11:00 AM', slo: 'slo-monthly-interface', status: 'Ok', event: 'Target achieved' },
-      ],
-    },
-  ];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Ok': return '#10b981';
-      case 'Warning': return '#f59e0b';
-      case 'Breached': return '#ef4444';
-      default: return '#6b7280';
-    }
-  };
-
-  return (
-    <div className={styles.timelineView}>
-      <h3 className={styles.sectionTitle}>Activity Log</h3>
-      
-      {timelineData.map((day, dayIndex) => (
-        <div key={dayIndex} className={styles.timelineDay}>
-          <div className={styles.timelineDayHeader}>
-             <span>{day.date}</span>
-          </div>
-          <div className={styles.timelineItems}>
-            {day.items.map((item, itemIndex) => (
-              <div key={itemIndex} className={styles.timelineItem}>
-                <div 
-                  className={styles.timelineDot}
-                  style={{ color: getStatusColor(item.status) }}
-                />
-                <div className={styles.timelineTime}>{item.time}</div>
-                <div className={styles.timelineSlo}>{item.slo}</div>
-                <div className={styles.timelineEvent}>
-                  <span style={{ color: getStatusColor(item.status), fontWeight: 'bold' }}>{item.status}</span>
-                  {' • '}
-                  {item.event}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-
-
-

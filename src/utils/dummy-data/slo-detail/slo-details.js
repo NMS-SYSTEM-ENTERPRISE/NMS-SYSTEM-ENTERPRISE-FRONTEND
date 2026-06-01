@@ -1,0 +1,20 @@
+export const SLO_DETAILS = {
+  1: {
+    name: 'Monitor-SLO-Weekly-Perf-Windows',
+    businessServiceName: 'Aashil Construction',
+    status: 'Ok',
+    frequency: 'Daily',
+    type: 'Performance',
+    sloMetric: 'system.memory.free.bytes',
+    startDateTime: 'Thu, Aug 28, 2025 12:00:00 AM',
+    elapsedTime: '19 hours 58 minutes 24 seconds',
+    remainingTime: '4 hours 1 minute 36 seconds',
+    achieved: 98.42,
+    target: 90,
+    violation: 0,
+    errorBudgetLeft: 84.5,
+    violatedTime: '0',
+    acceptableViolationTime: '2 h 24 m',
+    burnRate: '1.2x',
+  },
+};

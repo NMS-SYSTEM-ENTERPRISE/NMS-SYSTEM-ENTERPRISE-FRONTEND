@@ -1,0 +1,85 @@
+.listContainer {
+  background: rgba(26, 31, 46, 0.3);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  border: none;
+  border-radius: 0;
+}
+
+.rowIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.rowIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: rgba(var(--color-accent-cyan-rgb), 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-cyan);
+  border: 1px solid rgba(var(--color-accent-cyan-rgb), 0.1);
+}
+
+.rowInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.rowName {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.rowSub {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.metricSlot {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricValue {
+  font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.metricLabel {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.metricValueNegative {
+  color: var(--color-danger);
+}
+
+.metricValuePositive {
+  color: var(--color-success);
+}
+
+.actionBtnRow {
+  color: var(--color-text-muted);
+}
+
+.pagination {
+  border-top: 1px solid var(--color-border);
+  padding: var(--padding-md) var(--padding-xl);
+  background: rgba(255, 255, 255, 0.01);
+}

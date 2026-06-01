@@ -15,36 +15,36 @@ import {
   LineChart,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './service-accordion.module.css';
+import styles from './styles.module.css';
 
 // Helper for severity coloring
 const getSeverityColor = (value, type = 'latency') => {
   const val = parseFloat(value);
-  if (isNaN(val)) return '#94a3b8';
+  if (isNaN(val)) return 'var(--color-text-muted)';
 
   if (type === 'latency') {
-    if (val >= 1000) return '#ef4444'; // Red for >1s
-    if (val >= 500) return '#f97316'; // Orange
-    if (val >= 200) return '#eab308'; // Yellow
-    return '#10b981'; // Green
+    if (val >= 1000) return 'var(--color-danger)'; // Red for >1s
+    if (val >= 500) return 'var(--color-warning)'; // Orange
+    if (val >= 200) return 'var(--color-chart-yellow, #eab308)'; // Yellow
+    return 'var(--color-success)'; // Green
   }
 
   if (type === 'error') {
-    if (val >= 100) return '#ef4444';
-    if (val >= 50) return '#f97316';
-    if (val >= 10) return '#eab308';
-    return '#10b981';
+    if (val >= 100) return 'var(--color-danger)';
+    if (val >= 50) return 'var(--color-warning)';
+    if (val >= 10) return 'var(--color-chart-yellow, #eab308)';
+    return 'var(--color-success)';
   }
 
   // Throughput - higher is better
   if (type === 'throughput') {
-    if (val >= 1000) return '#10b981';
-    if (val >= 500) return '#3b82f6';
-    if (val >= 100) return '#eab308';
-    return '#ef4444';
+    if (val >= 1000) return 'var(--color-success)';
+    if (val >= 500) return 'var(--color-chart-cyan)';
+    if (val >= 100) return 'var(--color-warning)';
+    return 'var(--color-danger)';
   }
 
-  return '#3b82f6';
+  return 'var(--color-chart-cyan)';
 };
 
 // Accordion Item Component
@@ -281,9 +281,9 @@ export const ServiceAccordion = ({
   };
 
   const themes = {
-    services: '#06b6d4', // Cyan
-    performance: '#8b5cf6', // Purple
-    errors: '#ef4444', // Red
+    services: 'var(--color-chart-cyan)', // Cyan
+    performance: 'var(--color-chart-purple, #8b5cf6)', // Purple fallback
+    errors: 'var(--color-danger)', // Red
   };
 
   return (

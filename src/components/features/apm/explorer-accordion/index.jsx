@@ -8,28 +8,28 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
-import styles from './service-accordion.module.css';
+import styles from './styles.module.css';
 
 // Helper for severity coloring
 const getSeverityColor = (value, type = 'duration') => {
   const val = parseFloat(value);
-  if (isNaN(val)) return '#94a3b8';
+  if (isNaN(val)) return 'var(--color-text-muted)';
 
   if (type === 'duration') {
-    if (val >= 5000) return '#ef4444'; // Red for >5s
-    if (val >= 2000) return '#f97316'; // Orange
-    if (val >= 1000) return '#eab308'; // Yellow
-    return '#10b981'; // Green
+    if (val >= 5000) return 'var(--color-danger)'; // Red for >5s
+    if (val >= 2000) return 'var(--color-warning)'; // Orange
+    if (val >= 1000) return 'var(--color-chart-yellow, #eab308)'; // Yellow
+    return 'var(--color-success)'; // Green
   }
 
   if (type === 'error') {
-    if (val >= 50) return '#ef4444';
-    if (val >= 20) return '#f97316';
-    if (val >= 5) return '#eab308';
-    return '#10b981';
+    if (val >= 50) return 'var(--color-danger)';
+    if (val >= 20) return 'var(--color-warning)';
+    if (val >= 5) return 'var(--color-chart-yellow, #eab308)';
+    return 'var(--color-success)';
   }
 
-  return '#3b82f6';
+  return 'var(--color-chart-blue, #3b82f6)';
 };
 
 // Accordion Item Component
@@ -149,9 +149,9 @@ const TraceMetricsWidget = ({
 // Enhanced Trace Table Component
 const TraceTable = ({ traces, onTraceClick }) => {
   const getStatusColor = (status) => {
-    if (status === 'error') return '#ef4444';
-    if (status === 'warning') return '#f97316';
-    return '#10b981';
+    if (status === 'error') return 'var(--color-danger)';
+    if (status === 'warning') return 'var(--color-warning)';
+    return 'var(--color-success)';
   };
 
   return (
@@ -235,8 +235,8 @@ export const ExplorerAccordion = ({ traceMetrics, traces, onTraceClick }) => {
   };
 
   const themes = {
-    metrics: '#8b5cf6', // Purple
-    traces: '#06b6d4', // Cyan
+    metrics: 'var(--color-chart-purple, #8b5cf6)', // Purple
+    traces: 'var(--color-chart-cyan)', // Cyan
   };
 
   return (
@@ -258,14 +258,14 @@ export const ExplorerAccordion = ({ traceMetrics, traces, onTraceClick }) => {
               value={traceMetrics.count}
               trend={traceMetrics.countTrend}
               icon={Activity}
-              color="#3b82f6"
+              color="var(--color-chart-blue, #3b82f6)"
             />
             <TraceMetricsWidget
               title="Avg Duration"
               value={traceMetrics.avgDuration}
               trend={traceMetrics.durationTrend}
               icon={Clock}
-              color="#8b5cf6"
+              color="var(--color-chart-purple, #8b5cf6)"
               unit=" ms"
             />
             <TraceMetricsWidget
@@ -273,7 +273,7 @@ export const ExplorerAccordion = ({ traceMetrics, traces, onTraceClick }) => {
               value={traceMetrics.errors}
               trend={traceMetrics.errorTrend}
               icon={AlertTriangle}
-              color="#ef4444"
+              color="var(--color-danger)"
             />
           </div>
         </div>

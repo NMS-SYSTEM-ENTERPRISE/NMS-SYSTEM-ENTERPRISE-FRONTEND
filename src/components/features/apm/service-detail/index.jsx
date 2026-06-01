@@ -2,7 +2,8 @@
 import { Icon } from '@iconify/react';
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import { Input } from '@/components/ui/input';
 import styles from './styles.module.css';
 
 // Mock service data
@@ -483,14 +484,14 @@ const ServiceDetail = () => {
 
               <div className={styles.kpiCard}>
                 <div className={styles.kpiLabel}>Error Count</div>
-                <div className={styles.kpiValue} style={{ color: '#ef4444' }}>
+                <div className={styles.kpiValue} style={{ color: 'var(--color-danger)' }}>
                   {service.errorCount}
                 </div>
               </div>
 
               <div className={styles.kpiCard}>
                 <div className={styles.kpiLabel}>Error Percentage</div>
-                <div className={styles.kpiValue} style={{ color: '#ef4444' }}>
+                <div className={styles.kpiValue} style={{ color: 'var(--color-danger)' }}>
                   {service.errorPercentage}
                   <span className={styles.kpiUnit}>%</span>
                 </div>
@@ -552,8 +553,8 @@ const ServiceDetail = () => {
         {activeTab === 'transactions' && (
           <>
             <div className={styles.searchBar}>
-              <Icon icon="mdi:magnify" width={18} height={18} />
-              <input type="text" placeholder="Search" />
+              <Icon icon="mdi:magnify" width={18} height={18} className={styles.searchIcon} />
+              <Input placeholder="Search traces..." />
             </div>
 
             <div className={styles.tableContainer}>
@@ -577,7 +578,7 @@ const ServiceDetail = () => {
                       <td>{trace.traces}</td>
                       <td>{trace.spans}</td>
                       <td>{trace.traceDuration}</td>
-                      <td style={{ color: trace.errorCount > 0 ? '#ef4444' : undefined }}>
+                      <td style={{ color: trace.errorCount > 0 ? 'var(--color-danger)' : undefined }}>
                         {trace.errorCount}
                       </td>
                     </tr>

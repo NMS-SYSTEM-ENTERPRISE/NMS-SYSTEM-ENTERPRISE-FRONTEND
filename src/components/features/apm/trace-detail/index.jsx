@@ -73,15 +73,15 @@ const TraceDetail = () => {
   const getSpanColor = (type) => {
     switch (type) {
       case 'HTTP':
-        return '#06b6d4';
+        return 'var(--color-chart-cyan, #06b6d4)';
       case 'DATABASE':
-        return '#8b5cf6';
+        return 'var(--color-chart-purple, #8b5cf6)';
       case 'SQL':
-        return '#eab308';
+        return 'var(--color-chart-yellow, #eab308)';
       case 'INTERNAL':
-        return '#10b981';
+        return 'var(--color-success, #10b981)';
       default:
-        return '#6b7280';
+        return 'var(--color-text-muted, #6b7280)';
     }
   };
 
@@ -134,7 +134,7 @@ const TraceDetail = () => {
           <div className={styles.metric}>
             <div className={styles.metricLabel}>Status</div>
             <div className={styles.metricValue}>
-              <span className={styles.statusBadge} style={{ color: '#10b981' }}>
+              <span className={styles.statusBadge} style={{ color: 'var(--color-success)' }}>
                 {trace.status}
               </span>
             </div>

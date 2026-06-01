@@ -1,4 +1,4 @@
-import Screen from '@/screens/apm/agent-config';
+import Screen from '@/components/features/apm/agent-config';
 
 export default function Page() {
   return <Screen />;

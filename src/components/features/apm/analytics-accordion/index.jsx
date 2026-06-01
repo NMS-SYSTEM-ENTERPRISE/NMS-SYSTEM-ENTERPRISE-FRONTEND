@@ -16,7 +16,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './service-accordion.module.css';
+import styles from './styles.module.css';
 
 // Accordion Item Component
 const AccordionItem = ({
@@ -95,7 +95,7 @@ const PerformanceTrendWidget = ({ title, data, color, icon: Icon, trend }) => {
             <span className={styles.analyticsWidgetTitle}>{title}</span>
             <div
               className={styles.analyticsWidgetTrend}
-              style={{ color: isPositive ? '#10b981' : '#ef4444' }}
+              style={{ color: isPositive ? 'var(--color-success)' : 'var(--color-danger)' }}
             >
               {isPositive ? (
                 <TrendingUp size={14} />
@@ -245,10 +245,10 @@ const TopServicesTable = ({ services }) => {
                   style={{
                     color:
                       service.avgLatency > 1000
-                        ? '#ef4444'
+                        ? 'var(--color-danger)'
                         : service.avgLatency > 500
-                          ? '#f97316'
-                          : '#10b981',
+                          ? 'var(--color-warning)'
+                          : 'var(--color-success)',
                   }}
                 >
                   {service.avgLatency} ms
@@ -260,10 +260,10 @@ const TopServicesTable = ({ services }) => {
                   style={{
                     color:
                       service.errorRate > 5
-                        ? '#ef4444'
+                        ? 'var(--color-danger)'
                         : service.errorRate > 2
-                          ? '#f97316'
-                          : '#10b981',
+                          ? 'var(--color-warning)'
+                          : 'var(--color-success)',
                   }}
                 >
                   {service.errorRate}%
@@ -294,9 +294,9 @@ export const AnalyticsAccordion = ({
   };
 
   const themes = {
-    performance: '#3b82f6', // Blue
-    distribution: '#8b5cf6', // Purple
-    topServices: '#06b6d4', // Cyan
+    performance: 'var(--color-chart-blue, #3b82f6)', // Blue
+    distribution: 'var(--color-chart-purple, #8b5cf6)', // Purple
+    topServices: 'var(--color-chart-cyan)', // Cyan
   };
 
   return (
@@ -316,19 +316,19 @@ export const AnalyticsAccordion = ({
             <PerformanceTrendWidget
               title="Request Rate"
               data={performanceData.requestRate}
-              color="#3b82f6"
+              color="var(--color-chart-blue, #3b82f6)"
               icon={Activity}
             />
             <PerformanceTrendWidget
               title="Response Time"
               data={performanceData.responseTime}
-              color="#8b5cf6"
+              color="var(--color-chart-purple, #8b5cf6)"
               icon={Clock}
             />
             <PerformanceTrendWidget
               title="Error Rate"
               data={performanceData.errorRate}
-              color="#ef4444"
+              color="var(--color-danger)"
               icon={Zap}
             />
           </div>
@@ -350,17 +350,17 @@ export const AnalyticsAccordion = ({
             <DistributionWidget
               title="Response Time Distribution"
               data={distributionData.responseTime}
-              color="#8b5cf6"
+              color="var(--color-chart-purple, #8b5cf6)"
             />
             <DistributionWidget
               title="Request Distribution"
               data={distributionData.requests}
-              color="#3b82f6"
+              color="var(--color-chart-blue, #3b82f6)"
             />
             <DistributionWidget
               title="Error Distribution"
               data={distributionData.errors}
-              color="#ef4444"
+              color="var(--color-danger)"
             />
           </div>
         </div>

@@ -40,11 +40,11 @@
 
 .backBtn:hover {
   background: var(--color-bg-hover);
-  border-color: #06b6d4;
+  border-color: var(--color-chart-cyan);
 }
 
 .serviceIcon {
-  color: #06b6d4;
+  color: var(--color-chart-cyan);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,9 +59,9 @@
 
 .languageBadge {
   padding: var(--padding-xs) var(--padding-sm);
-  background: rgba(6, 182, 212, 0.1);
+  background: rgba(var(--color-chart-cyan-rgb, 6, 182, 212), 0.1);
   border-radius: var(--radius-sm);
-  color: #06b6d4;
+  color: var(--color-chart-cyan);
   display: flex;
   align-items: center;
   gap: var(--gap-xs);
@@ -94,7 +94,7 @@
 
 .timeRangeBtn:hover {
   background: var(--color-bg-hover);
-  border-color: #06b6d4;
+  border-color: var(--color-chart-cyan);
 }
 
 .timestamp {
@@ -129,8 +129,8 @@
 }
 
 .tabActive {
-  color: #06b6d4;
-  border-bottom-color: #06b6d4;
+  color: var(--color-chart-cyan);
+  border-bottom-color: var(--color-chart-cyan);
 }
 
 /* Content */
@@ -170,7 +170,7 @@
 .kpiValue {
   font-size: var(--font-2xl);
   font-weight: var(--font-weight-bold);
-  color: #06b6d4;
+  color: var(--color-chart-cyan);
 }
 
 .kpiUnit {
@@ -329,7 +329,7 @@
   display: flex;
   align-items: center;
   gap: var(--gap-xs);
-  color: #06b6d4;
+  color: var(--color-chart-cyan);
 }
 
 /* Tab Placeholder */

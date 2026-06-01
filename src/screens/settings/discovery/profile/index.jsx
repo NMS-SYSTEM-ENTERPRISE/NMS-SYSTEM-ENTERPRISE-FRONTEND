@@ -24,6 +24,7 @@ export default function DiscoveryProfile() {
     createDiscoveryProfile,
     editDiscoveryProfile,
     deleteDiscoveryProfile,
+    scheduleProfile,
     isLoading,
   } = useDiscoveryProfile();
 
@@ -130,6 +131,44 @@ export default function DiscoveryProfile() {
     }
   };
 
+  const handleSaveSchedule = async (scheduleData) => {
+    if (!selectedProfile) return;
+
+    let schedule_type = 'Once';
+    let schedule_interval = 0;
+
+    if (scheduleData.enabled) {
+      schedule_type = scheduleData.frequency.charAt(0).toUpperCase() + scheduleData.frequency.slice(1);
+      
+      if (scheduleData.frequency === 'hourly') {
+        schedule_interval = parseInt(scheduleData.interval) * 60;
+      } else if (scheduleData.frequency === 'daily') {
+        schedule_interval = 24 * 60;
+      } else if (scheduleData.frequency === 'weekly') {
+        schedule_interval = 7 * 24 * 60;
+      } else if (scheduleData.frequency === 'monthly') {
+        schedule_interval = 30 * 24 * 60; // Approximate
+      }
+    }
+
+    const payload = {
+      id: selectedProfile.id,
+      schedule_type: schedule_type,
+      schedule_interval: schedule_interval,
+      schedule_time: scheduleData.time || "00:00",
+      start_date: scheduleData.startDate ? new Date(scheduleData.startDate).toISOString() : null,
+      end_date: scheduleData.endDate ? new Date(scheduleData.endDate).toISOString() : null,
+      run_immediately: scheduleData.runImmediately || false,
+    };
+
+    const res = await scheduleProfile(payload);
+    if (res) {
+      setShowScheduleModal(false);
+      setSelectedProfile(null);
+      fetchProfiles();
+    }
+  };
+
   return (
     <>
       <div className={styles.mainContent}>
@@ -221,10 +260,7 @@ export default function DiscoveryProfile() {
             setShowScheduleModal(false);
             setSelectedProfile(null);
           }}
-          onSave={() => {
-            setShowScheduleModal(false);
-            setSelectedProfile(null);
-          }}
+          onSave={handleSaveSchedule}
         />
       )}
 

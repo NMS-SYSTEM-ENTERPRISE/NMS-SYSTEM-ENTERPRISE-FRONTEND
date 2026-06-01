@@ -19,3 +19,6 @@ export const profileDevicesApi = async (id, params = {}) => {
   const endpoint = DISCOVERY_PROFILE_ENDPOINTS.GET_DEVICES.replace('{id}', id);
   return authApi.get(endpoint, { params });
 };
+
+export const scheduleDiscoveryProfileApi = async (data) =>
+  authApi.post(DISCOVERY_PROFILE_ENDPOINTS.SCHEDULE_PROFILE, data);

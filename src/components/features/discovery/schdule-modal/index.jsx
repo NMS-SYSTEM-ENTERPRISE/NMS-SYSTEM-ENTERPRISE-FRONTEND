@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
+import { DatePickerInput } from '@/components/ui/date-picker-input';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
-import { DatePickerInput } from '@/components/ui/date-picker-input';
+import { useState } from 'react';
 import styles from './styles.module.css';
 
 export const ScheduleModal = ({ profileName, onClose, onSave }) => {
@@ -103,7 +103,12 @@ export const ScheduleModal = ({ profileName, onClose, onSave }) => {
                 scheduleData.frequency === 'monthly') && (
                 <div className={styles.formGroup}>
                   <label className={styles.fieldLabel}>
-                    <Icon icon="mdi:clock-time-four-outline" width={14} height={14} className={styles.labelIcon} />
+                    <Icon
+                      icon="mdi:clock-time-four-outline"
+                      width={14}
+                      height={14}
+                      className={styles.labelIcon}
+                    />
                     Time *
                   </label>
                   <Input
@@ -165,7 +170,12 @@ export const ScheduleModal = ({ profileName, onClose, onSave }) => {
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label className={styles.fieldLabel}>
-                    <Icon icon="mdi:calendar" width={14} height={14} className={styles.labelIcon} />
+                    <Icon
+                      icon="mdi:calendar"
+                      width={14}
+                      height={14}
+                      className={styles.labelIcon}
+                    />
                     Start Date *
                   </label>
                   <DatePickerInput
@@ -181,7 +191,12 @@ export const ScheduleModal = ({ profileName, onClose, onSave }) => {
                 </div>
                 <div className={styles.formGroup}>
                   <label className={styles.fieldLabel}>
-                    <Icon icon="mdi:calendar" width={14} height={14} className={styles.labelIcon} />
+                    <Icon
+                      icon="mdi:calendar"
+                      width={14}
+                      height={14}
+                      className={styles.labelIcon}
+                    />
                     End Date (optional)
                   </label>
                   <DatePickerInput

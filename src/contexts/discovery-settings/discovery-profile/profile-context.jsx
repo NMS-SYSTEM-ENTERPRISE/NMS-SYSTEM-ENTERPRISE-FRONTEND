@@ -8,6 +8,7 @@ import {
   deleteDiscoveryProfileApi,
   editDiscoveryProfileApi,
   profileDevicesApi,
+  scheduleDiscoveryProfileApi,
 } from '@/networking/discovery-settings/discovery-profile/profile/profile-apis';
 
 export const DiscoveryProfileContext = createContext(null);
@@ -153,6 +154,30 @@ export const DiscoveryProfileProvider = ({ children }) => {
     [showError]
   );
 
+  const scheduleProfile = useCallback(
+    async (payload) => {
+      setIsLoading(true);
+      try {
+        const response = await scheduleDiscoveryProfileApi(payload);
+        const { status, data } = response;
+        if (status === 200 || status === 201) {
+          showSuccess(data?.message || 'Profile schedule updated successfully.');
+          return data;
+        } else {
+          showError(data?.message || 'Failed to update schedule.');
+          return null;
+        }
+      } catch (error) {
+        showError(extractErrorMessage(error, 'Error updating schedule.'));
+        console.error('Schedule discovery profile error:', error);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [showSuccess, showError]
+  );
+
   const memoizedValue = useMemo(
     () => ({
       isLoading,
@@ -161,8 +186,9 @@ export const DiscoveryProfileProvider = ({ children }) => {
       editDiscoveryProfile,
       deleteDiscoveryProfile,
       getProfileDevices,
+      scheduleProfile,
     }),
-    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices]
+    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices, scheduleProfile]
   );
 
   return (

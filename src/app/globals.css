@@ -51,6 +51,11 @@
   --alerts-sidebar-width: 240px;
   --alerts-sidebar-width-collapsed: 60px;
 
+  /* Reports layout */
+  --reports-sidebar-width: 260px;
+  --reports-sidebar-width-collapsed: 60px;
+  --reports-sidebar-bg: #0b0f19;
+
   --color-chart-purple-rgb: 168, 85, 247;
 
   --color-accent-cyan-rgb: 6, 182, 212;
@@ -221,4 +226,37 @@ code {
 .slo-chart-tooltip-value {
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+}
+
+/* Reports — shared utility classes (no inline styles) */
+.reports-chevron-expanded {
+  transform: rotate(180deg);
+}
+
+.reports-popup-wrapper {
+  position: relative;
+}
+
+.reports-label-icon-cyan {
+  color: var(--color-chart-cyan);
+}
+
+.reports-label-icon-violet {
+  color: var(--color-chart-violet);
+}
+
+.reports-label-icon-amber {
+  color: var(--color-warning);
+}
+
+.reports-label-icon-green {
+  color: var(--color-success);
+}
+
+.reports-collapse-btn-end {
+  margin-left: auto;
+}
+
+.reports-collapse-btn-start {
+  margin-left: 0;
 }

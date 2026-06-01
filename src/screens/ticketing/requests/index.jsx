@@ -1,6 +1,6 @@
 'use client';
 
-import { TicketingRequestsStandalone } from '@/components/features/ticketing/ticketing-requests-standalone';
+import { TicketingRequestsStandalone } from '@/components/features/ticketing/requests';
 import { TicketingProvider } from '@/contexts/ticketing';
 
 export default function TicketingRequestsPage() {

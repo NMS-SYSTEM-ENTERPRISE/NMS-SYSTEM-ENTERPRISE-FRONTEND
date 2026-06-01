@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
+import { Button } from '@/components/ui/button';
 
 export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -54,43 +55,48 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
               </div>
             </div>
           </div>
-          <button className={styles.closeBtn} onClick={onClose}>
+          <Button variant="outline" className={styles.closeBtn} onClick={onClose}>
             <Icon icon="mdi:close" width={24} height={24} />
-          </button>
+          </Button>
         </div>
 
         {/* Tabs */}
         <div className={styles.tabs}>
-          <button
+          <Button
+            variant={activeTab === 'overview' ? 'primary' : 'outline'}
             className={`${styles.tab} ${activeTab === 'overview' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('overview')}
           >
             Overview
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={activeTab === 'interfaces' ? 'primary' : 'outline'}
             className={`${styles.tab} ${activeTab === 'interfaces' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('interfaces')}
           >
             Interfaces
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={activeTab === 'connections' ? 'primary' : 'outline'}
             className={`${styles.tab} ${activeTab === 'connections' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('connections')}
           >
             Connections
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={activeTab === 'metrics' ? 'primary' : 'outline'}
             className={`${styles.tab} ${activeTab === 'metrics' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('metrics')}
           >
             Metrics
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={activeTab === 'events' ? 'primary' : 'outline'}
             className={`${styles.tab} ${activeTab === 'events' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('events')}
           >
             Events
-          </button>
+          </Button>
         </div>
 
         {/* Content */}
@@ -292,13 +298,13 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
 
         {/* Footer Actions */}
         <div className={styles.footer}>
-          <button className={styles.btnSecondary} onClick={onClose}>
+          <Button variant="outline" className={styles.btnSecondary} onClick={onClose}>
             Close
-          </button>
-          <button className={styles.btnPrimary}>
+          </Button>
+          <Button variant="primary" className={styles.btnPrimary}>
             <Icon icon="mdi:open-in-new" width={18} height={18} />
             View Full Details
-          </button>
+          </Button>
         </div>
       </div>
     </>

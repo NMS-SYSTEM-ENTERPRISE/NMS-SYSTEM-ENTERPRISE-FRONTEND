@@ -65,53 +65,10 @@
   display: flex;
   align-items: center;
   min-width: 280px;
-}
-
-.searchIcon {
-  position: absolute;
-  left: 14px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.searchInput {
   width: 100%;
-  padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) 40px;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-primary);
-  font-size: var(--font-sm);
-  transition: all var(--transition-fast);
 }
 
-.searchInput:focus {
-  outline: none;
-  border-color: var(--color-chart-cyan);
-  background-color: var(--color-bg-primary);
-  box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.1);
-}
 
-.headerBtn {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  padding: var(--padding-sm) var(--padding-lg);
-  background-color: var(--color-chart-cyan);
-  color: var(--color-bg-primary);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-sm);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.headerBtn:hover {
-  background-color: #00b8ef;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 200, 255, 0.3);
-}
 
 /* Main Content */
 .content {
@@ -163,7 +120,7 @@
   background-color: var(--color-chart-cyan);
   border-color: var(--color-chart-cyan);
   color: var(--color-bg-primary);
-  box-shadow: 0 2px 8px rgba(0, 200, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(var(--color-chart-cyan-rgb), 0.3);
 }
 
 .treeSearch {
@@ -175,20 +132,8 @@
   background-color: var(--color-bg-tertiary);
 }
 
-.treeSearch input {
-  flex: 1;
-  padding: var(--padding-xs) var(--padding-sm);
-  background-color: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
-  font-size: var(--font-sm);
-  transition: border-color var(--transition-fast);
-}
-
-.treeSearch input:focus {
-  outline: none;
-  border-color: var(--color-chart-cyan);
+.treeSearch>div {
+  width: 100%;
 }
 
 /* Device Tree */
@@ -199,7 +144,19 @@
 }
 
 .treeNode {
+  position: relative;
   margin-bottom: var(--margin-xs);
+}
+
+.treeNodeChildren > .treeNode::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: -16px;
+  width: 12px;
+  height: 1px;
+  background-color: var(--color-border-accent);
+  z-index: 0;
 }
 
 .treeNodeLabel {
@@ -211,17 +168,18 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   user-select: none;
+  border-left: 3px solid transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .treeNodeLabel:hover {
   background-color: var(--color-bg-hover);
-  transform: translateX(2px);
 }
 
 .treeNodeFocused {
-  background-color: rgba(0, 200, 255, 0.15);
+  background-color: rgba(var(--color-chart-cyan-rgb), 0.15);
   border-left: 3px solid var(--color-chart-cyan);
-  padding-left: calc(var(--padding-sm) - 3px);
 }
 
 .treeNodeDevice {
@@ -245,15 +203,15 @@
 }
 
 .statusOnline {
-  color: #4ade80 !important;
+  color: var(--color-success) !important;
 }
 
 .statusOffline {
-  color: #f87171 !important;
+  color: var(--color-danger) !important;
 }
 
 .statusWarning {
-  color: #fb923c !important;
+  color: var(--color-warning) !important;
 }
 
 .treeNodeText {
@@ -273,7 +231,12 @@
 }
 
 .treeNodeChildren {
-  margin-left: var(--margin-sm);
+  margin-left: 19px;
+  padding-left: 16px;
+  border-left: 1px solid var(--color-border-accent);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 /* Legend */
@@ -312,17 +275,17 @@
 }
 
 .legendOnline {
-  background-color: #4ade80;
+  background-color: var(--color-success);
   box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
 }
 
 .legendWarning {
-  background-color: #fb923c;
+  background-color: var(--color-warning);
   box-shadow: 0 0 8px rgba(251, 146, 60, 0.5);
 }
 
 .legendOffline {
-  background-color: #f87171;
+  background-color: var(--color-danger);
   box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
 }
 
@@ -330,7 +293,7 @@
 .topologyCanvas {
   flex: 1;
   position: relative;
-  background: linear-gradient(135deg, #0a0f1a 0%, #151b2b 100%);
+  background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
   display: flex;
   flex-direction: column;
 }
@@ -353,29 +316,7 @@
 }
 
 .layoutSelector {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  padding: var(--padding-xs) var(--padding-sm);
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
-}
-
-.layoutSelect {
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-primary);
-  font-size: var(--font-sm);
-  cursor: pointer;
-  outline: none;
-  padding: var(--padding-xs);
-}
-
-.layoutSelect option {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  min-width: 220px;
 }
 
 .layerToggle {
@@ -451,7 +392,7 @@
   border-color: var(--color-chart-cyan);
   color: var(--color-bg-primary);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 200, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(var(--color-chart-cyan-rgb), 0.3);
 }
 
 /* Cytoscape */
@@ -538,12 +479,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
+  width: 44px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  background-color: var(--color-bg-tertiary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--color-text-secondary) !important;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -553,7 +495,7 @@
   border-color: var(--color-chart-cyan);
   color: var(--color-bg-primary);
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 200, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(var(--color-chart-cyan-rgb), 0.4);
 }
 
 /* Custom Form Styles for FilterSidebar */

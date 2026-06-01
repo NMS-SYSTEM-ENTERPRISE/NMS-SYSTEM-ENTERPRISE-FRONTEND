@@ -1,15 +1,15 @@
 'use client';
 
+import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SelectComponent } from '@/components/ui/select';
-import { Icon } from '@iconify/react';
-import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { useAudit } from '@/hooks/audit';
 import {
   AUDIT_MODULE_FILTER_OPTIONS,
   AUDIT_STATUS_FILTER_OPTIONS,
 } from '@/utils/constants/audit';
+import { Icon } from '@iconify/react';
 
 export const AuditHeader = () => {
   const {
@@ -29,13 +29,18 @@ export const AuditHeader = () => {
         </div>
         <div className={sharedStyles.headerText}>
           <h1 className={sharedStyles.headerTitle}>Audit Logs</h1>
-          <span className={sharedStyles.headerSubtitle}>System Activity Monitor</span>
+          <span className={sharedStyles.headerSubtitle}>
+            System Activity Monitor
+          </span>
         </div>
       </div>
 
       <div className={sharedStyles.headerRight}>
         <div className={sharedStyles.filterGroup}>
-          <label className={sharedStyles.filterLabel} htmlFor="audit-module-filter">
+          <label
+            className={sharedStyles.filterLabel}
+            htmlFor="audit-module-filter"
+          >
             Module:
           </label>
           <SelectComponent
@@ -43,14 +48,19 @@ export const AuditHeader = () => {
             className={sharedStyles.select}
             variant="borderless"
             value={filters.module}
-            onChange={(e) => setFilters((prev) => ({ ...prev, module: e.target.value }))}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, module: e.target.value }))
+            }
             options={AUDIT_MODULE_FILTER_OPTIONS}
             placeholder="All"
           />
         </div>
 
         <div className={sharedStyles.filterGroup}>
-          <label className={sharedStyles.filterLabel} htmlFor="audit-status-filter">
+          <label
+            className={sharedStyles.filterLabel}
+            htmlFor="audit-status-filter"
+          >
             Status:
           </label>
           <SelectComponent
@@ -58,7 +68,9 @@ export const AuditHeader = () => {
             className={sharedStyles.select}
             variant="borderless"
             value={filters.status}
-            onChange={(e) => setFilters((prev) => ({ ...prev, status: e.target.value }))}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, status: e.target.value }))
+            }
             options={AUDIT_STATUS_FILTER_OPTIONS}
             placeholder="Status"
           />
@@ -75,7 +87,12 @@ export const AuditHeader = () => {
         />
 
         <div className={sharedStyles.headerActions}>
-          <Button variant="ghost" size="icon" className={sharedStyles.actionBtn} title="Refresh">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={sharedStyles.actionBtn}
+            title="Refresh"
+          >
             <Icon icon="mdi:refresh" width={20} height={20} />
           </Button>
           <Button

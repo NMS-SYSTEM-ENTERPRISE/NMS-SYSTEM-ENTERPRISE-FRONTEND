@@ -12,6 +12,7 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
     editDiscoveryProfile,
     deleteDiscoveryProfile,
     scheduleProfile,
+    reDiscoverProfile,
   } = useDiscoveryProfile();
 
   const [searchTags, setSearchTags] = useState([]);
@@ -23,6 +24,7 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDevicesModal, setShowDevicesModal] = useState(false);
+  const [showLogsModal, setShowLogsModal] = useState(false);
   const [showActionsMenu, setShowActionsMenu] = useState(null);
   const [profilesList, setProfilesList] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -119,6 +121,28 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
     setShowDevicesModal(false);
     setSelectedProfile(null);
   }, []);
+
+  const handleViewLogs = useCallback((profile) => {
+    setSelectedProfile(profile);
+    setShowLogsModal(true);
+    setShowActionsMenu(null);
+  }, []);
+
+  const closeLogsModal = useCallback(() => {
+    setShowLogsModal(false);
+    setSelectedProfile(null);
+  }, []);
+
+  const handleReDiscover = useCallback(
+    async (profile) => {
+      if (profile?.id) {
+        const res = await reDiscoverProfile(profile.id);
+        if (res) fetchProfiles();
+      }
+      setShowActionsMenu(null);
+    },
+    [reDiscoverProfile, fetchProfiles]
+  );
 
   const handleSaveModal = useCallback(
     async (formData) => {
@@ -217,6 +241,10 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
       handleSaveModal,
       handleSaveSchedule,
       handlePageSizeChange,
+      showLogsModal,
+      handleViewLogs,
+      closeLogsModal,
+      handleReDiscover,
     }),
     [
       searchTags,
@@ -248,6 +276,10 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
       handleSaveModal,
       handleSaveSchedule,
       handlePageSizeChange,
+      showLogsModal,
+      handleViewLogs,
+      closeLogsModal,
+      handleReDiscover,
     ]
   );
 

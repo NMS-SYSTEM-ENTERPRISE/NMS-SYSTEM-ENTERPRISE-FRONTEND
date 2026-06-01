@@ -25,3 +25,13 @@ export const scheduleDiscoveryProfileApi = async (data) =>
 
 export const commissionDevicesApi = async (data) =>
   authApi.post(DISCOVERY_PROFILE_ENDPOINTS.COMMISSION_DEVICES, data);
+
+export const getDiscoveryLogsApi = async (id) => {
+  const endpoint = DISCOVERY_PROFILE_ENDPOINTS.GET_LOGS.replace('{id}', id);
+  return authApi.get(endpoint);
+};
+
+export const reDiscoverProfileApi = async (id) => {
+  const endpoint = DISCOVERY_PROFILE_ENDPOINTS.REDISCOVER_PROFILE.replace('{id}', id);
+  return authApi.post(endpoint);
+};

@@ -3,6 +3,7 @@
 import { AssignCredentialModal } from '@/components/features/discovery/assignment-credentials';
 import { CreateDiscoveryModal } from '@/components/features/discovery/create-discovery-modal';
 import { DiscoveredDevicesModal } from '@/components/features/discovery/discovered-devices-modal';
+import { LogViewerModal } from '@/components/features/discovery/log-viewer-modal';
 import { ScheduleModal } from '@/components/features/discovery/schdule-modal';
 import { renderProfileCell } from '@/components/features/settings/discovery/profile/renderProfileCell';
 import { Button } from '@/components/ui/button';
@@ -49,6 +50,10 @@ export const DiscoveryProfileContent = () => {
     handleSaveModal,
     handleSaveSchedule,
     handlePageSizeChange,
+    showLogsModal,
+    handleViewLogs,
+    closeLogsModal,
+    handleReDiscover,
   } = useDiscoveryProfileScreen();
 
   return (
@@ -86,6 +91,8 @@ export const DiscoveryProfileContent = () => {
                   handleDuplicate,
                   handleDelete,
                   handleViewDevices,
+                  handleViewLogs,
+                  handleReDiscover,
                   showActionsMenu,
                   setShowActionsMenu
                 )
@@ -134,6 +141,10 @@ export const DiscoveryProfileContent = () => {
 
       {showDevicesModal && (
         <DiscoveredDevicesModal profile={selectedProfile} onClose={closeDevicesModal} />
+      )}
+
+      {showLogsModal && (
+        <LogViewerModal profile={selectedProfile} onClose={closeLogsModal} />
       )}
     </>
   );

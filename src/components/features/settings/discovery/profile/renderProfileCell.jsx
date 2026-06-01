@@ -12,6 +12,8 @@ export const renderProfileCell = (
   handleDuplicate,
   handleDelete,
   handleViewDevices,
+  handleViewLogs,
+  handleReDiscover,
   showActionsMenu,
   setShowActionsMenu
 ) => {
@@ -155,6 +157,16 @@ export const renderProfileCell = (
                 </button>
                 <button
                   type="button"
+                  className={styles.assignMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReDiscover(profile);
+                  }}
+                >
+                  <Icon icon="mdi:radar" width={16} height={16} /> Re-Discover
+                </button>
+                <button
+                  type="button"
                   className={styles.scheduleMenuBtn}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -172,6 +184,16 @@ export const renderProfileCell = (
                   }}
                 >
                   <Icon icon="mdi:server-network" width={16} height={16} /> View Devices
+                </button>
+                <button
+                  type="button"
+                  className={styles.scheduleMenuBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewLogs(profile);
+                  }}
+                >
+                  <Icon icon="mdi:console" width={16} height={16} /> View Logs
                 </button>
                 <button
                   type="button"

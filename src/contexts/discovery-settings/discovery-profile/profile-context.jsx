@@ -10,6 +10,8 @@ import {
   profileDevicesApi,
   scheduleDiscoveryProfileApi,
   commissionDevicesApi,
+  getDiscoveryLogsApi,
+  reDiscoverProfileApi,
 } from '@/networking/discovery-settings/discovery-profile/profile/profile-apis';
 
 export const DiscoveryProfileContext = createContext(null);
@@ -203,6 +205,50 @@ export const DiscoveryProfileProvider = ({ children }) => {
     [showSuccess, showError]
   );
 
+  const getDiscoveryLogs = useCallback(
+    async (id) => {
+      try {
+        const response = await getDiscoveryLogsApi(id);
+        const { status, data } = response;
+        if (status === 200 || status === 201) {
+          return data;
+        } else {
+          showError(data?.message || 'Failed to fetch logs.');
+          return null;
+        }
+      } catch (error) {
+        showError(extractErrorMessage(error, 'Error fetching logs.'));
+        console.error('Get discovery logs error:', error);
+        return null;
+      }
+    },
+    [showError]
+  );
+
+  const reDiscoverProfile = useCallback(
+    async (id) => {
+      setIsLoading(true);
+      try {
+        const response = await reDiscoverProfileApi(id);
+        const { status, data } = response;
+        if (status === 200 || status === 201) {
+          showSuccess(data?.message || 'Profile rediscovery started.');
+          return data;
+        } else {
+          showError(data?.message || 'Failed to start rediscovery.');
+          return null;
+        }
+      } catch (error) {
+        showError(extractErrorMessage(error, 'Error starting rediscovery.'));
+        console.error('Rediscover profile error:', error);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [showSuccess, showError]
+  );
+
   const memoizedValue = useMemo(
     () => ({
       isLoading,
@@ -213,8 +259,10 @@ export const DiscoveryProfileProvider = ({ children }) => {
       getProfileDevices,
       scheduleProfile,
       commissionDevices,
+      getDiscoveryLogs,
+      reDiscoverProfile,
     }),
-    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices, scheduleProfile, commissionDevices]
+    [isLoading, getAllDiscoveryProfiles, createDiscoveryProfile, editDiscoveryProfile, deleteDiscoveryProfile, getProfileDevices, scheduleProfile, commissionDevices, getDiscoveryLogs, reDiscoverProfile]
   );
 
   return (

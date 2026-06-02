@@ -76,17 +76,22 @@ export const getNetPathDetail = async (pathId) => {
 // FLOW (TRAFFIC ANALYSIS) APIS
 // ==========================================
 
-export const getFlowDashboard = async () => {
-  const response = await authApi.get(`${BASE_URL}/flow/dashboard`);
+export const getFlowDashboard = async (params = {}) => {
+  const response = await authApi.get(`${BASE_URL}/flow/dashboard`, { params });
   return response.data;
 };
 
-export const getFlowAnalytics = async () => {
-  const response = await authApi.get(`${BASE_URL}/flow/analytics`);
+export const getFlowAnalytics = async (params = {}) => {
+  const response = await authApi.get(`${BASE_URL}/flow/analytics`, { params });
   return response.data;
 };
 
-export const getFlowExplorer = async () => {
-  const response = await authApi.get(`${BASE_URL}/flow/explorer`);
+export const getFlowExplorer = async (params = {}) => {
+  const response = await authApi.get(`${BASE_URL}/flow/explorer`, { params });
+  return response.data;
+};
+
+export const getFlowFilters = async () => {
+  const response = await authApi.get(`${BASE_URL}/flow/filters`);
   return response.data;
 };

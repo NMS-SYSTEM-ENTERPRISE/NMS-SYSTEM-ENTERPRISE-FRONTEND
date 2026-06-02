@@ -15,6 +15,7 @@ export const FlowHeader = () => {
     selectedInterface,
     setSelectedInterface,
     setShowActionSidebar,
+    filterOptions,
   } = useFlow();
 
   return (
@@ -34,7 +35,7 @@ export const FlowHeader = () => {
             className={sharedStyles.select}
             value={selectedEventSource}
             onChange={(e) => setSelectedEventSource(e.target.value)}
-            options={FLOW_EVENT_SOURCE_OPTIONS}
+            options={filterOptions?.eventSources || []}
             placeholder="Select"
           />
         </div>
@@ -46,7 +47,7 @@ export const FlowHeader = () => {
             className={sharedStyles.select}
             value={selectedInterface}
             onChange={(e) => setSelectedInterface(e.target.value)}
-            options={FLOW_INTERFACE_OPTIONS}
+            options={filterOptions?.interfaces || []}
             placeholder="Select"
           />
         </div>
@@ -63,9 +64,6 @@ export const FlowHeader = () => {
             title={activeView === 'dashboard' ? 'Dashboard Actions' : 'Explorer Configuration'}
           >
             <Icon icon="mdi:cog" width={20} height={20} />
-          </Button>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Export">
-            <Icon icon="mdi:download" width={20} height={20} />
           </Button>
         </div>
       </div>

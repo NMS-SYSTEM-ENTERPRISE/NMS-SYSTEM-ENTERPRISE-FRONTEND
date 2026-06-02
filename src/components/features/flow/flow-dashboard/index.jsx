@@ -3,8 +3,10 @@ import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 import { getFlowDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
+import { useFlow } from '@/hooks/flow';
 
 export const FlowDashboard = () => {
+  const { selectedEventSource, selectedInterface } = useFlow();
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSections, setExpandedSections] = useState({
     realtime: true,
@@ -35,7 +37,8 @@ export const FlowDashboard = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getFlowDashboard();
+        const params = { eventSource: selectedEventSource, interface: selectedInterface };
+        const data = await getFlowDashboard(params);
         // Parse dates in time series
         data.eventsPerSecond = data.eventsPerSecond.map(d => ({ ...d, time: new Date(d.time) }));
         data.flowEvents = data.flowEvents.map(d => ({ ...d, time: new Date(d.time) }));
@@ -48,7 +51,7 @@ export const FlowDashboard = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedEventSource, selectedInterface]);
 
   useEffect(() => {
     if (!dashboardData) return;

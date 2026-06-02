@@ -6,8 +6,10 @@ import { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
 import { getFlowExplorer } from '@/networking/network-monitoring/network-monitoring-apis';
+import { useFlow } from '@/hooks/flow';
 
 export const FlowExplorer = () => {
+  const { selectedEventSource, selectedInterface } = useFlow();
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSections, setExpandedSections] = useState({
     filters: true,
@@ -17,11 +19,30 @@ export const FlowExplorer = () => {
   const [explorerData, setExplorerData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [localFilters, setLocalFilters] = useState({
+    sourceIp: '',
+    destIp: '',
+    protocol: '',
+    port: ''
+  });
+
+  const [activeFilters, setActiveFilters] = useState({
+    sourceIp: '',
+    destIp: '',
+    protocol: '',
+    port: ''
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getFlowExplorer();
+        const params = {
+          eventSource: selectedEventSource,
+          interface: selectedInterface,
+          ...activeFilters
+        };
+        const data = await getFlowExplorer(params);
         setExplorerData(data);
       } catch (error) {
         console.error("Failed to fetch flow explorer data:", error);
@@ -30,7 +51,7 @@ export const FlowExplorer = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedEventSource, selectedInterface, activeFilters]);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -61,21 +82,21 @@ export const FlowExplorer = () => {
                   <div className={styles.filterField}>
                     <label>SOURCE IP / SUBNET</label>
                     <div className={styles.inputWrap}>
-                      <Input type="text" placeholder="e.g. 192.168.1.0/24" icon={<Icon icon="mdi:ip-network" />} />
+                      <Input type="text" placeholder="e.g. 192.168.1.0/24" icon={<Icon icon="mdi:ip-network" />} value={localFilters.sourceIp} onChange={e => setLocalFilters(prev => ({ ...prev, sourceIp: e.target.value }))} />
                     </div>
                   </div>
                   <div className={styles.filterField}>
                     <label>DESTINATION IP</label>
                     <div className={styles.inputWrap}>
-                      <Input type="text" placeholder="e.g. 8.8.8.8" icon={<Icon icon="mdi:map-marker-radius" />} />
+                      <Input type="text" placeholder="e.g. 8.8.8.8" icon={<Icon icon="mdi:map-marker-radius" />} value={localFilters.destIp} onChange={e => setLocalFilters(prev => ({ ...prev, destIp: e.target.value }))} />
                     </div>
                   </div>
                   <div className={styles.filterField}>
                     <label>PROTOCOL / APP</label>
                     <div className={styles.inputWrap}>
                       <SelectComponent
-                        value=""
-                        onChange={() => { }}
+                        value={localFilters.protocol}
+                        onChange={e => setLocalFilters(prev => ({ ...prev, protocol: e.target.value }))}
                         options={[
                           { value: '', label: 'All Protocols' },
                           { value: 'TCP', label: 'TCP' },
@@ -88,15 +109,18 @@ export const FlowExplorer = () => {
                   <div className={styles.filterField}>
                     <label>PORT</label>
                     <div className={styles.inputWrap}>
-                      <Input type="text" placeholder="e.g. 443" icon={<Icon icon="mdi:door-open" />} />
+                      <Input type="text" placeholder="e.g. 443" icon={<Icon icon="mdi:door-open" />} value={localFilters.port} onChange={e => setLocalFilters(prev => ({ ...prev, port: e.target.value }))} />
                     </div>
                   </div>
                 </div>
                 <div className={styles.filterActions}>
-                  <Button variant="ghost" className={styles.clearBtn}>Clear All</Button>
-                  <Button className={styles.applyBtn}>
-                    <Icon icon="mdi:play-circle" width={18} />
-                    Run Query
+                  <Button variant="ghost" className={styles.clearBtn} onClick={() => {
+                    const empty = { sourceIp: '', destIp: '', protocol: '', port: '' };
+                    setLocalFilters(empty);
+                    setActiveFilters(empty);
+                  }}>Clear All</Button>
+                  <Button className={styles.applyBtn} onClick={() => setActiveFilters(localFilters)}>
+                    <Icon icon="mdi:play-circle-outline" width={18} /> Run Query
                   </Button>
                 </div>
               </div>

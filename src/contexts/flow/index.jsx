@@ -1,6 +1,6 @@
 'use client';
-import { createContext, useState, useContext } from 'react';
-import { INITIAL_FLOW_CONFIG } from '@/utils/dummy-data/flow';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { getFlowFilters } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const FlowContext = createContext();
 
@@ -10,7 +10,14 @@ export const FlowProvider = ({ children }) => {
   const [selectedInterface, setSelectedInterface] = useState('');
   const [showActionSidebar, setShowActionSidebar] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [flowConfig, setFlowConfig] = useState(INITIAL_FLOW_CONFIG);
+  const [flowConfig, setFlowConfig] = useState({});
+  const [filterOptions, setFilterOptions] = useState({ eventSources: [], interfaces: [] });
+
+  useEffect(() => {
+    getFlowFilters()
+      .then(data => setFilterOptions(data))
+      .catch(err => console.error("Failed to load filters", err));
+  }, []);
 
   const value = {
     activeView,
@@ -25,6 +32,7 @@ export const FlowProvider = ({ children }) => {
     setIsSidebarOpen,
     flowConfig,
     setFlowConfig,
+    filterOptions,
   };
 
   return (

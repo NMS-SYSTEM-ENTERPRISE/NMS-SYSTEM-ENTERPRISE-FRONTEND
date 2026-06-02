@@ -4,18 +4,14 @@ import { useEffect, useRef, useState } from 'react';
 import { TopTalkersWidget } from '../top-talkers-widget';
 import styles from './styles.module.css';
 
-const TREND_DATA = [120, 150, 180, 170, 210, 250, 280, 260, 290, 320, 310, 350];
-const APP_DATA = [
-  { value: 45, name: 'HTTPS', color: 'var(--color-chart-purple-light)' },
-  { value: 25, name: 'Google Cloud', color: 'var(--color-chart-cyan)' },
-  { value: 15, name: 'AWS Services', color: 'var(--color-chart-red)' },
-  { value: 10, name: 'DNS', color: 'var(--color-chart-blue)' },
-  { value: 5, name: 'Other', color: 'var(--color-chart-green)' }
-];
+
 
 import { getFlowAnalytics, getFlowDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
+import { useFlow } from '@/hooks/flow';
 
 export const FlowAnalytics = () => {
+  const { selectedEventSource, selectedInterface } = useFlow();
+  
   const [expandedSections, setExpandedSections] = useState({
     summary: true,
     topTalkers: true,
@@ -37,9 +33,10 @@ export const FlowAnalytics = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+        const params = { eventSource: selectedEventSource, interface: selectedInterface };
         const [analytics, dashboard] = await Promise.all([
-          getFlowAnalytics(),
-          getFlowDashboard()
+          getFlowAnalytics(params),
+          getFlowDashboard(params)
         ]);
         setAnalyticsData(analytics);
         setDashboardData(dashboard);
@@ -50,7 +47,7 @@ export const FlowAnalytics = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedEventSource, selectedInterface]);
 
   useEffect(() => {
     if (!analyticsData) return;

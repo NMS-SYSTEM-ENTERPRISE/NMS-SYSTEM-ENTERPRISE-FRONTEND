@@ -16,6 +16,7 @@ import {
 } from './dashboards/NetworkExtrasDashboards';
 import SDNDashboard from './dashboards/SDNDashboard';
 import ServerDashboard from './dashboards/ServerDashboard';
+import UPSDashboard from './dashboards/UPSDashboard';
 import {
   ContainerDashboard,
   ProcessDashboard,
@@ -23,7 +24,7 @@ import {
   ServiceDashboard
 } from './dashboards/ServiceDashboards';
 
-const DashboardView = ({ category, config, data }) => {
+const DashboardView = ({ category, config, data, dashboardData }) => {
   const upCount = data.filter((d) => d.status === 'Up').length;
   const downCount = data.filter((d) => d.status === 'Down').length;
 
@@ -31,7 +32,9 @@ const DashboardView = ({ category, config, data }) => {
     case 'Server & Apps':
       return <ServerDashboard data={data} />;
     case 'Network':
-      return <NetworkDashboard data={data} />;
+      return <NetworkDashboard data={data} dashboardData={dashboardData} />;
+    case 'UPS':
+      return <UPSDashboard data={data} />;
     case 'SDN':
       return <SDNDashboard />;
     case 'Cloud':

@@ -6,98 +6,29 @@ import { Responsive, WidthProvider } from 'react-grid-layout/legacy';
 import { MdDragIndicator } from 'react-icons/md';
 import 'react-resizable/css/styles.css';
 
+import { getDeviceHistory } from '@/networking/network-monitoring/network-monitoring-apis';
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-// --- Mock Data ---
-
-const availabilityData = [
-  { value: 115, name: 'Up', itemStyle: { color: '#22c55e' } },
-  { value: 18, name: 'Down', itemStyle: { color: '#ef4444' } },
-];
-
-const heatmapData = [];
-// Generate mock heatmap data (7x4 grid)
-for (let i = 0; i < 7; i++) {
-  for (let j = 0; j < 4; j++) {
-    // Random status: 0=Green, 1=Yellow, 2=Orange, 3=Red
-    const status = Math.random() > 0.8 ? (Math.random() > 0.5 ? 3 : 2) : 0;
-    heatmapData.push([i, j, status]);
-  }
-}
-
-const interfaceAvailabilityData = [
-  { label: 'Down', value: 54, color: '#ef4444' },
-  { label: 'Up', value: 322, color: '#22c55e' },
-];
-
-const alertSummaryData = [
-  { label: 'Down', value: 6, color: '#ef4444' },
-  { label: 'Major', value: 6, color: '#f97316' },
-  { label: 'Warning', value: 4, color: '#eab308' },
-  { label: 'Clear', value: 502, color: '#22c55e' },
-];
-
-const latencyData = Array.from({ length: 50 }, () => Math.floor(Math.random() * 100));
-
-const topDevicesCPUData = [
-  { name: '172.16.10.225', value: 95.55, color: '#3b82f6' },
-  { name: '172.16.8.75', value: 53.42, color: '#22c55e' },
-  { name: '172.16.8.34', value: 15.32, color: '#eab308' },
-  { name: '172.16.8.165', value: 9.17, color: '#f97316' },
-  { name: '172.16.10.1', value: 6.72, color: '#ef4444' },
-  { name: '172.16.8.202', value: 1.91, color: '#a855f7' },
-  { name: '172.16.8.2', value: 1.47, color: '#ec4899' },
-  { name: '172.16.9.156', value: 0.87, color: '#6366f1' },
-];
-
-const memoryUsageData = [
-  { name: '172.16.10.225', value: 90 },
-  { name: '172.16.8.75', value: 85 },
-  { name: '172.16.8.34', value: 70 },
-  { name: '172.16.8.165', value: 65 },
-  { name: '172.16.10.1', value: 40 },
-];
-
-const downtimeData = [
-  { device: '172.16.8.202', time: '2 m' },
-  { device: '172.16.8.87', time: '5 m' },
-  { device: '172.16.9.156', time: '10 m' },
-  { device: '172.16.8.75', time: '15 m' },
-  { device: '172.16.8.165', time: '20 m' },
-];
-
-const interfaceTrafficData = {
-  categories: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-  series: [
-    { name: 'In', data: [120, 132, 101, 134, 90, 230], color: '#3b82f6' },
-    { name: 'Out', data: [220, 182, 191, 234, 290, 330], color: '#22c55e' },
-  ]
-};
-
-const packetsData = {
-  categories: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-  series: [
-    { name: 'In', data: [820, 932, 901, 934, 1290, 1330], color: '#0ea5e9' },
-    { name: 'Out', data: [620, 732, 701, 734, 1090, 1130], color: '#84cc16' },
-  ]
-};
+// --- Dynamic Chart Rendering Engine ---
+// We initialize state inside the component using the `data` prop.
 
 const initialLayouts = {
   lg: [
-    { i: 'avail', x: 0, y: 0, w: 3, h: 3 },
-    { i: 'heatmap', x: 3, y: 0, w: 3, h: 3 },
-    { i: 'ifAvail', x: 6, y: 0, w: 3, h: 3 },
-    { i: 'alert', x: 9, y: 0, w: 3, h: 3 },
-    { i: 'latency', x: 0, y: 3, w: 4, h: 3 },
-    { i: 'cpu', x: 4, y: 3, w: 4, h: 3 },
-    { i: 'memory', x: 8, y: 3, w: 4, h: 3 },
-    { i: 'downtime', x: 0, y: 6, w: 4, h: 3 },
-    { i: 'traffic', x: 4, y: 6, w: 4, h: 3 },
-    { i: 'packets', x: 8, y: 6, w: 4, h: 3 },
+    { i: 'avail', x: 0, y: 0, w: 4, h: 3 },
+    { i: 'ifAvail', x: 4, y: 0, w: 4, h: 3 },
+    { i: 'alert', x: 8, y: 0, w: 4, h: 3 },
+    { i: 'heatmap', x: 0, y: 3, w: 12, h: 3 },
+    { i: 'latency', x: 0, y: 6, w: 4, h: 3 },
+    { i: 'cpu', x: 4, y: 6, w: 4, h: 3 },
+    { i: 'memory', x: 8, y: 6, w: 4, h: 3 },
+    { i: 'downtime', x: 0, y: 9, w: 4, h: 3 },
+    { i: 'traffic', x: 4, y: 9, w: 4, h: 3 },
+    { i: 'packets', x: 8, y: 9, w: 4, h: 3 },
   ],
 };
 
-const NetworkDetail = () => {
+const NetworkDetail = ({ data }) => {
   // Chart Refs
   const availabilityRef = useRef(null);
   const heatmapRef = useRef(null);
@@ -111,6 +42,16 @@ const NetworkDetail = () => {
   const chartsRef = useRef({});
 
   const [layouts, setLayouts] = useState(initialLayouts);
+  const [historyData, setHistoryData] = useState([]);
+
+  // Fetch History Data
+  useEffect(() => {
+    if (data?.device_ip) {
+      getDeviceHistory(data.device_ip).then(history => {
+        setHistoryData(history || []);
+      }).catch(console.error);
+    }
+  }, [data?.device_ip]);
 
   const initChart = (ref, option) => {
     if (ref.current) {
@@ -136,6 +77,62 @@ const NetworkDetail = () => {
       containLabel: true,
     };
 
+    // Process Dynamic Data
+    const interfaces = data?.frontend_data?.interfaces || [];
+    const upIfaces = interfaces.filter(i => i.status?.toLowerCase() === 'up').length;
+    const downIfaces = interfaces.filter(i => i.status?.toLowerCase() === 'down').length;
+    const totalIfaces = interfaces.length || 1;
+
+    const availabilityData = [
+      { value: upIfaces, name: 'Up', itemStyle: { color: '#22c55e' } },
+      { value: downIfaces, name: 'Down', itemStyle: { color: '#ef4444' } },
+    ];
+    const maxCols = 24;
+    const numCols = Math.min(maxCols, totalIfaces || 1);
+    const numRows = Math.ceil((totalIfaces || 1) / numCols);
+
+    const heatmapData = [];
+    interfaces.forEach((iface, idx) => {
+      const col = idx % numCols;
+      const row = Math.floor(idx / numCols);
+      const status = iface.status?.toLowerCase() === 'up' ? 0 : 3;
+      heatmapData.push([col, row, status]);
+    });
+
+    const interfaceAvailabilityData = [
+      { label: 'Down', value: downIfaces, color: '#ef4444' },
+      { label: 'Up', value: upIfaces, color: '#22c55e' },
+    ];
+
+    const sysAlarms = data?.frontend_data?.ups_metrics?.alarms_present || 0;
+    const alertSummaryData = [
+      { label: 'Down', value: downIfaces, color: '#ef4444' },
+      { label: 'Major', value: sysAlarms, color: '#f97316' },
+      { label: 'Warning', value: 0, color: '#eab308' },
+      { label: 'Clear', value: totalIfaces, color: '#22c55e' },
+    ];
+
+    const historyTimes = historyData.map(h => new Date(h.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    const latencyData = historyData.map(h => h.latency_ms || 0);
+    const cpuData = historyData.map(h => parseFloat(h.cpu_load_percent) || 0);
+    const memoryData = historyData.map(h => parseFloat(h.memory_consumption_percent) || 0);
+
+    // CPU & Memory usage maps latest data to single device over time
+    const topDevicesCPUData = cpuData.map((val, idx) => ({ name: historyTimes[idx] || `T-${idx}`, value: val }));
+    const memoryUsageData = memoryData.map((val, idx) => ({ name: historyTimes[idx] || `T-${idx}`, value: val }));
+
+    const interfaceTrafficData = {
+      categories: historyTimes.slice(-6),
+      series: [
+        { name: 'In (GB)', data: historyData.slice(-6).map(h => parseFloat(h.total_bandwidth_in) || 0), color: '#3b82f6' },
+        { name: 'Out (GB)', data: historyData.slice(-6).map(h => parseFloat(h.total_bandwidth_out) || 0), color: '#22c55e' },
+      ]
+    };
+
+    const downtimeData = [
+      { device: data?.device_ip || 'Device', time: downIfaces > 0 ? `${downIfaces * 5} m` : '0 m' }
+    ];
+
     // 1. Network Device Availability (Donut)
     chartsRef.current.availability = initChart(availabilityRef, {
       tooltip: { trigger: 'item' },
@@ -149,7 +146,7 @@ const NetworkDetail = () => {
           label: {
             show: true,
             position: 'center',
-            formatter: 'Total\n133',
+            formatter: `Total\n${totalIfaces}`,
             fontSize: 20,
             fontWeight: 'bold',
             color: '#fff',
@@ -169,17 +166,14 @@ const NetworkDetail = () => {
       var size = api.size([1, 1]);
       var width = size[0];
       var height = size[1];
-      
-      // Shift odd rows
+
       if (yValue % 2 !== 0) {
         point[0] = point[0] + width / 2;
       }
-      
-      // Hexagon radius
+
       var r = Math.min(width, height) / 2 * 0.95;
-      
+
       var points = [];
-      // Flat-topped hexagon
       for (var i = 0; i < 6; i++) {
         var angle = (Math.PI / 3) * i;
         points.push([
@@ -187,55 +181,30 @@ const NetworkDetail = () => {
           point[1] + r * Math.sin(angle)
         ]);
       }
-      
+
       return {
         type: 'polygon',
-        shape: {
-          points: points
-        },
-        style: api.style({
-          stroke: '#1f2937',
-          lineWidth: 1
-        })
+        shape: { points: points },
+        style: api.style({ stroke: '#1f2937', lineWidth: 1 })
       };
     };
 
     chartsRef.current.heatmap = initChart(heatmapRef, {
-      tooltip: { 
+      tooltip: {
         position: 'top',
         formatter: (params) => {
-          const statusMap = ['Clear', 'Warning', 'Major', 'Critical'];
-          return `Node: ${params.value[0]},${params.value[1]}<br/>Status: ${statusMap[params.value[2]]}`;
+          const statusMap = ['Up', 'Warning', 'Major', 'Down'];
+          return `Port ID: ${params.value[0] * 4 + params.value[1] + 1}<br/>Status: ${statusMap[params.value[2]] || 'Unknown'}`;
         }
       },
       grid: { top: 20, bottom: 20, left: 20, right: 20 },
-      xAxis: { 
-        show: false, 
-        type: 'category', 
-        data: [0,1,2,3,4,5,6],
-        boundaryGap: false 
-      },
-      yAxis: { 
-        show: false, 
-        type: 'category', 
-        data: [0,1,2,3],
-        boundaryGap: false
-      },
+      xAxis: { show: false, type: 'category', data: Array.from({ length: numCols }, (_, i) => i), boundaryGap: false },
+      yAxis: { show: false, type: 'category', data: Array.from({ length: numRows }, (_, i) => i), boundaryGap: false, inverse: true },
       visualMap: {
-        min: 0,
-        max: 3,
-        calculable: false,
-        show: false,
-        inRange: {
-          color: ['#22c55e', '#eab308', '#f97316', '#ef4444']
-        }
+        min: 0, max: 3, calculable: false, show: false,
+        inRange: { color: ['#22c55e', '#eab308', '#f97316', '#ef4444'] }
       },
-      series: [{
-        type: 'custom',
-        renderItem: renderHexagon,
-        data: heatmapData,
-        animation: false
-      }]
+      series: [{ type: 'custom', renderItem: renderHexagon, data: heatmapData, animation: false }]
     });
 
     // 3. Network Device Latency (Bar)
@@ -244,13 +213,13 @@ const NetworkDetail = () => {
       grid: commonGrid,
       xAxis: {
         type: 'category',
-        data: Array.from({ length: 50 }, (_, i) => i),
-        axisLabel: { show: false },
+        data: historyTimes.length ? historyTimes : Array.from({ length: 50 }, (_, i) => i),
+        axisLabel: { color: '#9ca3af' },
         axisLine: { lineStyle: { color: '#374151' } },
       },
       yAxis: {
         type: 'value',
-        axisLabel: { color: '#9ca3af' },
+        axisLabel: { color: '#9ca3af', formatter: '{value} ms' },
         splitLine: { show: false },
       },
       series: [{
@@ -268,54 +237,49 @@ const NetworkDetail = () => {
       }]
     });
 
-    // 4. Top Network Devices by CPU (Pie)
+    // 4. CPU Usage Over Time (Line instead of Pie to show history correctly)
     chartsRef.current.cpu = initChart(cpuRef, {
-      tooltip: { trigger: 'item' },
-      legend: { show: false },
-      series: [
-        {
-          name: 'CPU Usage',
-          type: 'pie',
-          radius: '80%',
-          center: ['50%', '50%'],
-          data: topDevicesCPUData,
-          label: { show: false },
-          itemStyle: {
-            borderRadius: 4,
-            borderColor: '#1f2937',
-            borderWidth: 2,
-          },
+      tooltip: { ...commonTooltip, formatter: '{b}<br/>{a}: {c}%' },
+      grid: commonGrid,
+      xAxis: { type: 'category', data: historyTimes, axisLabel: { color: '#9ca3af' }, boundaryGap: false },
+      yAxis: { type: 'value', max: 100, axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
+      series: [{
+        name: 'CPU Usage',
+        type: 'line',
+        data: cpuData,
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(249, 115, 22, 0.8)' },
+            { offset: 1, color: 'rgba(249, 115, 22, 0.05)' }
+          ])
         },
-      ],
+        itemStyle: { color: '#f97316' },
+        lineStyle: { width: 2 },
+        showSymbol: false,
+        smooth: true
+      }],
     });
 
-    // 5. Network Monitor by Memory Usage (Bar)
+    // 5. Memory Usage Over Time (Line instead of Bar to show history)
     chartsRef.current.memory = initChart(memoryRef, {
-      tooltip: commonTooltip,
+      tooltip: { ...commonTooltip, formatter: '{b}<br/>{a}: {c}%' },
       grid: commonGrid,
-      xAxis: {
-        type: 'value',
-        axisLabel: { color: '#9ca3af' },
-        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
-      },
-      yAxis: {
-        type: 'category',
-        data: memoryUsageData.map(d => d.name),
-        axisLabel: { show: false }, // Hide labels for cleaner look as per image
-        axisLine: { show: false },
-        axisTick: { show: false }
-      },
+      xAxis: { type: 'category', data: historyTimes, axisLabel: { color: '#9ca3af' }, boundaryGap: false },
+      yAxis: { type: 'value', max: 100, axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
       series: [{
-        type: 'bar',
-        data: memoryUsageData.map(d => d.value),
-        itemStyle: {
-          color: (params) => {
-            const colors = ['#3b82f6', '#22c55e', '#eab308', '#f97316', '#ef4444'];
-            return colors[params.dataIndex % colors.length];
-          },
-          borderRadius: [0, 4, 4, 0]
+        name: 'Memory Usage',
+        type: 'line',
+        data: memoryData,
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(249, 115, 22, 0.8)' },
+            { offset: 1, color: 'rgba(249, 115, 22, 0.05)' }
+          ])
         },
-        barWidth: '20%'
+        itemStyle: { color: '#f97316' },
+        lineStyle: { width: 2 },
+        showSymbol: false,
+        smooth: true
       }]
     });
 
@@ -323,49 +287,42 @@ const NetworkDetail = () => {
     chartsRef.current.traffic = initChart(trafficRef, {
       tooltip: commonTooltip,
       grid: commonGrid,
-      xAxis: {
-        type: 'category',
-        data: interfaceTrafficData.categories,
-        axisLabel: { color: '#9ca3af' },
-      },
-      yAxis: {
-        type: 'value',
-        axisLabel: { color: '#9ca3af' },
-        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
-      },
+      xAxis: { type: 'category', data: interfaceTrafficData.categories, axisLabel: { color: '#9ca3af' } },
+      yAxis: { type: 'value', axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
       series: interfaceTrafficData.series.map(s => ({
-        name: s.name,
-        type: 'bar',
-        stack: 'total',
-        data: s.data,
-        itemStyle: { color: s.color },
-        barWidth: '40%'
+        name: s.name, type: 'bar', stack: 'total', data: s.data,
+        itemStyle: { color: s.color }, barWidth: '40%'
       })),
     });
 
-    // 7. Network Interface In/Out Packets (Bar)
+    // 7. Network Interface In/Out Packets (Reusing Traffic for now, or just line)
     chartsRef.current.packets = initChart(packetsRef, {
       tooltip: commonTooltip,
       grid: commonGrid,
-      xAxis: {
-        type: 'category',
-        data: packetsData.categories,
-        axisLabel: { color: '#9ca3af' },
-      },
-      yAxis: {
-        type: 'value',
-        axisLabel: { color: '#9ca3af' },
-        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
-      },
-      series: packetsData.series.map(s => ({
+      xAxis: { type: 'category', data: interfaceTrafficData.categories, axisLabel: { color: '#9ca3af' }, boundaryGap: false },
+      yAxis: { type: 'value', axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
+      series: interfaceTrafficData.series.map((s, idx) => ({
         name: s.name,
-        type: 'bar',
+        type: 'line',
         data: s.data,
-        itemStyle: { color: s.color },
-        barWidth: '30%',
-        barGap: '10%'
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: idx === 0 ? 'rgba(59, 130, 246, 0.8)' : 'rgba(34, 197, 94, 0.8)' },
+            { offset: 1, color: idx === 0 ? 'rgba(59, 130, 246, 0.05)' : 'rgba(34, 197, 94, 0.05)' }
+          ])
+        },
+        itemStyle: { color: idx === 0 ? '#3b82f6' : '#22c55e' },
+        lineStyle: { width: 2 },
+        showSymbol: false,
+        smooth: true
       })),
     });
+
+    // Attach dynamic stats to refs so they can be read by render function if needed
+    chartsRef.current.interfaceAvailabilityData = interfaceAvailabilityData;
+    chartsRef.current.alertSummaryData = alertSummaryData;
+    chartsRef.current.downtimeData = downtimeData;
+    chartsRef.current.heatmapStats = { up: upIfaces, down: downIfaces };
 
     const handleResize = () => {
       Object.values(chartsRef.current).forEach(chart => chart && chart.resize());
@@ -374,9 +331,11 @@ const NetworkDetail = () => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      Object.values(chartsRef.current).forEach(chart => chart && chart.dispose());
+      Object.values(chartsRef.current).forEach(chart => {
+        if (chart && typeof chart.dispose === 'function') chart.dispose();
+      });
     };
-  }, []);
+  }, [data, historyData]);
 
   // Helper for small gauges/donuts
   const renderSmallGauge = (item, size = 80) => {
@@ -463,8 +422,8 @@ const NetworkDetail = () => {
             <h3 className={styles.widgetTitle}>Network Heatmap</h3>
           </div>
           <div style={{ display: 'flex', gap: '8px', fontSize: '10px' }}>
-            <span style={{ color: '#ef4444' }}>18 Down</span>
-            <span style={{ color: '#22c55e' }}>234 Up</span>
+            <span style={{ color: '#ef4444' }}>{chartsRef.current?.heatmapStats?.down || 0} Down</span>
+            <span style={{ color: '#22c55e' }}>{chartsRef.current?.heatmapStats?.up || 0} Up</span>
           </div>
         </div>
         <div ref={heatmapRef} className={styles.chartContainer}></div>
@@ -480,7 +439,7 @@ const NetworkDetail = () => {
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '100%' }}>
-          {interfaceAvailabilityData.map((item, idx) => (
+          {(chartsRef.current?.interfaceAvailabilityData || []).map((item, idx) => (
             <div key={idx}>{renderSmallGauge(item)}</div>
           ))}
         </div>
@@ -496,7 +455,7 @@ const NetworkDetail = () => {
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '100%' }}>
-          {alertSummaryData.map((item, idx) => (
+          {(chartsRef.current?.alertSummaryData || []).map((item, idx) => (
             <div key={idx}>{renderSmallGauge(item, 60)}</div>
           ))}
         </div>
@@ -520,7 +479,7 @@ const NetworkDetail = () => {
             <div className={`${styles.dragController} drag-handle`}>
               <MdDragIndicator />
             </div>
-            <h3 className={styles.widgetTitle}>Top Network Devices by CPU</h3>
+            <h3 className={styles.widgetTitle}>CPU Usage Trend</h3>
           </div>
         </div>
         <div ref={cpuRef} className={styles.chartContainer}></div>
@@ -532,7 +491,7 @@ const NetworkDetail = () => {
             <div className={`${styles.dragController} drag-handle`}>
               <MdDragIndicator />
             </div>
-            <h3 className={styles.widgetTitle}>Network Monitor by Memory Usage</h3>
+            <h3 className={styles.widgetTitle}>Memory Usage Trend</h3>
           </div>
         </div>
         <div ref={memoryRef} className={styles.chartContainer}></div>
@@ -552,11 +511,11 @@ const NetworkDetail = () => {
             <thead>
               <tr>
                 <th>Device</th>
-                <th>Downtime</th>
+                <th>Estimated Downtime</th>
               </tr>
             </thead>
             <tbody>
-              {downtimeData.map((row, idx) => (
+              {(chartsRef.current?.downtimeData || []).map((row, idx) => (
                 <tr key={idx}>
                   <td style={{ color: '#0ea5e9' }}>{row.device}</td>
                   <td>{row.time}</td>

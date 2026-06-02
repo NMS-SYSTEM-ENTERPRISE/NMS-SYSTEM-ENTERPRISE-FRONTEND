@@ -76,6 +76,18 @@ export const generateMockData = (category, count = 15) => {
                 });
                 break;
 
+            case 'UPS':
+                data.push({
+                    ...baseData,
+                    model: ['Uniline UPS', 'APC Smart-UPS', 'Eaton'][Math.floor(Math.random() * 3)],
+                    batteryStatus: Math.random() > 0.1 ? 'Normal' : 'Discharging',
+                    inputVoltage: `${Math.floor(Math.random() * (240 - 220) + 220)}V`,
+                    outputLoad: `${(Math.random() * 100).toFixed(1)}%`,
+                    temperature: `${Math.floor(Math.random() * (40 - 20) + 20)}°C`,
+                    uptime: `${Math.floor(Math.random() * 100)}d ${Math.floor(Math.random() * 24)}h`,
+                });
+                break;
+
             case 'Cloud':
                 data.push({
                     ...baseData,

@@ -18,6 +18,8 @@ export const NetworkMonitoringContent = () => {
     showFilterSidebar,
     currentConfig,
     filteredData,
+    isLoading,
+    dashboardData,
     getProgressBarColor,
     filters,
     setFilters,
@@ -38,7 +40,11 @@ export const NetworkMonitoringContent = () => {
         <NetworkMonitoringHeader />
 
         <div className={sharedStyles.contentArea}>
-          {viewMode === 'details' ? (
+          {isLoading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--color-text-secondary)' }}>
+              Fetching live telemetry...
+            </div>
+          ) : viewMode === 'details' ? (
             <DetailsView
               category={activeCategory}
               config={currentConfig}
@@ -50,6 +56,7 @@ export const NetworkMonitoringContent = () => {
               category={activeCategory}
               config={currentConfig}
               data={filteredData}
+              dashboardData={dashboardData}
             />
           )}
         </div>

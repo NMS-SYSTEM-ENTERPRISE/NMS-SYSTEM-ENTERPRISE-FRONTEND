@@ -43,7 +43,7 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
     const path = ROUTE_PATHS.NET_WORK_MONITORING_DETAIL.replace(
       ':category',
       encodeURIComponent(category)
-    ).replace(':deviceId', encodeURIComponent(item.name));
+    ).replace(':deviceId', encodeURIComponent(item.ip));
     router.push(path);
   };
 
@@ -162,6 +162,12 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
                     <DetailCard label="Location" value="Data Center A" icon="mdi:map-marker" />
                     <DetailCard label="Uptime" value={item.uptime || '12d 4h'} icon="mdi:clock-outline" />
                 </div>
+                {item.description && (
+                  <div style={{ marginTop: '12px', padding: '12px', background: 'var(--color-bg-tertiary)', borderRadius: '6px', fontSize: '12px', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--color-text-primary)', display: 'block', marginBottom: '4px' }}>Hardware Description</span>
+                    {item.description}
+                  </div>
+                )}
              </div>
 
              {/* Section 2: Performance & Resources */}

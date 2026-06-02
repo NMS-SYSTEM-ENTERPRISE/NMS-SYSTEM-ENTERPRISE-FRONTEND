@@ -767,3 +767,57 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
 }
+
+/* --- Generic Detail Grid Styles (used by UPS/Network/Cloud) --- */
+.detailContainer {
+  width: 100%;
+  min-height: 100%;
+}
+
+.widgetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  min-height: 48px;
+}
+
+.widgetBody {
+  height: calc(100% - 48px);
+  min-height: 0;
+  padding: 10px;
+}
+
+.widgetBodyCentered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.dragIcon {
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  cursor: grab;
+}
+
+.dragIcon:active {
+  cursor: grabbing;
+}
+
+.kpiValue {
+  font-size: clamp(36px, 5vw, 48px);
+  line-height: 1;
+  font-weight: 700;
+}
+
+.kpiSubtext {
+  color: #9ca3af;
+  margin-top: 8px;
+  font-size: 13px;
+}

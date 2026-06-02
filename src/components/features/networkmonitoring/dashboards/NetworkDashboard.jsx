@@ -1,56 +1,65 @@
 import {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    Legend,
-    Line,
-    LineChart,
-    Pie,
-    PieChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
 import styles from '../styles.module.css';
 
-const NetworkDashboard = ({ data }) => {
-  const upCount = data.filter((d) => d.status === 'Up').length;
-  const downCount = data.filter((d) => d.status === 'Down').length;
+const NetworkDashboard = ({ data, dashboardData }) => {
+  const upCount = dashboardData?.availability?.up || data.filter((d) => d.status === 'Up').length;
+  const downCount = dashboardData?.availability?.down || data.filter((d) => d.status === 'Down').length;
+  const totalCount = dashboardData?.availability?.total || data.length;
 
-  // Mock data for charts
-  const latencyData = Array.from({ length: 24 }, (_, i) => ({
+  // Real TSDB data for charts (fallback to mock if empty)
+  const latencyData = dashboardData?.latency_history?.length ? dashboardData.latency_history : Array.from({ length: 24 }, (_, i) => ({
     time: `${i}:00`,
     latency: Math.floor(Math.random() * 50) + 10,
     packetLoss: Math.random() * 2,
   }));
 
-  const resourceData = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}:00`,
-    cpu: Math.floor(Math.random() * 60) + 20,
-    memory: Math.floor(Math.random() * 40) + 30,
-  }));
+  const resourceData = dashboardData?.resource_usage?.length
+    ? dashboardData.resource_usage
+    : Array.from({ length: 24 }, (_, i) => ({
+      time: `${i}:00`,
+      cpu: Math.floor(Math.random() * 60) + 20,
+      memory: Math.floor(Math.random() * 40) + 30,
+    }));
 
-  const trafficData = [
-    { name: 'Eth0', value: 400 },
-    { name: 'Eth1', value: 300 },
-    { name: 'Eth2', value: 300 },
-    { name: 'Wlan0', value: 200 },
-  ];
+  const trafficData = dashboardData?.top_interfaces?.length
+    ? dashboardData.top_interfaces
+    : [
+      { name: 'Eth0', value: 400 },
+      { name: 'Eth1', value: 300 },
+      { name: 'Eth2', value: 300 },
+      { name: 'Wlan0', value: 200 },
+    ];
 
-  const interfaceData = Array.from({ length: 10 }, (_, i) => ({
-    name: `Int ${i + 1}`,
-    in: Math.floor(Math.random() * 1000),
-    out: Math.floor(Math.random() * 800),
-  }));
+  const interfaceData = dashboardData?.interface_traffic?.length
+    ? dashboardData.interface_traffic
+    : Array.from({ length: 10 }, (_, i) => ({
+      name: `Int ${i + 1}`,
+      in: Math.floor(Math.random() * 1000),
+      out: Math.floor(Math.random() * 800),
+    }));
 
-  const availabilityTrend = Array.from({ length: 24 }, (_, i) => ({
-    time: `${i}:00`,
-    uptime: 95 + Math.random() * 5,
-  }));
+  const availabilityTrend = dashboardData?.availability_trend?.length
+    ? dashboardData.availability_trend
+    : Array.from({ length: 24 }, (_, i) => ({
+      time: `${i}:00`,
+      uptime: 95 + Math.random() * 5,
+    }));
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -85,14 +94,14 @@ const NetworkDashboard = ({ data }) => {
                       <Cell key="cell-up" fill="#10b981" />
                       <Cell key="cell-down" fill="#ef4444" />
                     </Pie>
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)' }}
                       itemStyle={{ color: 'var(--color-text-primary)' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className={styles.donutCenter}>
-                  <span className={styles.donutValue}>{data.length}</span>
+                  <span className={styles.donutValue}>{totalCount}</span>
                   <span className={styles.donutLabel}>Total</span>
                 </div>
               </div>
@@ -117,10 +126,10 @@ const NetworkDashboard = ({ data }) => {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.hexagonGrid}>
-              {data.slice(0, 50).map((item) => {
-                let hexColor = item.status === 'Up' ? '#10b981' : '#ef4444';
+              {(dashboardData?.heatmap || data).slice(0, 50).map((item) => {
+                let hexColor = item.status === 'Up' || item.status === 'UP' ? '#10b981' : '#ef4444';
                 // Randomize colors slightly for heatmap effect
-                if (item.status === 'Up') {
+                if (item.status === 'Up' || item.status === 'UP') {
                   const opacity = 0.5 + Math.random() * 0.5;
                   hexColor = `rgba(16, 185, 129, ${opacity})`;
                 }
@@ -152,14 +161,14 @@ const NetworkDashboard = ({ data }) => {
               <AreaChart data={latencyData}>
                 <defs>
                   <linearGradient id="colorLatency" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="time" stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
                 <YAxis stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
                 />
                 <Area type="monotone" dataKey="latency" stroke="#f59e0b" fillOpacity={1} fill="url(#colorLatency)" />
@@ -189,7 +198,7 @@ const NetworkDashboard = ({ data }) => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)' }}
                   itemStyle={{ color: 'var(--color-text-primary)' }}
                 />
@@ -213,7 +222,7 @@ const NetworkDashboard = ({ data }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="name" stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
                 <YAxis stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)' }}
                   cursor={{ fill: 'var(--color-bg-hover)' }}
                 />
@@ -236,7 +245,7 @@ const NetworkDashboard = ({ data }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="time" stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
                 <YAxis domain={[90, 100]} stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)' }}
                 />
                 <Line type="monotone" dataKey="uptime" stroke="#10b981" strokeWidth={2} dot={false} />
@@ -257,18 +266,18 @@ const NetworkDashboard = ({ data }) => {
               <AreaChart data={resourceData}>
                 <defs>
                   <linearGradient id="colorCpu" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorMem" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="time" stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
                 <YAxis stroke="var(--color-text-secondary)" tick={{ fontSize: 12 }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: 'var(--color-bg-tertiary)', borderColor: 'var(--color-border)' }}
                 />
                 <Legend />

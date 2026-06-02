@@ -2,81 +2,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SelectComponent } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
-const MOCK_FLOWS = [
-  {
-    time: '16:48:12.450',
-    source: '192.168.1.15',
-    sPort: '54212',
-    dest: '104.26.10.233',
-    dPort: '443',
-    proto: 'TCP',
-    app: 'HTTPS',
-    bytes: '4.2 KB',
-    packets: '12',
-    duration: '1.2s',
-    flags: 'ACK, PSH',
-    status: 'active'
-  },
-  {
-    time: '16:48:11.890',
-    source: '192.168.1.140',
-    sPort: '49321',
-    dest: '172.217.167.78',
-    dPort: '443',
-    proto: 'TCP',
-    app: 'Google Services',
-    bytes: '128.5 KB',
-    packets: '154',
-    duration: '15.4s',
-    flags: 'ACK, FIN',
-    status: 'closed'
-  },
-  {
-    time: '16:48:10.120',
-    source: '10.0.0.52',
-    sPort: '123',
-    dest: '162.159.200.1',
-    dPort: '123',
-    proto: 'UDP',
-    app: 'NTP',
-    bytes: '176 B',
-    packets: '2',
-    duration: '0.1s',
-    flags: '-',
-    status: 'closed'
-  },
-  {
-    time: '16:48:09.550',
-    source: '192.168.1.64',
-    sPort: '55678',
-    dest: '52.114.77.33',
-    dPort: '443',
-    proto: 'TCP',
-    app: 'Microsoft Teams',
-    bytes: '890.2 KB',
-    packets: '640',
-    duration: '120.5s',
-    flags: 'ACK, PSH',
-    status: 'active'
-  },
-  {
-    time: '16:48:08.210',
-    source: '192.168.1.15',
-    sPort: '61002',
-    dest: '34.107.243.93',
-    dPort: '80',
-    proto: 'TCP',
-    app: 'HTTP',
-    bytes: '15.7 KB',
-    packets: '28',
-    duration: '2.5s',
-    flags: 'ACK, FIN',
-    status: 'closed'
-  }
-];
+import { getFlowExplorer } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const FlowExplorer = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,10 +14,31 @@ export const FlowExplorer = () => {
     topology: true,
     results: true
   });
+  const [explorerData, setExplorerData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getFlowExplorer();
+        setExplorerData(data);
+      } catch (error) {
+        console.error("Failed to fetch flow explorer data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
+
+  if (isLoading || !explorerData) {
+    return <div className={styles.explorer}>Loading Flow Explorer...</div>;
+  }
 
   return (
     <div className={styles.explorer}>
@@ -173,24 +123,17 @@ export const FlowExplorer = () => {
                   {/* Column 1: Sources */}
                   <div className={styles.sketchColumn}>
                     <div className={styles.columnLabel}>SOURCES</div>
-                    <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-chart-cyan)' }}>
-                        <Icon icon="mdi:desktop-classic" width={22} color="var(--color-chart-cyan)" />
+                    {explorerData.sources.map((node, i) => (
+                      <div key={i} className={styles.nodeItem}>
+                        <div className={styles.nodeIconWrap} style={{ borderColor: node.color }}>
+                          <Icon icon={node.icon} width={22} color={node.color} />
+                        </div>
+                        <div className={styles.nodeDetails}>
+                          <span className={styles.nodeIp}>{node.ip}</span>
+                          <span className={styles.nodeTag}>{node.tag}</span>
+                        </div>
                       </div>
-                      <div className={styles.nodeDetails}>
-                        <span className={styles.nodeIp}>192.168.1.15</span>
-                        <span className={styles.nodeTag}>ENDPOINT</span>
-                      </div>
-                    </div>
-                    <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-chart-cyan)' }}>
-                        <Icon icon="mdi:server-network" width={22} color="var(--color-chart-cyan)" />
-                      </div>
-                      <div className={styles.nodeDetails}>
-                        <span className={styles.nodeIp}>172.16.45.10</span>
-                        <span className={styles.nodeTag}>GATEWAY</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
 
                   {/* Connecting Lines Area (Abstract SVG) */}
@@ -214,16 +157,18 @@ export const FlowExplorer = () => {
                   {/* Column 2: Protocols/Apps */}
                   <div className={styles.sketchColumn}>
                     <div className={styles.columnLabel}>SERVICES</div>
-                    <div className={styles.centralNode}>
-                      <div className={styles.serviceDisc}>
-                        <Icon icon="mdi:application-cog" width={32} color="#c084fc" />
-                        <span className={styles.serviceName}>HTTPS / TLS 1.3</span>
+                    {explorerData.services.map((svc, i) => (
+                      <div key={i} className={styles.centralNode}>
+                        <div className={styles.serviceDisc}>
+                          <Icon icon={svc.icon} width={32} color={svc.color} />
+                          <span className={styles.serviceName}>{svc.name}</span>
+                        </div>
+                        <div className={styles.serviceStats}>
+                          <span className={styles.serviceStat}>{svc.total_volume} TOTAL</span>
+                          <span className={styles.serviceStat}>{svc.sessions} SESSIONS</span>
+                        </div>
                       </div>
-                      <div className={styles.serviceStats}>
-                        <span className={styles.serviceStat}>850.5 GB TOTAL</span>
-                        <span className={styles.serviceStat}>12.4K SESSIONS</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
 
                   {/* Connecting Lines Area */}
@@ -240,24 +185,17 @@ export const FlowExplorer = () => {
                   {/* Column 3: Destinations */}
                   <div className={styles.sketchColumn}>
                     <div className={styles.columnLabel}>DESTINATIONS</div>
-                    <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-danger)' }}>
-                        <Icon icon="mdi:cloud-check" width={22} color="var(--color-danger)" />
+                    {explorerData.destinations.map((node, i) => (
+                      <div key={i} className={styles.nodeItem}>
+                        <div className={styles.nodeIconWrap} style={{ borderColor: node.color }}>
+                          <Icon icon={node.icon} width={22} color={node.color} />
+                        </div>
+                        <div className={styles.nodeDetails}>
+                          <span className={styles.nodeIp}>{node.ip}</span>
+                          <span className={styles.nodeTag}>{node.tag}</span>
+                        </div>
                       </div>
-                      <div className={styles.nodeDetails}>
-                        <span className={styles.nodeIp}>Amazon AWS</span>
-                        <span className={styles.nodeTag}>Cloud Service</span>
-                      </div>
-                    </div>
-                    <div className={styles.nodeItem}>
-                      <div className={styles.nodeIconWrap} style={{ borderColor: 'var(--color-danger)' }}>
-                        <Icon icon="mdi:flag-variant" width={22} color="var(--color-danger)" />
-                      </div>
-                      <div className={styles.nodeDetails}>
-                        <span className={styles.nodeIp}>104.26.10.233</span>
-                        <span className={styles.nodeTag}>Cloudflare</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -287,17 +225,17 @@ export const FlowExplorer = () => {
               <div className={styles.statsStrip}>
                 <div className={styles.statItem}>
                   <span className={styles.statLabel}>MATCHING FLOWS</span>
-                  <span className={styles.statValue}>1,248</span>
+                  <span className={styles.statValue}>{explorerData.matchingFlows}</span>
                 </div>
                 <div className={styles.statDivider} />
                 <div className={styles.statItem}>
                   <span className={styles.statLabel}>DATA TRANSFERRED</span>
-                  <span className={styles.statValue}>4.2 GB</span>
+                  <span className={styles.statValue}>{explorerData.dataTransferred}</span>
                 </div>
                 <div className={styles.statDivider} />
                 <div className={styles.statItem}>
                   <span className={styles.statLabel}>UNIQUE SOURCES</span>
-                  <span className={styles.statValue}>42</span>
+                  <span className={styles.statValue}>{explorerData.uniqueSources}</span>
                 </div>
               </div>
 
@@ -316,7 +254,7 @@ export const FlowExplorer = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {MOCK_FLOWS.map((flow, idx) => (
+                    {explorerData.streams.map((flow, idx) => (
                       <tr key={idx} className={styles.flowRow}>
                         <td className={styles.timeCell}>{flow.time}</td>
                         <td>

@@ -13,6 +13,8 @@ const APP_DATA = [
   { value: 5, name: 'Other', color: 'var(--color-chart-green)' }
 ];
 
+import { getFlowAnalytics, getFlowDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
+
 export const FlowAnalytics = () => {
   const [expandedSections, setExpandedSections] = useState({
     summary: true,
@@ -22,12 +24,37 @@ export const FlowAnalytics = () => {
     insights: true
   });
 
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const trendChartRef = useRef(null);
   const distChartRef = useRef(null);
   const trendInstance = useRef(null);
   const distInstance = useRef(null);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [analytics, dashboard] = await Promise.all([
+          getFlowAnalytics(),
+          getFlowDashboard()
+        ]);
+        setAnalyticsData(analytics);
+        setDashboardData(dashboard);
+      } catch (error) {
+        console.error("Failed to fetch flow analytics data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!analyticsData) return;
+
     if (expandedSections.performance) drawTrendChart();
     if (expandedSections.distribution) drawDistChart();
 
@@ -42,7 +69,7 @@ export const FlowAnalytics = () => {
       trendInstance.current?.dispose();
       distInstance.current?.dispose();
     };
-  }, [expandedSections.performance, expandedSections.distribution]);
+  }, [expandedSections.performance, expandedSections.distribution, analyticsData]);
 
   const drawTrendChart = () => {
     if (!trendChartRef.current) return;
@@ -70,7 +97,7 @@ export const FlowAnalytics = () => {
         textStyle: { color: '#fff', fontSize: 11, fontFamily: 'JetBrains Mono' }
       },
       series: [{
-        data: TREND_DATA,
+        data: analyticsData.trend,
         type: 'line',
         smooth: true,
         symbol: 'none',
@@ -104,8 +131,8 @@ export const FlowAnalytics = () => {
         avoidLabelOverlap: false,
         itemStyle: { borderRadius: 6, borderColor: 'var(--color-bg-primary)', borderWidth: 2 },
         label: { show: false },
-        data: APP_DATA,
-        color: APP_DATA.map(d => d.color)
+        data: analyticsData.appData.map(d => ({ value: d.size, name: d.name, itemStyle: { color: d.color } })),
+        color: analyticsData.appData.map(d => d.color)
       }]
     });
   };
@@ -113,6 +140,10 @@ export const FlowAnalytics = () => {
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
+
+  if (isLoading || !analyticsData || !dashboardData) {
+    return <div className={styles.analytics}>Loading Analytics...</div>;
+  }
 
   return (
     <div className={styles.analytics}>
@@ -131,46 +162,28 @@ export const FlowAnalytics = () => {
           {expandedSections.summary && (
             <div className={styles.accordionContent} style={{ padding: 0 }}>
               <div className={styles.summaryRibbon}>
-                <div className={styles.ribbonItem}>
-                  <div className={styles.ribbonHeader}>
-                    <span className={styles.ribbonLabel}>TOTAL FLOWS</span>
-                    <Icon icon="mdi:swap-horizontal" className={styles.ribbonIcon} />
+                {analyticsData.ribbonStats.map((stat, idx) => (
+                  <div key={idx} className={styles.ribbonItem}>
+                    <div className={styles.ribbonHeader}>
+                      <span className={styles.ribbonLabel}>{stat.label}</span>
+                      <Icon icon={stat.icon} className={styles.ribbonIcon} />
+                    </div>
+                    <span className={styles.ribbonValue}>
+                      {stat.value.includes('Mbps') ? (
+                        <>
+                          {stat.value.split(' ')[0]} <small>Mbps</small>
+                        </>
+                      ) : stat.value}
+                    </span>
+                    <span className={`${styles.ribbonSub} ${stat.trend === 'up' ? styles.trendUp : stat.trend === 'down' ? styles.trendDown : ''}`}>
+                      {stat.trend === 'up' && <Icon icon="mdi:trending-up" />}
+                      {stat.trend === 'down' && <Icon icon="mdi:trending-down" />}
+                      {stat.trend === 'neutral' && <span className={styles.statusDot} />}
+                      {stat.trend !== 'neutral' && ` `}
+                      {stat.subValue.split(' ')[0]} <span className={styles.trendLabel}>{stat.subValue.substring(stat.subValue.indexOf(' ') + 1)}</span>
+                    </span>
                   </div>
-                  <span className={styles.ribbonValue}>8.42M</span>
-                  <span className={`${styles.ribbonSub} ${styles.trendUp}`}>
-                    <Icon icon="mdi:trending-up" /> +12.4% <span className={styles.trendLabel}>vs last week</span>
-                  </span>
-                </div>
-                <div className={styles.ribbonItem}>
-                  <div className={styles.ribbonHeader}>
-                    <span className={styles.ribbonLabel}>AVG THROUGHPUT</span>
-                    <Icon icon="mdi:speedometer" className={styles.ribbonIcon} />
-                  </div>
-                  <span className={styles.ribbonValue}>154.8 <small>Mbps</small></span>
-                  <span className={`${styles.ribbonSub} ${styles.trendDown}`}>
-                    <Icon icon="mdi:trending-down" /> -2.1% <span className={styles.trendLabel}>steady</span>
-                  </span>
-                </div>
-                <div className={styles.ribbonItem}>
-                  <div className={styles.ribbonHeader}>
-                    <span className={styles.ribbonLabel}>ACTIVE SESSIONS</span>
-                    <Icon icon="mdi:connection" className={styles.ribbonIcon} />
-                  </div>
-                  <span className={styles.ribbonValue}>1,248</span>
-                  <span className={`${styles.ribbonSub} ${styles.trendUp}`}>
-                    <Icon icon="mdi:trending-up" /> +5.7% <span className={styles.trendLabel}>peak load</span>
-                  </span>
-                </div>
-                <div className={styles.ribbonItem}>
-                  <div className={styles.ribbonHeader}>
-                    <span className={styles.ribbonLabel}>UNIQUE ASSETS</span>
-                    <Icon icon="mdi:server-network" className={styles.ribbonIcon} />
-                  </div>
-                  <span className={styles.ribbonValue}>429</span>
-                  <span className={styles.ribbonSub}>
-                    <span className={styles.statusDot} /> MONITORING ACTIVE
-                  </span>
-                </div>
+                ))}
               </div>
             </div>
           )}
@@ -189,7 +202,7 @@ export const FlowAnalytics = () => {
           </div>
           {expandedSections.topTalkers && (
             <div className={styles.accordionContent}>
-              <TopTalkersWidget />
+              <TopTalkersWidget data={dashboardData.topTalkers} />
             </div>
           )}
         </div>
@@ -216,13 +229,13 @@ export const FlowAnalytics = () => {
                   <div className={styles.chartSplitView}>
                     <div ref={distChartRef} className={styles.chartWrap} />
                     <div className={styles.chartDetails}>
-                      {APP_DATA.map((item, idx) => (
+                      {analyticsData.appData.map((item, idx) => (
                         <div key={idx} className={styles.detailItem}>
                           <div className={styles.detailLabel}>
                             <div className={styles.colorIndicator} style={{ backgroundColor: item.color }} />
                             {item.name}
                           </div>
-                          <div className={styles.detailValue}>{item.value}%</div>
+                          <div className={styles.detailValue}>{item.size}%</div>
                         </div>
                       ))}
                     </div>
@@ -234,11 +247,7 @@ export const FlowAnalytics = () => {
                     <span className={styles.widgetTitle}>Pattern Recognition</span>
                   </div>
                   <div className={styles.insightsSmallList}>
-                    {[
-                      { icon: 'mdi:shield-alert', title: 'Top Port: 443 (HTTPS)', val: '64.2%' },
-                      { icon: 'mdi:account-network', title: 'User: admin-ops', val: 'Low Latency' },
-                      { icon: 'mdi:map-marker-radius', title: 'Region: AS-East', val: '12ms Avg' },
-                    ].map((item, idx) => (
+                    {analyticsData.patternInsights.map((item, idx) => (
                       <div key={idx} className={styles.insightListItem}>
                         <Icon icon={item.icon} className={styles.listIcon} />
                         <span className={styles.listTitle}>{item.title}</span>
@@ -266,27 +275,15 @@ export const FlowAnalytics = () => {
           {expandedSections.insights && (
             <div className={styles.accordionContent}>
               <div className={styles.insightsStrip}>
-                <div className={styles.insightBlock}>
-                  <div className={styles.insightHeader}>
-                    <Icon icon="mdi:alert-circle-outline" /> High UDP Activity
+                {analyticsData.anomalyInsights.map((insight, idx) => (
+                  <div key={idx} className={styles.insightBlock}>
+                    <div className={styles.insightHeader}>
+                      <Icon icon={insight.icon} /> {insight.title}
+                    </div>
+                    <p className={styles.insightText}>{insight.text}</p>
+                    <div className={styles.insightMeta}>{insight.meta}</div>
                   </div>
-                  <p className={styles.insightText}>Unusual spike in UDP traffic detected from Subnet 172.16.x. Potential streaming or DDoS pattern.</p>
-                  <div className={styles.insightMeta}>DETECTED: 12 MIN AGO</div>
-                </div>
-                <div className={styles.insightBlock}>
-                  <div className={styles.insightHeader}>
-                    <Icon icon="mdi:chart-bell-curve" /> Normalizing Trend
-                  </div>
-                  <p className={styles.insightText}>Throughput on Interface Index-4 has returned to baseline after a 48-hour peak period.</p>
-                  <div className={styles.insightMeta}>DETECTED: 1 HOUR AGO</div>
-                </div>
-                <div className={styles.insightBlock}>
-                  <div className={styles.insightHeader}>
-                    <Icon icon="mdi:shield-check-outline" /> Safe Protocols
-                  </div>
-                  <p className={styles.insightText}>98% of total volume is currently encrypted via TLS 1.3 or higher. Network security is optimal.</p>
-                  <div className={styles.insightMeta}>STATUS: HEALTHY</div>
-                </div>
+                ))}
               </div>
             </div>
           )}

@@ -71,12 +71,12 @@ const menuGroups = [
         path: '/trap-explorer',
         badge: null,
       },
-      {
-        icon: 'lucide:layout-panel-left',
-        label: 'Dashboard Builder',
-        path: '/dashboard/custom',
-        badge: 'New',
-      },
+      // {
+      //   icon: 'lucide:layout-panel-left',
+      //   label: 'Dashboard Builder',
+      //   path: '/dashboard/custom',
+      //   badge: 'New',
+      // },
     ],
   },
   {

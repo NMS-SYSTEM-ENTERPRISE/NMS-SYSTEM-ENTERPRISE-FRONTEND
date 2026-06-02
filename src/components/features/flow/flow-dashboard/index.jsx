@@ -2,70 +2,7 @@ import { Icon } from '@iconify/react';
 import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
-
-// Generate mock data for charts
-const generateTimeSeriesData = (count, min, max) => {
-  const data = [];
-  const now = new Date();
-  for (let i = 0; i < count; i++) {
-    const time = new Date(now.getTime() - (count - i) * 60000);
-    // Add some randomness and a sine wave for "neat" look
-    const value =
-      min +
-      Math.random() * (max - min) * 0.5 +
-      (Math.sin(i / 5) * (max - min)) * 0.25;
-    data.push({
-      time,
-      value: Math.max(min, value), // Ensure no negative values if min is 0
-    });
-  }
-  return data;
-};
-
-// Mock data for applications
-const APPLICATIONS = [
-  { name: 'HTTPS', size: 71.81, color: '#06b6d4' },
-  { name: 'steam', size: 2.57, color: '#10b981' },
-  { name: 'xns-mail', size: 2, color: '#eab308' },
-  { name: 'ntp', size: 1.72, color: '#f97316' },
-  { name: 'pipe', size: 1.72, color: '#ef4444' },
-  { name: 'http-rpc-epmap', size: 1.72, color: '#a855f7' },
-];
-
-const SUMMARY_DATA = [
-  {
-    sourceIp: '192.168.1.64',
-    destinationIp: '192.168.1.140',
-    application: 'HTTPS',
-    volumeBytesSum: '585.94 KB',
-    ingressVolumeBytesSum: '585.94 KB',
-    egressVolumeBytesSum: '0 Bytes',
-  },
-  {
-    sourceIp: '192.168.1.220',
-    destinationIp: '192.168.1.3',
-    application: 'sntp-heartbeat',
-    volumeBytesSum: '292.97 KB',
-    ingressVolumeBytesSum: '292.97 KB',
-    egressVolumeBytesSum: '0 Bytes',
-  },
-  {
-    sourceIp: '192.168.1.209',
-    destinationIp: '192.168.1.253',
-    application: 'maplestory',
-    volumeBytesSum: '292.97 KB',
-    ingressVolumeBytesSum: '292.97 KB',
-    egressVolumeBytesSum: '0 Bytes',
-  },
-  {
-    sourceIp: '192.168.1.17',
-    destinationIp: '192.168.1.165',
-    application: 'HTTPS',
-    volumeBytesSum: '292.97 KB',
-    ingressVolumeBytesSum: '292.97 KB',
-    egressVolumeBytesSum: '0 Bytes',
-  },
-];
+import { getFlowDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const FlowDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -75,6 +12,9 @@ export const FlowDashboard = () => {
     conversations: true,
     protocols: true
   });
+  
+  const [dashboardData, setDashboardData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -91,11 +31,28 @@ export const FlowDashboard = () => {
   const pieChartInstance = useRef(null);
   const protocolsChartInstance = useRef(null);
 
-  const [eventsPerSecondData] = useState(() => generateTimeSeriesData(60, 0.5, 1.5));
-  const [flowEventsData] = useState(() => generateTimeSeriesData(60, 1.2, 2.5));
-  const [flowVolumeData] = useState(() => generateTimeSeriesData(60, 150, 300));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getFlowDashboard();
+        // Parse dates in time series
+        data.eventsPerSecond = data.eventsPerSecond.map(d => ({ ...d, time: new Date(d.time) }));
+        data.flowEvents = data.flowEvents.map(d => ({ ...d, time: new Date(d.time) }));
+        data.flowVolume = data.flowVolume.map(d => ({ ...d, time: new Date(d.time) }));
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Failed to fetch flow dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
+    if (!dashboardData) return;
+
     drawLineCharts();
     drawPieChart();
     drawProtocolsChart();
@@ -117,7 +74,7 @@ export const FlowDashboard = () => {
       pieChartInstance.current?.dispose();
       protocolsChartInstance.current?.dispose();
     };
-  }, [expandedSections]);
+  }, [expandedSections, dashboardData]);
 
   const getCommonChartOption = (data, color, title) => {
     return {
@@ -164,19 +121,19 @@ export const FlowDashboard = () => {
       if (eventsPerSecondChartInstance.current) eventsPerSecondChartInstance.current.dispose();
       const chart = echarts.init(eventsPerSecondChartRef.current);
       eventsPerSecondChartInstance.current = chart;
-      chart.setOption(getCommonChartOption(eventsPerSecondData, '#22d3ee', 'Events/Sec'));
+      chart.setOption(getCommonChartOption(dashboardData.eventsPerSecond, '#22d3ee', 'Events/Sec'));
     }
     if (flowEventsChartRef.current) {
       if (flowEventsChartInstance.current) flowEventsChartInstance.current.dispose();
       const chart = echarts.init(flowEventsChartRef.current);
       flowEventsChartInstance.current = chart;
-      chart.setOption(getCommonChartOption(flowEventsData, '#c084fc', 'Flow Events'));
+      chart.setOption(getCommonChartOption(dashboardData.flowEvents, '#c084fc', 'Flow Events'));
     }
     if (flowVolumeChartRef.current) {
       if (flowVolumeChartInstance.current) flowVolumeChartInstance.current.dispose();
       const chart = echarts.init(flowVolumeChartRef.current);
       flowVolumeChartInstance.current = chart;
-      chart.setOption(getCommonChartOption(flowVolumeData, '#f43f5e', 'Flow Volume'));
+      chart.setOption(getCommonChartOption(dashboardData.flowVolume, '#f43f5e', 'Flow Volume'));
     }
   };
 
@@ -193,7 +150,7 @@ export const FlowDashboard = () => {
         center: ['50%', '50%'],
         itemStyle: { borderRadius: 4, borderColor: '#0b0f19', borderWidth: 2 },
         label: { show: false },
-        data: APPLICATIONS.map(app => ({ value: app.size, name: app.name, itemStyle: { color: app.color } })),
+        data: dashboardData.applications.map(app => ({ value: app.size, name: app.name, itemStyle: { color: app.color } })),
       }],
     });
   };
@@ -211,22 +168,21 @@ export const FlowDashboard = () => {
         center: ['50%', '50%'],
         itemStyle: { borderRadius: 4, borderColor: '#0b0f19', borderWidth: 2 },
         label: { show: false },
-        data: [
-          { name: 'HTTPS', value: 60, itemStyle: { color: '#22d3ee' } },
-          { name: 'HTTP', value: 25, itemStyle: { color: '#c084fc' } },
-          { name: 'FTP', value: 10, itemStyle: { color: '#f43f5e' } },
-          { name: 'SSH', value: 5, itemStyle: { color: '#3b82f6' } },
-        ],
+        data: dashboardData.protocols.map(p => ({ name: p.name, value: p.size, itemStyle: { color: p.color } })),
       }],
     });
   };
 
-  const filteredSummary = SUMMARY_DATA.filter(
+  const filteredSummary = dashboardData?.topConversations.filter(
     (item) =>
       item.sourceIp.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.destinationIp.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.application.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) || [];
+
+  if (isLoading || !dashboardData) {
+    return <div className={styles.dashboard}>Loading Flow Analytics...</div>;
+  }
 
   return (
     <div className={styles.dashboard}>
@@ -297,7 +253,7 @@ export const FlowDashboard = () => {
                   <div className={styles.pieWrap}>
                     <div ref={pieChartRef} className={styles.pieChart} />
                     <div className={styles.customLegend}>
-                      {APPLICATIONS.map(app => (
+                      {dashboardData.applications.map(app => (
                         <div key={app.name} className={styles.legendRow}>
                           <div className={styles.legendColor} style={{ background: app.color }} />
                           <span className={styles.legendName}>{app.name}</span>
@@ -312,10 +268,13 @@ export const FlowDashboard = () => {
                   <div className={styles.pieWrap}>
                     <div ref={protocolsChartRef} className={styles.pieChart} />
                     <div className={styles.customLegend}>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-chart-cyan)' }} /><span className={styles.legendName}>HTTPS</span><span className={styles.legendVal}>60%</span></div>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-chart-purple)' }} /><span className={styles.legendName}>HTTP</span><span className={styles.legendVal}>25%</span></div>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-danger)' }} /><span className={styles.legendName}>FTP</span><span className={styles.legendVal}>10%</span></div>
-                      <div className={styles.legendRow}><div className={styles.legendColor} style={{ background: 'var(--color-chart-blue)' }} /><span className={styles.legendName}>SSH</span><span className={styles.legendVal}>5%</span></div>
+                      {dashboardData.protocols.map(p => (
+                        <div key={p.name} className={styles.legendRow}>
+                          <div className={styles.legendColor} style={{ background: p.color }} />
+                          <span className={styles.legendName}>{p.name}</span>
+                          <span className={styles.legendVal}>{p.size}%</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -379,26 +338,32 @@ export const FlowDashboard = () => {
               <div className={styles.protocolWorkspace}>
                 {/* Detailed Stats Grid */}
                 <div className={styles.protocolStatsGrid}>
-                  {[
-                    { name: 'HTTPS', vol: '1.2 GB', p: '60%', flows: '850K', color: '#22d3ee', icon: 'mdi:lock-outline' },
-                    { name: 'HTTP', vol: '500 MB', p: '25%', flows: '350K', color: '#c084fc', icon: 'mdi:web' },
-                    { name: 'FTP', vol: '200 MB', p: '10%', flows: '120K', color: '#f43f5e', icon: 'mdi:folder-swap-outline' },
-                    { name: 'SSH', vol: '100 MB', p: '5%', flows: '50K', color: '#3b82f6', icon: 'mdi:terminal' },
-                  ].map((s, i) => (
+                  {dashboardData.protocols.map((s, i) => {
+                    const estimatedVol = ((s.size / 100) * dashboardData.flowVolume.slice(-1)[0].value).toFixed(2);
+                    const estimatedFlows = Math.floor((s.size / 100) * 850) + 'K';
+                    const iconMap = {
+                      'Ping': 'mdi:lan-pending',
+                      'SNMP v2c': 'mdi:server-network',
+                      'HTTPS': 'mdi:lock-outline',
+                      'HTTP': 'mdi:web',
+                      'SSH': 'mdi:terminal'
+                    };
+                    return (
                     <div key={i} className={styles.protocolTile}>
                       <div className={styles.tileHeader}>
                         <div className={styles.tileIcon} style={{ color: s.color }}>
-                          <Icon icon={s.icon} width={18} />
+                          <Icon icon={iconMap[s.name] || 'mdi:swap-horizontal'} width={18} />
                         </div>
                         <span className={styles.tileName}>{s.name}</span>
-                        <span className={styles.tilePercent} style={{ color: s.color }}>{s.p}</span>
+                        <span className={styles.tilePercent} style={{ color: s.color }}>{s.size}%</span>
                       </div>
                       <div className={styles.tileBody}>
-                        <div className={styles.tileValue}>{s.vol}</div>
-                        <div className={styles.tileSubText}>{s.flows} Flows</div>
+                        <div className={styles.tileValue}>{estimatedVol} MB</div>
+                        <div className={styles.tileSubText}>{estimatedFlows} Flows</div>
                       </div>
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             </div>

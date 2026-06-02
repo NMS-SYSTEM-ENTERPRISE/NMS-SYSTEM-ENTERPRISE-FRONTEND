@@ -36,6 +36,16 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ==
+
+check this table how data is there based on this done it okay 
+select * from discovered_devices
+
+select * from device_monitoring
+
+select * from device_metrics_history
+
+db tables based on this neatly dislay the data if not check the missing oid and relevant mib and get the response of it neatly fit it okay no more data placing in the backend as well okay everything is dynamic and no more stale dummy and statis dat aokat fromt he db basisi it neede dokay
+
 ext we need to develop this /netpathscreen apis okay for this first screen related
 /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/netpath
 /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/netpath

@@ -10,13 +10,13 @@ const HistoryChart = ({ type, data, times }) => {
   useEffect(() => {
     if (!chartRef.current || !data || !times) return;
     if (chartInstance.current) chartInstance.current.dispose();
-    
+
     const chart = echarts.init(chartRef.current, null, { renderer: 'canvas' });
     chartInstance.current = chart;
 
     let seriesData = [];
     let color = '#38bdf8';
-    
+
     if (type === 'availability') {
       seriesData = data.map(v => v === 1 ? 100 : 0);
       color = '#c084fc'; // Match Pink/Purple Title
@@ -29,7 +29,7 @@ const HistoryChart = ({ type, data, times }) => {
     }
 
     chart.group = 'pathHistoryGroup';
-    
+
     chart.setOption({
       grid: { left: 0, right: 0, top: 20, bottom: 20 },
       xAxis: {
@@ -100,8 +100,8 @@ export const PathHistory = ({ historyData }) => {
 
   return (
     <div className={styles.pathHistory}>
-      <div 
-        className={styles.historyHeader} 
+      <div
+        className={styles.historyHeader}
         onClick={() => setIsOpen(!isOpen)}
         data-open={isOpen}
       >
@@ -110,15 +110,15 @@ export const PathHistory = ({ historyData }) => {
             <Icon icon="mdi:history" width={20} height={20} />
           </div>
           <span className={styles.historyTitle}>
-            Path History 
+            Path History
             <span className={styles.titleBadge}>24 HOURS</span>
           </span>
         </div>
         <div className={styles.headerRight}>
-          <Icon 
-            icon="mdi:chevron-down" 
-            className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`} 
-            width={20} 
+          <Icon
+            icon="mdi:chevron-down"
+            className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}
+            width={20}
           />
         </div>
       </div>

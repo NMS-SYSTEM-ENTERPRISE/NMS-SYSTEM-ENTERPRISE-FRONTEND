@@ -19,19 +19,21 @@ export const MetricChart = ({
   const chartInstance = useRef(null);
   const containerRef = useRef(null);
 
-  const { data, name, monitor, timeRange } = metric;
+  const { data = [], name, displayName, monitor, timeRange, unit = '%', isLoading, message } = metric;
+  const displayTitle = displayName || name;
   const [isRenaming, setIsRenaming] = useState(false);
-  const [newName, setNewName] = useState(name);
+  const [newName, setNewName] = useState(displayTitle);
 
   // Calculate statistics
   const values = data.map((d) => d.value);
-  const currentValue = values[values.length - 1];
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  const hasData = values.length > 0;
+  const currentValue = hasData ? values[values.length - 1] : 0;
+  const min = hasData ? Math.min(...values) : 0;
+  const max = hasData ? Math.max(...values) : 0;
+  const avg = hasData ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  const formatValue = (value) => `${Number(value || 0).toFixed(2)}${unit === 'bytes' ? ' B' : unit}`;
 
   useEffect(() => {
-    // ... stats logic same as before ... 
     if (!chartRef.current) return;
     if (chartInstance.current) {
       chartInstance.current.dispose();
@@ -60,7 +62,7 @@ export const MetricChart = ({
       },
       yAxis: {
         type: 'value',
-        axisLabel: { color: '#9ca3af', fontSize: 11, fontFamily: 'Inter', formatter: '{value}%' },
+        axisLabel: { color: '#9ca3af', fontSize: 11, fontFamily: 'Inter', formatter: `{value}${unit === 'bytes' ? ' B' : unit}` },
         splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)', type: 'dashed' } },
       },
       series: [
@@ -68,11 +70,11 @@ export const MetricChart = ({
           type: 'line',
           data: values,
           smooth: true,
-          showSymbol: false, 
+          showSymbol: false,
           symbol: 'circle',
           symbolSize: 8,
-          lineStyle: { 
-            color: '#0ea5e9', 
+          lineStyle: {
+            color: '#0ea5e9',
             width: 3,
             shadowColor: 'rgba(14, 165, 233, 0.5)',
             shadowBlur: 10
@@ -90,16 +92,16 @@ export const MetricChart = ({
               ],
             },
           },
-          itemStyle: { 
-             color: '#0b1121',
-             borderColor: '#0ea5e9',
-             borderWidth: 2
+          itemStyle: {
+            color: '#0b1121',
+            borderColor: '#0ea5e9',
+            borderWidth: 2
           },
         },
       ],
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(31, 41, 55, 0.95)', // Gray 800 with opacity
+        backgroundColor: 'rgba(31, 41, 55, 0.95)',
         borderColor: '#374151',
         borderWidth: 1,
         padding: 12,
@@ -111,18 +113,18 @@ export const MetricChart = ({
         formatter: (params) => {
           const point = data[params[0].dataIndex];
           const date = new Date(point.timestamp);
-          const dateStr = date.toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
+          const dateStr = date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
             day: 'numeric',
-            year: 'numeric' 
+            year: 'numeric'
           });
-          const timeStr = date.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
+          const timeStr = date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
           });
-          
+
           return `
             <div style="font-weight: 500; margin-bottom: 8px; color: #9ca3af;">
               ${dateStr} <span style="opacity: 0.7; margin-left: 4px;">${timeStr}</span>
@@ -130,9 +132,9 @@ export const MetricChart = ({
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
               <span style="display: flex; align-items: center; gap: 6px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #0ea5e9; box-shadow: 0 0 5px rgba(14, 165, 233, 0.5);"></span>
-                <span style="color: #e5e7eb;">${name}</span>
+                <span style="color: #e5e7eb;">${displayTitle}</span>
               </span>
-              <span style="font-weight: 600; font-feature-settings: 'tnum'; color: #fff;">${point.value.toFixed(2)}%</span>
+              <span style="font-weight: 600; font-feature-settings: 'tnum'; color: #fff;">${formatValue(point.value)}</span>
             </div>
           `;
         },
@@ -145,13 +147,39 @@ export const MetricChart = ({
         chartInstance.current.dispose();
       }
     };
-  }, [data, name]);
+  }, [data, displayTitle, unit]);
 
   const handleRename = () => {
     if (newName.trim()) {
-      onUpdate({ name: newName.trim() });
+      onUpdate({ displayName: newName.trim() });
       setIsRenaming(false);
     }
+  };
+
+  const handleExportCSV = () => {
+    if (!data || data.length === 0) return;
+    const header = ['Timestamp', 'Date', 'Time', 'Metric', 'Value', 'Unit'];
+    const rows = data.map((d) => {
+      const date = new Date(d.timestamp);
+      return [
+        d.timestamp,
+        date.toLocaleDateString(),
+        date.toLocaleTimeString(),
+        displayTitle,
+        d.value,
+        unit
+      ].join(',');
+    });
+    const csvContent = [header.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${displayTitle.replace(/\\s+/g, '_')}_export.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -159,7 +187,7 @@ export const MetricChart = ({
       <div className={styles.chartHeader}>
         <div className={styles.chartTitle}>
           <Icon icon="mdi:clipboard-text" className={styles.metricIcon} width={16} height={16} />
-          <span className={styles.metricName}>{name}</span>
+          <span className={styles.metricName}>{displayTitle}</span>
           <Button variant="ghost" className={styles.removeMetric} onClick={onRemove}>
             <Icon icon="mdi:close" width={16} height={16} />
           </Button>
@@ -175,7 +203,7 @@ export const MetricChart = ({
           <Button variant="ghost" className={styles.actionBtn} onClick={onShare}>
             <Icon icon="mdi:share-variant" width={16} height={16} />
           </Button>
-          
+
           <Popup
             placement="bottom-end"
             trigger={
@@ -185,31 +213,29 @@ export const MetricChart = ({
             }
             content={
               <div className={styles.menuContent}>
-                <Button 
+                <Button
                   variant="ghost"
-                  className={styles.menuItem} 
+                  className={styles.menuItem}
                   onClick={() => {
-                    setNewName(name);
+                    setNewName(displayTitle);
                     setIsRenaming(true);
                   }}
                 >
                   <Icon icon="mdi:pencil" width={14} />
                   Rename Metric
                 </Button>
-                 <Button 
+                <Button
                   variant="ghost"
-                  className={styles.menuItem} 
-                  onClick={() => {
-                    alert('Exporting data as CSV...');
-                  }}
+                  className={styles.menuItem}
+                  onClick={handleExportCSV}
                 >
                   <Icon icon="mdi:download" width={14} />
                   Export Data
                 </Button>
                 <div style={{ height: 1, background: 'var(--color-border)', margin: '4px 0' }} />
-                <Button 
+                <Button
                   variant="ghost"
-                  className={`${styles.menuItem} ${styles.menuItemDanger}`} 
+                  className={`${styles.menuItem} ${styles.menuItemDanger}`}
                   onClick={onRemove}
                 >
                   <Icon icon="mdi:close-circle" width={14} />
@@ -222,7 +248,13 @@ export const MetricChart = ({
       </div>
 
       <div className={styles.chartBody}>
-        <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+        {isLoading || !hasData ? (
+          <div style={{ display: 'grid', placeItems: 'center', width: '100%', height: '100%', color: '#9ca3af' }}>
+            {isLoading ? 'Loading metric data...' : message || 'No data available for this metric yet.'}
+          </div>
+        ) : (
+          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+        )}
       </div>
 
       <div className={styles.chartStats}>
@@ -238,19 +270,19 @@ export const MetricChart = ({
         </div>
         <div className={styles.stat}>
           <span className={styles.statLabel}>Value</span>
-          <span className={styles.statValue}>{currentValue.toFixed(2)}%</span>
+          <span className={styles.statValue}>{formatValue(currentValue)}</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statLabel}>Min</span>
-          <span className={styles.statValue}>{min.toFixed(2)}%</span>
+          <span className={styles.statValue}>{formatValue(min)}</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statLabel}>Max</span>
-          <span className={styles.statValue}>{max.toFixed(2)}%</span>
+          <span className={styles.statValue}>{formatValue(max)}</span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statLabel}>Avg</span>
-          <span className={styles.statValue}>{avg.toFixed(2)}%</span>
+          <span className={styles.statValue}>{formatValue(avg)}</span>
         </div>
       </div>
 
@@ -270,13 +302,13 @@ export const MetricChart = ({
             autoFocus
           />
           <div className={styles.modalActions}>
-            <Button 
+            <Button
               variant="secondary"
               onClick={() => setIsRenaming(false)}
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               variant="primary"
               onClick={handleRename}
             >

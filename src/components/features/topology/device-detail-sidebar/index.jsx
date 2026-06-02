@@ -27,13 +27,11 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
     return 'var(--color-chart-red)';
   };
 
-  const interfaces = [
-    { id: 'Gi0/0/1', status: 'up', speed: '1000', duplex: 'full', vlan: '10', description: 'Uplink to Core' },
-    { id: 'Gi0/0/2', status: 'up', speed: '1000', duplex: 'full', vlan: '10', description: 'Uplink to Core' },
-    { id: 'Gi0/0/3', status: 'up', speed: '1000', duplex: 'full', vlan: '20', description: 'Server Connection' },
-    { id: 'Gi0/0/4', status: 'down', speed: '1000', duplex: 'auto', vlan: '-', description: 'Unused' },
-    { id: 'Gi0/0/5', status: 'up', speed: '100', duplex: 'full', vlan: '30', description: 'Access Port' },
-  ];
+  const interfaces = device.interfaces || [];
+  const cpu = Number(device.cpu || 0);
+  const memory = Number(device.memory || 0);
+  const disk = Number(device.disk || 0);
+  const responseTime = device.response_time ?? device.responseTime;
 
   return (
     <>
@@ -51,7 +49,7 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                 {device.vendor} {device.model}
               </p>
               <div className={styles.statusBadge} style={{ backgroundColor: getStatusColor(device.status) }}>
-                {device.status.toUpperCase()}
+                {String(device.status || 'unknown').toUpperCase()}
               </div>
             </div>
           </div>
@@ -127,7 +125,7 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                 <div className={styles.infoItem}>
                   <span className={styles.label}>Status</span>
                   <span className={styles.value} style={{ color: getStatusColor(device.status) }}>
-                    {device.status.toUpperCase()}
+                    {String(device.status || 'unknown').toUpperCase()}
                   </span>
                 </div>
               </div>
@@ -140,11 +138,11 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                       <Icon icon="mdi:cpu-64-bit" width={20} height={20} />
                       <span>CPU Usage</span>
                     </div>
-                    <div className={styles.metricValue} style={{ color: getMetricColor(45) }}>
-                      45%
+                    <div className={styles.metricValue} style={{ color: getMetricColor(cpu) }}>
+                      {cpu || 0}%
                     </div>
                     <div className={styles.metricBar}>
-                      <div className={styles.metricBarFill} style={{ width: '45%', backgroundColor: getMetricColor(45) }} />
+                      <div className={styles.metricBarFill} style={{ width: `${Math.min(cpu, 100)}%`, backgroundColor: getMetricColor(cpu) }} />
                     </div>
                   </div>
                   <div className={styles.metricCard}>
@@ -152,11 +150,11 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                       <Icon icon="mdi:memory" width={20} height={20} />
                       <span>Memory Usage</span>
                     </div>
-                    <div className={styles.metricValue} style={{ color: getMetricColor(67) }}>
-                      67%
+                    <div className={styles.metricValue} style={{ color: getMetricColor(memory) }}>
+                      {memory || 0}%
                     </div>
                     <div className={styles.metricBar}>
-                      <div className={styles.metricBarFill} style={{ width: '67%', backgroundColor: getMetricColor(67) }} />
+                      <div className={styles.metricBarFill} style={{ width: `${Math.min(memory, 100)}%`, backgroundColor: getMetricColor(memory) }} />
                     </div>
                   </div>
                   <div className={styles.metricCard}>
@@ -164,11 +162,11 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                       <Icon icon="mdi:harddisk" width={20} height={20} />
                       <span>Disk Usage</span>
                     </div>
-                    <div className={styles.metricValue} style={{ color: getMetricColor(23) }}>
-                      23%
+                    <div className={styles.metricValue} style={{ color: getMetricColor(disk) }}>
+                      {disk || 0}%
                     </div>
                     <div className={styles.metricBar}>
-                      <div className={styles.metricBarFill} style={{ width: '23%', backgroundColor: getMetricColor(23) }} />
+                      <div className={styles.metricBarFill} style={{ width: `${Math.min(disk, 100)}%`, backgroundColor: getMetricColor(disk) }} />
                     </div>
                   </div>
                   <div className={styles.metricCard}>
@@ -176,7 +174,7 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                       <Icon icon="mdi:gauge" width={20} height={20} />
                       <span>Response Time</span>
                     </div>
-                    <div className={styles.metricValue}>24ms</div>
+                    <div className={styles.metricValue}>{responseTime != null ? `${responseTime}ms` : '-'}</div>
                   </div>
                 </div>
               </div>
@@ -187,12 +185,12 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
             <div className={styles.interfacesTab}>
               <h3 className={styles.sectionTitle}>Network Interfaces</h3>
               <div className={styles.interfacesList}>
-                {interfaces.map((iface) => (
+                {interfaces.length > 0 ? interfaces.map((iface) => (
                   <div key={iface.id} className={styles.interfaceCard}>
                     <div className={styles.interfaceHeader}>
                       <div className={styles.interfaceName}>
                         <Icon icon="mdi:ethernet" width={20} height={20} />
-                        <span>{iface.id}</span>
+                        <span>{iface.name || iface.id}</span>
                       </div>
                       <span
                         className={styles.interfaceStatus}
@@ -200,13 +198,13 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                           backgroundColor: iface.status === 'up' ? 'var(--color-success)' : 'var(--color-danger)',
                         }}
                       >
-                        {iface.status.toUpperCase()}
+                        {String(iface.status || 'unknown').toUpperCase()}
                       </span>
                     </div>
                     <div className={styles.interfaceDetails}>
                       <div className={styles.interfaceDetail}>
                         <span className={styles.label}>Speed</span>
-                        <span>{iface.speed} Mbps</span>
+                        <span>{iface.speed || '-'}</span>
                       </div>
                       <div className={styles.interfaceDetail}>
                         <span className={styles.label}>Duplex</span>
@@ -217,11 +215,14 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
                         <span>{iface.vlan}</span>
                       </div>
                     </div>
-                    <div className={styles.interfaceDescription}>
-                      {iface.description}
-                    </div>
+                    <div className={styles.interfaceDescription}>{iface.description || '-'}</div>
                   </div>
-                ))}
+                )) : (
+                  <div className={styles.emptyState}>
+                    <Icon icon="mdi:ethernet-off" width={48} height={48} />
+                    <p>No interfaces found</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -253,10 +254,30 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
           {activeTab === 'metrics' && (
             <div className={styles.metricsTab}>
               <h3 className={styles.sectionTitle}>Performance Metrics</h3>
-              <div className={styles.chartPlaceholder}>
-                <Icon icon="mdi:chart-line" width={48} height={48} />
-                <p>Performance charts will appear here</p>
-              </div>
+              {device.metrics && device.metrics.length > 0 ? (
+                <div className={styles.eventsList}>
+                  {device.metrics.slice(-12).map((metric) => (
+                    <div key={metric.time} className={styles.eventItem}>
+                      <div className={styles.eventIcon} style={{ backgroundColor: 'var(--color-info)' }}>
+                        <Icon icon="mdi:chart-line" width={16} height={16} />
+                      </div>
+                      <div>
+                        <div className={styles.eventTitle}>
+                          CPU {metric.cpu ?? '-'}% / Memory {metric.memory ?? '-'}%
+                        </div>
+                        <div className={styles.eventTime}>
+                          {metric.latency_ms != null ? `${metric.latency_ms}ms latency` : 'Latency unavailable'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.chartPlaceholder}>
+                  <Icon icon="mdi:chart-line" width={48} height={48} />
+                  <p>No metric history found</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -264,33 +285,37 @@ export const DeviceDetailSidebar = ({ device, connections, onClose, isOpen }) =>
             <div className={styles.eventsTab}>
               <h3 className={styles.sectionTitle}>Recent Events</h3>
               <div className={styles.eventsList}>
-                <div className={styles.eventItem}>
-                  <div className={styles.eventIcon} style={{ backgroundColor: 'var(--color-success)' }}>
-                    <Icon icon="mdi:check-circle" width={16} height={16} />
+                {(device.events || []).map((event) => (
+                  <div key={`${event.title}-${event.time}`} className={styles.eventItem}>
+                    <div
+                      className={styles.eventIcon}
+                      style={{
+                        backgroundColor:
+                          event.severity === 'success'
+                            ? 'var(--color-success)'
+                            : event.severity === 'warning'
+                              ? 'var(--color-warning)'
+                              : event.severity === 'error'
+                                ? 'var(--color-danger)'
+                                : 'var(--color-info)',
+                      }}
+                    >
+                      <Icon icon="mdi:information" width={16} height={16} />
+                    </div>
+                    <div>
+                      <div className={styles.eventTitle}>{event.title}</div>
+                      <div className={styles.eventTime}>
+                        {event.time ? new Date(event.time).toLocaleString() : event.description}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className={styles.eventTitle}>Device Online</div>
-                    <div className={styles.eventTime}>2 hours ago</div>
+                ))}
+                {(!device.events || device.events.length === 0) && (
+                  <div className={styles.emptyState}>
+                    <Icon icon="mdi:timeline-clock-outline" width={48} height={48} />
+                    <p>No recent events found</p>
                   </div>
-                </div>
-                <div className={styles.eventItem}>
-                  <div className={styles.eventIcon} style={{ backgroundColor: 'var(--color-warning)' }}>
-                    <Icon icon="mdi:alert" width={16} height={16} />
-                  </div>
-                  <div>
-                    <div className={styles.eventTitle}>High CPU Usage</div>
-                    <div className={styles.eventTime}>5 hours ago</div>
-                  </div>
-                </div>
-                <div className={styles.eventItem}>
-                  <div className={styles.eventIcon} style={{ backgroundColor: 'var(--color-info)' }}>
-                    <Icon icon="mdi:information" width={16} height={16} />
-                  </div>
-                  <div>
-                    <div className={styles.eventTitle}>Configuration Updated</div>
-                    <div className={styles.eventTime}>1 day ago</div>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           )}

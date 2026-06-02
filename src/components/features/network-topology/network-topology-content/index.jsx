@@ -1,18 +1,14 @@
 'use client';
 
-import { CreateViewTopologyModal } from '@/components/features/network-topology/create-view-modal';
-import { ScheduleTopologyModal } from '@/components/features/network-topology/schedule-modal';
 import sharedStyles from '@/components/features/network-topology/shared/styles.module.css';
 import { DeviceDetailSidebar } from '@/components/features/topology/device-detail-sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SelectComponent as Select } from '@/components/ui/select';
-import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { useNetworkTopology } from '@/hooks/network-topology';
 import { useCytoscape } from '@/hooks/network-topology/useCytoscape';
-import { MOCK_TOPOLOGY_DATA } from '@/utils/dummy-data/network-topology';
 import { Icon } from '@iconify/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export const NetworkTopologyContent = () => {
   const cyRef = useRef(null);
@@ -28,18 +24,15 @@ export const NetworkTopologyContent = () => {
     setShowDeviceModal,
     searchQuery,
     setSearchQuery,
-    showLayer3,
-    setShowLayer3,
     layoutType,
     setLayoutType,
     expandedNodes,
     setExpandedNodes,
-    showScheduleModal,
-    setShowScheduleModal,
-    showCreateViewModal,
-    setShowCreateViewModal,
     focusedNode,
     setFocusedNode,
+    topologyData,
+    isLoadingTopology,
+    topologyError,
   } = useNetworkTopology();
 
   const styles = sharedStyles;
@@ -65,6 +58,8 @@ export const NetworkTopologyContent = () => {
     cyRef,
     viewMode,
     layoutType,
+    topologyData,
+    searchQuery,
     setFocusedNode,
     focusedNode,
     setSelectedDevice,
@@ -242,7 +237,44 @@ export const NetworkTopologyContent = () => {
     );
   };
 
-  const currentTopologyData = MOCK_TOPOLOGY_DATA[viewMode];
+  const filterTree = (node, query) => {
+    if (!node) return null;
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return node;
+
+    const matchesNode =
+      String(node.name || '').toLowerCase().includes(normalizedQuery) ||
+      String(node.ip || '').toLowerCase().includes(normalizedQuery);
+    const children = (node.children || [])
+      .map((child) => filterTree(child, query))
+      .filter(Boolean);
+
+    if (matchesNode || children.length > 0) {
+      return { ...node, children };
+    }
+    return null;
+  };
+
+  const currentTopologyData = useMemo(
+    () => filterTree(topologyData?.views?.[viewMode], searchQuery),
+    [topologyData, viewMode, searchQuery]
+  );
+
+  const selectedConnections = useMemo(() => {
+    if (!selectedDevice || !topologyData?.devices) return [];
+    return (selectedDevice.connections || [])
+      .map((deviceId) => topologyData.devices.find((device) => device.id === deviceId))
+      .filter(Boolean)
+      .map((device) => ({
+        target: device.label || device.name,
+        type: device.type,
+        ip: device.ip,
+        status: device.status,
+      }));
+  }, [selectedDevice, topologyData]);
+
+  const summary = topologyData?.summary || {};
+  const currentViewHasDevices = (currentTopologyData?.children || []).length > 0;
 
   return (
     <div className={styles.networkTopology}>
@@ -259,11 +291,11 @@ export const NetworkTopologyContent = () => {
           <div className={styles.headerStats}>
             <span className={styles.statBadge}>
               <Icon icon="mdi:server-network" width={16} height={16} />
-              {cyRef.current?.nodes().length || 0} Devices
+              {summary.devices || 0} Devices
             </span>
             <span className={styles.statBadge}>
               <Icon icon="mdi:connection" width={16} height={16} />
-              {cyRef.current?.edges().length || 0} Connections
+              {summary.connections || 0} Connections
             </span>
           </div>
         </div>
@@ -278,15 +310,6 @@ export const NetworkTopologyContent = () => {
               containerClassName={styles.searchInputContainer}
             />
           </div>
-          <Button
-            variant="primary"
-            onClick={() => setShowCreateViewModal(true)}
-            title="Create Topology View"
-            className={styles.createViewBtn}
-          >
-            <Icon icon="mdi:plus-circle" width={18} height={18} />
-            Create View
-          </Button>
         </div>
       </div>
 
@@ -331,12 +354,32 @@ export const NetworkTopologyContent = () => {
               icon={<Icon icon="mdi:magnify" width={16} height={16} />}
               type="text"
               placeholder="Filter devices..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
           {/* Device Tree */}
           <div className={styles.deviceTree}>
-            {currentTopologyData && renderTreeNode(currentTopologyData)}
+            {isLoadingTopology && (
+              <div className={styles.statePanel}>
+                <Icon icon="mdi:loading" width={24} height={24} className={styles.stateIconSpin} />
+                <span>Loading topology...</span>
+              </div>
+            )}
+            {!isLoadingTopology && topologyError && (
+              <div className={styles.statePanel}>
+                <Icon icon="mdi:alert-circle-outline" width={24} height={24} />
+                <span>{topologyError}</span>
+              </div>
+            )}
+            {!isLoadingTopology && !topologyError && currentViewHasDevices && renderTreeNode(currentTopologyData)}
+            {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
+              <div className={styles.statePanel}>
+                <Icon icon="mdi:lan-disconnect" width={24} height={24} />
+                <span>No devices found</span>
+              </div>
+            )}
           </div>
 
           {/* Legend */}
@@ -387,23 +430,8 @@ export const NetworkTopologyContent = () => {
               >
                 <Icon icon="mdi:refresh" width={18} height={18} />
               </Button>
-              <ToggleSwitch
-                checked={showLayer3}
-                onChange={setShowLayer3}
-                label="Layer 3"
-                labelPosition="left"
-                className={styles.layerToggle}
-              />
             </div>
             <div className={styles.canvasToolbarRight}>
-              <Button
-                variant="outline"
-                className={styles.toolbarBtn}
-                onClick={() => setShowScheduleModal(true)}
-                title="Schedule Topology"
-              >
-                <Icon icon="mdi:calendar-clock" width={18} height={18} />
-              </Button>
               <Button
                 variant="outline"
                 className={styles.toolbarBtn}
@@ -424,7 +452,26 @@ export const NetworkTopologyContent = () => {
           </div>
 
           {/* Cytoscape Container */}
-          <div ref={containerRef} className={styles.cytoscape} />
+          <div ref={containerRef} className={styles.cytoscape}>
+            {isLoadingTopology && (
+              <div className={styles.canvasState}>
+                <Icon icon="mdi:loading" width={32} height={32} className={styles.stateIconSpin} />
+                <span>Loading live topology</span>
+              </div>
+            )}
+            {!isLoadingTopology && topologyError && (
+              <div className={styles.canvasState}>
+                <Icon icon="mdi:alert-circle-outline" width={32} height={32} />
+                <span>{topologyError}</span>
+              </div>
+            )}
+            {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
+              <div className={styles.canvasState}>
+                <Icon icon="mdi:sitemap-outline" width={32} height={32} />
+                <span>No devices found for this view</span>
+              </div>
+            )}
+          </div>
 
           {/* Info Panel */}
           {focusedNode && (
@@ -496,7 +543,7 @@ export const NetworkTopologyContent = () => {
       {/* Device Detail Sidebar */}
       <DeviceDetailSidebar
         device={selectedDevice}
-        connections={[]}
+        connections={selectedConnections}
         isOpen={showDeviceModal}
         onClose={() => {
           setShowDeviceModal(false);
@@ -504,15 +551,6 @@ export const NetworkTopologyContent = () => {
         }}
       />
 
-      <ScheduleTopologyModal
-        isOpen={showScheduleModal}
-        onClose={() => setShowScheduleModal(false)}
-      />
-
-      <CreateViewTopologyModal
-        isOpen={showCreateViewModal}
-        onClose={() => setShowCreateViewModal(false)}
-      />
     </div>
   );
 }

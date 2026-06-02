@@ -1,5 +1,6 @@
 "use client";
-import React, { createContext, useContext, useState } from 'react';
+import { getNetworkTopology } from '@/networking/network-monitoring/network-monitoring-apis';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const NetworkTopologyContext = createContext();
 
@@ -8,13 +9,45 @@ export const NetworkTopologyProvider = ({ children }) => {
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [showDeviceModal, setShowDeviceModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showLayer3, setShowLayer3] = useState(true);
   const [layoutType, setLayoutType] = useState('cose');
   const [expandedNodes, setExpandedNodes] = useState({});
-  const [showScheduleModal, setShowScheduleModal] = useState(false);
-  const [showCreateViewModal, setShowCreateViewModal] = useState(false);
   const [focusedNode, setFocusedNode] = useState(null);
-  const [showMinimap, setShowMinimap] = useState(true);
+  const [topologyData, setTopologyData] = useState(null);
+  const [isLoadingTopology, setIsLoadingTopology] = useState(true);
+  const [topologyError, setTopologyError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchTopology = async () => {
+      try {
+        if (isMounted) {
+          setTopologyError(null);
+        }
+        const data = await getNetworkTopology();
+        if (isMounted) {
+          setTopologyData(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch network topology:', error);
+        if (isMounted) {
+          setTopologyError(error?.detail || error?.message || 'Unable to load network topology.');
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingTopology(false);
+        }
+      }
+    };
+
+    fetchTopology();
+    const interval = setInterval(fetchTopology, 60000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const value = {
     viewMode,
@@ -25,20 +58,16 @@ export const NetworkTopologyProvider = ({ children }) => {
     setShowDeviceModal,
     searchQuery,
     setSearchQuery,
-    showLayer3,
-    setShowLayer3,
     layoutType,
     setLayoutType,
     expandedNodes,
     setExpandedNodes,
-    showScheduleModal,
-    setShowScheduleModal,
-    showCreateViewModal,
-    setShowCreateViewModal,
     focusedNode,
     setFocusedNode,
-    showMinimap,
-    setShowMinimap,
+    topologyData,
+    setTopologyData,
+    isLoadingTopology,
+    topologyError,
   };
 
   return (

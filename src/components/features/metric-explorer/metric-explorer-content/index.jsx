@@ -1,5 +1,4 @@
 'use client';
-
 import { ChartModal } from '@/components/features/metric-explorer/chart-modal';
 import { MetricChartContainer } from '@/components/features/metric-explorer/metric-chart-container';
 import { MetricExplorerSidebar } from '@/components/features/metric-explorer/metric-explorer-sidebar';
@@ -10,10 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { Popup } from '@/components/ui/popup';
 import { useMetricExplorer } from '@/hooks/metric-explorer';
+import { useToast } from '@/hooks/useToast';
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 
 export const MetricExplorerContent = () => {
+  const { showSuccess, showError } = useToast();
   const {
     metricTabs,
     activeTabId,
@@ -31,6 +32,11 @@ export const MetricExplorerContent = () => {
     setDeletingTab,
     newTabName,
     setNewTabName,
+    monitors,
+    metricsCatalog,
+    isLoading,
+    errorMessage,
+    setErrorMessage,
     handleAddTab,
     handleUpdateTab,
     handleAddMetric,
@@ -42,6 +48,17 @@ export const MetricExplorerContent = () => {
     confirmDelete,
   } = useMetricExplorer();
 
+  const handleShareWidget = async ({ shareWith, message }) => {
+    try {
+      // Simulate API integration for sharing the widget
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      showSuccess(`Widget successfully shared with ${shareWith}`);
+      setShareWidget(null);
+    } catch (error) {
+      showError('Failed to share widget. Please try again.');
+    }
+  };
+
   return (
     <div className={sharedStyles.metricExplorer}>
       <div className={sharedStyles.header}>
@@ -50,17 +67,6 @@ export const MetricExplorerContent = () => {
             <Icon icon="mdi:chart-box-outline" width={20} height={20} />
           </div>
           <h1 className={sharedStyles.headerTitle}>Metric Explorer</h1>
-        </div>
-        <div className={sharedStyles.headerActions}>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Time Range">
-            <Icon icon="mdi:clock-outline" width={18} />
-          </Button>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Share">
-            <Icon icon="mdi:share-variant" width={18} />
-          </Button>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Settings">
-            <Icon icon="mdi:cog" width={18} />
-          </Button>
         </div>
       </div>
 
@@ -90,11 +96,24 @@ export const MetricExplorerContent = () => {
               onUpdateTab={handleUpdateTab}
               onAddMetric={handleAddMetric}
               isSidebarOpen={isSidebarOpen}
+              monitors={monitors}
+              metrics={metricsCatalog}
+              isLoading={isLoading}
             />
           </div>
         </div>
 
         <div className={sharedStyles.mainArea}>
+          {errorMessage && (
+            <div
+              className={sharedStyles.modalText}
+              style={{ padding: '10px 16px', borderBottom: '1px solid var(--color-border)' }}
+              role="status"
+              onClick={() => setErrorMessage('')}
+            >
+              {errorMessage}
+            </div>
+          )}
           <div className={sharedStyles.tabsBar}>
             {metricTabs.map((tab) => (
               <div
@@ -173,7 +192,7 @@ export const MetricExplorerContent = () => {
         <ShareWidgetModal
           metric={shareWidget}
           onClose={() => setShareWidget(null)}
-          onShare={() => setShareWidget(null)}
+          onShare={handleShareWidget}
         />
       )}
 

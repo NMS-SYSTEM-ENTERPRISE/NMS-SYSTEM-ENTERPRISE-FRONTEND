@@ -23,3 +23,41 @@ export const getDeviceHistory = async (deviceIp, hours = 24) => {
   });
   return response.data;
 };
+
+export const getNetworkTopology = async (hours = 24) => {
+  const response = await authApi.get(`${BASE_URL}/topology`, {
+    params: { hours }
+  });
+  return response.data;
+};
+
+export const getMetricExplorerBootstrap = async () => {
+  const response = await authApi.get(`${BASE_URL}/metric-explorer`);
+  return response.data;
+};
+
+export const getMetricExplorerSeries = async ({ deviceIp, metric, timeRange = '6h' }) => {
+  const response = await authApi.get(`${BASE_URL}/metric-explorer/series`, {
+    params: {
+      device_ip: deviceIp,
+      metric,
+      time_range: timeRange,
+    },
+  });
+  return response.data;
+};
+
+export const createMetricExplorerWorkspace = async (payload) => {
+  const response = await authApi.post(`${BASE_URL}/metric-explorer/workspaces`, payload);
+  return response.data;
+};
+
+export const updateMetricExplorerWorkspace = async (workspaceId, payload) => {
+  const response = await authApi.put(`${BASE_URL}/metric-explorer/workspaces/${workspaceId}`, payload);
+  return response.data;
+};
+
+export const deleteMetricExplorerWorkspace = async (workspaceId) => {
+  const response = await authApi.delete(`${BASE_URL}/metric-explorer/workspaces/${workspaceId}`);
+  return response.data;
+};

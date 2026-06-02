@@ -3,7 +3,6 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
-import { MONITORS, INSTANCE_TYPES, METRICS } from '@/utils/dummy-data/metric-explorer';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -24,17 +23,25 @@ export const MetricExplorerSidebar = ({
   onAddMetric,
   activeTabId, // Passed but not used for tabs anymore
   isSidebarOpen = true,
+  monitors = [],
+  metrics = [],
+  isLoading = false,
 }) => {
-  const [activeView, setActiveView] = useState('metric');
   const [searchQuery, setSearchQuery] = useState('');
+  const selectedMonitor = monitors.find((monitor) => monitor.id === activeTab?.monitor);
+  const sourceMetrics = selectedMonitor?.metrics?.length ? selectedMonitor.metrics : metrics;
+  const metricItems = sourceMetrics.map((metric) =>
+    typeof metric === 'string' ? { name: metric, label: metric, available: true } : metric
+  );
 
-  const filteredMetrics = METRICS.filter((metric) =>
-    metric.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredMetrics = metricItems.filter((metric) =>
+    metric.name.toLowerCase().includes(searchQuery.toLowerCase())
+    || metric.label?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Collapsed View
   if (!isSidebarOpen) {
-    const categories = getCategories(METRICS); // Show all categories in collapsed state
+    const categories = getCategories(metricItems.map((metric) => metric.name)); // Show all categories in collapsed state
     return (
        <div className={styles.sidebar} style={{ alignItems: 'center', padding: '16px 0', background: 'transparent' }}>
          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -73,7 +80,7 @@ export const MetricExplorerSidebar = ({
           }
           options={[
             { value: '', label: 'Select Monitor' },
-            ...MONITORS.map((monitor) => ({
+            ...monitors.map((monitor) => ({
               value: monitor.id,
               label: monitor.name,
             })),
@@ -81,32 +88,6 @@ export const MetricExplorerSidebar = ({
           placeholder="Select Monitor"
         />
       </div>
-
-      {/* View Tabs */}
-      <div className={styles.viewTabs}>
-        <Button
-          variant={activeView === 'metric' ? 'primary' : 'ghost'}
-          className={`${styles.viewTab} ${
-            activeView === 'metric' ? styles.viewTabActive : ''
-          }`}
-          onClick={() => setActiveView('metric')}
-        >
-          Metrics
-        </Button>
-        <Button
-          variant={activeView === 'instance' ? 'primary' : 'ghost'}
-          className={`${styles.viewTab} ${
-            activeView === 'instance' ? styles.viewTabActive : ''
-          }`}
-          onClick={() => setActiveView('instance')}
-        >
-          Instances
-        </Button>
-      </div>
-
-      {/* Instance Type Selection */}
-      {/* Instance View - Empty as requested */}
-      {activeView === 'instance' && null}
 
       {/* Metrics Section */}
       <div className={styles.metricsSection}>
@@ -122,9 +103,24 @@ export const MetricExplorerSidebar = ({
         </div>
 
         <div className={styles.metricsList}>
+          {isLoading && (
+            <div className={styles.metricItem}>
+              <span className={styles.metricName}>Loading metrics...</span>
+            </div>
+          )}
+          {!isLoading && monitors.length === 0 && (
+            <div className={styles.metricItem}>
+              <span className={styles.metricName}>No monitored devices found</span>
+            </div>
+          )}
+          {!isLoading && monitors.length > 0 && !activeTab?.monitor && (
+            <div className={styles.metricItem}>
+              <span className={styles.metricName}>Select a monitor to view metrics</span>
+            </div>
+          )}
           {Object.entries(
             filteredMetrics.reduce((acc, metric) => {
-              const parts = metric.split('.');
+              const parts = metric.name.split('.');
               // Improved grouping: always take the second part if available (e.g. system.cpu -> cpu)
               const category = parts.length >= 2 ? parts[1] : parts[0];
               if (!acc[category]) acc[category] = [];
@@ -191,12 +187,12 @@ const MetricGroup = ({ category, metrics, onAddMetric }) => {
         <div className={styles.groupContent}>
           {metrics.map((metric, index) => (
             <div 
-              key={index} 
+              key={metric.name || index} 
               className={styles.metricItem}
-              onClick={() => onAddMetric({ name: metric })}
+              onClick={() => onAddMetric(metric)}
             >
               <span className={styles.metricItemLine}></span>
-              <span className={styles.metricName}>{metric}</span>
+              <span className={styles.metricName}>{metric.name}</span>
               <Button variant="ghost" className={styles.metricAdd}>
                 <Icon icon="mdi:plus" width={14} height={14} />
               </Button>

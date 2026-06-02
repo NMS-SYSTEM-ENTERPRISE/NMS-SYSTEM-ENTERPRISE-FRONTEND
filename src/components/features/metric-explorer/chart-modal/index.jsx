@@ -10,17 +10,19 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
   const chartInstance = useRef(null);
   const modalRef = useRef(null);
 
-  const { data, name, monitor } = metric;
+  const { data = [], name, monitor, unit = '%' } = metric;
 
   // Calculate statistics
   const values = data.map((d) => d.value);
-  const currentValue = values[values.length - 1];
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  const hasData = values.length > 0;
+  const currentValue = hasData ? values[values.length - 1] : 0;
+  const min = hasData ? Math.min(...values) : 0;
+  const max = hasData ? Math.max(...values) : 0;
+  const avg = hasData ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+  const formatValue = (value) => `${Number(value || 0).toFixed(2)}${unit === 'bytes' ? ' B' : unit}`;
 
   useEffect(() => {
-    if (!chartRef.current) return;
+    if (!chartRef.current || !hasData) return;
     if (chartInstance.current) {
       chartInstance.current.dispose();
     }
@@ -48,7 +50,7 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
       },
       yAxis: {
         type: 'value',
-        axisLabel: { color: '#9ca3af', fontSize: 14, formatter: '{value}%' },
+        axisLabel: { color: '#9ca3af', fontSize: 14, formatter: `{value}${unit === 'bytes' ? ' B' : unit}` },
         axisLine: { show: false },
         splitLine: { lineStyle: { color: '#1f2937' } },
       },
@@ -90,7 +92,7 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
           const minutes = date.getMinutes().toString().padStart(2, '0');
           const seconds = date.getSeconds().toString().padStart(2, '0');
           const period = date.getHours() >= 12 ? 'PM' : 'AM';
-          return `${weekday}, ${month} ${day}, ${year} ${hours}:${minutes}:${seconds} ${period}<br/>${name}: <strong>${point.value.toFixed(2)}%</strong>`;
+          return `${weekday}, ${month} ${day}, ${year} ${hours}:${minutes}:${seconds} ${period}<br/>${name}: <strong>${formatValue(point.value)}</strong>`;
         },
       },
     };
@@ -101,7 +103,7 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
         chartInstance.current.dispose();
       }
     };
-  }, [data, name]);
+  }, [data, name, hasData, unit]);
 
   // Resize chart when modal opens
   useEffect(() => {
@@ -123,6 +125,7 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
 
 
   const formatDateRange = () => {
+    if (!hasData) return 'No data available';
     const endDate = new Date(data[data.length - 1].timestamp);
     const startDate = new Date(data[0].timestamp);
 
@@ -177,7 +180,13 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
         </div>
 
         <div className={styles.chartArea}>
-          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+          {hasData ? (
+            <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+          ) : (
+            <div style={{ display: 'grid', placeItems: 'center', width: '100%', height: '100%', color: '#9ca3af' }}>
+              {metric.message || 'No data available for this metric yet.'}
+            </div>
+          )}
         </div>
 
         <div className={styles.chartStats}>
@@ -193,19 +202,19 @@ export const ChartModal = ({ metric, onClose, onSaveAsWidget }) => {
           </div>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Value</span>
-            <span className={styles.statValue}>{currentValue.toFixed(2)}%</span>
+            <span className={styles.statValue}>{formatValue(currentValue)}</span>
           </div>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Min</span>
-            <span className={styles.statValue}>{min.toFixed(2)}%</span>
+            <span className={styles.statValue}>{formatValue(min)}</span>
           </div>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Max</span>
-            <span className={styles.statValue}>{max.toFixed(2)}%</span>
+            <span className={styles.statValue}>{formatValue(max)}</span>
           </div>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Avg</span>
-            <span className={styles.statValue}>{avg.toFixed(2)}%</span>
+            <span className={styles.statValue}>{formatValue(avg)}</span>
           </div>
         </div>
       </div>

@@ -4,59 +4,42 @@ export const generateElements = (data, viewMode) => {
   const edges = [];
   const deviceMap = new Map();
 
-  const traverse = (node, depth = 0) => {
+  const viewDeviceIds = new Set();
+  const collectViewDeviceIds = (node) => {
+    if (!node) return;
     if (node.id) {
-      // Leaf node with actual device
-      nodes.push({
-        data: {
-          id: node.id,
-          label: node.name,
-          type: node.type,
-          status: node.status,
-          ip: node.ip,
-          vendor: node.vendor,
-          model: node.model,
-          depth,
-        },
-      });
-      deviceMap.set(node.id, node);
-    } else if (node.children) {
-      // Traverse children
-      node.children.forEach((child) => traverse(child, depth + 1));
+      viewDeviceIds.add(node.id);
     }
+    (node.children || []).forEach(collectViewDeviceIds);
   };
 
-  if (viewMode === 'network') {
-    traverse(data.network);
-  } else if (viewMode === 'sdn') {
-    traverse(data.sdn);
-  } else if (viewMode === 'cloud') {
-    traverse(data.cloud);
-  }
+  collectViewDeviceIds(data?.views?.[viewMode]);
 
-  // Create edges based on connections
-  deviceMap.forEach((device, deviceId) => {
-    if (device.connections) {
-      device.connections.forEach((targetId) => {
-        if (deviceMap.has(targetId)) {
-          // Only add edge if both nodes exist
-          const edgeId = `edge-${deviceId}-${targetId}`;
-          const reverseEdgeId = `edge-${targetId}-${deviceId}`;
-          
-          // Avoid duplicate edges
-          if (!edges.some(e => e.data.id === edgeId || e.data.id === reverseEdgeId)) {
-            edges.push({
-              data: {
-                id: edgeId,
-                source: deviceId,
-                target: targetId,
-              },
-            });
-          }
-        }
+  (data?.devices || [])
+    .filter((device) => viewDeviceIds.has(device.id))
+    .forEach((device) => {
+      nodes.push({
+        data: {
+          ...device,
+          label: device.label || device.name,
+        },
       });
-    }
-  });
+      deviceMap.set(device.id, device);
+    });
+
+  (data?.connections || [])
+    .filter((connection) => deviceMap.has(connection.source) && deviceMap.has(connection.target))
+    .forEach((connection) => {
+      edges.push({
+        data: {
+          id: connection.id,
+          source: connection.source,
+          target: connection.target,
+          label: connection.label,
+          type: connection.type,
+        },
+      });
+    });
 
   return { nodes, edges };
 };

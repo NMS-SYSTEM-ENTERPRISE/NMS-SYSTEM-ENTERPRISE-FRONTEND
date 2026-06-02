@@ -1,4 +1,19 @@
 import { authApi } from '@/services/axios';
+import {
+  cpuGroupData as dummyCpuGroup,
+  cpuMonitorData as dummyCpuMonitor,
+  memoryGroupData as dummyMemoryGroup,
+  memoryMonitorData as dummyMemoryMonitor,
+  droppedPacketsData as dummyDroppedPackets,
+  latencyMonitorData as dummyLatencyMonitor,
+} from '@/utils/dummy-data/dashboard/performance';
+import {
+  diskUsageData as dummyDiskUsage,
+  diskSpaceData as dummyDiskSpace,
+  networkPacketsData as dummyNetworkPackets,
+  bytesPerSecData as dummyBytesPerSec,
+  networkDeviceDowntime as dummyDowntime,
+} from '@/utils/dummy-data/dashboard/resources';
 
 const BASE_URL = '/dashboard';
 
@@ -31,32 +46,34 @@ export const mapDashboardResponse = (data) => ({
     offline: data.statistics?.offline ?? 0,
   },
   performance: {
-    cpuGroupData: data.performance?.cpu_group_data || [],
-    cpuMonitorData: mapMonitorItems(data.performance?.cpu_monitor_data),
-    memoryGroupData: data.performance?.memory_group_data || [],
-    memoryMonitorData: mapMonitorItems(data.performance?.memory_monitor_data),
-    droppedPacketsData: mapMonitorItems(data.performance?.dropped_packets_data),
-    latencyMonitorData: mapMonitorItems(data.performance?.latency_monitor_data),
+    cpuGroupData: data.performance?.cpu_group_data?.length ? data.performance.cpu_group_data : dummyCpuGroup,
+    cpuMonitorData: data.performance?.cpu_monitor_data?.length ? mapMonitorItems(data.performance.cpu_monitor_data) : dummyCpuMonitor,
+    memoryGroupData: data.performance?.memory_group_data?.length ? data.performance.memory_group_data : dummyMemoryGroup,
+    memoryMonitorData: data.performance?.memory_monitor_data?.length ? mapMonitorItems(data.performance.memory_monitor_data) : dummyMemoryMonitor,
+    droppedPacketsData: data.performance?.dropped_packets_data?.length ? mapMonitorItems(data.performance.dropped_packets_data) : dummyDroppedPackets,
+    latencyMonitorData: data.performance?.latency_monitor_data?.length ? mapMonitorItems(data.performance.latency_monitor_data) : dummyLatencyMonitor,
     badges: data.performance?.badges || {},
   },
   resources: {
-    diskUsageData: mapNamedItems(data.resources?.disk_usage_data),
-    diskSpaceData: mapNamedItems(data.resources?.disk_space_data),
-    droppedPacketsData: mapMonitorItems(data.resources?.error_packets_data),
-    networkPacketsData: mapMonitorItems(data.resources?.network_packets_data),
-    bytesPerSecData: mapMonitorItems(data.resources?.bytes_per_sec_data),
+    diskUsageData: data.resources?.disk_usage_data?.length ? mapNamedItems(data.resources.disk_usage_data) : dummyDiskUsage,
+    diskSpaceData: data.resources?.disk_space_data?.length ? mapNamedItems(data.resources.disk_space_data) : dummyDiskSpace,
+    droppedPacketsData: data.resources?.error_packets_data?.length ? mapMonitorItems(data.resources.error_packets_data) : dummyDroppedPackets,
+    networkPacketsData: data.resources?.network_packets_data?.length ? mapMonitorItems(data.resources.network_packets_data) : dummyNetworkPackets,
+    bytesPerSecData: data.resources?.bytes_per_sec_data?.length ? mapMonitorItems(data.resources.bytes_per_sec_data) : dummyBytesPerSec,
     deviceAvailabilityData: (data.resources?.device_availability_data || []).map((item) => ({
       monitor: item.monitor,
       value: item.value,
       color: item.color,
     })),
-    networkDeviceDowntime: (data.resources?.network_device_downtime || []).map((item) => ({
-      monitor: item.monitor,
-      downtime: item.downtime,
-      value: item.downtime,
-      sparkline: item.sparkline || [],
-      color: item.color,
-    })),
+    networkDeviceDowntime: data.resources?.network_device_downtime?.length
+      ? data.resources.network_device_downtime.map((item) => ({
+        monitor: item.monitor,
+        downtime: item.downtime,
+        value: item.downtime,
+        sparkline: item.sparkline || [],
+        color: item.color,
+      }))
+      : dummyDowntime,
     badges: data.resources?.badges || {},
   },
 });

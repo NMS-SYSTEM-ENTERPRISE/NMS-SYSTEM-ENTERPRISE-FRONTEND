@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import cytoscape from 'cytoscape';
-import { generateElements, getIconDataUri } from '@/utils/dummy-data/network-topology/utils';
-import { MOCK_TOPOLOGY_DATA } from '@/utils/dummy-data/network-topology';
+import { generateElements, getIconDataUri } from '@/utils/network-topology/utils';
 
 export const useCytoscape = ({
   containerRef,
   cyRef,
   viewMode,
   layoutType,
+  topologyData,
+  searchQuery,
   setFocusedNode,
   focusedNode,
   setSelectedDevice,
@@ -109,9 +110,9 @@ export const useCytoscape = ({
   };
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !topologyData) return;
 
-    const { nodes, edges } = generateElements(MOCK_TOPOLOGY_DATA, viewMode);
+    const { nodes, edges } = generateElements(topologyData, viewMode);
 
     const cy = cytoscape({
       container: containerRef.current,
@@ -201,6 +202,16 @@ export const useCytoscape = ({
           },
         },
         {
+          selector: 'node.highlighted',
+          style: {
+            'border-width': 5,
+            'border-color': '#00c8ff',
+            'z-index': 999,
+            width: 65,
+            height: 65,
+          },
+        },
+        {
           selector: 'node.dimmed',
           style: {
             opacity: 0.3,
@@ -271,20 +282,8 @@ export const useCytoscape = ({
       // Show device details if it's an actual device
       if (deviceData.ip) {
         setSelectedDevice({
-          id: deviceData.id,
-          label: deviceData.label,
-          type: deviceData.type,
-          ip: deviceData.ip,
-          status: deviceData.status,
-          vendor: deviceData.vendor,
-          model: deviceData.model,
-          location: 'Data Center',
-          ports: 24,
-          uptime: '120 days',
-          cpu: 45,
-          memory: 65,
-          temperature: 42,
-          interfaces: [],
+          ...deviceData,
+          label: deviceData.label || deviceData.name,
         });
         setShowDeviceModal(true);
       }
@@ -337,7 +336,25 @@ export const useCytoscape = ({
       }
       cyRef.current = null;
     };
-  }, [viewMode, layoutType]);
+  }, [viewMode, layoutType, topologyData]);
+
+  useEffect(() => {
+    if (!cyRef.current || cyRef.current.destroyed()) return;
+
+    const query = (searchQuery || '').trim().toLowerCase();
+    cyRef.current.elements().removeClass('dimmed highlighted');
+
+    if (!query) return;
+
+    const matches = cyRef.current.nodes().filter((node) => {
+      const label = String(node.data('label') || '').toLowerCase();
+      const ip = String(node.data('ip') || '').toLowerCase();
+      return label.includes(query) || ip.includes(query);
+    });
+
+    cyRef.current.nodes().not(matches).addClass('dimmed');
+    matches.addClass('highlighted');
+  }, [searchQuery, cyRef]);
 
   return { getLayoutConfig, resetFocus, focusOnNode };
 };

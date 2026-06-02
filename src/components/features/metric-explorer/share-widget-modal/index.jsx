@@ -11,8 +11,10 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
   const [hoverPosition, setHoverPosition] = useState(null);
   const canvasRef = useRef(null);
 
-  const { data, name } = metric;
+  const { data = [], name, unit = '%' } = metric;
   const values = data.map((d) => d.value);
+  const hasData = values.length > 0;
+  const formatValue = (value) => `${Number(value || 0).toFixed(2)}${unit === 'bytes' ? ' B' : unit}`;
 
   useEffect(() => {
     drawChart();
@@ -29,7 +31,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
 
   const drawChart = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !hasData) return;
 
     const ctx = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
@@ -73,7 +75,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
       // Label
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
-      ctx.fillText(value.toFixed(0) + '%', padding.left - 5, y);
+      ctx.fillText(value.toFixed(0) + (unit === 'bytes' ? ' B' : unit), padding.left - 5, y);
     }
 
     // Draw X-axis time labels
@@ -107,7 +109,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
 
     ctx.beginPath();
     data.forEach((point, index) => {
-      const x = padding.left + (chartWidth * index) / (data.length - 1);
+      const x = padding.left + (chartWidth * index) / Math.max(data.length - 1, 1);
       const normalizedValue = (point.value - minValue) / valueRange;
       const y = padding.top + chartHeight - normalizedValue * chartHeight;
 
@@ -130,7 +132,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
     ctx.lineWidth = 2;
 
     data.forEach((point, index) => {
-      const x = padding.left + (chartWidth * index) / (data.length - 1);
+      const x = padding.left + (chartWidth * index) / Math.max(data.length - 1, 1);
       const normalizedValue = (point.value - minValue) / valueRange;
       const y = padding.top + chartHeight - normalizedValue * chartHeight;
 
@@ -149,7 +151,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
         ((hoverPosition - padding.left) / chartWidth) * (data.length - 1)
       );
       if (dataIndex >= 0 && dataIndex < data.length) {
-        const x = padding.left + (chartWidth * dataIndex) / (data.length - 1);
+        const x = padding.left + (chartWidth * dataIndex) / Math.max(data.length - 1, 1);
         const point = data[dataIndex];
         const normalizedValue = (point.value - minValue) / valueRange;
         const y = padding.top + chartHeight - normalizedValue * chartHeight;
@@ -167,7 +169,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
 
   const handleMouseMove = (e) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !hasData) return;
 
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -262,6 +264,11 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
               />
+              {!hasData && (
+                <div style={{ display: 'grid', placeItems: 'center', width: '100%', height: '100%', color: '#9ca3af' }}>
+                  {metric.message || 'No data available for this metric yet.'}
+                </div>
+              )}
 
               {tooltip && (
                 <div
@@ -276,7 +283,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
                   </div>
                   <div className={styles.tooltipValue}>
                     <span className={styles.tooltipDot}></span>
-                    {name}: <strong>{tooltip.value.toFixed(2)}%</strong>
+                    {name}: <strong>{formatValue(tooltip.value)}</strong>
                   </div>
                 </div>
               )}

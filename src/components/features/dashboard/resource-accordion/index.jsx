@@ -254,7 +254,8 @@ export const ResourceAccordion = ({
   networkPacketsData,
   networkBytesData,
   deviceAvailabilityData,
-  deviceDowntimeData
+  deviceDowntimeData,
+  badges = {},
 }) => {
   
   const [openSections, setOpenSections] = useState({
@@ -265,6 +266,13 @@ export const ResourceAccordion = ({
 
   const toggle = (sec) => setOpenSections(prev => ({...prev, [sec]: !prev[sec]}));
   
+  const storageAlerts = badges.storage_alerts ?? badges.storageAlerts ?? 0;
+  const storageBadge = storageAlerts > 0 ? `${storageAlerts} Alerts` : 'Healthy';
+  const networkLoad = badges.network_load || badges.networkLoad || 'Normal';
+  const healthStatus = badges.health_status || badges.healthStatus || 'Healthy';
+  const healthBadgeColor =
+    healthStatus === 'Critical' ? '#ef4444' : healthStatus === 'Warning' ? '#f59e0b' : '#10b981';
+
   return (
     <div className={styles.accordionContainer}>
       {/* 1. Storage Health & Capacity */}
@@ -274,8 +282,8 @@ export const ResourceAccordion = ({
         color="#8b5cf6" // Purple Theme
         isOpen={openSections.storage}
         onToggle={() => toggle('storage')}
-        badge="2 Alerts"
-        badgeColor="#ef4444"
+        badge={storageBadge}
+        badgeColor={storageAlerts > 0 ? '#ef4444' : '#10b981'}
         layout="full"
       >
          <ResourceMonitorList 
@@ -299,7 +307,7 @@ export const ResourceAccordion = ({
         color="#06b6d4" // Cyan Theme
         isOpen={openSections.network}
         onToggle={() => toggle('network')}
-        badge="High Load"
+        badge={networkLoad}
         badgeColor="#3b82f6"
         layout="triple"
       >
@@ -336,8 +344,8 @@ export const ResourceAccordion = ({
         color="#f59e0b" // Amber Theme
         isOpen={openSections.health}
         onToggle={() => toggle('health')}
-        badge="Critical"
-        badgeColor="#ef4444"
+        badge={healthStatus}
+        badgeColor={healthBadgeColor}
         layout="full"
       >
         <ResourceMonitorList 

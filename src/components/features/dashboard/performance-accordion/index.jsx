@@ -230,7 +230,15 @@ const TopMonitorList = ({ data, variant = 'history', titleIcon: Icon = Activity,
   );
 };
 
-export const PerformanceAccordion = ({ cpuGroupData, cpuTopData, memoryGroupData, memoryTopData, droppedPacketsData, latencyData }) => {
+export const PerformanceAccordion = ({
+  cpuGroupData,
+  cpuTopData,
+  memoryGroupData,
+  memoryTopData,
+  droppedPacketsData,
+  latencyData,
+  badges = {},
+}) => {
   // State to manage open sections.
   const [openSections, setOpenSections] = useState({
     cpu: true,
@@ -252,6 +260,11 @@ export const PerformanceAccordion = ({ cpuGroupData, cpuTopData, memoryGroupData
     network: '#0ea5e9', // Sky
   };
 
+  const cpuBadge = badges.cpu_peak || badges.cpuPeak || '—';
+  const memoryBadge = badges.memory_status || badges.memoryStatus || '—';
+  const networkAlerts = badges.network_alerts ?? badges.networkAlerts ?? 0;
+  const networkBadge = networkAlerts > 0 ? `${networkAlerts} Alerts` : 'Stable';
+
   return (
     <div className={styles.accordionContainer}>
       {/* CPU Section */}
@@ -261,7 +274,7 @@ export const PerformanceAccordion = ({ cpuGroupData, cpuTopData, memoryGroupData
         color={themes.cpu}
         isOpen={openSections.cpu}
         onToggle={() => toggle('cpu')}
-        badge="82% Peak"
+        badge={cpuBadge}
         badgeColor="#ef4444"
         contentLayout="full" // Use full to control internal grid
       >
@@ -279,8 +292,8 @@ export const PerformanceAccordion = ({ cpuGroupData, cpuTopData, memoryGroupData
         color={themes.memory}
         isOpen={openSections.memory}
         onToggle={() => toggle('memory')}
-        badge="Healthy"
-        badgeColor="#10b981"
+        badge={memoryBadge}
+        badgeColor={memoryBadge === 'Healthy' ? '#10b981' : '#f59e0b'}
         contentLayout="full"
       >
         <div className={styles.splitLayout}>
@@ -297,8 +310,8 @@ export const PerformanceAccordion = ({ cpuGroupData, cpuTopData, memoryGroupData
         color={themes.network}
         isOpen={openSections.network}
         onToggle={() => toggle('network')}
-        badge="3 Alerts"
-        badgeColor="#f59e0b"
+        badge={networkBadge}
+        badgeColor={networkAlerts > 0 ? '#f59e0b' : '#10b981'}
         contentLayout="full"
       >
         {/* Render using the Split Layout Logic in CSS */}

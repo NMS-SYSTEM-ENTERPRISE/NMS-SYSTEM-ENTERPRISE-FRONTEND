@@ -3,24 +3,12 @@ import * as echarts from 'echarts';
 import { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 
-const MOCK_HISTORY_DATA = {
-  availability: Array.from({ length: 60 }, () => Math.random() > 0.05 ? 1 : 0),
-  latency: Array.from({ length: 60 }, () => Math.floor(Math.random() * 20 + 2)),
-  packetLoss: Array.from({ length: 60 }, () => Math.random() > 0.9 ? Math.random() * 8 : 0),
-  errorPackets: Array.from({ length: 60 }, () => Math.random() > 0.92 ? Math.floor(Math.random() * 15) : 0),
-  times: Array.from({ length: 60 }, (_, i) => {
-    const d = new Date();
-    d.setMinutes(d.getMinutes() - (60 - i) * 10);
-    return `${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
-  })
-};
-
 const HistoryChart = ({ type, data, times }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
   useEffect(() => {
-    if (!chartRef.current) return;
+    if (!chartRef.current || !data || !times) return;
     if (chartInstance.current) chartInstance.current.dispose();
     
     const chart = echarts.init(chartRef.current, null, { renderer: 'canvas' });
@@ -105,8 +93,10 @@ const HistoryChart = ({ type, data, times }) => {
   return <div ref={chartRef} className={styles.chartCanvas} />;
 };
 
-export const PathHistory = () => {
+export const PathHistory = ({ historyData }) => {
   const [isOpen, setIsOpen] = useState(true);
+
+  if (!historyData) return null;
 
   return (
     <div className={styles.pathHistory}>
@@ -144,7 +134,7 @@ export const PathHistory = () => {
                 <span>UPTIME</span>
               </div>
             </div>
-            <HistoryChart type="availability" data={MOCK_HISTORY_DATA.availability} times={MOCK_HISTORY_DATA.times} />
+            <HistoryChart type="availability" data={historyData.availability} times={historyData.times} />
           </div>
 
           {/* Latency Graph */}
@@ -156,7 +146,7 @@ export const PathHistory = () => {
                 <span>FLUCTUATION</span>
               </div>
             </div>
-            <HistoryChart type="latency" data={MOCK_HISTORY_DATA.latency} times={MOCK_HISTORY_DATA.times} />
+            <HistoryChart type="latency" data={historyData.latency} times={historyData.times} />
           </div>
 
           {/* Packet Loss Graph */}
@@ -168,7 +158,7 @@ export const PathHistory = () => {
                 <span>CRITICAL</span>
               </div>
             </div>
-            <HistoryChart type="packetLoss" data={MOCK_HISTORY_DATA.packetLoss} times={MOCK_HISTORY_DATA.times} />
+            <HistoryChart type="packetLoss" data={historyData.packetLoss} times={historyData.times} />
           </div>
 
           {/* Error Packets Graph */}
@@ -180,7 +170,7 @@ export const PathHistory = () => {
                 <span>WARNINGS</span>
               </div>
             </div>
-            <HistoryChart type="errorPackets" data={MOCK_HISTORY_DATA.errorPackets} times={MOCK_HISTORY_DATA.times} />
+            <HistoryChart type="errorPackets" data={historyData.errorPackets} times={historyData.times} />
           </div>
 
           <div className={styles.timeAxis}>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { NavLink } from '@/components/ui/nav-link';
 import { Icon } from '@iconify/react';
 import { usePathname } from 'next/navigation';
@@ -10,28 +10,73 @@ const menuGroups = [
     id: 'overview',
     label: 'Overview',
     items: [
-      { icon: 'lucide:layout-dashboard', label: 'Control Center', path: '/dashboard', badge: null },
+      {
+        icon: 'lucide:layout-dashboard',
+        label: 'Control Center',
+        path: '/dashboard',
+        badge: null,
+      },
     ],
   },
   {
     id: 'monitoring',
     label: 'Infrastructure',
     items: [
-      { icon: 'lucide:network', label: 'Device Monitoring', path: '/network-monitoring', badge: null },
-      { icon: 'lucide:git-branch', label: 'Topology Map', path: '/network-topology', badge: null },
-      { icon: 'lucide:activity', label: 'Metrics & KPIs', path: '/metric-explorer', badge: null },
-      { icon: 'lucide:gauge', label: 'Performance Insights', path: '/apm', badge: null },
+      {
+        icon: 'lucide:network',
+        label: 'Device Monitoring',
+        path: '/network-monitoring',
+        badge: null,
+      },
+      {
+        icon: 'lucide:git-branch',
+        label: 'Topology Map',
+        path: '/network-topology',
+        badge: null,
+      },
+      {
+        icon: 'lucide:activity',
+        label: 'Metrics & KPIs',
+        path: '/metric-explorer',
+        badge: null,
+      },
+      // { icon: 'lucide:gauge', label: 'Performance Insights', path: '/apm', badge: null },
     ],
   },
   {
     id: 'analysis',
     label: 'Analytics',
     items: [
-      { icon: 'lucide:route', label: 'Path Analysis', path: '/netpath', badge: null },
-      { icon: 'lucide:workflow', label: 'Traffic Flow', path: '/flow', badge: null },
-      { icon: 'lucide:target', label: 'Service Objectives', path: '/slo', badge: null },
-      { icon: 'lucide:layers', label: 'Event Monitor', path: '/trap-explorer', badge: null },
-      { icon: 'lucide:layout-panel-left', label: 'Dashboard Builder', path: '/dashboard/custom', badge: 'New' },
+      {
+        icon: 'lucide:route',
+        label: 'Path Analysis',
+        path: '/netpath',
+        badge: null,
+      },
+      {
+        icon: 'lucide:workflow',
+        label: 'Traffic Flow',
+        path: '/flow',
+        badge: null,
+      },
+      {
+        icon: 'lucide:target',
+        label: 'Service Objectives',
+        path: '/slo',
+        badge: null,
+      },
+      {
+        icon: 'lucide:layers',
+        label: 'Event Monitor',
+        path: '/trap-explorer',
+        badge: null,
+      },
+      {
+        icon: 'lucide:layout-panel-left',
+        label: 'Dashboard Builder',
+        path: '/dashboard/custom',
+        badge: 'New',
+      },
     ],
   },
   {
@@ -39,17 +84,42 @@ const menuGroups = [
     label: 'Operations',
     items: [
       { icon: 'lucide:bell', label: 'Alert Center', path: '/alerts', badge: 5 },
-      { icon: 'lucide:bar-chart-3', label: 'Report Builder', path: '/reports', badge: null },
-      { icon: 'lucide:file-text', label: 'Activity Logs', path: '/audit', badge: null },
-      { icon: 'lucide:file-stack', label: 'Log Explorer', path: '/log-management', badge: null },
-      { icon: 'lucide:ticket', label: 'Support Desk', path: '/ticketing', badge: 3 },
+      {
+        icon: 'lucide:bar-chart-3',
+        label: 'Report Builder',
+        path: '/reports',
+        badge: null,
+      },
+      {
+        icon: 'lucide:file-text',
+        label: 'Activity Logs',
+        path: '/audit',
+        badge: null,
+      },
+      {
+        icon: 'lucide:file-stack',
+        label: 'Log Explorer',
+        path: '/log-management',
+        badge: null,
+      },
+      {
+        icon: 'lucide:ticket',
+        label: 'Support Desk',
+        path: '/ticketing',
+        badge: 3,
+      },
     ],
   },
   {
     id: 'system',
     label: 'Configuration',
     items: [
-      { icon: 'lucide:settings', label: 'System Settings', path: '/settings/my-account', badge: null },
+      {
+        icon: 'lucide:settings',
+        label: 'System Settings',
+        path: '/settings/my-account',
+        badge: null,
+      },
     ],
   },
 ];
@@ -70,21 +140,45 @@ export const Sidebar = () => {
   };
 
   return (
-    <aside className={`${styles.sidebar} ${isCollapsed ? styles.sidebarCollapsed : ''}`}>
+    <aside
+      className={`${styles.sidebar} ${isCollapsed ? styles.sidebarCollapsed : ''}`}
+    >
       {/* Logo Section */}
       <div className={styles.logoSection}>
         {!isCollapsed && (
           <div className={styles.logoWrapper}>
             <div className={styles.logoIcon}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#gradient1)" />
-                <path d="M2 17L12 22L22 17V12L12 17L2 12V17Z" fill="url(#gradient2)" opacity="0.7" />
+                <path
+                  d="M2 17L12 22L22 17V12L12 17L2 12V17Z"
+                  fill="url(#gradient2)"
+                  opacity="0.7"
+                />
                 <defs>
-                  <linearGradient id="gradient1" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                  <linearGradient
+                    id="gradient1"
+                    x1="2"
+                    y1="2"
+                    x2="22"
+                    y2="12"
+                    gradientUnits="userSpaceOnUse"
+                  >
                     <stop stopColor="#06b6d4" />
                     <stop offset="1" stopColor="#3b82f6" />
                   </linearGradient>
-                  <linearGradient id="gradient2" x1="2" y1="12" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                  <linearGradient
+                    id="gradient2"
+                    x1="2"
+                    y1="12"
+                    x2="22"
+                    y2="22"
+                    gradientUnits="userSpaceOnUse"
+                  >
                     <stop stopColor="#3b82f6" />
                     <stop offset="1" stopColor="#8b5cf6" />
                   </linearGradient>
@@ -97,15 +191,17 @@ export const Sidebar = () => {
             </div>
           </div>
         )}
-        <button 
-          className={styles.collapseButton} 
+        <button
+          className={styles.collapseButton}
           onClick={toggleSidebar}
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          <Icon 
-            icon={isCollapsed ? 'lucide:chevrons-right' : 'lucide:chevrons-left'} 
-            width={18} 
-            height={18} 
+          <Icon
+            icon={
+              isCollapsed ? 'lucide:chevrons-right' : 'lucide:chevrons-left'
+            }
+            width={18}
+            height={18}
           />
         </button>
       </div>
@@ -116,8 +212,8 @@ export const Sidebar = () => {
           <div key={group.id} className={styles.menuGroup}>
             {!isCollapsed && (
               <div className={styles.treeRoot}>
-                 {/* Using a generic icon for the group/root if none provided, or just text */}
-                 <span className={styles.groupLabel}>{group.label}</span>
+                {/* Using a generic icon for the group/root if none provided, or just text */}
+                <span className={styles.groupLabel}>{group.label}</span>
               </div>
             )}
             <div className={styles.groupItems}>
@@ -136,14 +232,20 @@ export const Sidebar = () => {
                     </div>
                     {!isCollapsed && (
                       <>
-                        <span className={styles.navItemLabel}>{item.label}</span>
+                        <span className={styles.navItemLabel}>
+                          {item.label}
+                        </span>
                         {item.badge && (
-                          <span className={styles.navItemBadge}>{item.badge}</span>
+                          <span className={styles.navItemBadge}>
+                            {item.badge}
+                          </span>
                         )}
                       </>
                     )}
                     {isCollapsed && item.badge && (
-                      <span className={styles.navItemBadgeCollapsed}>{item.badge}</span>
+                      <span className={styles.navItemBadgeCollapsed}>
+                        {item.badge}
+                      </span>
                     )}
                   </NavLink>
                 );

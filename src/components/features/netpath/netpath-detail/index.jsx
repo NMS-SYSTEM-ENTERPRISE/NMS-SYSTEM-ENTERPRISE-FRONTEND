@@ -3,11 +3,11 @@ import { PathHistory } from '@/components/features/netpath/path-history';
 import { PathVisualization } from '@/components/features/netpath/path-visualization';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
 import { Button } from '@/components/ui/button';
-import { PATH_DATA } from '@/utils/dummy-data/netpath';
+import { getNetPathDetail } from '@/networking/network-monitoring/network-monitoring-apis';
 
 // Simple Semi-Circle Gauge Component - Slightly Larger for better visibility
 const SemiGauge = ({ value, label, color = 'var(--color-chart-cyan)' }) => {
@@ -50,7 +50,23 @@ const NetPathDetail = ({ pathId: propPathId }) => {
   const pathId = propPathId || '1';
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
-  const pathInfo = PATH_DATA[pathId] || PATH_DATA['1'];
+  const [pathInfo, setPathInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDetail = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getNetPathDetail(pathId);
+        setPathInfo(data);
+      } catch (err) {
+        console.error("Failed to load path detail", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (pathId) fetchDetail();
+  }, [pathId]);
 
   const formatDateTime = (date) => {
     const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -63,6 +79,14 @@ const NetPathDetail = ({ pathId: propPathId }) => {
 
     return `${weekday}, Oct ${day}, ${year} ${hours}:${minutes}:00 ${period}`;
   };
+
+  if (isLoading) {
+    return <div style={{ display: 'grid', placeItems: 'center', height: '100%', width: '100%' }}>Loading Path Details...</div>;
+  }
+  
+  if (!pathInfo) {
+    return <div style={{ display: 'grid', placeItems: 'center', height: '100%', width: '100%' }}>Path Not Found</div>;
+  }
 
   return (
     <div className={styles.netPathDetail}>
@@ -111,14 +135,10 @@ const NetPathDetail = ({ pathId: propPathId }) => {
 
             <div className={styles.latencyGroup}>
               <span className={styles.metricBlockLabel}>
-                LATENCY (MIN / AVG / MAX)
+                LATENCY (AVG)
               </span>
               <div className={styles.latencyValues}>
-                <span className={styles.latVal}>0.36ms</span>
-                <span className={styles.latDivider}>/</span>
-                <span className={styles.latValHighlight}>0.44ms</span>
-                <span className={styles.latDivider}>/</span>
-                <span className={styles.latVal}>0.51ms</span>
+                <span className={styles.latValHighlight}>{pathInfo.avg_latency || '0.44ms'}</span>
               </div>
             </div>
 
@@ -126,13 +146,13 @@ const NetPathDetail = ({ pathId: propPathId }) => {
 
             <div className={styles.gaugeGroup}>
               <SemiGauge
-                value={0}
+                value={parseFloat(pathInfo.packet_loss) || 0}
                 label="Packet Loss"
                 color="var(--color-danger)"
               />
               <div className={styles.vSeparatorSmall} />
               <SemiGauge
-                value={100}
+                value={parseFloat(pathInfo.availability) || 100}
                 label="Transit Likelihood"
                 color="var(--color-success)"
               />
@@ -144,7 +164,7 @@ const NetPathDetail = ({ pathId: propPathId }) => {
       <div className={styles.content}>
         <PathVisualization pathInfo={pathInfo} />
 
-        <PathHistory />
+        <PathHistory historyData={pathInfo.history} />
 
         <div className={styles.footer}>
           <div className={styles.navControls}>

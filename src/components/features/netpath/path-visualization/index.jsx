@@ -1,57 +1,13 @@
 import { Icon } from '@iconify/react';
 import { useMemo, useState } from 'react';
 import styles from './styles.module.css';
-
-// Mock path nodes data
-const generatePathNodes = () => [
-  {
-    id: 1,
-    ip: '172.16.12.90',
-    type: 'source',
-    latency: null,
-    icon: 'monitor',
-  },
-  {
-    id: 2,
-    ip: '172.16.10.1',
-    type: 'router',
-    latency: 0.44,
-    icon: 'router',
-  },
-  {
-    id: 3,
-    ip: '33-240-103.1.mountain.com.3...',
-    type: 'intermediate',
-    latency: 0.21,
-    icon: null,
-  },
-  {
-    id: 4,
-    ip: '103.156.102.9',
-    type: 'intermediate',
-    latency: 11.74,
-    icon: null,
-  },
-  {
-    id: 5,
-    ip: '72.14.235.169',
-    type: 'intermediate',
-    latency: null,
-    count: 3,
-    icon: null,
-  },
-  {
-    id: 6,
-    ip: '142.250.183.100',
-    type: 'destination',
-    latency: null,
-    label: 'GOOGLE, US',
-    icon: 'flag',
-  },
-];
-
 export const PathVisualization = ({ pathInfo }) => {
-  const [pathNodes] = useState(generatePathNodes());
+  const pathNodes = useMemo(() => {
+    if (pathInfo?.hops && pathInfo.hops.length > 0) {
+      return pathInfo.hops;
+    }
+    return [];
+  }, [pathInfo]);
   
   // Calculate unified percentage positions for perfect alignment
   const nodesWithPositions = useMemo(() => {

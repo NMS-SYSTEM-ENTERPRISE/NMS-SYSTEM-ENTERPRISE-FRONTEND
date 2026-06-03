@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import sharedStyles from '@/components/features/reports/shared/styles.module.css';
 import { useReports } from '@/hooks/reports';
-import { REPORT_CATEGORIES, REPORT_TABS } from '@/utils/constants/reports';
+import { REPORT_TABS } from '@/utils/constants/reports';
 
 export const ReportsSidebar = () => {
   const {
@@ -14,6 +14,7 @@ export const ReportsSidebar = () => {
     setActiveTab,
     selectedCategory,
     setSelectedCategory,
+    categories = [],
   } = useReports();
 
   return (
@@ -56,7 +57,7 @@ export const ReportsSidebar = () => {
         </div>
 
         <div className={sharedStyles.treeChildren}>
-          {REPORT_CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <button
               key={category.id}
               type="button"

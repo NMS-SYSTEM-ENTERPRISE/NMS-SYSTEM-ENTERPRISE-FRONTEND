@@ -7,12 +7,26 @@ import { ReportDetailNotes } from '@/components/features/reports/detail/report-d
 import { ReportDetailTable } from '@/components/features/reports/detail/report-detail-table';
 import { ReportDetailToolbar } from '@/components/features/reports/detail/report-detail-toolbar';
 
-export const ReportDetailContent = () => (
-  <div className={sharedStyles.reportDetail}>
-    <ReportDetailHeader />
-    <ReportDetailMetadata />
-    <ReportDetailNotes />
-    <ReportDetailToolbar />
-    <ReportDetailTable />
-  </div>
-);
+import { useReportsDetail } from '@/hooks/reports-detail';
+
+export const ReportDetailContent = () => {
+  const { report, loading, error } = useReportsDetail();
+
+  if (loading) {
+    return <div className={sharedStyles.reportDetail} style={{ padding: '24px' }}>Loading report details...</div>;
+  }
+
+  if (error || !report) {
+    return <div className={sharedStyles.reportDetail} style={{ padding: '24px', color: 'red' }}>Failed to load report.</div>;
+  }
+
+  return (
+    <div className={sharedStyles.reportDetail}>
+      <ReportDetailHeader />
+      <ReportDetailMetadata />
+      <ReportDetailNotes />
+      <ReportDetailToolbar />
+      <ReportDetailTable />
+    </div>
+  );
+};

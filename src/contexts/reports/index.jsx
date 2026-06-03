@@ -1,12 +1,12 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
 import {
   DEFAULT_REPORT_CATEGORY,
   DEFAULT_REPORT_FILTERS,
   DEFAULT_REPORT_TAB,
 } from '@/utils/constants/reports';
-import { MOCK_REPORTS } from '@/utils/dummy-data/reports';
+import { getReports, getReportCategories } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const ReportsContext = createContext(null);
 
@@ -21,13 +21,44 @@ export const ReportsProvider = ({ children }) => {
   const [filters, setFilters] = useState(DEFAULT_REPORT_FILTERS);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
+  
+  const [reports, setReports] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [reportsData, categoriesData] = await Promise.all([
+          getReports(),
+          getReportCategories(),
+        ]);
+        setReports(reportsData.items || []);
+        setCategories(categoriesData || []);
+      } catch (err) {
+        console.error('Failed to fetch reports or categories:', err);
+        setError('Failed to load reports');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const filteredReports = useMemo(
     () =>
-      MOCK_REPORTS.filter((report) =>
-        report.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    [searchQuery]
+      reports.filter((report) => {
+        const matchesSearch = report.name?.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesType = !filters.type || report.type === filters.type;
+        const matchesReportType = !filters.reportType || report.reportType === filters.reportType;
+        const matchesSchedule = !filters.schedule || String(report.schedule) === filters.schedule;
+        const matchesFavorite = !filters.favorite || report.favorite;
+
+        return matchesSearch && matchesType && matchesReportType && matchesSchedule && matchesFavorite;
+      }),
+    [searchQuery, reports, filters]
   );
 
   const toggleRow = useCallback((id) => {
@@ -49,6 +80,17 @@ export const ReportsProvider = ({ children }) => {
 
   const handleDownload = useCallback((reportId) => {
     console.log('Download report:', reportId);
+    // Create a dummy CSV file download
+    const reportData = `Report ID,${reportId}\nStatus,Generated\nDate,${new Date().toISOString()}`;
+    const blob = new Blob([reportData], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `report-${reportId}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }, []);
 
   const handleFilterChange = useCallback((key, value) => {
@@ -57,7 +99,13 @@ export const ReportsProvider = ({ children }) => {
 
   const handleApplyFilters = useCallback((appliedFilters) => {
     setSearchQuery(appliedFilters.search || '');
-    console.log('Applied filters:', appliedFilters);
+    setFilters({
+      search: appliedFilters.search || '',
+      type: appliedFilters.type || '',
+      reportType: appliedFilters.reportType || '',
+      schedule: appliedFilters.schedule || '',
+      favorite: appliedFilters.favorite || false,
+    });
   }, []);
 
   const handleResetFilters = useCallback(() => {
@@ -92,6 +140,9 @@ export const ReportsProvider = ({ children }) => {
     setCurrentPage,
     pageSize,
     setPageSize,
+    loading,
+    error,
+    categories,
   };
 
   return <ReportsContext.Provider value={value}>{children}</ReportsContext.Provider>;

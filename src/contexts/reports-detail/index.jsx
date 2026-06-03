@@ -1,28 +1,45 @@
 'use client';
 
-import { createContext, useMemo, useState } from 'react';
+import { createContext, useMemo, useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { DEFAULT_REPORT_DETAIL, MOCK_REPORT_DATA } from '@/utils/dummy-data/reports-detail';
+import { getReportDetail } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const ReportsDetailContext = createContext(null);
 
 export const ReportsDetailProvider = ({ children }) => {
   const { reportId } = useParams();
   const [searchQuery, setSearchQuery] = useState('');
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const report = useMemo(
-    () => MOCK_REPORT_DATA[reportId] || DEFAULT_REPORT_DETAIL,
-    [reportId]
-  );
+  useEffect(() => {
+    if (!reportId) return;
+    const fetchDetail = async () => {
+      try {
+        setLoading(true);
+        const data = await getReportDetail(reportId);
+        setReport(data);
+      } catch (err) {
+        console.error('Failed to fetch report detail:', err);
+        setError('Failed to load report detail');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
+  }, [reportId]);
 
   const filteredData = useMemo(
-    () =>
-      report.data.filter(
+    () => {
+      if (!report || !report.data) return [];
+      return report.data.filter(
         (row) =>
-          row.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.ip.includes(searchQuery)
-      ),
-    [report.data, searchQuery]
+          row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.ip?.includes(searchQuery)
+      );
+    },
+    [report, searchQuery]
   );
 
   const value = {
@@ -31,6 +48,8 @@ export const ReportsDetailProvider = ({ children }) => {
     setSearchQuery,
     filteredData,
     reportId,
+    loading,
+    error,
   };
 
   return (

@@ -85,9 +85,17 @@
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .closeBtn {
@@ -187,7 +195,8 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--padding-md);
-  background-color: #0d1117; /* Darker background for logs */
+  background-color: #0d1117;
+  /* Darker background for logs */
   font-family: 'JetBrains Mono', monospace;
 }
 

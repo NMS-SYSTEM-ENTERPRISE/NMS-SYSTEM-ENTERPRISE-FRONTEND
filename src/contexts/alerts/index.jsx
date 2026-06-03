@@ -1,9 +1,19 @@
 'use client';
 
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  acknowledgeAlert,
+  ALERTS_WEBSOCKET_URL,
+  getAlerts,
+} from '@/networking/network-monitoring/network-monitoring-apis';
 import { ALERT_ENVIRONMENT_CATEGORIES } from '@/utils/constants/alerts';
 import { DEFAULT_ALERT_OVERVIEW_SECTIONS } from '@/utils/constants/alerts/sections';
-import { getAlerts, acknowledgeAlert, ALERTS_WEBSOCKET_URL } from '@/networking/network-monitoring/network-monitoring-apis';
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 export const AlertsContext = createContext(null);
 
@@ -14,7 +24,9 @@ export const AlertsProvider = ({ children }) => {
   const [severityFilter, setSeverityFilter] = useState(null);
   const [expandedRows, setExpandedRows] = useState(new Set());
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
-  const [openSections, setOpenSections] = useState(DEFAULT_ALERT_OVERVIEW_SECTIONS);
+  const [openSections, setOpenSections] = useState(
+    DEFAULT_ALERT_OVERVIEW_SECTIONS
+  );
 
   const [alerts, setAlerts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,14 +64,17 @@ export const AlertsProvider = ({ children }) => {
     return () => ws.close();
   }, [fetchAlerts]);
 
-  const handleAcknowledge = useCallback(async (alertId, { acknowledged, incidentRef, notes }) => {
-    try {
-      await acknowledgeAlert(alertId, { acknowledged, incidentRef, notes });
-      fetchAlerts();
-    } catch (error) {
-      console.error('Failed to acknowledge alert:', error);
-    }
-  }, [fetchAlerts]);
+  const handleAcknowledge = useCallback(
+    async (alertId, { acknowledged, incidentRef, notes }) => {
+      try {
+        await acknowledgeAlert(alertId, { acknowledged, incidentRef, notes });
+        fetchAlerts();
+      } catch (error) {
+        console.error('Failed to acknowledge alert:', error);
+      }
+    },
+    [fetchAlerts]
+  );
 
   const alertCounts = useMemo(
     () => ({
@@ -78,9 +93,14 @@ export const AlertsProvider = ({ children }) => {
       ALERT_ENVIRONMENT_CATEGORIES.map((cat) => ({
         name: cat,
         total: alerts.filter((a) => a.category === cat).length,
-        down: alerts.filter((a) => a.category === cat && a.severity === 'down').length,
-        critical: alerts.filter((a) => a.category === cat && a.severity === 'critical').length,
-        warning: alerts.filter((a) => a.category === cat && a.severity === 'warning').length,
+        down: alerts.filter((a) => a.category === cat && a.severity === 'down')
+          .length,
+        critical: alerts.filter(
+          (a) => a.category === cat && a.severity === 'critical'
+        ).length,
+        warning: alerts.filter(
+          (a) => a.category === cat && a.severity === 'warning'
+        ).length,
       })),
     [alerts]
   );
@@ -126,5 +146,7 @@ export const AlertsProvider = ({ children }) => {
     fetchAlerts,
   };
 
-  return <AlertsContext.Provider value={value}>{children}</AlertsContext.Provider>;
+  return (
+    <AlertsContext.Provider value={value}>{children}</AlertsContext.Provider>
+  );
 };

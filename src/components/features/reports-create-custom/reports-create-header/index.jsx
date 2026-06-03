@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import sharedStyles from '@/components/features/reports-create-custom/shared/styles.module.css';
@@ -9,7 +8,6 @@ import { useReportsCreateCustom } from '@/hooks/reports-create-custom';
 
 export const ReportsCreateHeader = () => {
   const router = useRouter();
-  const { searchQuery, setSearchQuery } = useReportsCreateCustom();
 
   return (
     <div className={sharedStyles.header}>
@@ -28,15 +26,6 @@ export const ReportsCreateHeader = () => {
         </div>
       </div>
       <div className={sharedStyles.headerRight}>
-        <Input
-          type="text"
-          placeholder="Search report types..."
-          containerClassName={sharedStyles.searchBar}
-          className={sharedStyles.searchField}
-          icon={<Icon icon="mdi:magnify" width={18} />}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
       </div>
     </div>
   );

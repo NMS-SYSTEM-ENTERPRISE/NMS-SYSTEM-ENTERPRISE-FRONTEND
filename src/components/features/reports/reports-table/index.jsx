@@ -3,11 +3,10 @@
 import { Pagination } from '@/components/ui/pagination';
 import sharedStyles from '@/components/features/reports/shared/styles.module.css';
 import { useReports } from '@/hooks/reports';
-import { REPORTS_PAGINATION_TOTAL } from '@/utils/dummy-data/reports';
 import { ReportsTableRow } from './reports-table-row';
 
 export const ReportsTable = () => {
-  const { filteredReports, currentPage, setCurrentPage, pageSize, setPageSize } = useReports();
+  const { filteredReports, currentPage, setCurrentPage, pageSize, setPageSize, loading, error } = useReports();
 
   return (
     <div className={sharedStyles.tableContainer}>
@@ -18,21 +17,29 @@ export const ReportsTable = () => {
           <span>DESCRIPTION</span>
           <span>TYPE</span>
           <span>REPORT TYPE</span>
-          <span>SCHEDULE</span>
           <span>DOWNLOAD</span>
           <span />
         </div>
 
         <div className={sharedStyles.tableBody}>
-          {filteredReports.map((report) => (
-            <ReportsTableRow key={report.id} report={report} />
-          ))}
+          {loading ? (
+            <div style={{ padding: '24px', textAlign: 'center', width: '100%' }}>Loading reports...</div>
+          ) : error ? (
+            <div style={{ padding: '24px', textAlign: 'center', width: '100%', color: 'red' }}>Error loading reports.</div>
+          ) : filteredReports.length === 0 ? (
+            <div style={{ padding: '24px', textAlign: 'center', width: '100%' }}>No reports found.</div>
+          ) : (
+            filteredReports.map((report) => (
+              <ReportsTableRow key={report.id} report={report} />
+            ))
+          )}
         </div>
 
         <div className={sharedStyles.pagination}>
           <Pagination
+            className={sharedStyles.paginationComponent}
             currentPage={currentPage}
-            totalItems={REPORTS_PAGINATION_TOTAL}
+            totalItems={filteredReports.length}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}

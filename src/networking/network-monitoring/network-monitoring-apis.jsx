@@ -163,3 +163,32 @@ export const getFlowExplorerData = async (params) => {
   const response = await authApi.get(`${BASE_URL}/flow/explorer`, { params });
   return response.data;
 };
+
+// ==========================================
+// REPORTS APIS
+// ==========================================
+
+export const getReports = async () => {
+  const response = await authApi.get(`${BASE_URL}/reports/`);
+  return response.data;
+};
+
+export const getReportCategories = async () => {
+  const response = await authApi.get(`${BASE_URL}/reports/categories`);
+  return response.data;
+};
+
+export const getReportCreateOptions = async () => {
+  const response = await authApi.get(`${BASE_URL}/reports/create-options`);
+  return response.data;
+};
+
+export const createCustomReport = async (payload) => {
+  const response = await authApi.post(`${BASE_URL}/reports/create`, payload);
+  return response.data;
+};
+
+export const getReportDetail = async (reportId) => {
+  const response = await authApi.get(`${BASE_URL}/reports/${reportId}`);
+  return response.data;
+};

@@ -1,33 +1,57 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
-import { CREATE_REPORT_CATEGORIES, DEFAULT_OPEN_SECTIONS } from '@/utils/constants/reports-create-custom';
+import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
+import { DEFAULT_OPEN_SECTIONS } from '@/utils/constants/reports-create-custom';
 import { DEFAULT_REPORT_CONFIG } from '@/utils/dummy-data/reports-create-custom';
-
-const firstReportType = CREATE_REPORT_CATEGORIES[0]?.types[0] || null;
+import { getReportCreateOptions, createCustomReport } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const ReportsCreateCustomContext = createContext(null);
 
 export const ReportsCreateCustomProvider = ({ children }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedReportType, setSelectedReportType] = useState(firstReportType);
+  const [selectedReportType, setSelectedReportType] = useState(null);
   const [openSections, setOpenSections] = useState(DEFAULT_OPEN_SECTIONS);
   const [reportConfig, setReportConfig] = useState(DEFAULT_REPORT_CONFIG);
 
+  const [categories, setCategories] = useState([]);
+  const [formOptions, setFormOptions] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        setLoading(true);
+        const data = await getReportCreateOptions();
+        setCategories(data.categories || []);
+        if (data.categories?.length > 0 && data.categories[0].types?.length > 0) {
+          setSelectedReportType(data.categories[0].types[0]);
+        }
+        setFormOptions({
+          deviceOptions: data.device_options || [],
+          groupOptions: data.group_options || [],
+          metricOptions: data.metric_options || [],
+          timeRangeOptions: data.time_range_options || [],
+          outputFormatOptions: data.output_format_options || []
+        });
+      } catch (err) {
+        console.error('Failed to fetch report options:', err);
+        setError('Failed to load configuration options.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOptions();
+  }, []);
+
   const filteredCategories = useMemo(
     () =>
-      CREATE_REPORT_CATEGORIES.map((category) => ({
-        ...category,
-        types: category.types.filter((type) =>
-          type.name.toLowerCase().includes(searchQuery.toLowerCase())
-        ),
-      })).filter((category) => category.types.length > 0),
-    [searchQuery]
+      categories.filter((category) => category.types && category.types.length > 0),
+    [categories]
   );
 
   const totalTypeCount = useMemo(
-    () => filteredCategories.reduce((acc, cat) => acc + cat.types.length, 0),
+    () => filteredCategories.reduce((acc, cat) => acc + (cat.types ? cat.types.length : 0), 0),
     [filteredCategories]
   );
 
@@ -40,8 +64,6 @@ export const ReportsCreateCustomProvider = ({ children }) => {
   }, []);
 
   const value = {
-    searchQuery,
-    setSearchQuery,
     isSidebarOpen,
     setIsSidebarOpen,
     selectedReportType,
@@ -52,6 +74,9 @@ export const ReportsCreateCustomProvider = ({ children }) => {
     updateReportConfig,
     filteredCategories,
     totalTypeCount,
+    formOptions,
+    loading,
+    error,
   };
 
   return (

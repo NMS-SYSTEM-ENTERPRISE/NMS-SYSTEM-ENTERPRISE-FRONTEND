@@ -14,8 +14,6 @@ export const ReportsTableRow = ({ report }) => {
     toggleRow,
     activePopup,
     setActivePopup,
-    handleToggleFavorite,
-    handleToggleSchedule,
     handleDownload,
   } = useReports();
 
@@ -48,16 +46,6 @@ export const ReportsTableRow = ({ report }) => {
         <div className={sharedStyles.nameCell}>
           <button
             type="button"
-            className={`${sharedStyles.starBtn} ${report.favorite ? sharedStyles.starBtnActive : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleToggleFavorite(report.id);
-            }}
-          >
-            <Icon icon="mdi:star" width={14} height={14} />
-          </button>
-          <button
-            type="button"
             className={sharedStyles.reportName}
             onClick={(e) => {
               e.stopPropagation();
@@ -77,19 +65,6 @@ export const ReportsTableRow = ({ report }) => {
         </div>
         <span>{report.type}</span>
         <span>{report.reportType}</span>
-        <button
-          type="button"
-          className={`${sharedStyles.scheduleToggle} ${
-            report.schedule ? sharedStyles.scheduleToggleOn : ''
-          }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggleSchedule(report.id);
-          }}
-        >
-          <span className={sharedStyles.toggleCircle} />
-          <span className={sharedStyles.toggleLabel}>{report.schedule ? 'ON' : 'OFF'}</span>
-        </button>
         <Button
           variant="ghost"
           size="icon"
@@ -136,30 +111,6 @@ export const ReportsTableRow = ({ report }) => {
                 >
                   <Icon icon="mdi:eye" width={16} />
                   <span>View Report</span>
-                </button>
-                <button
-                  type="button"
-                  className={sharedStyles.popupItem}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log('Edit schedule:', report.id);
-                    setActivePopup(null);
-                  }}
-                >
-                  <Icon icon="mdi:calendar-edit" width={16} />
-                  <span>Edit Schedule</span>
-                </button>
-                <button
-                  type="button"
-                  className={sharedStyles.popupItem}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log('Duplicate:', report.id);
-                    setActivePopup(null);
-                  }}
-                >
-                  <Icon icon="mdi:content-copy" width={16} />
-                  <span>Duplicate</span>
                 </button>
               </div>
             </>

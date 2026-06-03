@@ -57,15 +57,9 @@ select * from device_metrics_history
 
 db tables based on this neatly display the data if not check the missing oid and relevant mib and get the response of it neatly fit it okay no more data placing in the backend as well okay everything is dynamic and no more stale dummy and statistics from the db basis it needed okay
 
-ext we need to develop this /trap-explorer apis okay for this first screen related
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/trap-explorer
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/trap-explorer
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/alerts
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/alarm-history
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/alert-detail
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/alarm-history
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/alert-detail
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/alerts
+ we need to develop this /reports apis okay for this first screen related
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/reports
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/reports
 
 end to check based on this front end expectation we are the current data
 we are able to have and able o display wont miss any single widget single detailing okay every thing needed thats why take time first

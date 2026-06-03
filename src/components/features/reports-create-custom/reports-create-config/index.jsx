@@ -8,22 +8,23 @@ import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import sharedStyles from '@/components/features/reports-create-custom/shared/styles.module.css';
 import { useReportsCreateCustom } from '@/hooks/reports-create-custom';
-import {
-  DEVICE_OPTIONS,
-  GROUP_OPTIONS,
-  METRIC_OPTIONS,
-  OUTPUT_FORMAT_OPTIONS,
-  TIME_RANGE_OPTIONS,
-} from '@/utils/constants/reports-create-custom';
+import { createCustomReport } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const ReportsCreateConfig = () => {
   const router = useRouter();
-  const { selectedReportType, reportConfig, updateReportConfig } = useReportsCreateCustom();
+  const { selectedReportType, reportConfig, updateReportConfig, formOptions, loading, error } = useReportsCreateCustom();
 
-  const handleSaveReport = () => {
-    console.log('Saving report:', { type: selectedReportType, config: reportConfig });
-    router.push('/reports');
+  const handleSaveReport = async () => {
+    try {
+      await createCustomReport({ type: selectedReportType, config: reportConfig });
+      router.push('/reports');
+    } catch (err) {
+      console.error('Failed to create report:', err);
+    }
   };
+
+  if (loading) return <div className={sharedStyles.rightPanel} style={{ padding: '24px' }}>Loading configuration options...</div>;
+  if (error) return <div className={sharedStyles.rightPanel} style={{ padding: '24px', color: 'red' }}>Error loading options.</div>;
 
   if (!selectedReportType) {
     return (
@@ -90,7 +91,7 @@ export const ReportsCreateConfig = () => {
               <SelectComponent
                 value={reportConfig.timeRange}
                 onChange={(e) => updateReportConfig({ timeRange: e.target.value })}
-                options={TIME_RANGE_OPTIONS}
+                options={formOptions?.timeRangeOptions || []}
                 placeholder="Select time range"
               />
             </div>
@@ -100,7 +101,7 @@ export const ReportsCreateConfig = () => {
                 isMulti
                 value={reportConfig.devices}
                 onChange={(e) => updateReportConfig({ devices: e.target.value || [] })}
-                options={DEVICE_OPTIONS}
+                options={formOptions?.deviceOptions || []}
                 placeholder="Select devices"
               />
             </div>
@@ -110,7 +111,7 @@ export const ReportsCreateConfig = () => {
                 isMulti
                 value={reportConfig.groups}
                 onChange={(e) => updateReportConfig({ groups: e.target.value || [] })}
-                options={GROUP_OPTIONS}
+                options={formOptions?.groupOptions || []}
                 placeholder="Select groups"
               />
             </div>
@@ -120,7 +121,7 @@ export const ReportsCreateConfig = () => {
                 isMulti
                 value={reportConfig.metrics}
                 onChange={(e) => updateReportConfig({ metrics: e.target.value || [] })}
-                options={METRIC_OPTIONS}
+                options={formOptions?.metricOptions || []}
                 placeholder="Select metrics"
               />
             </div>
@@ -138,7 +139,7 @@ export const ReportsCreateConfig = () => {
               <SelectComponent
                 value={reportConfig.format}
                 onChange={(e) => updateReportConfig({ format: e.target.value })}
-                options={OUTPUT_FORMAT_OPTIONS}
+                options={formOptions?.outputFormatOptions || []}
                 placeholder="Select format"
               />
             </div>

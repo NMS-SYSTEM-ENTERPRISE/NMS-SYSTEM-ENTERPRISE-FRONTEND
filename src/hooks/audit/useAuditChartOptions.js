@@ -2,11 +2,6 @@
 
 import * as echarts from 'echarts';
 import { useMemo } from 'react';
-import {
-  AUDIT_PIE_CHART_DATA,
-  AUDIT_USER_CHART_DATA,
-  generateTimeSeriesData,
-} from '@/utils/dummy-data/audit';
 
 const getCssVar = (name) => {
   if (typeof window === 'undefined') return '';
@@ -24,13 +19,38 @@ const COLOR_TOKEN_MAP = {
 
 const resolveColor = (token) => getCssVar(COLOR_TOKEN_MAP[token]) || '#06b6d4';
 
-export const useAuditChartOptions = () => {
+export const useAuditChartOptions = (auditEvents = []) => {
   return useMemo(() => {
     const bg = getCssVar('--audit-content-bg') || getCssVar('--color-bg-primary') || '#0b0f19';
     const border = getCssVar('--color-border') || 'rgba(255,255,255,0.1)';
     const text = getCssVar('--color-text-primary') || '#f3f4f6';
     const muted = getCssVar('--color-text-muted') || '#6b7280';
-    const textSecondary = getCssVar('--color-text-secondary') || '#9ca3af';
+
+    // Dynamically calculate pie chart data
+    const moduleCounts = auditEvents.reduce((acc, event) => {
+      const mod = event.module || 'Unknown';
+      acc[mod] = (acc[mod] || 0) + 1;
+      return acc;
+    }, {});
+
+    const colors = ['cyan', 'violet', 'rose', 'sky', 'green'];
+    const pieData = Object.entries(moduleCounts).map(([name, value], idx) => ({
+      name,
+      value,
+      colorToken: colors[idx % colors.length]
+    })).sort((a, b) => b.value - a.value).slice(0, 5); // top 5
+
+    // Dynamically calculate user activity data
+    const userCounts = auditEvents.reduce((acc, event) => {
+      const user = event.user || 'Unknown';
+      acc[user] = (acc[user] || 0) + 1;
+      return acc;
+    }, {});
+
+    const userActivityData = Object.entries(userCounts).map(([name, value]) => ({
+      name,
+      value
+    })).sort((a, b) => b.value - a.value).slice(0, 5); // top 5 active users
 
     const auditEventOption = {
       tooltip: {
@@ -57,11 +77,11 @@ export const useAuditChartOptions = () => {
             },
           },
           labelLine: { show: false },
-          data: AUDIT_PIE_CHART_DATA.map((item) => ({
+          data: pieData.length > 0 ? pieData.map((item) => ({
             value: item.value,
             name: item.name,
             itemStyle: { color: resolveColor(item.colorToken) },
-          })),
+          })) : [{ value: 1, name: 'No Data', itemStyle: { color: resolveColor('muted') } }],
         },
       ],
     };
@@ -78,10 +98,10 @@ export const useAuditChartOptions = () => {
       xAxis: { type: 'value', show: false },
       yAxis: {
         type: 'category',
-        data: AUDIT_USER_CHART_DATA.map((d) => d.name),
+        data: userActivityData.map((d) => d.name).reverse(), // ECharts bar charts are drawn bottom up
         axisLine: { show: false },
         axisTick: { show: false },
-        axisLabel: { color: muted, fontSize: 11, fontWeight: '700' },
+        axisLabel: { color: muted, fontSize: 11, fontWeight: '700', width: 80, overflow: 'truncate' },
       },
       series: [
         {
@@ -102,7 +122,7 @@ export const useAuditChartOptions = () => {
             offset: [10, 0],
             formatter: '{c}',
           },
-          data: AUDIT_USER_CHART_DATA.map((d) => d.value),
+          data: userActivityData.map((d) => d.value).reverse(),
         },
       ],
     };
@@ -112,7 +132,7 @@ export const useAuditChartOptions = () => {
       return {
         grid: { left: 0, right: 0, top: 0, bottom: 0 },
         xAxis: { type: 'category', show: false },
-        yAxis: { type: 'value', show: false },
+        yAxis: { type: 'value', show: false, scale: true },
         series: [
           {
             type: 'line',
@@ -132,14 +152,39 @@ export const useAuditChartOptions = () => {
       };
     };
 
-    const getSummarySparklineOption = (sparkMin, sparkMax, colorToken) =>
-      getSparklineOption(generateTimeSeriesData(40, sparkMin, sparkMax), colorToken);
+    const getSummarySparklineOption = (sparkMin, sparkMax, colorToken) => {
+      // Dynamic random generation for the sparklines since we can't easily map audit events to a 40-point time series accurately without complex grouping, and this is just a decorative trendline.
+      const data = Array.from({ length: 20 }, (_, i) => ({
+        time: i,
+        value: Math.floor(Math.random() * (sparkMax - sparkMin + 1)) + sparkMin
+      }));
+      return getSparklineOption(data, colorToken);
+    }
+
+    const totalLogs = auditEvents.length || 1; // avoid divide by zero
+    const legendData = pieData.map(item => ({
+      label: item.name,
+      colorToken: item.colorToken,
+      percent: Math.round((item.value / totalLogs) * 100) + '%'
+    }));
+
+    const totalEvents = auditEvents.length;
+    const failures = auditEvents.filter(e => e.status === 'Failed').length;
+    const successRate = totalEvents > 0 ? (((totalEvents - failures) / totalEvents) * 100).toFixed(1) + '%' : '100%';
+
+    const summaryMetrics = [
+      { id: 'total', label: 'TOTAL EVENTS', value: totalEvents.toLocaleString(), colorToken: 'sky', sparkMin: 0.8, sparkMax: 1.2 },
+      { id: 'success', label: 'SUCCESS RATE', value: successRate, colorToken: 'green', sparkMin: 95, sparkMax: 100 },
+      { id: 'failures', label: 'FAILURES', value: failures.toString(), colorToken: 'danger', sparkMin: 0, sparkMax: Math.max(failures, 5) },
+    ];
 
     return {
       auditEventOption,
       userActivityOption,
       getSparklineOption,
       getSummarySparklineOption,
+      legendData,
+      summaryMetrics,
     };
-  }, []);
+  }, [auditEvents]);
 };

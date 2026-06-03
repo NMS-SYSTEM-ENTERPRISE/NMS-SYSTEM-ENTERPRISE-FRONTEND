@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './styles.module.css';
+import { loginApi } from '@/networking/auth/auth-apis';
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -13,21 +14,46 @@ const LoginScreen = () => {
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (error) setError(null);
   };
 
-  const handleLogin = (e) => {
+  const handleFocus = () => {
+    if (error) setError(null);
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulating a professional login delay
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      const response = await loginApi({
+        username_or_email: formData.username,
+        password: formData.password
+      });
+
+      const data = response.data || response; // depending on axios setup
+      if (data.access_token) {
+        localStorage.setItem('accessToken', data.access_token);
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+        router.push('/dashboard');
+      }
+    } catch (err) {
+      console.error('Login failed', err);
+      // Try to extract useful error message if FastAPI raises HTTPException
+      const detail = err.detail || err.message || 'Login failed. Please check your credentials.';
+      const msg = Array.isArray(detail) ? detail[0]?.msg : detail;
+      setError(typeof msg === 'string' ? msg : 'An unexpected error occurred');
+    } finally {
       setIsLoading(false);
-      router.push('/dashboard');
-    }, 1500);
+    }
   };
 
   return (
@@ -76,6 +102,13 @@ const LoginScreen = () => {
             <p>Please enter your details to login and securely access your dashboard.</p>
           </div>
 
+          {error && (
+            <div className={styles.errorMessage} style={{ color: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', padding: '12px', borderRadius: '6px', marginBottom: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon icon="mdi:alert-circle-outline" width={18} />
+              {error}
+            </div>
+          )}
+
           {/* Login Form */}
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
@@ -87,9 +120,10 @@ const LoginScreen = () => {
                   id="username"
                   name="username"
                   className={styles.loginInput}
-                  placeholder="e.g. admin@netmonitor.pro"
+                  placeholder="e.g. admin@nms.com"
                   value={formData.username}
                   onChange={handleInputChange}
+                  onFocus={handleFocus}
                   required
                 />
               </div>
@@ -107,6 +141,7 @@ const LoginScreen = () => {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleInputChange}
+                  onFocus={handleFocus}
                   required
                 />
                 <button
@@ -160,9 +195,9 @@ const LoginScreen = () => {
 
       <div className={styles.loginRight}>
         <div className={styles.illustrationWrapper}>
-          <img 
-            src="/images/login-illustration.png" 
-            alt="NMS Monitoring Illustration" 
+          <img
+            src="/images/login-illustration.png"
+            alt="NMS Monitoring Illustration"
             className={styles.illustrationImage}
           />
         </div>

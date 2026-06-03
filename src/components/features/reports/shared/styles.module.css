@@ -300,11 +300,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 14, 26, 1) 0%,
-    rgba(18, 22, 33, 1) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(10, 14, 26, 1) 0%,
+      rgba(18, 22, 33, 1) 100%);
 }
 
 /* Premium Toolbar */
@@ -626,13 +624,11 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(255, 255, 255, 0.1) 80%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.1) 20%,
+      rgba(255, 255, 255, 0.1) 80%,
+      transparent);
 }
 
 .infoSection {
@@ -741,6 +737,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

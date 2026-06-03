@@ -19,6 +19,8 @@ export const AuditHeader = () => {
     setFilters,
     setShowFilterSidebar,
     handleOpenActionSidebar,
+    fetchAuditLogs,
+    loading,
   } = useAudit();
 
   return (
@@ -92,8 +94,10 @@ export const AuditHeader = () => {
             size="icon"
             className={sharedStyles.actionBtn}
             title="Refresh"
+            onClick={fetchAuditLogs}
+            disabled={loading}
           >
-            <Icon icon="mdi:refresh" width={20} height={20} />
+            <Icon icon="mdi:refresh" width={20} height={20} className={loading ? sharedStyles.spin : ''} />
           </Button>
           <Button
             variant="ghost"

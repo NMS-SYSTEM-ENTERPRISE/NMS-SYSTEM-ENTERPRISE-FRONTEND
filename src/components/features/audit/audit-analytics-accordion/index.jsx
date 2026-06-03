@@ -7,11 +7,10 @@ import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { useAudit } from '@/hooks/audit';
 import { useAuditChartOptions } from '@/hooks/audit/useAuditChartOptions';
 import { AUDIT_LEGEND_DOT_CLASS } from '@/utils/constants/audit';
-import { AUDIT_DISTRIBUTION_LEGEND } from '@/utils/dummy-data/audit';
 
 export const AuditAnalyticsAccordion = () => {
-  const { activeView, expandedSections, toggleSection } = useAudit();
-  const { auditEventOption, userActivityOption } = useAuditChartOptions();
+  const { activeView, expandedSections, toggleSection, auditEvents } = useAudit();
+  const { auditEventOption, userActivityOption, legendData } = useAuditChartOptions(auditEvents);
 
   if (activeView !== 'overview') return null;
 
@@ -52,7 +51,7 @@ export const AuditAnalyticsAccordion = () => {
               <div className={sharedStyles.chartFlex}>
                 <AuditChart option={auditEventOption} size="md" />
                 <div className={sharedStyles.simpleLegend}>
-                  {AUDIT_DISTRIBUTION_LEGEND.map((row) => (
+                  {(legendData || []).map((row) => (
                     <div key={row.label} className={sharedStyles.legendRow}>
                       <span
                         className={clsx(

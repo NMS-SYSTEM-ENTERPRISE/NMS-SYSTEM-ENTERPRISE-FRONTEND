@@ -1,3 +1,3 @@
 export const AUTH_ENDPOINTS = {
-  LOGIN: 'users/login',
+  LOGIN: 'user-settings/login',
 };

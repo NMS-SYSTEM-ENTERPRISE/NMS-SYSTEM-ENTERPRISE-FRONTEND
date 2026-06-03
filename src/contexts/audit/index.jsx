@@ -1,12 +1,12 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
 import {
   DEFAULT_AUDIT_EXPANDED_SECTIONS,
   DEFAULT_AUDIT_FILTERS,
   DEFAULT_AUDIT_VIEW,
 } from '@/utils/constants/audit';
-import { MOCK_AUDIT_EVENTS } from '@/utils/dummy-data/audit';
+import { getAuditLogs } from '@/networking/settings/system/audit-logs/audit-apis';
 
 export const AuditContext = createContext(null);
 
@@ -22,25 +22,70 @@ export const AuditProvider = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [filters, setFilters] = useState(DEFAULT_AUDIT_FILTERS);
 
+  const [auditEvents, setAuditEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchAuditLogs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getAuditLogs();
+      // Transform backend response to match frontend expectations if necessary
+      const mappedData = (data.items || []).map(item => {
+        const dateObj = new Date(item.timestamp + 'Z'); // ensure UTC parsing if missing Z
+        const formattedTime = isNaN(dateObj)
+          ? item.timestamp
+          : dateObj.toLocaleString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+          });
+
+        return {
+          id: String(item.id),
+          action: item.action,
+          operationType: item.action,
+          message: `${item.action} performed in ${item.module}`, // fallback or mapped
+          module: item.module,
+          user: item.username || item.user_id || 'System',
+          timestamp: formattedTime,
+          status: item.status_code >= 400 ? 'Failed' : 'Success',
+          ip: item.ip_address || 'N/A',
+          remoteIp: item.ip_address || 'N/A',
+          details: item.details || {}
+        };
+      });
+      setAuditEvents(mappedData);
+    } catch (err) {
+      console.error('Failed to load audit logs', err);
+      setError('Failed to load audit logs');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAuditLogs();
+  }, [fetchAuditLogs]);
+
   const filteredEvents = useMemo(() => {
-    let events = MOCK_AUDIT_EVENTS;
+    let events = auditEvents;
     const query = searchQuery.toLowerCase();
     if (query) {
       events = events.filter(
         (e) =>
-          e.message.toLowerCase().includes(query) ||
-          e.user.toLowerCase().includes(query) ||
-          e.module.toLowerCase().includes(query)
+          e.message?.toLowerCase().includes(query) ||
+          e.user?.toLowerCase().includes(query) ||
+          e.module?.toLowerCase().includes(query)
       );
     }
-    if (filters.module) {
+    if (filters.module && filters.module !== 'All') {
       events = events.filter((e) => e.module === filters.module);
     }
     if (filters.status && filters.status !== 'All') {
       events = events.filter((e) => e.status === filters.status);
     }
     return events;
-  }, [searchQuery, filters.module, filters.status]);
+  }, [searchQuery, filters.module, filters.status, auditEvents]);
 
   const toggleSection = useCallback((sectionId) => {
     setExpandedSections((prev) => {
@@ -59,7 +104,6 @@ export const AuditProvider = ({ children }) => {
   const handleApplyFilters = useCallback((appliedFilters) => {
     setSearchQuery(appliedFilters.search || '');
     setFilters((prev) => ({ ...prev, ...appliedFilters }));
-    console.log('Applied filters:', appliedFilters);
   }, []);
 
   const handleFilterChange = useCallback((key, value) => {
@@ -92,7 +136,10 @@ export const AuditProvider = ({ children }) => {
     handleFilterChange,
     handleOpenActionSidebar,
     filteredEvents,
-    auditEvents: MOCK_AUDIT_EVENTS,
+    auditEvents,
+    loading,
+    error,
+    fetchAuditLogs,
   };
 
   return <AuditContext.Provider value={value}>{children}</AuditContext.Provider>;

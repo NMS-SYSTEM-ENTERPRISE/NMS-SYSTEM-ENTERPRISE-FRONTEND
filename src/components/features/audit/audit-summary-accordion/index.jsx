@@ -7,11 +7,10 @@ import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { useAudit } from '@/hooks/audit';
 import { useAuditChartOptions } from '@/hooks/audit/useAuditChartOptions';
 import { AUDIT_METRIC_VALUE_CLASS } from '@/utils/constants/audit';
-import { AUDIT_SUMMARY_METRICS } from '@/utils/dummy-data/audit';
 
 export const AuditSummaryAccordion = () => {
-  const { activeView, expandedSections, toggleSection } = useAudit();
-  const { getSummarySparklineOption } = useAuditChartOptions();
+  const { activeView, expandedSections, toggleSection, auditEvents } = useAudit();
+  const { getSummarySparklineOption, summaryMetrics } = useAuditChartOptions(auditEvents);
 
   if (activeView !== 'overview') return null;
 
@@ -44,7 +43,7 @@ export const AuditSummaryAccordion = () => {
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
           <div className={sharedStyles.realtimeGrid}>
-            {AUDIT_SUMMARY_METRICS.map((metric) => (
+            {(summaryMetrics || []).map((metric) => (
               <div key={metric.id} className={sharedStyles.metricWidget}>
                 <div className={sharedStyles.metricMeta}>
                   <span className={sharedStyles.metricLabel}>{metric.label}</span>

@@ -1,12 +1,13 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
 import {
   DEFAULT_LOG_EXPANDED_SECTIONS,
   DEFAULT_LOG_FILTERS,
   DEFAULT_LOG_VIEW,
 } from '@/utils/constants/log-management';
-import { MOCK_LOG_EVENTS } from '@/utils/dummy-data/log-management';
+import { fetchSyslogsApi } from '@/networking/network-monitoring/log-management-apis';
+import { toast } from 'sonner';
 
 export const LogManagementContext = createContext(null);
 
@@ -23,22 +24,44 @@ export const LogManagementProvider = ({ children }) => {
   const [showEventDetail, setShowEventDetail] = useState(false);
   const [filters, setFilters] = useState(DEFAULT_LOG_FILTERS);
 
-  const filteredEvents = useMemo(() => {
-    let events = MOCK_LOG_EVENTS;
-    const query = searchQuery.toLowerCase();
-    if (query) {
-      events = events.filter(
-        (e) =>
-          e.message.toLowerCase().includes(query) ||
-          e.source.includes(query) ||
-          e.category.toLowerCase().includes(query)
-      );
+  const [syslogs, setSyslogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadSyslogs = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchSyslogsApi({
+        search: searchQuery || undefined,
+        severity: filters.severity || undefined,
+        page: 1,
+        size: 100,
+      });
+      const data = response.data || response;
+      setSyslogs(data.data || []);
+    } catch (error) {
+      console.error('Error fetching syslogs:', error);
+      toast.error('Failed to load syslogs');
+    } finally {
+      setIsLoading(false);
     }
-    if (filters.severity) {
-      events = events.filter((e) => e.severity === filters.severity);
-    }
-    return events;
   }, [searchQuery, filters.severity]);
+
+  useEffect(() => {
+    loadSyslogs();
+  }, [loadSyslogs]);
+
+  const filteredEvents = useMemo(() => {
+    // The backend handles filtering by search and severity now.
+    // So we just return the syslogs, optionally formatting them for the UI.
+    return syslogs.map(log => ({
+      id: log.id,
+      timestamp: log.timestamp,
+      source: log.source_ip,
+      category: log.category || 'System',
+      severity: log.severity_name?.toLowerCase() || 'info',
+      message: log.message,
+    }));
+  }, [syslogs]);
 
   const toggleSection = useCallback((sectionId) => {
     setExpandedSections((prev) => {
@@ -88,6 +111,7 @@ export const LogManagementProvider = ({ children }) => {
     handleFilterChange,
     handleResetFilters,
     filteredEvents,
+    loadSyslogs,
   };
 
   return (

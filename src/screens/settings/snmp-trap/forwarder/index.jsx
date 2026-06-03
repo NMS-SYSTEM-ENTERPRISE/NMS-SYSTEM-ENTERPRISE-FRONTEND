@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock data
 const MOCK_FORWARDERS = [
   {
@@ -37,10 +38,10 @@ const SNMPTrapForwarder = () => {
 
   const handleCreate = () => {
     if (!forwarderName || !destinationIP || !port) {
-      alert('Please fill in required fields');
+      toast.error('Please fill in required fields');
       return;
     }
-    alert('SNMP Trap Forwarder created successfully!');
+    toast.success('SNMP Trap Forwarder created successfully!');
     handleReset();
     setShowCreateModal(false);
   };

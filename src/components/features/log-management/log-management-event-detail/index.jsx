@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
 import { useLogManagement } from '@/hooks/log-management';
-import { MOCK_EVENT_EXTENDED_ATTRIBUTES } from '@/utils/dummy-data/log-management';
 
 const getSeverityIcon = (severity) => {
   const key = severity.toLowerCase();
@@ -141,12 +140,16 @@ export const LogManagementEventDetail = () => {
                 <span>Extended Attributes</span>
               </div>
               <div className={sharedStyles.attributesGrid}>
-                {MOCK_EVENT_EXTENDED_ATTRIBUTES.map((attr) => (
-                  <div key={attr.key} className={sharedStyles.attrTag}>
-                    <span className={sharedStyles.attrKey}>{attr.key}:</span>
-                    <span className={sharedStyles.attrVal}>{attr.val}</span>
-                  </div>
-                ))}
+                {selectedEvent.extendedAttributes && selectedEvent.extendedAttributes.length > 0 ? (
+                  selectedEvent.extendedAttributes.map((attr) => (
+                    <div key={attr.key} className={sharedStyles.attrTag}>
+                      <span className={sharedStyles.attrKey}>{attr.key}:</span>
+                      <span className={sharedStyles.attrVal}>{attr.val}</span>
+                    </div>
+                  ))
+                ) : (
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>No extended attributes found</span>
+                )}
               </div>
             </div>
           </div>

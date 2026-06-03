@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock NetRoute data
 const MOCK_NETROUTES = [
   { id: 1, routeName: 'OpenAI', source: 'AIOps', destination: 'www.openai.com', port: 443, tag: 'openai', manageStatus: true },
@@ -35,7 +36,7 @@ const NetRouteSettings = () => {
 
   const handleCreateNetRoute = (e) => {
     e.preventDefault();
-    alert('NetRoute created successfully!');
+    toast.success('NetRoute created successfully!');
     setShowCreateModal(false);
     handleReset();
   };

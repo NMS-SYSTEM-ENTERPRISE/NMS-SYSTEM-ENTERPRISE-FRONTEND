@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from '../../shared-settings-styles.module.css';
 
+import { toast } from 'sonner';
 const MOCK_RUNBOOKS = [
   { id: 1, name: 'ansible_fake_test', description: '', usedCount: 2, type: 'SSH Script', category: 'Ansible Playbook', scheduler: null, lastRunResult: null },
   { id: 2, name: 'Ansible_Real_Test', description: '', usedCount: 2, type: 'SSH Script', category: 'Ansible Playbook', scheduler: null, lastRunResult: 'View Result' },
@@ -100,8 +101,8 @@ const RunbookPlugin = () => {
                           <div className={styles.dropdownMenu}>
                             <div className={styles.dropdownItem} onClick={() => handleMenuAction('Assign Monitor', item)}><Icon icon="mdi:link-variant" width={16} height={16} /> Assign Monitor</div>
                             <div className={styles.dropdownItem} onClick={() => handleMenuAction('Schedule Runbook', item)}><Icon icon="mdi:calendar-clock" width={16} height={16} /> Schedule Runbook</div>
-                            <div className={styles.dropdownItem} onClick={() => alert('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit Runbook</div>
-                            <div className={styles.dropdownItem} style={{ color: 'var(--color-danger)' }} onClick={() => alert('Deleting...')}><Icon icon="mdi:trash-can-outline" width={16} height={16} /> Delete Runbook</div>
+                            <div className={styles.dropdownItem} onClick={() => toast.info('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit Runbook</div>
+                            <div className={styles.dropdownItem} style={{ color: 'var(--color-danger)' }} onClick={() => toast.info('Deleting...')}><Icon icon="mdi:trash-can-outline" width={16} height={16} /> Delete Runbook</div>
                           </div>
                         )}
                       </div>

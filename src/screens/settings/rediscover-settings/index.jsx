@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock rediscover schedule data
 const MOCK_REDISCOVER_SCHEDULES = [
   { id: 1, name: 'Daily Device Rediscovery', scheduleType: 'Daily', time: '02:00 AM', monitors: 152, status: 'Active', lastRun: '2024-11-29 02:00:15', nextRun: '2024-11-30 02:00:00' },
@@ -34,7 +35,7 @@ const RediscoverSettings = () => {
 
   const handleCreateSchedule = (e) => {
     e.preventDefault();
-    alert('Rediscover schedule created successfully!');
+    toast.success('Rediscover schedule created successfully!');
     setShowCreateModal(false);
     setFormData({ name: '', scheduleType: 'Daily', time: '02:00', monitors: [] });
   };
@@ -124,9 +125,9 @@ const RediscoverSettings = () => {
                       </button>
                       {showActionsMenu === schedule.id && (
                         <div className={styles.actionsMenu}>
-                          <div className={styles.actionItem} onClick={() => alert('Running now...')}><Icon icon="mdi:play" width={16} height={16} /> Run Now</div>
-                          <div className={styles.actionItem} onClick={() => alert('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit</div>
-                          <div className={styles.actionItem} onClick={() => alert('Deleting...')}><Icon icon="mdi:trash-can" width={16} height={16} /> Delete</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Running now...')}><Icon icon="mdi:play" width={16} height={16} /> Run Now</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Deleting...')}><Icon icon="mdi:trash-can" width={16} height={16} /> Delete</div>
                         </div>
                       )}
                     </div>

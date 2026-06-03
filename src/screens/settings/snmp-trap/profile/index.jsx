@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock data for the table
 const MOCK_PROFILES = [
   {
@@ -43,10 +44,10 @@ const SNMPTrapProfile = () => {
 
   const handleCreate = () => {
     if (!profileName || !trapOid) {
-      alert('Please fill in required fields');
+      toast.error('Please fill in required fields');
       return;
     }
-    alert('SNMP Trap Profile created successfully!');
+    toast.success('SNMP Trap Profile created successfully!');
     setShowCreateForm(false);
   };
 

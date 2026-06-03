@@ -2,7 +2,6 @@
 
 import * as echarts from 'echarts';
 import { useMemo } from 'react';
-import { generateTimeSeriesData } from '@/utils/dummy-data/log-management';
 
 const getCssVar = (name) => {
   if (typeof window === 'undefined') return '';
@@ -60,7 +59,7 @@ export const useLogManagementChartOptions = () => {
               { offset: 1, color: 'rgba(6, 182, 212, 0)' },
             ]),
           },
-          data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 5000 + 1000)),
+          data: [], // Removed dummy statistics data
         },
       ],
     };
@@ -90,8 +89,8 @@ export const useLogManagementChartOptions = () => {
       };
     };
 
-    const getSummarySparklineOption = (sparkMin, sparkMax, colorToken) =>
-      getSparklineOption(generateTimeSeriesData(40, sparkMin, sparkMax), colorToken);
+    const getSummarySparklineOption = (data = [], colorToken) =>
+      getSparklineOption(data.length ? data : [{value: 0}, {value: 0}], colorToken);
 
     return { lineChartOption, getSummarySparklineOption };
   }, []);

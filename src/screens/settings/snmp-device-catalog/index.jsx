@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock SNMP Device Catalog data
 const MOCK_SNMP_CATALOGS = [
   {
@@ -37,7 +38,7 @@ const SNMPDeviceCatalog = () => {
   );
 
   const handleCreateNew = () => {
-    alert('Creating new SNMP Device Catalog');
+    toast.info('Creating new SNMP Device Catalog');
   };
 
   return (

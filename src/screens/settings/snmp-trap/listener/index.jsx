@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 const SNMPTrapListener = () => {
   // SNMP v1/v2c state
   const [v1v2cEnabled, setV1v2cEnabled] = useState(true);
@@ -28,7 +29,7 @@ const SNMPTrapListener = () => {
   };
 
   const handleSave = () => {
-    alert('SNMP Trap Listener settings saved successfully!');
+    toast.success('SNMP Trap Listener settings saved successfully!');
   };
 
   return (

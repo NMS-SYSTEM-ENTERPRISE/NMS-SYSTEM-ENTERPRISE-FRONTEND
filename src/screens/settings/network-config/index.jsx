@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import sharedStyles from '../shared-settings-styles.module.css';
 
+import { toast } from 'sonner';
 const NetworkConfigSettings = () => {
   const [activeTab, setActiveTab] = useState('tftp');
 
@@ -110,7 +111,7 @@ const NetworkConfigSettings = () => {
 
             <div className={sharedStyles.actionButtons}>
               <button className={sharedStyles.btnSecondary}>Reset to Default</button>
-              <button className={sharedStyles.btnPrimary} onClick={() => alert('Settings saved!')}>Save Configuration</button>
+              <button className={sharedStyles.btnPrimary} onClick={() => toast.success('Settings saved!')}>Save Configuration</button>
             </div>
           </div>
         </div>

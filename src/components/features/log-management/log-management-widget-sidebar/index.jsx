@@ -7,7 +7,24 @@ import { useState } from 'react';
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
 import { useLogManagement } from '@/hooks/log-management';
 import { LOG_WIDGET_ICON_CLASS } from '@/utils/constants/log-management';
-import { WIDGET_CATEGORIES, WIDGET_SIDEBAR_TABS } from '@/utils/dummy-data/log-management';
+
+const WIDGET_SIDEBAR_TABS = ['All', 'Charts', 'Tables', 'Metrics'];
+const WIDGET_CATEGORIES = [
+  {
+    category: 'Log Trends',
+    widgets: [
+      { id: 'w1', name: 'Log Volume', icon: 'mdi:chart-bar', colorToken: 'cyan' },
+      { id: 'w2', name: 'Severity Trends', icon: 'mdi:chart-line', colorToken: 'violet' }
+    ]
+  },
+  {
+    category: 'Security',
+    widgets: [
+      { id: 'w3', name: 'Failed Logins', icon: 'mdi:shield-alert', colorToken: 'red' },
+      { id: 'w4', name: 'Access Denied', icon: 'mdi:account-cancel', colorToken: 'orange' }
+    ]
+  }
+];
 
 export const LogManagementWidgetSidebar = () => {
   const { showWidgetSidebar, setShowWidgetSidebar } = useLogManagement();

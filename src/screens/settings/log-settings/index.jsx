@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import styles from '../shared-settings-styles.module.css';
 
+import { toast } from 'sonner';
 const LogSettings = () => {
   const [settings, setSettings] = useState({
     enableLogCollection: true,
@@ -18,7 +19,7 @@ const LogSettings = () => {
 
   const handleSave = () => {
     console.log('Save log settings:', settings);
-    alert('Settings saved successfully!');
+    toast.success('Settings saved successfully!');
   };
 
   return (
@@ -172,7 +173,7 @@ const LogSettings = () => {
           </div>
 
           <div className={styles.actionButtons}>
-            <button className={styles.btnSecondary} onClick={() => alert('Resetting to default...')}>Reset to Default</button>
+            <button className={styles.btnSecondary} onClick={() => toast.info('Resetting to default...')}>Reset to Default</button>
             <button className={styles.btnPrimary} onClick={handleSave}>Save Settings</button>
           </div>
         </div>

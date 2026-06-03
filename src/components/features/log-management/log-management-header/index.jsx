@@ -10,26 +10,68 @@ import {
   LOG_SEVERITY_FILTER_OPTIONS,
   LOG_TIME_RANGE_OPTIONS,
 } from '@/utils/constants/log-management';
+import { toast } from 'sonner';
 
 export const LogManagementHeader = () => {
-  const { searchQuery, setSearchQuery, filters, setFilters, setShowFilterSidebar } =
+  const { searchQuery, setSearchQuery, filters, setFilters, setShowFilterSidebar, loadSyslogs, filteredEvents } =
     useLogManagement();
 
-  return (
-    <header className={sharedStyles.header}>
-      <div className={sharedStyles.headerLeft}>
-        <div className={sharedStyles.headerIcon}>
-          <Icon icon="mdi:file-document-multiple" width={24} height={24} />
-        </div>
-        <div className={sharedStyles.headerText}>
-          <h1 className={sharedStyles.headerTitle}>Log Management</h1>
-          <span className={sharedStyles.headerSubtitle}>Real-time system log stream</span>
-        </div>
-      </div>
+  const handleExport = () => {
+    if (!filteredEvents || filteredEvents.length === 0) {
+      toast.error('No logs available to export.');
+      return;
+    }
+    const headers = ['Timestamp', 'Category', 'Severity', 'Source', 'Message'];
+    const rows = filteredEvents.map(e => [
+      e.timestamp, e.category, e.severity, e.source, `"${(e.message || '').replace(/"/g, '""')}"`
+    ].join(','));
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'syslogs-export.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
-      <div className={sharedStyles.headerRight}>
-        <div className={sharedStyles.filterGroup}>
-          <label className={sharedStyles.filterLabel} htmlFor="log-severity-filter">
+  return (
+    <header className={sharedStyles.header} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+      <div className={sharedStyles.headerLeft} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className={sharedStyles.headerIcon}>
+            <Icon icon="mdi:file-document-multiple" width={24} height={24} />
+          </div>
+          <div className={sharedStyles.headerText}>
+            <h1 className={sharedStyles.headerTitle} style={{ margin: 0, fontSize: '1.1rem' }}>Log Management</h1>
+            <span className={sharedStyles.headerSubtitle} style={{ opacity: 0.7, fontSize: '0.75rem', textTransform: 'uppercase' }}>Real-time system log stream</span>
+          </div>
+        </div>
+
+        <div style={{ width: '1px', height: '24px', backgroundColor: 'var(--color-border)', opacity: 0.5, margin: '0 0.5rem' }} />
+
+        <div className={sharedStyles.headerActions} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <Button variant="ghost" size="icon" className={sharedStyles.actionBtn} title="Refresh Stream" onClick={loadSyslogs}>
+            <Icon icon="mdi:refresh" width={18} height={18} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={sharedStyles.actionBtn}
+            title="Advanced Filters"
+            onClick={() => setShowFilterSidebar(true)}
+          >
+            <Icon icon="mdi:filter-variant" width={18} height={18} />
+          </Button>
+          <Button variant="ghost" size="icon" className={sharedStyles.actionBtn} title="Export Logs" onClick={handleExport}>
+            <Icon icon="mdi:download" width={18} height={18} />
+          </Button>
+        </div>
+
+        <div className={sharedStyles.filterGroup} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: '1rem' }}>
+          <label className={sharedStyles.filterLabel} htmlFor="log-severity-filter" style={{ fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.7 }}>
             Severity:
           </label>
           <SelectComponent
@@ -43,8 +85,8 @@ export const LogManagementHeader = () => {
           />
         </div>
 
-        <div className={sharedStyles.filterGroup}>
-          <label className={sharedStyles.filterLabel} htmlFor="log-time-filter">
+        <div className={sharedStyles.filterGroup} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <label className={sharedStyles.filterLabel} htmlFor="log-time-filter" style={{ fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.7 }}>
             Time:
           </label>
           <SelectComponent
@@ -57,7 +99,9 @@ export const LogManagementHeader = () => {
             placeholder="Range"
           />
         </div>
+      </div>
 
+      <div className={sharedStyles.headerRight} style={{ flex: 1, maxWidth: '400px', display: 'flex', justifyContent: 'flex-end' }}>
         <Input
           type="text"
           placeholder="Search stream..."
@@ -66,25 +110,8 @@ export const LogManagementHeader = () => {
           icon={<Icon icon="mdi:magnify" width={18} height={18} />}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ width: '100%' }}
         />
-
-        <div className={sharedStyles.headerActions}>
-          <Button variant="ghost" size="icon" className={sharedStyles.actionBtn} title="Refresh Stream">
-            <Icon icon="mdi:refresh" width={20} height={20} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={sharedStyles.actionBtn}
-            title="Advanced Filters"
-            onClick={() => setShowFilterSidebar(true)}
-          >
-            <Icon icon="mdi:filter-variant" width={20} height={20} />
-          </Button>
-          <Button variant="ghost" size="icon" className={sharedStyles.actionBtn} title="Export Logs">
-            <Icon icon="mdi:download" width={20} height={20} />
-          </Button>
-        </div>
       </div>
     </header>
   );

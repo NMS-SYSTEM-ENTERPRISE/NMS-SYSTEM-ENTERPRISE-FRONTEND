@@ -1,6 +1,7 @@
 import { authApi } from '@/services/axios';
 import { jwtDecode } from '@/services/jwt';
 
+import { toast } from 'sonner';
 // token expired
 
 export const tokenExpired = (exp) => {
@@ -10,7 +11,7 @@ export const tokenExpired = (exp) => {
   clearTimeout(expiredTimer);
 
   expiredTimer = setTimeout(() => {
-    alert('Your session is expired');
+    toast.error('Your session is expired');
     localStorage.removeItem('accessToken');
     window.location.href = '/';
   }, timeLeft);

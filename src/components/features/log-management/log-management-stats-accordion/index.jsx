@@ -7,12 +7,22 @@ import sharedStyles from '@/components/features/log-management/shared/styles.mod
 import { useLogManagement } from '@/hooks/log-management';
 import { useLogManagementChartOptions } from '@/hooks/log-management/useLogManagementChartOptions';
 import { LOG_METRIC_VALUE_CLASS } from '@/utils/constants/log-management';
-import { LOG_SUMMARY_METRICS } from '@/utils/dummy-data/log-management';
 
 export const LogManagementStatsAccordion = () => {
-  const { expandedSections, toggleSection } = useLogManagement();
+  const { expandedSections, toggleSection, filteredEvents } = useLogManagement();
   const { getSummarySparklineOption } = useLogManagementChartOptions();
   const isOpen = expandedSections.has('stats');
+
+  // Dynamic metrics calculation
+  const totalEvents = filteredEvents?.length || 0;
+  const criticalEvents = filteredEvents?.filter(e => e.severity === 'critical' || e.severity === 'emergency' || e.severity === 'alert').length || 0;
+  const warnings = filteredEvents?.filter(e => e.severity === 'warning').length || 0;
+  
+  const dynamicMetrics = [
+    { id: 'm1', label: 'Total Events', value: totalEvents, colorToken: 'cyan' },
+    { id: 'm2', label: 'Critical / Alert', value: criticalEvents, colorToken: 'violet' },
+    { id: 'm3', label: 'Warnings', value: warnings, colorToken: 'green' }
+  ];
 
   return (
     <div className={sharedStyles.accordionGroup} data-open={isOpen}>
@@ -41,7 +51,7 @@ export const LogManagementStatsAccordion = () => {
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
           <div className={sharedStyles.realtimeGrid}>
-            {LOG_SUMMARY_METRICS.map((metric) => (
+            {dynamicMetrics.map((metric) => (
               <div key={metric.id} className={sharedStyles.metricWidget}>
                 <div className={sharedStyles.metricMeta}>
                   <span className={sharedStyles.metricLabel}>{metric.label}</span>
@@ -57,8 +67,7 @@ export const LogManagementStatsAccordion = () => {
                 <div className={sharedStyles.sparklineWrap}>
                   <LogManagementChart
                     option={getSummarySparklineOption(
-                      metric.sparkMin,
-                      metric.sparkMax,
+                      [],
                       metric.colorToken
                     )}
                     size="sm"

@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock file/directory data
 const MOCK_FILE_DIRECTORIES = [
   { id: 1, path: '/var/log', type: 'Directory', osType: 'linux' },
@@ -30,7 +31,7 @@ const FileDirectorySettings = () => {
 
   const handleCreateFileDirectory = (e) => {
     e.preventDefault();
-    alert('File/Directory created successfully!');
+    toast.success('File/Directory created successfully!');
     setShowCreateModal(false);
     setFormData({ path: '', type: 'Directory', osType: 'linux' });
   };
@@ -92,8 +93,8 @@ const FileDirectorySettings = () => {
                       </button>
                       {showActionsMenu === item.id && (
                         <div className={styles.actionsMenu}>
-                          <div className={styles.actionItem} onClick={() => alert('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit</div>
-                          <div className={styles.actionItem} onClick={() => alert('Deleting...')}><Icon icon="mdi:trash-can" width={16} height={16} /> Delete</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Deleting...')}><Icon icon="mdi:trash-can" width={16} height={16} /> Delete</div>
                         </div>
                       )}
                     </div>

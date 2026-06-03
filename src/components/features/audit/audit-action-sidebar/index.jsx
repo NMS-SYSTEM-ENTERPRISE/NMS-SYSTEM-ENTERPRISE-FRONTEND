@@ -7,6 +7,8 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
+
 export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', auditData = [] }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
   const [exportFormat, setExportFormat] = useState('csv');
@@ -22,12 +24,98 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
   if (!isOpen) return null;
 
   const handleCopy = () => {
+    if (!auditData || auditData.length === 0) {
+      toast.error('No data available to copy');
+      return;
+    }
     navigator.clipboard.writeText(JSON.stringify(auditData, null, 2));
-    alert('Audit logs copied to clipboard!');
+    toast.success('Audit logs copied to clipboard!');
   };
 
   const handleExport = () => {
-    alert(`Exporting audit logs as ${exportFormat.toUpperCase()}...`);
+    if (!auditData || auditData.length === 0) {
+      toast.error('No data available to export');
+      return;
+    }
+
+    try {
+      let content = '';
+      let mimeType = '';
+      let fileExtension = '';
+
+      if (exportFormat === 'json') {
+        content = JSON.stringify(auditData, null, 2);
+        mimeType = 'application/json';
+        fileExtension = 'json';
+      } else if (exportFormat === 'csv') {
+        const headers = ['Timestamp', 'Module', 'Operation', 'User', 'Remote IP', 'Message'];
+        const rows = auditData.map(item => [
+          item.timestamp,
+          item.module,
+          item.operationType || item.action,
+          item.user,
+          item.remoteIp || item.ip,
+          item.message
+        ].map(val => `"${String(val || '').replace(/"/g, '""')}"`).join(','));
+
+        content = [headers.join(','), ...rows].join('\n');
+        mimeType = 'text/csv';
+        fileExtension = 'csv';
+      } else if (exportFormat === 'pdf') {
+        // Fallback for PDF without a library: we generate an HTML table and trigger print
+        const printWindow = window.open('', '_blank');
+        const rowsHtml = auditData.map(item => `
+          <tr>
+            <td>${item.timestamp}</td>
+            <td>${item.module}</td>
+            <td>${item.operationType || item.action}</td>
+            <td>${item.user}</td>
+            <td>${item.remoteIp || item.ip}</td>
+          </tr>
+        `).join('');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Audit Logs Export</title>
+              <style>
+                table { width: 100%; border-collapse: collapse; font-family: sans-serif; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+              </style>
+            </head>
+            <body>
+              <h2>Audit Logs Report</h2>
+              <table>
+                <thead>
+                  <tr><th>Timestamp</th><th>Module</th><th>Operation</th><th>User</th><th>IP Address</th></tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+              </table>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        toast.success('Print dialog opened for PDF export');
+        return;
+      }
+
+      // Download file for CSV and JSON
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `audit-logs-export.${fileExtension}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success(`Successfully exported audit logs as ${exportFormat.toUpperCase()}`);
+    } catch (err) {
+      console.error('Export error', err);
+      toast.error('Failed to export audit logs');
+    }
   };
 
   return (
@@ -172,7 +260,7 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
               <Button
                 variant="secondary"
                 className={styles.secondaryBtn}
-                onClick={() => alert('Refreshing data...')}
+                onClick={() => toast.success('Data refresh initiated...')}
               >
                 <Icon icon="mdi:refresh" width={18} height={18} />
                 Refresh Now

@@ -4,6 +4,7 @@ import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { DEFAULT_LIVE_TRAIL_SEARCH_MODE } from '@/utils/constants/log-management-live-trail';
 import { generateMockLogLine } from '@/utils/dummy-data/log-management-live-trail';
 
+import { toast } from 'sonner';
 export const LogManagementLiveTrailContext = createContext(null);
 
 export const LogManagementLiveTrailProvider = ({ children }) => {
@@ -42,7 +43,7 @@ export const LogManagementLiveTrailProvider = ({ children }) => {
 
   const handleStart = useCallback(() => {
     if (!selectedSource) {
-      alert('Please select a source');
+      toast.error('Please select a source');
       return;
     }
     setIsStreaming(true);

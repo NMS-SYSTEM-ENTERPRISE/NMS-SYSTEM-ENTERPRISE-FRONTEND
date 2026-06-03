@@ -41,26 +41,23 @@ CLEAN NEAT FLEXIBLE MODULAR FOLDER STRUCTURE CLEAN FILE NAMES ORGANIZATION NEEDE
 ===================================================================================================================
 
 
+// AUDIT LOGS - PROMPT
+===================================================================================================================
+
 TAKE YOUR OWN TIME HOW MUCH TIME YOU WANT TAKE IT NO PROBLEM WHAT I WANT IS IMPLEMENT IT GRACEFULLY WITH OUT ANY 
 ISSUES.
 
-// AUDIT LOGS - PROMPT
-SCREEN NAME : /audit
+SCREEN NAME : /log-management
 
 CODE BASE NEED TO ANALYZE:
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/audit
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/audit
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/log-management
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/log-management
 
 OBJECTIVE:
 
-- *Audit*: FastAPI middleware that intercepts every `POST/PUT/DELETE` request and logs the User ID and action to an `audit_logs` table.
-
-INITIAL PROCESS NEED TO DONE:
-FOR THIS FIRST WE NEED TO IMPLEMENT THE LOGIN API RIGHT
-
-ALREADY WE HAVE THE API
-/user-settings/login
-
+- *Syslog*: A daemon listening on UDP 514 to receive logs from Routers and Switches. Stored in Elasticsearch or OpenSearch for fast full-text searching.
+- 
+USING YOUR INTELLIGENCE MAKE THIS PROCESS EFFECTIVE CLEAN WITH OUT ANY ISSUES 
 SO TAKE TIME NEATLY DONE IT THEN AFTER THIS
 IMPLEMENT THIS AUDIT LOGS API AND AFTER THAT CHECK THE APIS WITH THE CURL
 AFTER THAT INTEGRATE THE APIS IN THE FRONT END

@@ -3,6 +3,7 @@ import { SelectComponent } from '@/components/ui/select';
 import { useState } from 'react';
 import styles from '../shared-settings-styles.module.css';
 
+import { toast } from 'sonner';
 const FlowSettings = () => {
   const [settings, setSettings] = useState({
     enableFlowCollection: true,
@@ -24,7 +25,7 @@ const FlowSettings = () => {
 
   const handleSave = () => {
     console.log('Save flow settings:', settings);
-    alert('Settings saved successfully!');
+    toast.success('Settings saved successfully!');
   };
 
   return (
@@ -157,7 +158,7 @@ const FlowSettings = () => {
           </div>
 
           <div className={styles.actionButtons}>
-            <button className={styles.btnSecondary} onClick={() => alert('Resetting to default...')}>Reset to Default</button>
+            <button className={styles.btnSecondary} onClick={() => toast.info('Resetting to default...')}>Reset to Default</button>
             <button className={styles.btnPrimary} onClick={handleSave}>Save Settings</button>
           </div>
         </div>

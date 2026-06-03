@@ -6,10 +6,37 @@ import clsx from 'clsx';
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
 import { useLogManagement } from '@/hooks/log-management';
 import { LOG_NAV_ICON_CLASS } from '@/utils/constants/log-management';
-import { MOCK_LOG_GROUPS } from '@/utils/dummy-data/log-management';
 
 export const LogManagementSidebar = () => {
-  const { isSidebarOpen, setIsSidebarOpen, activeView, setActiveView } = useLogManagement();
+  const { isSidebarOpen, setIsSidebarOpen, activeView, setActiveView, filteredEvents } = useLogManagement();
+
+  const totalEvents = filteredEvents?.length || 0;
+  const sysEvents = filteredEvents?.filter(e => e.category === 'System').length || 0;
+  const netEvents = filteredEvents?.filter(e => e.category === 'Network Device').length || 0;
+
+  const dynamicGroups = [
+    {
+      id: 'all',
+      name: 'All Logs',
+      icon: 'mdi:database-search',
+      colorToken: 'cyan',
+      count: totalEvents,
+    },
+    {
+      id: 'system',
+      name: 'System Logs',
+      icon: 'mdi:server',
+      colorToken: 'violet',
+      count: sysEvents,
+    },
+    {
+      id: 'network',
+      name: 'Network Logs',
+      icon: 'mdi:router-network',
+      colorToken: 'green',
+      count: netEvents,
+    }
+  ];
 
   return (
     <aside
@@ -38,7 +65,7 @@ export const LogManagementSidebar = () => {
         </div>
 
         <div className={sharedStyles.treeChildren}>
-          {MOCK_LOG_GROUPS.map((group) => {
+          {dynamicGroups.map((group) => {
             const isActive = activeView === group.id;
             return (
               <div key={group.id} className={sharedStyles.groupItemWrap}>

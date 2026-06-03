@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
   const [shareWith, setShareWith] = useState('');
   const [message, setMessage] = useState('');
@@ -226,7 +227,7 @@ export const ShareWidgetModal = ({ metric, onClose, onShare }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!shareWith || !message) {
-      alert('Please fill in all required fields');
+      toast.error('Please fill in all required fields');
       return;
     }
     onShare({ shareWith, message });

@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
 
+import { toast } from 'sonner';
 // Mock custom field data
 const MOCK_CUSTOM_FIELDS = [
   { id: 1, name: 'abc' },
@@ -35,7 +36,7 @@ const CustomMonitoringField = () => {
 
   const handleCreateField = (e) => {
     e.preventDefault();
-    alert('Custom field created successfully!');
+    toast.success('Custom field created successfully!');
     setShowCreateModal(false);
     setFormData({ fieldName: '', description: '' });
   };
@@ -82,8 +83,8 @@ const CustomMonitoringField = () => {
                       </button>
                       {showActionsMenu === field.id && (
                         <div className={styles.actionsMenu}>
-                          <div className={styles.actionItem} onClick={() => alert('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit</div>
-                          <div className={styles.actionItem} onClick={() => alert('Deleting...')}><Icon icon="mdi:trash-can" width={16} height={16} /> Delete</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Editing...')}><Icon icon="mdi:pencil" width={16} height={16} /> Edit</div>
+                          <div className={styles.actionItem} onClick={() => toast.info('Deleting...')}><Icon icon="mdi:trash-can" width={16} height={16} /> Delete</div>
                         </div>
                       )}
                     </div>

@@ -40,15 +40,11 @@
 }
 
 .headerSearch {
-  flex: 1;
-  min-width: 300px;
-  max-width: 500px;
+  width: 260px;
 }
 
 .searchInput {
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: none !important;
+  width: 100%;
 }
 
 .viewToggle {

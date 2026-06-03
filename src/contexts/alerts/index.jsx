@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { ALERT_ENVIRONMENT_CATEGORIES } from '@/utils/constants/alerts';
 import { DEFAULT_ALERT_OVERVIEW_SECTIONS } from '@/utils/constants/alerts/sections';
-import { MOCK_ALERTS } from '@/utils/dummy-data/alerts';
+import { getAlerts, acknowledgeAlert, ALERTS_WEBSOCKET_URL } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const AlertsContext = createContext(null);
 
@@ -12,38 +12,83 @@ export const AlertsProvider = ({ children }) => {
   const [activeTab, setActiveTab] = useState('metric');
   const [view, setView] = useState('overview');
   const [severityFilter, setSeverityFilter] = useState(null);
-  const [expandedRows, setExpandedRows] = useState(new Set([MOCK_ALERTS[0].id]));
+  const [expandedRows, setExpandedRows] = useState(new Set());
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [openSections, setOpenSections] = useState(DEFAULT_ALERT_OVERVIEW_SECTIONS);
 
+  const [alerts, setAlerts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchAlerts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const res = await getAlerts();
+      setAlerts(res.items || []);
+    } catch (err) {
+      console.error('Failed to fetch alerts:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAlerts();
+  }, [fetchAlerts]);
+
+  // WebSocket Live Updates
+  useEffect(() => {
+    if (!ALERTS_WEBSOCKET_URL) return;
+    const ws = new WebSocket(ALERTS_WEBSOCKET_URL);
+    ws.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.event === 'alert_update') {
+          fetchAlerts(); // Refresh the list when alert status changes
+        }
+      } catch (err) {
+        console.error('WebSocket parse error:', err);
+      }
+    };
+    return () => ws.close();
+  }, [fetchAlerts]);
+
+  const handleAcknowledge = useCallback(async (alertId, { acknowledged, incidentRef, notes }) => {
+    try {
+      await acknowledgeAlert(alertId, { acknowledged, incidentRef, notes });
+      fetchAlerts();
+    } catch (error) {
+      console.error('Failed to acknowledge alert:', error);
+    }
+  }, [fetchAlerts]);
+
   const alertCounts = useMemo(
     () => ({
-      total: MOCK_ALERTS.length,
-      down: MOCK_ALERTS.filter((a) => a.severity === 'down').length,
-      unreachable: MOCK_ALERTS.filter((a) => a.severity === 'unreachable').length,
-      critical: MOCK_ALERTS.filter((a) => a.severity === 'critical').length,
-      major: MOCK_ALERTS.filter((a) => a.severity === 'major').length,
-      warning: MOCK_ALERTS.filter((a) => a.severity === 'warning').length,
+      total: alerts.length,
+      down: alerts.filter((a) => a.severity === 'down').length,
+      unreachable: alerts.filter((a) => a.severity === 'unreachable').length,
+      critical: alerts.filter((a) => a.severity === 'critical').length,
+      major: alerts.filter((a) => a.severity === 'major').length,
+      warning: alerts.filter((a) => a.severity === 'warning').length,
     }),
-    []
+    [alerts]
   );
 
   const categoryStats = useMemo(
     () =>
       ALERT_ENVIRONMENT_CATEGORIES.map((cat) => ({
         name: cat,
-        total: MOCK_ALERTS.filter((a) => a.category === cat).length,
-        down: MOCK_ALERTS.filter((a) => a.category === cat && a.severity === 'down').length,
-        critical: MOCK_ALERTS.filter((a) => a.category === cat && a.severity === 'critical').length,
-        warning: MOCK_ALERTS.filter((a) => a.category === cat && a.severity === 'warning').length,
+        total: alerts.filter((a) => a.category === cat).length,
+        down: alerts.filter((a) => a.category === cat && a.severity === 'down').length,
+        critical: alerts.filter((a) => a.category === cat && a.severity === 'critical').length,
+        warning: alerts.filter((a) => a.category === cat && a.severity === 'warning').length,
       })),
-    []
+    [alerts]
   );
 
   const filteredAlerts = useMemo(() => {
-    if (!severityFilter) return MOCK_ALERTS;
-    return MOCK_ALERTS.filter((alert) => alert.severity === severityFilter);
-  }, [severityFilter]);
+    if (!severityFilter) return alerts;
+    return alerts.filter((alert) => alert.severity === severityFilter);
+  }, [severityFilter, alerts]);
 
   const toggleSection = useCallback((section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -76,6 +121,9 @@ export const AlertsProvider = ({ children }) => {
     alertCounts,
     categoryStats,
     filteredAlerts,
+    isLoading,
+    handleAcknowledge,
+    fetchAlerts,
   };
 
   return <AlertsContext.Provider value={value}>{children}</AlertsContext.Provider>;

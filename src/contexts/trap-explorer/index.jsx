@@ -2,27 +2,9 @@
 
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { DEFAULT_TRAP_FILTERS } from '@/utils/constants/trap-explorer';
-import { MOCK_TRAPS } from '@/utils/dummy-data/trap-explorer';
+import { getTraps, acknowledgeTrap, TRAPS_WEBSOCKET_URL } from '@/networking/network-monitoring/network-monitoring-apis';
 
 export const TrapExplorerContext = createContext(null);
-
-const matchesCategory = (trap, activeCategory) => {
-  if (activeCategory === 'all') return true;
-  return trap.severity === activeCategory;
-};
-
-const matchesFilters = (trap, filters) => {
-  if (filters.trapOid && trap.trapOid !== filters.trapOid) return false;
-  if (filters.source && !trap.source.includes(filters.source)) return false;
-  if (filters.severity && trap.severity !== filters.severity) return false;
-  if (filters.acknowledged !== '') {
-    const ack = filters.acknowledged === 'true';
-    if (trap.acknowledged !== ack) return false;
-  }
-  if (filters.countMin && trap.count < Number(filters.countMin)) return false;
-  if (filters.countMax && trap.count > Number(filters.countMax)) return false;
-  return true;
-};
 
 export const TrapExplorerProvider = ({ children }) => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -35,25 +17,55 @@ export const TrapExplorerProvider = ({ children }) => {
   const [selectedTrapForHistory, setSelectedTrapForHistory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(50);
-  const [expandedTrapIds, setExpandedTrapIds] = useState(new Set(['1']));
+  const [expandedTrapIds, setExpandedTrapIds] = useState(new Set());
   const [selectedTrapIds, setSelectedTrapIds] = useState([]);
 
-  const filteredTraps = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    return MOCK_TRAPS.filter((trap) => {
-      const matchesSearch =
-        !query ||
-        trap.name.toLowerCase().includes(query) ||
-        trap.trapOid.toLowerCase().includes(query) ||
-        trap.source.toLowerCase().includes(query);
-      return matchesSearch && matchesCategory(trap, activeCategory) && matchesFilters(trap, filters);
-    });
-  }, [searchQuery, activeCategory, filters]);
+  const [traps, setTraps] = useState([]);
+  const [totalTrapsCount, setTotalTrapsCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const paginatedTraps = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredTraps.slice(start, start + itemsPerPage);
-  }, [filteredTraps, currentPage, itemsPerPage]);
+  // Fetch traps from API
+  const fetchTraps = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const skip = (currentPage - 1) * itemsPerPage;
+      let severity = null;
+      if (activeCategory !== 'all') {
+        severity = activeCategory;
+      } else if (filters.severity) {
+        severity = filters.severity;
+      }
+
+      const res = await getTraps({ skip, limit: itemsPerPage, severity, source: filters.source || null });
+      setTraps(res.items || []);
+      setTotalTrapsCount(res.total || 0);
+    } catch (error) {
+      console.error('Failed to fetch traps:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, itemsPerPage, activeCategory, filters.severity, filters.source]);
+
+  useEffect(() => {
+    fetchTraps();
+  }, [fetchTraps]);
+
+  // WebSocket Live Updates
+  useEffect(() => {
+    if (!TRAPS_WEBSOCKET_URL) return;
+    const ws = new WebSocket(TRAPS_WEBSOCKET_URL);
+    ws.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.event === 'trap_received') {
+          fetchTraps(); // Refresh the list when a new trap arrives
+        }
+      } catch (err) {
+        console.error('WebSocket parse error:', err);
+      }
+    };
+    return () => ws.close();
+  }, [fetchTraps]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -86,10 +98,19 @@ export const TrapExplorerProvider = ({ children }) => {
 
   const toggleSelectAllTraps = useCallback(
     (checked) => {
-      setSelectedTrapIds(checked ? paginatedTraps.map((t) => t.id) : []);
+      setSelectedTrapIds(checked ? traps.map((t) => t.id) : []);
     },
-    [paginatedTraps]
+    [traps]
   );
+
+  const handleAcknowledge = useCallback(async (trapId, acknowledged) => {
+    try {
+      await acknowledgeTrap(trapId, acknowledged);
+      fetchTraps();
+    } catch (err) {
+      console.error('Failed to acknowledge trap:', err);
+    }
+  }, [fetchTraps]);
 
   const value = {
     activeCategory,
@@ -112,9 +133,12 @@ export const TrapExplorerProvider = ({ children }) => {
     setCurrentPage,
     itemsPerPage,
     setItemsPerPage,
-    filteredTraps,
-    paginatedTraps,
-    totalTraps: filteredTraps.length,
+    filteredTraps: traps,
+    paginatedTraps: traps,
+    totalTraps: totalTrapsCount,
+    isLoading,
+    fetchTraps,
+    handleAcknowledge,
     expandedTrapIds,
     selectedTrapIds,
     toggleTrapExpanded,

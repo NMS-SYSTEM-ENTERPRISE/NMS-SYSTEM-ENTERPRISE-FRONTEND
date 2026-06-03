@@ -3,7 +3,6 @@
 import { SloTimelineView } from '@/components/features/slo/slo-timeline-view';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SearchInput } from '@/components/ui/search-input';
 import { SelectComponent } from '@/components/ui/select';
 import { useSlo } from '@/hooks/slo';
 import {
@@ -83,11 +82,13 @@ export const SloActionSidebar = () => {
           {activeView === 'filters' ? (
             <>
               <div className={styles.searchSection}>
-                <SearchInput
+                <Input
+                  type="text"
                   placeholder="Search by SLO name..."
                   className={styles.searchInput}
-                  tags={searchQuery ? searchQuery.split(' ').filter(Boolean) : []}
-                  onTagsChange={(newTags) => setSearchQuery(newTags.join(' '))}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  icon="ph:magnifying-glass-bold"
                 />
               </div>
 

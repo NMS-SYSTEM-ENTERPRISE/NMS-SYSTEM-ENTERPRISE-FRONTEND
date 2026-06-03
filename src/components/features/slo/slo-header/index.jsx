@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { SearchInput } from '@/components/ui/search-input';
+import { Input } from '@/components/ui/input';
 import { useSlo } from '@/hooks/slo';
 import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
@@ -14,14 +14,7 @@ export const SloHeader = () => {
     setViewMode,
     setShowActionSidebar,
     refreshSloPortfolio,
-    handleResetFilters,
   } = useSlo();
-
-  const tags = searchQuery ? searchQuery.split(' ').filter(Boolean) : [];
-
-  const handleTagsChange = (newTags) => {
-    setSearchQuery(newTags.join(' '));
-  };
 
   return (
     <header className={styles.header}>
@@ -34,10 +27,12 @@ export const SloHeader = () => {
 
       <div className={styles.headerRight}>
         <div className={styles.headerSearch}>
-          <SearchInput
+          <Input
+            type="text"
             placeholder="Search resources..."
-            tags={tags}
-            onTagsChange={handleTagsChange}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon="ph:magnifying-glass-bold"
             className={styles.searchInput}
           />
         </div>
@@ -73,20 +68,11 @@ export const SloHeader = () => {
           >
             <Icon icon="ph:funnel-bold" />
           </Button>
-          {/* <Button
-            variant="ghost"
-            size="icon"
-            className={styles.actionBtn}
-            title="Reset Search and Filters"
-            onClick={handleResetFilters}
-          >
-            <Icon icon="ph:x-circle-bold" />
-          </Button> */}
           <Button
             variant="ghost"
             size="icon"
             className={styles.actionBtn}
-            title="Refresh Data"
+            title="Refresh"
             onClick={refreshSloPortfolio}
           >
             <Icon icon="ph:arrows-clockwise-bold" />

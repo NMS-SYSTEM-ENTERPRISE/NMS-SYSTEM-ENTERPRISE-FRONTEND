@@ -43,13 +43,13 @@ const getSeverityColor = (token) => {
   return getCssVar(map[token] || '--color-text-muted') || '#6b7280';
 };
 
-export const useTrapDashboardCharts = (trendsOpen) => {
+export const useTrapDashboardCharts = (trendsOpen, chartData) => {
   const volumeChartRef = useRef(null);
   const severityChartRef = useRef(null);
   const charts = useRef({});
 
   useEffect(() => {
-    if (!trendsOpen) return undefined;
+    if (!trendsOpen || !chartData) return undefined;
 
     const timer = setTimeout(() => {
       drawVolumeChart();
@@ -68,10 +68,10 @@ export const useTrapDashboardCharts = (trendsOpen) => {
       Object.values(charts.current).forEach((c) => c?.dispose());
       charts.current = {};
     };
-  }, [trendsOpen]);
+  }, [trendsOpen, chartData]);
 
   const drawVolumeChart = () => {
-    if (!volumeChartRef.current) return;
+    if (!volumeChartRef.current || !chartData) return;
     charts.current.volume?.dispose();
 
     const chart = echarts.init(volumeChartRef.current);
@@ -95,7 +95,7 @@ export const useTrapDashboardCharts = (trendsOpen) => {
       xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: TRAP_VOLUME_CHART_LABELS,
+        data: chartData.volumeChartLabels || [],
         axisLine: { lineStyle: { color: border } },
         axisLabel: { color: muted, fontSize: 10 },
       },
@@ -117,20 +117,30 @@ export const useTrapDashboardCharts = (trendsOpen) => {
               { offset: 1, color: 'transparent' },
             ]),
           },
-          data: TRAP_VOLUME_CHART_DATA,
+          data: chartData.volumeChartData || [],
         },
       ],
     });
   };
 
   const drawSeverityChart = () => {
-    if (!severityChartRef.current) return;
+    if (!severityChartRef.current || !chartData) return;
     charts.current.severity?.dispose();
 
     const chart = echarts.init(severityChartRef.current);
     charts.current.severity = chart;
 
     const bgPrimary = getCssVar('--color-bg-primary') || '#0b0f19';
+
+    // Convert API data to chart series array
+    const rawData = chartData.severityChartData || [0, 0, 0, 0, 0];
+    const dataItems = [
+      { value: rawData[0], name: 'Critical', colorToken: 'critical' },
+      { value: rawData[1], name: 'Major', colorToken: 'major' },
+      { value: rawData[2], name: 'Minor', colorToken: 'minor' },
+      { value: rawData[3], name: 'Warning', colorToken: 'warning' },
+      { value: rawData[4], name: 'Info', colorToken: 'info' },
+    ];
 
     chart.setOption({
       tooltip: { trigger: 'item' },
@@ -143,7 +153,7 @@ export const useTrapDashboardCharts = (trendsOpen) => {
           avoidLabelOverlap: false,
           itemStyle: { borderRadius: 4, borderColor: bgPrimary, borderWidth: 2 },
           label: { show: false },
-          data: TRAP_SEVERITY_CHART_DATA.map((item) => ({
+          data: dataItems.map((item) => ({
             value: item.value,
             name: item.name,
             itemStyle: { color: getSeverityColor(item.colorToken) },

@@ -1,4 +1,4 @@
-export { MOCK_TRAPS } from './mock-traps';
+// mock-traps.js was removed because we now use live API data
 export {
   TRAP_TOP_SOURCES,
   TRAP_INCIDENT_STREAM,

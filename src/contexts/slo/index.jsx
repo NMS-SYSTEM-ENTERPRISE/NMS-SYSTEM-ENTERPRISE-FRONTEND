@@ -47,10 +47,9 @@ export const SloProvider = ({ children }) => {
   const [filters, setFilters] = useState(DEFAULT_SLO_FILTERS);
 
   const filteredSLOs = useMemo(() => {
-    const tags = searchQuery.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const query = searchQuery.trim().toLowerCase();
     return slos.filter((slo) => {
-      const sloNameLower = slo.name.toLowerCase();
-      const matchesSearch = tags.length === 0 || tags.every(tag => sloNameLower.includes(tag));
+      const matchesSearch = !query || slo.name.toLowerCase().includes(query);
       return matchesSearch && matchesCategory(slo, activeCategory) && matchesFilters(slo, filters);
     });
   }, [slos, searchQuery, activeCategory, filters]);

@@ -7,22 +7,55 @@ import {
   DEFAULT_DASHBOARD_SECTIONS,
   SEVERITY_LEGEND,
   TRAP_DASHBOARD_SECTIONS,
-  TRAP_SUMMARY_METRICS,
 } from '@/utils/constants/trap-explorer';
-import {
-  TRAP_INCIDENT_STREAM,
-  TRAP_TOP_SOURCES,
-} from '@/utils/dummy-data/trap-explorer';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { TrapExplorerContext } from '@/contexts/trap-explorer';
+import { getTrapDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
 import styles from './styles.module.css';
 
 export const TrapDashboard = () => {
   const [expandedSections, setExpandedSections] = useState(DEFAULT_DASHBOARD_SECTIONS);
-  const { volumeChartRef, severityChartRef } = useTrapDashboardCharts(expandedSections.trends);
+  const [dashboardStats, setDashboardStats] = useState(null);
+
+  const { filteredTraps } = useContext(TrapExplorerContext);
+  const { volumeChartRef, severityChartRef } = useTrapDashboardCharts(expandedSections.trends, dashboardStats);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getTrapDashboard();
+        setDashboardStats(data);
+      } catch (err) {
+        console.error('Failed to fetch trap dashboard stats:', err);
+      }
+    };
+    fetchStats();
+    // Refresh stats every minute or whenever traps change (filteredTraps updates when trap_received fires)
+  }, [filteredTraps]);
 
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
+
+  const dynamicSummaryMetrics = [
+    { key: 'critical', label: 'CRITICAL TRAPS', value: dashboardStats?.criticalTraps?.toLocaleString() || '0', colorToken: 'critical' },
+    { key: 'major', label: 'MAJOR TRAPS', value: dashboardStats?.majorTraps?.toLocaleString() || '0', colorToken: 'major' },
+    { key: 'total', label: 'TOTAL EVENTS', value: dashboardStats?.totalEvents?.toLocaleString() || '0', colorToken: 'cyan' },
+    { key: 'ack', label: 'ACK RATE', value: `${dashboardStats?.ackRate || 0}%`, colorToken: 'success' },
+  ];
+
+  // Derive incident stream from live traps (latest 5)
+  const incidentStream = (filteredTraps || []).slice(0, 5).map(t => ({
+    title: t.name || t.trapOid,
+    time: t.timestamp.split(' ')[4] || t.timestamp, // rough time extraction
+    desc: t.message || 'No description provided.',
+    node: t.source,
+    severity: t.severity,
+  }));
+
+  // Top sources with percentage maxing out at top count
+  const topSources = dashboardStats?.topSources || [];
+  const maxCount = Math.max(...topSources.map(s => s.count), 1);
 
   return (
     <div className={styles.dashboard}>
@@ -35,7 +68,7 @@ export const TrapDashboard = () => {
           onToggle={() => toggleSection('summary')}
         >
           <div className={styles.metricGrid}>
-            {TRAP_SUMMARY_METRICS.map((metric) => (
+            {dynamicSummaryMetrics.map((metric) => (
               <div key={metric.key} className={styles.metricTile}>
                 <span className={styles.metricLabel}>{metric.label}</span>
                 <span className={`${styles.metricVal} ${styles[`metricVal_${metric.colorToken}`]}`}>
@@ -63,13 +96,13 @@ export const TrapDashboard = () => {
               <div className={styles.chartWrap}>
                 <div ref={severityChartRef} className={styles.pieChart} />
                 <div className={styles.customLegend}>
-                  {SEVERITY_LEGEND.map((item) => (
+                  {SEVERITY_LEGEND.map((item, idx) => (
                     <div key={item.name} className={styles.legendRow}>
                       <div
                         className={`${styles.legendColor} ${styles[`legendColor_${item.colorToken}`]}`}
                       />
                       <span className={styles.legendName}>{item.name}</span>
-                      <span className={styles.legendVal}>{item.val}</span>
+                      <span className={styles.legendVal}>{dashboardStats?.severityChartData?.[idx] || 0}</span>
                     </div>
                   ))}
                 </div>
@@ -86,13 +119,13 @@ export const TrapDashboard = () => {
           onToggle={() => toggleSection('sources')}
         >
           <div className={styles.sourceGrid}>
-            {TRAP_TOP_SOURCES.map((src) => (
+            {topSources.map((src) => (
               <div key={src.ip} className={styles.sourceTile}>
                 <div className={styles.sourceHeader}>
                   <span className={styles.sourceIP}>{src.ip}</span>
                   <span className={styles.sourceCount}>{src.count}</span>
                 </div>
-                <SourceProgressBar percent={src.pct} />
+                <SourceProgressBar percent={Math.round((src.count / maxCount) * 100)} />
               </div>
             ))}
           </div>
@@ -106,8 +139,8 @@ export const TrapDashboard = () => {
           onToggle={() => toggleSection('activity')}
         >
           <div className={styles.timeline}>
-            {TRAP_INCIDENT_STREAM.map((item, i) => (
-              <div key={item.title} className={styles.timelineItem}>
+            {incidentStream.map((item, i) => (
+              <div key={i} className={styles.timelineItem}>
                 <div
                   className={`${styles.timelineNode} ${styles[`timelineNode_${item.severity}`]}`}
                 />
@@ -119,11 +152,13 @@ export const TrapDashboard = () => {
                   <div className={styles.timelineDesc}>{item.desc}</div>
                   <div className={styles.timelineMeta}>
                     <span className={styles.tag}>Node: {item.node}</span>
-                    <span className={styles.tag}>PDU-ID: #82{i}</span>
                   </div>
                 </div>
               </div>
             ))}
+            {incidentStream.length === 0 && (
+              <div className={styles.timelineDesc}>No recent incidents available.</div>
+            )}
           </div>
         </TrapDashboardAccordion>
       </div>

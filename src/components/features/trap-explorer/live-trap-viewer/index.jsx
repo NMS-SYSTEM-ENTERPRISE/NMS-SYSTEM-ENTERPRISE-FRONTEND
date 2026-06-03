@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 import { LIVE_LOG_SEVERITY_MAP } from '@/utils/constants/trap-explorer';
 import { useTrapExplorer } from '@/hooks/trap-explorer';
+import { TRAPS_WEBSOCKET_URL } from '@/networking/network-monitoring/network-monitoring-apis';
 import styles from './styles.module.css';
 
 export const LiveTrapViewer = () => {
@@ -17,22 +18,29 @@ export const LiveTrapViewer = () => {
   const logsEndRef = useRef(null);
 
   useEffect(() => {
-    if (!showLiveViewer || isPaused) return undefined;
+    if (!showLiveViewer || !TRAPS_WEBSOCKET_URL) return undefined;
 
-    const interval = setInterval(() => {
-      const severityLabel =
-        Math.random() > 0.8 ? 'Critical' : Math.random() > 0.6 ? 'Warning' : 'Info';
-      const newLog = {
-        id: Date.now(),
-        timestamp: new Date().toLocaleTimeString(),
-        severity: severityLabel,
-        source: `192.168.1.${Math.floor(Math.random() * 255)}`,
-        message: `Trap received from device. OID: 1.3.6.1.4.1.${Math.floor(Math.random() * 1000)}`,
-      };
-      setLogs((prev) => [...prev.slice(-99), newLog]);
-    }, 2000);
+    const ws = new WebSocket(TRAPS_WEBSOCKET_URL);
 
-    return () => clearInterval(interval);
+    ws.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.event === 'trap_received' && !isPaused) {
+          const newLog = {
+            id: payload.id || Date.now(),
+            timestamp: payload.timestamp.split(' ')[4] || new Date().toLocaleTimeString(),
+            severity: payload.severity || 'Info',
+            source: payload.source || 'Unknown',
+            message: payload.message || `Trap received from device. OID: ${payload.trapOid}`,
+          };
+          setLogs((prev) => [...prev.slice(-99), newLog]);
+        }
+      } catch (err) {
+        console.error('WebSocket parse error:', err);
+      }
+    };
+
+    return () => ws.close();
   }, [showLiveViewer, isPaused]);
 
   useEffect(() => {
@@ -76,14 +84,21 @@ export const LiveTrapViewer = () => {
 
         <div className={styles.toolbar}>
           <div className={styles.searchBox}>
-            <Input
-              type="text"
-              placeholder="Filter logs..."
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
-              icon="mdi:magnify"
-              className={styles.searchInput}
-            />
+            <div className={styles.searchBar}>
+              <Icon icon="mdi:magnify" width={16} className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Filter logs..."
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                className={styles.searchInput}
+              />
+              {filterText && (
+                <button className={styles.searchClearBtn} onClick={() => setFilterText('')} aria-label="Clear">
+                  <Icon icon="mdi:close-circle" width={14} />
+                </button>
+              )}
+            </div>
           </div>
           <div className={styles.controls}>
             <Button variant="ghost" className={styles.controlBtn} onClick={() => setIsPaused(!isPaused)}>

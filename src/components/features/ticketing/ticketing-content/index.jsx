@@ -8,9 +8,10 @@ import { TicketingSidebar } from '@/components/features/ticketing/ticketing-side
 import { TicketingStatsAccordion } from '@/components/features/ticketing/ticketing-stats-accordion';
 import sharedStyles from '@/components/features/ticketing/shared/styles.module.css';
 import { useTicketing } from '@/hooks/ticketing';
+import { TicketingSkeleton } from '@/components/ui/skeleton-loaders/ticketing-skeleton';
 
 export const TicketingContent = () => {
-  const { sidebarState, handleCloseSidebar } = useTicketing();
+  const { sidebarState, handleCloseSidebar, isLoading } = useTicketing();
 
   return (
     <div className={sharedStyles.ticketingPage}>
@@ -20,11 +21,15 @@ export const TicketingContent = () => {
         <TicketingHeader />
 
         <div className={sharedStyles.contentArea}>
-          <div className={sharedStyles.timelineContainer}>
-            <TicketingStatsAccordion />
-            <TicketingAnalyticsAccordion />
-            <TicketingListAccordion />
-          </div>
+          {isLoading ? (
+            <TicketingSkeleton />
+          ) : (
+            <div className={sharedStyles.timelineContainer}>
+              <TicketingStatsAccordion />
+              <TicketingAnalyticsAccordion />
+              <TicketingListAccordion />
+            </div>
+          )}
         </div>
       </div>
 

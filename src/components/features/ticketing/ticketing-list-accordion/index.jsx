@@ -5,9 +5,10 @@ import clsx from 'clsx';
 import { TicketingRequestsTable } from '@/components/features/ticketing/ticketing-requests-table';
 import sharedStyles from '@/components/features/ticketing/shared/styles.module.css';
 import { useTicketing } from '@/hooks/ticketing';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingListAccordion = () => {
-  const { expandedSections, toggleSection } = useTicketing();
+  const { expandedSections, toggleSection, filteredRequests } = useTicketing();
   const isOpen = expandedSections.has('list');
 
   return (
@@ -35,7 +36,13 @@ export const TicketingListAccordion = () => {
         />
       </button>
       <div className={clsx(sharedStyles.accordionContent, sharedStyles.accordionContentFlush)}>
-        <TicketingRequestsTable />
+        {filteredRequests?.length === 0 ? (
+          <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <NoDataFound title="No Tickets Found" description="No tickets match your current category or search query." icon="mdi:format-list-bulleted" />
+          </div>
+        ) : (
+          <TicketingRequestsTable />
+        )}
       </div>
     </div>
   );

@@ -17,27 +17,27 @@ export const LogManagementContent = () => {
 
   return (
     <div className={sharedStyles.logManagement}>
-    <LogManagementSidebar />
+      <LogManagementSidebar />
 
-    <div className={sharedStyles.mainContentWrapper}>
-      <LogManagementHeader />
+      <div className={sharedStyles.mainContentWrapper}>
+        <LogManagementHeader />
 
-      <div className={sharedStyles.contentArea}>
-        {isLoading ? (
-          <LogManagementSkeleton />
-        ) : (
-          <div className={sharedStyles.timelineContainer}>
-            <LogManagementStatsAccordion />
-            <LogManagementTrendsAccordion />
-            <LogManagementEventsAccordion />
-          </div>
-        )}
+        <div className={sharedStyles.contentArea}>
+          {isLoading ? (
+            <LogManagementSkeleton />
+          ) : (
+            <div className={sharedStyles.timelineContainer}>
+              <LogManagementStatsAccordion />
+              <LogManagementTrendsAccordion />
+              <LogManagementEventsAccordion />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
 
-    <LogManagementEventDetail />
-    <LogManagementWidgetSidebar />
-    <LogManagementFilterSidebar />
+      <LogManagementEventDetail />
+      <LogManagementWidgetSidebar />
+      <LogManagementFilterSidebar />
     </div>
   );
 };

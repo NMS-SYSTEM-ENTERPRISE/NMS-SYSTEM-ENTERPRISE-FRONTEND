@@ -6,9 +6,10 @@ import { TicketingCharts } from '@/components/features/ticketing/ticketing-chart
 import sharedStyles from '@/components/features/ticketing/shared/styles.module.css';
 import { useTicketing } from '@/hooks/ticketing';
 import { TICKETING_BADGE_ANALYTICS } from '@/utils/constants/ticketing';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingAnalyticsAccordion = () => {
-  const { expandedSections, toggleSection } = useTicketing();
+  const { expandedSections, toggleSection, filteredRequests } = useTicketing();
   const isOpen = expandedSections.has('analytics');
 
   return (
@@ -39,7 +40,13 @@ export const TicketingAnalyticsAccordion = () => {
         />
       </button>
       <div className={sharedStyles.accordionContent}>
-        <TicketingCharts />
+        {filteredRequests?.length === 0 ? (
+          <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <NoDataFound title="No Analytics Data" description="Not enough ticketing data to generate distribution charts." icon="mdi:chart-pie" />
+          </div>
+        ) : (
+          <TicketingCharts />
+        )}
       </div>
     </div>
   );

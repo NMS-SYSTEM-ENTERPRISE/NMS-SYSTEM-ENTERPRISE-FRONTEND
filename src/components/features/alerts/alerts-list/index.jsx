@@ -3,9 +3,27 @@
 import sharedStyles from '@/components/features/alerts/shared/styles.module.css';
 import { useAlerts } from '@/hooks/alerts';
 import { AlertsListRow } from './alerts-list-row';
+import { AlertsListSkeleton } from '@/components/ui/skeleton-loaders/alerts-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AlertsList = () => {
-  const { filteredAlerts, expandedRows, toggleRow } = useAlerts();
+  const { filteredAlerts, expandedRows, toggleRow, isLoading } = useAlerts();
+
+  if (isLoading) {
+    return <AlertsListSkeleton />;
+  }
+
+  if (filteredAlerts.length === 0) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <NoDataFound 
+          title="No Alerts Found" 
+          description="There are currently no active alerts matching your criteria."
+          icon="mdi:bell-off-outline"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={sharedStyles.tableContainer}>

@@ -8,10 +8,16 @@ import {
   ALERT_OVERVIEW_SECTIONS,
   ALERT_SUMMARY_METRICS,
 } from '@/utils/constants/alerts';
+import { AlertsOverviewSkeleton } from '@/components/ui/skeleton-loaders/alerts-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AlertsOverview = () => {
-  const { openSections, toggleSection, alertCounts, categoryStats } = useAlerts();
+  const { openSections, toggleSection, alertCounts, categoryStats, isLoading } = useAlerts();
   const { overviewPieRef, policyBarRef } = useAlertsCharts(openSections.analytics);
+
+  if (isLoading) {
+    return <AlertsOverviewSkeleton />;
+  }
 
   const getMetricValue = (key) => {
     if (key === 'ack') return '94.2%';
@@ -60,16 +66,26 @@ export const AlertsOverview = () => {
         isOpen={openSections.analytics}
         onToggle={() => toggleSection('analytics')}
       >
-        <div className={sharedStyles.chartsGrid}>
-          <div className={sharedStyles.chartGroup}>
-            <span className={sharedStyles.chartSubHeader}>ALERT CLASSIFICATION</span>
-            <div ref={overviewPieRef} className={sharedStyles.chartBox} />
+        {alertCounts.total === 0 ? (
+          <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <NoDataFound 
+              title="No Analytics Data" 
+              description="Not enough alert volume to generate analytical insights." 
+              icon="mdi:chart-arc" 
+            />
           </div>
-          <div className={sharedStyles.chartGroup}>
-            <span className={sharedStyles.chartSubHeader}>POLICY PERFORMANCE</span>
-            <div ref={policyBarRef} className={sharedStyles.chartBox} />
+        ) : (
+          <div className={sharedStyles.chartsGrid}>
+            <div className={sharedStyles.chartGroup}>
+              <span className={sharedStyles.chartSubHeader}>ALERT CLASSIFICATION</span>
+              <div ref={overviewPieRef} className={sharedStyles.chartBox} />
+            </div>
+            <div className={sharedStyles.chartGroup}>
+              <span className={sharedStyles.chartSubHeader}>POLICY PERFORMANCE</span>
+              <div ref={policyBarRef} className={sharedStyles.chartBox} />
+            </div>
           </div>
-        </div>
+        )}
       </AlertsAccordion>
 
       <AlertsAccordion
@@ -79,33 +95,43 @@ export const AlertsOverview = () => {
         isOpen={openSections.categories}
         onToggle={() => toggleSection('categories')}
       >
-        <div className={sharedStyles.categoriesGrid}>
-          {categoryStats.map((stat) => (
-            <div key={stat.name} className={sharedStyles.categoryTile}>
-              <div className={sharedStyles.catHeader}>
-                <span className={sharedStyles.catName}>{stat.name}</span>
-                <span className={sharedStyles.catTotal}>{stat.total}</span>
+        {categoryStats.length === 0 || alertCounts.total === 0 ? (
+          <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <NoDataFound 
+              title="No Environment Data" 
+              description="No alerts generated for the environment categories." 
+              icon="mdi:server-network-off" 
+            />
+          </div>
+        ) : (
+          <div className={sharedStyles.categoriesGrid}>
+            {categoryStats.map((stat) => (
+              <div key={stat.name} className={sharedStyles.categoryTile}>
+                <div className={sharedStyles.catHeader}>
+                  <span className={sharedStyles.catName}>{stat.name}</span>
+                  <span className={sharedStyles.catTotal}>{stat.total}</span>
+                </div>
+                <div className={sharedStyles.envTimeline}>
+                  <div className={sharedStyles.envNode}>
+                    <div className={`${sharedStyles.nodeMarker} ${sharedStyles.nodeMarker_danger}`} />
+                    <span className={sharedStyles.label}>Down</span>
+                    <span className={sharedStyles.val}>{stat.down}</span>
+                  </div>
+                  <div className={sharedStyles.envNode}>
+                    <div className={`${sharedStyles.nodeMarker} ${sharedStyles.nodeMarker_critical}`} />
+                    <span className={sharedStyles.label}>Critical</span>
+                    <span className={sharedStyles.val}>{stat.critical}</span>
+                  </div>
+                  <div className={sharedStyles.envNode}>
+                    <div className={`${sharedStyles.nodeMarker} ${sharedStyles.nodeMarker_warning}`} />
+                    <span className={sharedStyles.label}>Warning</span>
+                    <span className={sharedStyles.val}>{stat.warning}</span>
+                  </div>
+                </div>
               </div>
-              <div className={sharedStyles.envTimeline}>
-                <div className={sharedStyles.envNode}>
-                  <div className={`${sharedStyles.nodeMarker} ${sharedStyles.nodeMarker_danger}`} />
-                  <span className={sharedStyles.label}>Down</span>
-                  <span className={sharedStyles.val}>{stat.down}</span>
-                </div>
-                <div className={sharedStyles.envNode}>
-                  <div className={`${sharedStyles.nodeMarker} ${sharedStyles.nodeMarker_critical}`} />
-                  <span className={sharedStyles.label}>Critical</span>
-                  <span className={sharedStyles.val}>{stat.critical}</span>
-                </div>
-                <div className={sharedStyles.envNode}>
-                  <div className={`${sharedStyles.nodeMarker} ${sharedStyles.nodeMarker_warning}`} />
-                  <span className={sharedStyles.label}>Warning</span>
-                  <span className={sharedStyles.val}>{stat.warning}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </AlertsAccordion>
     </div>
   );

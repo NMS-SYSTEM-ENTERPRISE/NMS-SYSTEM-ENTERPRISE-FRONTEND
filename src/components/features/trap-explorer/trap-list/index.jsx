@@ -5,6 +5,8 @@ import { Pagination } from '@/components/ui/pagination';
 import { useTrapExplorer } from '@/hooks/trap-explorer';
 import { TrapListRow } from './trap-list-row';
 import styles from './styles.module.css';
+import { TrapListSkeleton } from '@/components/ui/skeleton-loaders/trap-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TrapList = () => {
   const {
@@ -20,10 +22,27 @@ export const TrapList = () => {
     toggleTrapSelected,
     toggleSelectAllTraps,
     setSelectedTrapForHistory,
+    isLoading,
   } = useTrapExplorer();
 
   const allSelected =
     paginatedTraps.length > 0 && selectedTrapIds.length === paginatedTraps.length;
+
+  if (isLoading) {
+    return <TrapListSkeleton />;
+  }
+
+  if (paginatedTraps.length === 0) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <NoDataFound 
+          title="No Traps Found" 
+          description="No SNMP traps match your current filters or search query."
+          icon="mdi:inbox-remove-outline"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.listContainer}>

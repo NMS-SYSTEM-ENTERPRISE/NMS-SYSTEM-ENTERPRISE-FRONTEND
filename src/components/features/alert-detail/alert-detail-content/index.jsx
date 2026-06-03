@@ -8,12 +8,38 @@ import { useAlertDetailCharts } from '@/hooks/alert-detail/useAlertDetailCharts'
 import { ALERT_DETAIL_EVENT_TYPES, ALERT_DETAIL_SECTIONS } from '@/utils/constants/alert-detail';
 import { ALERT_DETAIL_HISTORY, ALERT_DETAILS, DEFAULT_ALERT_DETAIL } from '@/utils/dummy-data/alert-detail';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { AlertDetailSkeleton } from '@/components/ui/skeleton-loaders/alerts-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AlertDetailContent = () => {
   const { alertId } = useParams();
   const { openSections, toggleSection } = useAlertDetail();
-  const alertData = ALERT_DETAILS[alertId] || DEFAULT_ALERT_DETAIL;
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, [alertId]);
+
+  const alertData = ALERT_DETAILS[alertId] || (alertId === 'default' ? DEFAULT_ALERT_DETAIL : null);
   const { trendChartRef, countChartRef } = useAlertDetailCharts(openSections.analytics);
+
+  if (isLoading) {
+    return <AlertDetailSkeleton />;
+  }
+
+  if (!alertData) {
+    return (
+      <div style={{ padding: '60px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <NoDataFound 
+          title="Alert Not Found" 
+          description="The requested alert ID does not exist or has been archived."
+          icon="mdi:database-off-outline"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={sharedStyles.alertDetail}>

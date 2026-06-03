@@ -78,11 +78,10 @@ export const SloTableView = () => {
         return (
           <div className={styles.metricSlot}>
             <span
-              className={`${styles.metricValue} ${
-                isNegativeBudget(slo.errorBudgetLeft)
+              className={`${styles.metricValue} ${isNegativeBudget(slo.errorBudgetLeft)
                   ? styles.metricValueNegative
                   : styles.metricValuePositive
-              }`}
+                }`}
             >
               {slo.errorBudgetLeft}
             </span>
@@ -107,8 +106,8 @@ export const SloTableView = () => {
   if (errorMessage || paginatedSLOs.length === 0) {
     return (
       <div className={styles.listContainer} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-        <NoDataFound 
-          title="No SLOs Found" 
+        <NoDataFound
+          title="No SLOs Found"
           description={errorMessage || "No Service Level Objectives match your current filters."}
           icon="mdi:target-variant"
         />

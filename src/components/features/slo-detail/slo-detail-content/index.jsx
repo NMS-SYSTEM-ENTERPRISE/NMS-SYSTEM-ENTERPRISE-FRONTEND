@@ -13,6 +13,8 @@ import { SLO_DETAIL_SECTIONS } from '@/utils/constants/slo-detail';
 import clsx from 'clsx';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { SloDetailSkeleton } from '@/components/ui/skeleton-loaders/slo-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const SloDetailContent = () => {
   const { sloId } = useParams();
@@ -29,11 +31,19 @@ export const SloDetailContent = () => {
     });
 
   if (isLoading) {
-    return <div className={sharedStyles.sloDetail}>Loading SLO detail...</div>;
+    return <SloDetailSkeleton />;
   }
 
   if (errorMessage || !sloData) {
-    return <div className={sharedStyles.sloDetail}>{errorMessage || 'SLO not found.'}</div>;
+    return (
+      <div style={{ padding: '60px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <NoDataFound 
+          title="SLO Details Unavailable" 
+          description={errorMessage || 'Unable to load Service Level Objective telemetry and monitoring configuration.'}
+          icon="mdi:database-off-outline"
+        />
+      </div>
+    );
   }
 
   const achievedMet = Number(sloData.achieved) >= Number(sloData.target);

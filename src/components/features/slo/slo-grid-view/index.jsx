@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useSlo } from '@/hooks/slo';
 import { SLO_STATUS_BADGE_VARIANT } from '@/utils/constants/slo';
 import styles from './styles.module.css';
+import { SloGridSkeleton } from '@/components/ui/skeleton-loaders/slo-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const SloGridView = () => {
   const router = useRouter();
@@ -15,11 +17,25 @@ export const SloGridView = () => {
     router.push(`/slo/${slo.id}`);
   };
 
+  if (isLoading) {
+    return <SloGridSkeleton />;
+  }
+
+  if (errorMessage || paginatedSLOs.length === 0) {
+    return (
+      <div className={styles.gridWrapper} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <NoDataFound 
+          title="No SLOs Found" 
+          description={errorMessage || "No Service Level Objectives match your current filters."}
+          icon="mdi:target-variant"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.gridWrapper}>
       <div className={styles.gridContainer}>
-        {isLoading && <div className={styles.gridCard}>Loading SLOs from monitoring history...</div>}
-        {errorMessage && <div className={styles.gridCard}>{errorMessage}</div>}
         {paginatedSLOs.map((slo) => (
           <div
             key={slo.id}

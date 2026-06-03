@@ -104,8 +104,8 @@ OR ELSE GAVE ME THE PACKAGES INSTALLATION IN THE requirements.txt i can install 
 
 =====
 now go head with this screen okay 
-/slo
-/slo/availability-all-monitored-devices screen related everything okay end to component and feature wont miss
+/trap-explorer screen related everything okay end to component and feature wont miss
 based on this done it okay
  take your own time handle this gracefully with out any issues
 with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay

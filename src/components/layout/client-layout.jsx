@@ -4,6 +4,7 @@
 import { Header } from '@/components/layout/header';
 import SettingsSidebar from '@/components/layout/settings-sidebar';
 import { Sidebar } from '@/components/layout/sidebar';
+import { ChatbotWidget } from '@/components/features/chatbot/ChatbotWidget';
 import { usePathname } from 'next/navigation';
 
 export default function ClientLayout({ children }) {
@@ -26,6 +27,7 @@ export default function ClientLayout({ children }) {
            {children}
         </main>
       </div>
+      <ChatbotWidget />
     </div>
   );
 }

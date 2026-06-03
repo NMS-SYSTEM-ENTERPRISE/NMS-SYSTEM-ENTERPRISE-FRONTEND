@@ -47,16 +47,16 @@ CLEAN NEAT FLEXIBLE MODULAR FOLDER STRUCTURE CLEAN FILE NAMES ORGANIZATION NEEDE
 TAKE YOUR OWN TIME HOW MUCH TIME YOU WANT TAKE IT NO PROBLEM WHAT I WANT IS IMPLEMENT IT GRACEFULLY WITH OUT ANY 
 ISSUES.
 
-SCREEN NAME : /log-management
+SCREEN NAME : /ticketing
 
 CODE BASE NEED TO ANALYZE:
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/log-management
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/log-management
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/ticketing
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/ticketing
 
 OBJECTIVE:
 
-- *Syslog*: A daemon listening on UDP 514 to receive logs from Routers and Switches. Stored in Elasticsearch or OpenSearch for fast full-text searching.
-- 
+BASED ON THE ALERTS TICKETS CREATED HERE AUTOMATICALLY
+
 USING YOUR INTELLIGENCE MAKE THIS PROCESS EFFECTIVE CLEAN WITH OUT ANY ISSUES 
 SO TAKE TIME NEATLY DONE IT THEN AFTER THIS
 IMPLEMENT THIS AUDIT LOGS API AND AFTER THAT CHECK THE APIS WITH THE CURL

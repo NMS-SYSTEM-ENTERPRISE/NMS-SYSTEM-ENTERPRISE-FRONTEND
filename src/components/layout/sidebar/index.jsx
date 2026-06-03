@@ -2,8 +2,10 @@
 import { NavLink } from '@/components/ui/nav-link';
 import { Icon } from '@iconify/react';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './styles.module.css';
+import { getAlerts } from '@/networking/network-monitoring/network-monitoring-apis';
+import { fetchTicketsApi } from '@/networking/network-monitoring/ticketing-apis';
 
 const menuGroups = [
   {
@@ -117,8 +119,7 @@ const menuGroups = [
       {
         icon: 'lucide:settings',
         label: 'System Settings',
-        path: '/settings/my-account',
-        badge: null,
+        path: '/settings',
       },
     ],
   },
@@ -127,6 +128,59 @@ const menuGroups = [
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false); // Default Open
   const pathname = usePathname();
+
+  const [alertCount, setAlertCount] = useState(0);
+  const [ticketCount, setTicketCount] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCounts = async () => {
+      try {
+        const [alertsRes, ticketsRes] = await Promise.all([
+          getAlerts({ activeOnly: true }),
+          fetchTicketsApi({ limit: 100 })
+        ]);
+
+        if (!isMounted) return;
+
+        const activeAlerts = (alertsRes.data || alertsRes || []).filter(a => a.is_active).length;
+        setAlertCount(activeAlerts);
+
+        const activeTickets = (ticketsRes.data || ticketsRes || []).filter(t => t.status === 'Open' || t.status === 'In Progress').length;
+        setTicketCount(activeTickets);
+      } catch (error) {
+        console.error('Error fetching sidebar badges:', error);
+      }
+    };
+
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 30000); // refresh every 30s
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const getDynamicMenuGroups = () => {
+    return menuGroups.map(group => {
+      if (group.id !== 'management') return group;
+
+      return {
+        ...group,
+        items: group.items.map(item => {
+          if (item.label === 'Alert Center') {
+            return { ...item, badge: alertCount > 0 ? alertCount : null };
+          }
+          if (item.label === 'Support Desk') {
+            return { ...item, badge: ticketCount > 0 ? ticketCount : null };
+          }
+          return item;
+        })
+      };
+    });
+  };
+
+  const dynamicMenuGroups = getDynamicMenuGroups();
 
   const isPathActive = (path) => {
     if (path === '/') {
@@ -208,7 +262,7 @@ export const Sidebar = () => {
 
       {/* Navigation */}
       <nav className={styles.navigation}>
-        {menuGroups.map((group, groupIndex) => (
+        {dynamicMenuGroups.map((group, groupIndex) => (
           <div key={group.id} className={styles.menuGroup}>
             {!isCollapsed && (
               <div className={styles.treeRoot}>

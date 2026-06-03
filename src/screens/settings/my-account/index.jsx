@@ -169,7 +169,7 @@ const MyAccount = () => {
 
   return (
     <div className={styles.mainContent}>
-      <div className={styles.contentArea}>
+      <div className={styles.formPageContent}>
         <h2 className={styles.pageTitle}>My Account</h2>
         <p className={styles.pageDescription} style={{ marginBottom: 'var(--margin-xl)' }}>
           Manage your personal account settings and preferences

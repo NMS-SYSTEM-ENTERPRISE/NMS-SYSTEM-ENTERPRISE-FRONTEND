@@ -9,23 +9,45 @@ import {
   useTicketingChartOptions,
 } from '@/hooks/ticketing/useTicketingChartOptions';
 import { TICKETING_LEGEND_DOT_CLASS } from '@/utils/constants/ticketing';
-import {
-  TICKETING_STATUS_LEGEND,
-  TICKETING_STATUS_PIE_DATA,
-  TICKETING_TECH_WORKLOAD,
-} from '@/utils/dummy-data/ticketing';
+import { useTicketing } from '@/hooks/ticketing';
 
 export const TicketingCharts = () => {
   const { resolveColor } = useTicketingChartOptions();
+  const { filteredRequests } = useTicketing();
+
+  const pieData = useMemo(() => {
+    const counts = { open: 0, progress: 0, resolved: 0, closed: 0 };
+    (filteredRequests || []).forEach(t => {
+      if (t.status === 'Open') counts.open++;
+      else if (t.status === 'In Progress') counts.progress++;
+      else if (t.status === 'Resolved') counts.resolved++;
+      else if (t.status === 'Closed') counts.closed++;
+    });
+    return [
+      { name: 'Open', value: counts.open, colorToken: 'violet' },
+      { name: 'In Progress', value: counts.progress, colorToken: 'orange' },
+      { name: 'Resolved', value: counts.resolved, colorToken: 'green' },
+      { name: 'Closed', value: counts.closed, colorToken: 'gray' },
+    ];
+  }, [filteredRequests]);
+
+  const workloadData = useMemo(() => {
+    const workloads = {};
+    (filteredRequests || []).forEach(t => {
+      const a = t.assignee || 'Unassigned';
+      workloads[a] = (workloads[a] || 0) + 1;
+    });
+    return Object.entries(workloads).map(([name, count]) => ({ name, value: count }));
+  }, [filteredRequests]);
 
   const pieOption = useMemo(
-    () => buildStatusPieOption(TICKETING_STATUS_PIE_DATA, resolveColor),
-    [resolveColor]
+    () => buildStatusPieOption(pieData, resolveColor),
+    [pieData, resolveColor]
   );
 
   const barOption = useMemo(
-    () => buildTechWorkloadOption(TICKETING_TECH_WORKLOAD, resolveColor),
-    [resolveColor]
+    () => buildTechWorkloadOption(workloadData, resolveColor),
+    [workloadData, resolveColor]
   );
 
   return (
@@ -35,13 +57,13 @@ export const TicketingCharts = () => {
         <div className={sharedStyles.chartFlex}>
           <TicketingChart option={pieOption} size="pie" />
           <div className={sharedStyles.legendList}>
-            {TICKETING_STATUS_LEGEND.map((row) => (
-              <div key={row.label} className={sharedStyles.legendRow}>
+            {pieData.map((row) => (
+              <div key={row.name} className={sharedStyles.legendRow}>
                 <span
                   className={`${sharedStyles.legendDot} ${sharedStyles[TICKETING_LEGEND_DOT_CLASS[row.colorToken]]}`}
                 />
-                {row.label}
-                <span className={sharedStyles.legendCount}>{row.count}</span>
+                {row.name}
+                <span className={sharedStyles.legendCount}>{row.value}</span>
               </div>
             ))}
           </div>

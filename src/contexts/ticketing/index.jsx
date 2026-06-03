@@ -1,11 +1,12 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
 import {
   DEFAULT_TICKETING_CATEGORY,
   DEFAULT_TICKETING_EXPANDED_SECTIONS,
 } from '@/utils/constants/ticketing';
-import { MOCK_CURRENT_USER_ASSIGNEE, MOCK_TICKET_REQUESTS } from '@/utils/dummy-data/ticketing';
+import { fetchTicketsApi } from '@/networking/network-monitoring/ticketing-apis';
+import { toast } from 'sonner';
 
 export const TicketingContext = createContext(null);
 
@@ -22,26 +23,56 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
     ticketData: null,
   });
 
-  const filteredRequests = useMemo(() => {
-    return MOCK_TICKET_REQUESTS.filter((req) => {
-      const query = searchQuery.toLowerCase();
-      const matchesSearch =
-        req.subject.toLowerCase().includes(query) ||
-        req.id.toLowerCase().includes(query) ||
-        req.requester.toLowerCase().includes(query);
+  const [tickets, setTickets] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const CURRENT_USER = localStorage.getItem('userEmail') || 'System'; // Dynamic user from auth
 
+  const loadTickets = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchTicketsApi({
+        search: searchQuery || undefined,
+        limit: 100,
+      });
+      const data = response.data || response;
+      
+      const formattedTickets = (data || []).map(t => ({
+        id: t.ticket_ref,
+        subject: t.subject,
+        requester: t.requester,
+        createdDate: new Date(t.created_at).toLocaleString(),
+        assignee: t.assignee,
+        status: t.status,
+        priority: t.priority,
+        dueStatus: t.status === 'Open' ? 'Due soon' : (t.status === 'Resolved' || t.status === 'Closed' ? 'Completed' : 'In Progress'),
+        notes: t.notes
+      }));
+      setTickets(formattedTickets);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      toast.error('Failed to fetch tickets');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    loadTickets();
+  }, [loadTickets]);
+
+  const filteredRequests = useMemo(() => {
+    return tickets.filter((req) => {
       let matchesCategory = true;
       if (activeCategory === 'open') matchesCategory = req.status === 'Open';
       if (activeCategory === 'closed') {
         matchesCategory = req.status === 'Resolved' || req.status === 'Closed';
       }
       if (activeCategory === 'my-tickets') {
-        matchesCategory = req.assignee === MOCK_CURRENT_USER_ASSIGNEE;
+        matchesCategory = req.assignee === CURRENT_USER;
       }
-
-      return matchesSearch && matchesCategory;
+      return matchesCategory;
     });
-  }, [searchQuery, activeCategory]);
+  }, [tickets, activeCategory, CURRENT_USER]);
 
   const toggleSection = useCallback((section) => {
     setExpandedSections((prev) => {
@@ -78,6 +109,9 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
     handleOpenSidebar,
     handleCloseSidebar,
     filteredRequests,
+    loadTickets,
+    isLoading,
+    CURRENT_USER,
   };
 
   return <TicketingContext.Provider value={value}>{children}</TicketingContext.Provider>;

@@ -25,6 +25,7 @@ const settingsMenuItems = [
       { label: 'Single Sign-On', path: '/settings/user/single-sign-on' },
     ],
   },
+  /*
   {
     icon: 'mdi:cog',
     label: 'System Settings',
@@ -58,6 +59,7 @@ const settingsMenuItems = [
       { label: 'Rules', path: '/settings/compliance/rules' },
     ],
   },
+  */
   {
     icon: 'mdi:radio',
     label: 'Discovery Settings',
@@ -67,6 +69,7 @@ const settingsMenuItems = [
       { label: 'Discovery Profile', path: '/settings/discovery/profile' },
     ],
   },
+  /*
   {
     icon: 'mdi:monitor',
     label: 'Monitor Settings',
@@ -186,6 +189,7 @@ const settingsMenuItems = [
     label: 'Integration',
     path: '/settings/integration',
   },
+  */
 ];
 
 const SettingsSidebar = () => {

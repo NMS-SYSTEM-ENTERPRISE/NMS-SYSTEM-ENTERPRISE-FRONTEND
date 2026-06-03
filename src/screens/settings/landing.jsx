@@ -19,42 +19,46 @@ const SettingsLanding = () => {
       icon: 'mdi:account-group',
       title: 'User Management',
       description: 'Manage users, roles, and access controls',
-      path: '/settings/user',
+      path: '/settings/user/users',
       color: '#4CAF50',
     },
+    /*
     {
       icon: 'mdi:cog',
       title: 'System Settings',
       description: 'Configure system-wide settings and parameters',
-      path: '/settings/system',
+      path: '/settings/system/two-factor-auth',
       color: '#FF9800',
     },
     {
       icon: 'mdi:shield',
       title: 'Compliance',
       description: 'Manage compliance policies and benchmarks',
-      path: '/settings/compliance',
+      path: '/settings/compliance/policy',
       color: '#E91E63',
     },
+    */
     {
-      icon: 'mdi:monitor',
-      title: 'Monitor Settings',
-      description: 'Configure monitoring intervals and protocols',
-      path: '/settings/monitor',
+      icon: 'mdi:radio',
+      title: 'Discovery Settings',
+      description: 'Configure discovery and credential profiles',
+      path: '/settings/discovery/credential',
       color: '#9C27B0',
     },
+    /*
     {
       icon: 'mdi:file-document',
       title: 'Log Settings',
       description: 'Manage log collection and forwarding',
-      path: '/settings/log',
+      path: '/settings/log-settings',
       color: '#607D8B',
     },
+    */
   ];
 
   return (
     <div className={styles.mainContent}>
-      <div className={styles.contentArea}>
+      <div className={styles.landingContent}>
         <div className={landingStyles.landingHeader}>
           <div className={landingStyles.landingHeaderIcon}>
             <Icon icon="mdi:cog-box" width={48} height={48} />

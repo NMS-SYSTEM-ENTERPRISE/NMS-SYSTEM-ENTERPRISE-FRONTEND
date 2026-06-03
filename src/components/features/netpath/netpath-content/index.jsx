@@ -8,6 +8,8 @@ import { getPathInitials, FILTER_SIDEBAR_CONFIG } from '@/utils/constants/netpat
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 import sharedStyles from '@/components/features/netpath/shared/styles.module.css';
+import { NetPathSidebarSkeleton } from '@/components/ui/skeleton-loaders/netpath-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const NetPathContent = () => {
   const {
@@ -22,6 +24,7 @@ export const NetPathContent = () => {
     filters,
     setFilters,
     filteredPaths,
+    isLoading,
   } = useNetPath();
 
   const handleResetFilters = () => {
@@ -76,44 +79,56 @@ export const NetPathContent = () => {
 
           {/* Path List with Tree Structure - Matching APM */}
           <div className={sharedStyles.treeChildren}>
-            {filteredPaths.map((path) => (
-              <div
-                key={path.id}
-                className={`${sharedStyles.navItem} ${
-                  activePathId === path.id ? sharedStyles.navItemActive : ''
-                }`}
-                onClick={() => setActivePathId(path.id)}
-                title={!isSidebarOpen ? path.name : ''}
-              >
-                {/* Tree Branch */}
-                <div className={sharedStyles.treeBranch} />
-
-                {/* Icon with status or Avatar */}
-                <div className={sharedStyles.itemIconWrapper}>
-                  {isSidebarOpen ? (
-                    <div 
-                      className={`${sharedStyles.statusDot} ${sharedStyles[`status_${path.status}`]}`} 
-                    />
-                  ) : (
-                    <div 
-                      className={`${sharedStyles.avatarText} ${sharedStyles[`avatar_${path.status}`]}`}
-                    >
-                      {getPathInitials(path.name)}
-                    </div>
-                  )}
-                </div>
-
-                {/* Path details */}
-                <div className={sharedStyles.navContent}>
-                  <span className={sharedStyles.navText}>{path.name}</span>
-                  {isSidebarOpen && (
-                    <span className={sharedStyles.navSubtext}>
-                      {path.destination}:{path.port}
-                    </span>
-                  )}
-                </div>
+            {isLoading ? (
+              <NetPathSidebarSkeleton />
+            ) : filteredPaths.length === 0 ? (
+              <div style={{ padding: '32px 16px' }}>
+                 <NoDataFound 
+                    title="No Paths Found" 
+                    description="Adjust your search or filters to see paths." 
+                    icon="mdi:magnify-close"
+                 />
               </div>
-            ))}
+            ) : (
+              filteredPaths.map((path) => (
+                <div
+                  key={path.id}
+                  className={`${sharedStyles.navItem} ${
+                    activePathId === path.id ? sharedStyles.navItemActive : ''
+                  }`}
+                  onClick={() => setActivePathId(path.id)}
+                  title={!isSidebarOpen ? path.name : ''}
+                >
+                  {/* Tree Branch */}
+                  <div className={sharedStyles.treeBranch} />
+
+                  {/* Icon with status or Avatar */}
+                  <div className={sharedStyles.itemIconWrapper}>
+                    {isSidebarOpen ? (
+                      <div 
+                        className={`${sharedStyles.statusDot} ${sharedStyles[`status_${path.status}`]}`} 
+                      />
+                    ) : (
+                      <div 
+                        className={`${sharedStyles.avatarText} ${sharedStyles[`avatar_${path.status}`]}`}
+                      >
+                        {getPathInitials(path.name)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Path details */}
+                  <div className={sharedStyles.navContent}>
+                    <span className={sharedStyles.navText}>{path.name}</span>
+                    {isSidebarOpen && (
+                      <span className={sharedStyles.navSubtext}>
+                        {path.destination}:{path.port}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -140,9 +155,12 @@ export const NetPathContent = () => {
           {activePathId ? (
             <NetPathDetail pathId={activePathId} />
           ) : (
-            <div className={sharedStyles.emptyState}>
-              <h2>Select a Path</h2>
-              <p>Choose a network path from the sidebar to view details.</p>
+            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <NoDataFound 
+                 title="Select a Network Path" 
+                 description="Choose a network path from the sidebar to view hop-by-hop details and latency." 
+                 icon="mdi:transit-connection-variant"
+              />
             </div>
           )}
         </div>

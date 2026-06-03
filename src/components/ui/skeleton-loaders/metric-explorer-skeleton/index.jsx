@@ -11,8 +11,8 @@ export const MetricSidebarSkeleton = () => {
             <div className={`${styles.skeletonInner} ${styles.textPlaceholder}`} style={{ width: `${50 + (i % 3) * 15}%` }} />
           </div>
           <div className={styles.groupItems}>
-             <div className={`${styles.skeletonInner} ${styles.itemPlaceholder}`} style={{ width: '80%' }} />
-             <div className={`${styles.skeletonInner} ${styles.itemPlaceholder}`} style={{ width: '60%' }} />
+            <div className={`${styles.skeletonInner} ${styles.itemPlaceholder}`} style={{ width: '80%' }} />
+            <div className={`${styles.skeletonInner} ${styles.itemPlaceholder}`} style={{ width: '60%' }} />
           </div>
         </div>
       ))}
@@ -23,7 +23,7 @@ export const MetricSidebarSkeleton = () => {
 export const MetricChartSkeleton = () => {
   return (
     <div className={styles.chartSkeleton}>
-       <div className={`${styles.skeletonInner} ${styles.chartArea}`} />
+      <div className={`${styles.skeletonInner} ${styles.chartArea}`} />
     </div>
   );
 };

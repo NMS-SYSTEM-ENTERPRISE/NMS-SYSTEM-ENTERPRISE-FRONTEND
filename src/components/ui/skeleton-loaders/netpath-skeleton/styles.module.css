@@ -1,0 +1,159 @@
+/* Hardware Accelerated Shimmer Base */
+.skeletonInner {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 6px;
+}
+
+.skeletonInner::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.015) 20%, 
+    rgba(255,255,255,0.04) 50%, 
+    rgba(255,255,255,0.015) 80%, 
+    transparent 100%
+  );
+  animation: smoothShimmer 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes smoothShimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Sidebar Skeleton */
+.sidebarSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  width: 100%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.navItemSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.avatarSkeleton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.navContentSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.titleSkeleton {
+  height: 14px;
+}
+
+.subtitleSkeleton {
+  height: 12px;
+  opacity: 0.6;
+}
+
+/* Detail Skeleton */
+.detailSkeleton {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  animation: fadeIn 0.3s ease-out;
+  background-color: var(--color-bg-primary, #0a0e1a);
+}
+
+.headerSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  background-color: var(--color-bg-secondary, #121621);
+  border-bottom: 1px solid var(--color-border, #1f2937);
+  height: 90px;
+}
+
+.headerLeftSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 40%;
+}
+
+.iconSkeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.titleGroupSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.mainTitleSkeleton {
+  height: 20px;
+  width: 60%;
+}
+
+.subTitleSkeleton {
+  height: 14px;
+  width: 40%;
+}
+
+.headerRightSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.metricSkeleton {
+  width: 80px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.contentSkeleton {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px;
+  gap: 24px;
+}
+
+.visualizationSkeleton {
+  flex: 1;
+  min-height: 400px;
+  border-radius: 12px;
+  background-color: var(--color-bg-secondary, #121621);
+  border: 1px solid var(--color-border, #1f2937);
+}
+
+.historySkeleton {
+  height: 200px;
+  border-radius: 12px;
+  background-color: var(--color-bg-secondary, #121621);
+  border: 1px solid var(--color-border, #1f2937);
+}

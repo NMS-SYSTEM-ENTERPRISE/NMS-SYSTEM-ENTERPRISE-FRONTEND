@@ -8,6 +8,8 @@ import styles from './styles.module.css';
 
 import { Button } from '@/components/ui/button';
 import { getNetPathDetail } from '@/networking/network-monitoring/network-monitoring-apis';
+import { NetPathDetailSkeleton } from '@/components/ui/skeleton-loaders/netpath-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 // Simple Semi-Circle Gauge Component - Slightly Larger for better visibility
 const SemiGauge = ({ value, label, color = 'var(--color-chart-cyan)' }) => {
@@ -81,11 +83,19 @@ const NetPathDetail = ({ pathId: propPathId }) => {
   };
 
   if (isLoading) {
-    return <div style={{ display: 'grid', placeItems: 'center', height: '100%', width: '100%' }}>Loading Path Details...</div>;
+    return <NetPathDetailSkeleton />;
   }
   
   if (!pathInfo) {
-    return <div style={{ display: 'grid', placeItems: 'center', height: '100%', width: '100%' }}>Path Not Found</div>;
+    return (
+      <div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <NoDataFound 
+          title="Path Details Unavailable" 
+          description={`Unable to locate telemetry and node data for path ID: ${pathId}.`} 
+          icon="mdi:alert-circle-outline"
+        />
+      </div>
+    );
   }
 
   return (

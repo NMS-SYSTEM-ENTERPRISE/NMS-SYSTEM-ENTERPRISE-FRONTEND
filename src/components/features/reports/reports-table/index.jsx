@@ -4,9 +4,31 @@ import { Pagination } from '@/components/ui/pagination';
 import sharedStyles from '@/components/features/reports/shared/styles.module.css';
 import { useReports } from '@/hooks/reports';
 import { ReportsTableRow } from './reports-table-row';
+import { ReportsTableSkeleton } from '@/components/ui/skeleton-loaders/reports-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const ReportsTable = () => {
   const { filteredReports, currentPage, setCurrentPage, pageSize, setPageSize, loading, error } = useReports();
+
+  if (loading) {
+    return (
+      <div className={sharedStyles.tableContainer}>
+        <ReportsTableSkeleton />
+      </div>
+    );
+  }
+
+  if (error || filteredReports.length === 0) {
+    return (
+      <div className={sharedStyles.tableContainer} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+        <NoDataFound 
+          title="No Reports Found" 
+          description={error ? "Unable to load reports from the database." : "No reports match your current filters or search query."}
+          icon="mdi:file-document-remove-outline"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={sharedStyles.tableContainer}>
@@ -22,17 +44,9 @@ export const ReportsTable = () => {
         </div>
 
         <div className={sharedStyles.tableBody}>
-          {loading ? (
-            <div style={{ padding: '24px', textAlign: 'center', width: '100%' }}>Loading reports...</div>
-          ) : error ? (
-            <div style={{ padding: '24px', textAlign: 'center', width: '100%', color: 'red' }}>Error loading reports.</div>
-          ) : filteredReports.length === 0 ? (
-            <div style={{ padding: '24px', textAlign: 'center', width: '100%' }}>No reports found.</div>
-          ) : (
-            filteredReports.map((report) => (
-              <ReportsTableRow key={report.id} report={report} />
-            ))
-          )}
+          {filteredReports.map((report) => (
+            <ReportsTableRow key={report.id} report={report} />
+          ))}
         </div>
 
         <div className={sharedStyles.pagination}>

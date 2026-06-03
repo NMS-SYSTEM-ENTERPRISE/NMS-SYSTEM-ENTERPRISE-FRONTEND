@@ -104,7 +104,62 @@ OR ELSE GAVE ME THE PACKAGES INSTALLATION IN THE requirements.txt i can install 
 
 =====
 now go head with this screen okay 
-/trap-explorer screen related everything okay end to component and feature wont miss
+/audit
+related everything okay end to component and feature wont miss
+based on this done it okay
+ take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay
+
+
+
+now go head with this screen okay
+/log-management
+related everything okay end to component and feature wont miss
+based on this done it okay
+ take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay
+
+
+now go head with this screen okay
+/ticketing
+related everything okay end to component and feature wont miss
+based on this done it okay
+ take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay
+
+
+now go head with this screen okay
+/settings
+related everything okay end to component and feature wont miss
+based on this done it okay
+ take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay
+
+
+now go head with this screen okay
+/userSettings all the screens under the user settings
+related everything okay end to component and feature wont miss
+based on this done it okay
+ take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay
+
+now go head with this screen okay
+/settings/user related all the screens under the user settings
+related everything okay end to component and feature wont miss
+based on this done it okay
+ take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay
+even no data found also not exactly feel like some vague feel like wise place the no data found okay component okay
+
+
+now go head with this screen okay
+/settings/discovery related all the screens under the user settings
+related everything okay end to component and feature wont miss
 based on this done it okay
  take your own time handle this gracefully with out any issues
 with out breaking the ui and ux and functionality and integrations okay

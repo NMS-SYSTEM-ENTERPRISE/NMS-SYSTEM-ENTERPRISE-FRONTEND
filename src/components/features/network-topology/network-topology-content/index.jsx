@@ -9,6 +9,8 @@ import { useNetworkTopology } from '@/hooks/network-topology';
 import { useCytoscape } from '@/hooks/network-topology/useCytoscape';
 import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { TopologySidebarSkeleton, TopologyCanvasSkeleton } from '@/components/ui/skeleton-loaders/network-topology-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const NetworkTopologyContent = () => {
   const cyRef = useRef(null);
@@ -361,12 +363,7 @@ export const NetworkTopologyContent = () => {
 
           {/* Device Tree */}
           <div className={styles.deviceTree}>
-            {isLoadingTopology && (
-              <div className={styles.statePanel}>
-                <Icon icon="mdi:loading" width={24} height={24} className={styles.stateIconSpin} />
-                <span>Loading topology...</span>
-              </div>
-            )}
+            {isLoadingTopology && <TopologySidebarSkeleton />}
             {!isLoadingTopology && topologyError && (
               <div className={styles.statePanel}>
                 <Icon icon="mdi:alert-circle-outline" width={24} height={24} />
@@ -375,9 +372,12 @@ export const NetworkTopologyContent = () => {
             )}
             {!isLoadingTopology && !topologyError && currentViewHasDevices && renderTreeNode(currentTopologyData)}
             {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
-              <div className={styles.statePanel}>
-                <Icon icon="mdi:lan-disconnect" width={24} height={24} />
-                <span>No devices found</span>
+              <div style={{ padding: '24px 16px' }}>
+                <NoDataFound 
+                   title="No Devices Found" 
+                   description="No topology data available for this view." 
+                   icon="mdi:lan-disconnect"
+                />
               </div>
             )}
           </div>
@@ -453,12 +453,7 @@ export const NetworkTopologyContent = () => {
 
           {/* Cytoscape Container */}
           <div ref={containerRef} className={styles.cytoscape}>
-            {isLoadingTopology && (
-              <div className={styles.canvasState}>
-                <Icon icon="mdi:loading" width={32} height={32} className={styles.stateIconSpin} />
-                <span>Loading live topology</span>
-              </div>
-            )}
+            {isLoadingTopology && <TopologyCanvasSkeleton />}
             {!isLoadingTopology && topologyError && (
               <div className={styles.canvasState}>
                 <Icon icon="mdi:alert-circle-outline" width={32} height={32} />
@@ -466,9 +461,14 @@ export const NetworkTopologyContent = () => {
               </div>
             )}
             {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
-              <div className={styles.canvasState}>
-                <Icon icon="mdi:sitemap-outline" width={32} height={32} />
-                <span>No devices found for this view</span>
+              <div style={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ maxWidth: '400px' }}>
+                  <NoDataFound 
+                    title="Topology Empty" 
+                    description="Try adjusting your filters or switching views to map devices." 
+                    icon="mdi:sitemap-outline"
+                  />
+                </div>
               </div>
             )}
           </div>

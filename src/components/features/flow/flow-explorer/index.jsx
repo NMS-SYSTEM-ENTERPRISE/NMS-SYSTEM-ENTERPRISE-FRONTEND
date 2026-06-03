@@ -7,6 +7,8 @@ import styles from './styles.module.css';
 
 import { getFlowExplorer } from '@/networking/network-monitoring/network-monitoring-apis';
 import { useFlow } from '@/hooks/flow';
+import { FlowViewSkeleton } from '@/components/ui/skeleton-loaders/flow-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const FlowExplorer = () => {
   const { selectedEventSource, selectedInterface } = useFlow();
@@ -57,8 +59,20 @@ export const FlowExplorer = () => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  if (isLoading || !explorerData) {
-    return <div className={styles.explorer}>Loading Flow Explorer...</div>;
+  if (isLoading) {
+    return <FlowViewSkeleton />;
+  }
+
+  if (!explorerData) {
+    return (
+      <div style={{ padding: '40px' }}>
+        <NoDataFound 
+          title="Explorer Data Unavailable" 
+          description="Unable to load flow explorer topology and results for the selected query." 
+          icon="mdi:database-search-outline"
+        />
+      </div>
+    );
   }
 
   return (

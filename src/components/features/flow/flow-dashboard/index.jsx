@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 import { getFlowDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
 import { useFlow } from '@/hooks/flow';
+import { FlowViewSkeleton } from '@/components/ui/skeleton-loaders/flow-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const FlowDashboard = () => {
   const { selectedEventSource, selectedInterface } = useFlow();
@@ -183,8 +185,20 @@ export const FlowDashboard = () => {
       item.application.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
-  if (isLoading || !dashboardData) {
-    return <div className={styles.dashboard}>Loading Flow Analytics...</div>;
+  if (isLoading) {
+    return <FlowViewSkeleton />;
+  }
+
+  if (!dashboardData) {
+    return (
+      <div style={{ padding: '40px' }}>
+        <NoDataFound 
+          title="Flow Data Unavailable" 
+          description="Unable to load flow dashboard analytics for the selected interface." 
+          icon="mdi:chart-box-outline"
+        />
+      </div>
+    );
   }
 
   return (

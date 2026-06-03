@@ -104,7 +104,8 @@ OR ELSE GAVE ME THE PACKAGES INSTALLATION IN THE requirements.txt i can install 
 
 =====
 now go head with this screen okay 
-/metric-explorer screen related everything okay end to component and feature wont miss
+/slo
+/slo/availability-all-monitored-devices screen related everything okay end to component and feature wont miss
 based on this done it okay
  take your own time handle this gracefully with out any issues
 with out breaking the ui and ux and functionality and integrations okay

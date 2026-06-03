@@ -8,6 +8,8 @@ import styles from './styles.module.css';
 
 import { getFlowAnalytics, getFlowDashboard } from '@/networking/network-monitoring/network-monitoring-apis';
 import { useFlow } from '@/hooks/flow';
+import { FlowViewSkeleton } from '@/components/ui/skeleton-loaders/flow-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const FlowAnalytics = () => {
   const { selectedEventSource, selectedInterface } = useFlow();
@@ -138,8 +140,20 @@ export const FlowAnalytics = () => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  if (isLoading || !analyticsData || !dashboardData) {
-    return <div className={styles.analytics}>Loading Analytics...</div>;
+  if (isLoading) {
+    return <FlowViewSkeleton />;
+  }
+
+  if (!analyticsData || !dashboardData) {
+    return (
+      <div style={{ padding: '40px' }}>
+        <NoDataFound 
+          title="Analytics Data Unavailable" 
+          description="Unable to load flow analytics trends and pattern recognition." 
+          icon="mdi:chart-arc"
+        />
+      </div>
+    );
   }
 
   return (

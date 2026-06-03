@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { useAudit } from '@/hooks/audit';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AuditEventsAccordion = () => {
   const { activeView, expandedSections, toggleSection, filteredEvents, handleOpenActionSidebar } =
@@ -39,56 +40,62 @@ export const AuditEventsAccordion = () => {
 
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
-          <div className={sharedStyles.tableWrapper}>
-            <table className={sharedStyles.eventsTable}>
-              <thead>
-                <tr>
-                  <th>TIMESTAMP</th>
-                  <th>MODULE</th>
-                  <th>OPERATION</th>
-                  <th>USER</th>
-                  <th>REMOTE IP</th>
-                  <th>MESSAGE</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEvents.map((event) => (
-                  <tr
-                    key={event.id}
-                    onClick={() => handleOpenActionSidebar('details')}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleOpenActionSidebar('details');
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <td className={sharedStyles.timeCell}>{event.timestamp}</td>
-                    <td>{event.module}</td>
-                    <td>
-                      <span className={sharedStyles.opBadge}>{event.operationType}</span>
-                    </td>
-                    <td className={sharedStyles.userCell}>{event.user}</td>
-                    <td className={sharedStyles.ipCell}>{event.remoteIp}</td>
-                    <td className={sharedStyles.msgCell} title={event.message}>
-                      {event.message}
-                    </td>
-                    <td>
-                      <span
-                        className={sharedStyles.statusBadge}
-                        data-status={event.status.toLowerCase()}
-                      >
-                        {event.status}
-                      </span>
-                    </td>
+          {filteredEvents.length === 0 ? (
+            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+              <NoDataFound title="No Events Found" description="No audit events match your current filters or search criteria." icon="mdi:text-box-search-outline" />
+            </div>
+          ) : (
+            <div className={sharedStyles.tableWrapper}>
+              <table className={sharedStyles.eventsTable}>
+                <thead>
+                  <tr>
+                    <th>TIMESTAMP</th>
+                    <th>MODULE</th>
+                    <th>OPERATION</th>
+                    <th>USER</th>
+                    <th>REMOTE IP</th>
+                    <th>MESSAGE</th>
+                    <th>STATUS</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {filteredEvents.map((event) => (
+                    <tr
+                      key={event.id}
+                      onClick={() => handleOpenActionSidebar('details')}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleOpenActionSidebar('details');
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      <td className={sharedStyles.timeCell}>{event.timestamp}</td>
+                      <td>{event.module}</td>
+                      <td>
+                        <span className={sharedStyles.opBadge}>{event.operationType}</span>
+                      </td>
+                      <td className={sharedStyles.userCell}>{event.user}</td>
+                      <td className={sharedStyles.ipCell}>{event.remoteIp}</td>
+                      <td className={sharedStyles.msgCell} title={event.message}>
+                        {event.message}
+                      </td>
+                      <td>
+                        <span
+                          className={sharedStyles.statusBadge}
+                          data-status={event.status.toLowerCase()}
+                        >
+                          {event.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </div>

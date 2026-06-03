@@ -7,6 +7,7 @@ import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { useAudit } from '@/hooks/audit';
 import { useAuditChartOptions } from '@/hooks/audit/useAuditChartOptions';
 import { AUDIT_METRIC_VALUE_CLASS } from '@/utils/constants/audit';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AuditSummaryAccordion = () => {
   const { activeView, expandedSections, toggleSection, auditEvents } = useAudit();
@@ -42,33 +43,39 @@ export const AuditSummaryAccordion = () => {
 
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
-          <div className={sharedStyles.realtimeGrid}>
-            {(summaryMetrics || []).map((metric) => (
-              <div key={metric.id} className={sharedStyles.metricWidget}>
-                <div className={sharedStyles.metricMeta}>
-                  <span className={sharedStyles.metricLabel}>{metric.label}</span>
-                  <span
-                    className={clsx(
-                      sharedStyles.metricValue,
-                      sharedStyles[AUDIT_METRIC_VALUE_CLASS[metric.colorToken]]
-                    )}
-                  >
-                    {metric.value}
-                  </span>
+          {auditEvents.length === 0 ? (
+            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+              <NoDataFound title="No Analytics Data" description="No audit logs available for real-time analysis." icon="mdi:pulse" />
+            </div>
+          ) : (
+            <div className={sharedStyles.realtimeGrid}>
+              {(summaryMetrics || []).map((metric) => (
+                <div key={metric.id} className={sharedStyles.metricWidget}>
+                  <div className={sharedStyles.metricMeta}>
+                    <span className={sharedStyles.metricLabel}>{metric.label}</span>
+                    <span
+                      className={clsx(
+                        sharedStyles.metricValue,
+                        sharedStyles[AUDIT_METRIC_VALUE_CLASS[metric.colorToken]]
+                      )}
+                    >
+                      {metric.value}
+                    </span>
+                  </div>
+                  <div className={sharedStyles.sparklineWrap}>
+                    <AuditChart
+                      option={getSummarySparklineOption(
+                        metric.sparkMin,
+                        metric.sparkMax,
+                        metric.colorToken
+                      )}
+                      size="sm"
+                    />
+                  </div>
                 </div>
-                <div className={sharedStyles.sparklineWrap}>
-                  <AuditChart
-                    option={getSummarySparklineOption(
-                      metric.sparkMin,
-                      metric.sparkMax,
-                      metric.colorToken
-                    )}
-                    size="sm"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

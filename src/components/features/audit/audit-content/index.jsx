@@ -9,6 +9,7 @@ import { AuditSidebar } from '@/components/features/audit/audit-sidebar';
 import { AuditSummaryAccordion } from '@/components/features/audit/audit-summary-accordion';
 import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 import { useAudit } from '@/hooks/audit';
+import { AuditSkeleton } from '@/components/ui/skeleton-loaders/audit-skeleton';
 
 export const AuditContent = () => {
   const {
@@ -16,6 +17,7 @@ export const AuditContent = () => {
     setShowActionSidebar,
     activeActionTab,
     auditEvents,
+    loading,
   } = useAudit();
 
   return (
@@ -26,11 +28,15 @@ export const AuditContent = () => {
         <AuditHeader />
 
         <div className={sharedStyles.contentArea}>
-          <div className={sharedStyles.timelineContainer}>
-            <AuditSummaryAccordion />
-            <AuditAnalyticsAccordion />
-            <AuditEventsAccordion />
-          </div>
+          {loading ? (
+            <AuditSkeleton />
+          ) : (
+            <div className={sharedStyles.timelineContainer}>
+              <AuditSummaryAccordion />
+              <AuditAnalyticsAccordion />
+              <AuditEventsAccordion />
+            </div>
+          )}
         </div>
       </div>
 

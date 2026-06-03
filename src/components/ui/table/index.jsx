@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 /**
  * Table — Reusable dark-themed data table component.
@@ -46,6 +47,8 @@ const Table = ({
   renderCell,
   onRowClick,
   emptyMessage = 'No records found.',
+  emptyTitle = 'No Data Available',
+  emptyIcon = 'mdi:database-remove-outline',
   isLoading = false,
   skeletonRows = 5,
   className,
@@ -115,14 +118,13 @@ const Table = ({
           {/* Empty state */}
           {!isLoading && data.length === 0 && (
             <tr>
-              <td colSpan={columns.length}>
-                <div className={styles.emptyState}>
-                  <Icon
-                    icon="mdi:table-off"
-                    width={40}
-                    className={styles.emptyStateIcon}
+              <td colSpan={columns.length} style={{ padding: '40px 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <NoDataFound 
+                    title={emptyTitle} 
+                    description={emptyMessage} 
+                    icon={emptyIcon} 
                   />
-                  <span>{emptyMessage}</span>
                 </div>
               </td>
             </tr>

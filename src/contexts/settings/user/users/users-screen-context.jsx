@@ -20,8 +20,10 @@ export const UsersScreenProvider = ({ children }) => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) {
       params.search = searchTags.join(' ');
@@ -31,6 +33,7 @@ export const UsersScreenProvider = ({ children }) => {
       setUsersList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllUsers]);
 
   useEffect(() => {
@@ -173,6 +176,7 @@ export const UsersScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     }),
     [
       searchTags,
@@ -196,6 +200,7 @@ export const UsersScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     ]
   );
 

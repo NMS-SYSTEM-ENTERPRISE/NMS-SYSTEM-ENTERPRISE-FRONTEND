@@ -42,6 +42,7 @@ export const UsersContent = () => {
     closeDeleteModal,
     confirmDelete,
     handlePageSizeChange,
+    isLoading,
   } = useUsersScreen();
 
   return (
@@ -69,7 +70,10 @@ export const UsersContent = () => {
               data={tableData}
               keyExtractor={(u) => u.id}
               renderCell={(row, col) => renderUserCell(row, col, handleEdit, handleDelete)}
-              emptyMessage="No users found."
+              emptyTitle="No Users Found"
+              emptyMessage="There are currently no users matching your criteria."
+              emptyIcon="mdi:account-group-outline"
+              isLoading={isLoading}
             />
 
             <Pagination

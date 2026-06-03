@@ -19,8 +19,10 @@ export const GroupsScreenProvider = ({ children }) => {
   const [editingItem, setEditingItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchGroups = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) params.search = searchTags.join(' ');
     const data = await getAllGroups(params);
@@ -28,6 +30,7 @@ export const GroupsScreenProvider = ({ children }) => {
       setGroupsList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllGroups]);
 
   useEffect(() => {
@@ -140,6 +143,7 @@ export const GroupsScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     }),
     [
       searchTags,
@@ -163,6 +167,7 @@ export const GroupsScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     ]
   );
 

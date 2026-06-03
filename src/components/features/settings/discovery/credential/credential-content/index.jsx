@@ -36,6 +36,7 @@ export const CredentialContent = () => {
     closeCreateModal,
     handleSaveModal,
     handlePageSizeChange,
+    isLoading,
   } = useCredentialScreen();
 
   return (
@@ -74,7 +75,10 @@ export const CredentialContent = () => {
                   setShowActionsMenu
                 )
               }
-              emptyMessage="No credential profiles found."
+              emptyTitle="No Credential Profiles"
+              emptyMessage="No credential profiles found matching your search criteria."
+              emptyIcon="mdi:key-chain"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

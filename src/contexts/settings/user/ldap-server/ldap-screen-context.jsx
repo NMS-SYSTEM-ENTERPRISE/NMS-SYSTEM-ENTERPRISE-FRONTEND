@@ -18,8 +18,10 @@ export const LdapScreenProvider = ({ children }) => {
   const [newServer, setNewServer] = useState(EMPTY_LDAP_SERVER);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchLdaps = useCallback(async () => {
+    setIsLoading(true);
     const params = {
       page: currentPage,
       records_per_page: pageSize,
@@ -30,6 +32,7 @@ export const LdapScreenProvider = ({ children }) => {
       setLdapServers(res.items || []);
       setTotalRecords(res.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllLdaps]);
 
   useEffect(() => {
@@ -120,6 +123,7 @@ export const LdapScreenProvider = ({ children }) => {
       handleReset,
       handlePageSizeChange,
       testLdap,
+      isLoading,
     }),
     [
       searchTags,
@@ -142,6 +146,7 @@ export const LdapScreenProvider = ({ children }) => {
       handleReset,
       handlePageSizeChange,
       testLdap,
+      isLoading,
     ]
   );
 

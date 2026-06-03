@@ -54,6 +54,7 @@ export const DiscoveryProfileContent = () => {
     handleViewLogs,
     closeLogsModal,
     handleReDiscover,
+    isLoading,
   } = useDiscoveryProfileScreen();
 
   return (
@@ -97,7 +98,10 @@ export const DiscoveryProfileContent = () => {
                   setShowActionsMenu
                 )
               }
-              emptyMessage="No discovery profiles found."
+              emptyTitle="No Discovery Profiles"
+              emptyMessage="No discovery profiles found matching your search criteria."
+              emptyIcon="mdi:radio-tower"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

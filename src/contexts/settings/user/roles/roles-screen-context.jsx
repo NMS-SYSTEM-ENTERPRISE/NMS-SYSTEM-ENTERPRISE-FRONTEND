@@ -19,8 +19,10 @@ export const RolesScreenProvider = ({ children }) => {
   const [editingItem, setEditingItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchRoles = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) params.search = searchTags.join(' ');
     const data = await getAllRoles(params);
@@ -28,6 +30,7 @@ export const RolesScreenProvider = ({ children }) => {
       setRolesList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllRoles]);
 
   useEffect(() => {
@@ -151,6 +154,7 @@ export const RolesScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     }),
     [
       searchTags,
@@ -174,6 +178,7 @@ export const RolesScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     ]
   );
 

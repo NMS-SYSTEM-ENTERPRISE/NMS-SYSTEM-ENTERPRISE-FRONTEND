@@ -25,8 +25,10 @@ export const CredentialScreenProvider = ({ children }) => {
   const [showActionsMenu, setShowActionsMenu] = useState(null);
   const [credentialsList, setCredentialsList] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchCredentials = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) params.search = searchTags.join(' ');
     const data = await getAllCredentialProfiles(params);
@@ -34,6 +36,7 @@ export const CredentialScreenProvider = ({ children }) => {
       setCredentialsList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllCredentialProfiles]);
 
   useEffect(() => {
@@ -148,6 +151,7 @@ export const CredentialScreenProvider = ({ children }) => {
       closeCreateModal,
       handleSaveModal,
       handlePageSizeChange,
+      isLoading,
     }),
     [
       searchTags,
@@ -169,6 +173,7 @@ export const CredentialScreenProvider = ({ children }) => {
       closeCreateModal,
       handleSaveModal,
       handlePageSizeChange,
+      isLoading,
     ]
   );
 

@@ -19,8 +19,10 @@ export const PatScreenProvider = ({ children }) => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchTokens = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) params.search = searchTags.join(' ');
     const data = await getAllPats(params);
@@ -28,6 +30,7 @@ export const PatScreenProvider = ({ children }) => {
       setTokensList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllPats]);
 
   useEffect(() => {
@@ -164,6 +167,7 @@ export const PatScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     }),
     [
       searchTags,
@@ -188,6 +192,7 @@ export const PatScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     ]
   );
 

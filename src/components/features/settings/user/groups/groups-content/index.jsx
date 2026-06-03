@@ -39,6 +39,7 @@ export const GroupsContent = () => {
     closeDeleteModal,
     confirmDelete,
     handlePageSizeChange,
+    isLoading,
   } = useGroupsScreen();
 
   return (
@@ -66,7 +67,10 @@ export const GroupsContent = () => {
               data={tableData}
               keyExtractor={(p) => p.id}
               renderCell={(row, col) => renderGroupCell(row, col, handleEdit, handleDelete)}
-              emptyMessage="No groups found."
+              emptyTitle="No Groups Found"
+              emptyMessage="There are currently no groups matching your criteria."
+              emptyIcon="mdi:account-multiple-outline"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

@@ -37,6 +37,7 @@ export const LdapContent = () => {
     handleReset,
     handlePageSizeChange,
     testLdap,
+    isLoading,
   } = useLdapScreen();
 
   return (
@@ -64,7 +65,10 @@ export const LdapContent = () => {
               data={ldapServers}
               keyExtractor={(s) => s.id}
               renderCell={(row, col) => renderLdapCell(row, col, handleEdit, handleDelete)}
-              emptyMessage="No LDAP servers found."
+              emptyTitle="No LDAP Servers"
+              emptyMessage="There are currently no LDAP servers configured or matching your criteria."
+              emptyIcon="mdi:server-network"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

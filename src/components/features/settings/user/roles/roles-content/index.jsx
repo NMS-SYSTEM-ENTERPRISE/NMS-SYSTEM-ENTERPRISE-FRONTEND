@@ -39,6 +39,7 @@ export const RolesContent = () => {
     closeDeleteModal,
     confirmDelete,
     handlePageSizeChange,
+    isLoading,
   } = useRolesScreen();
 
   return (
@@ -66,7 +67,10 @@ export const RolesContent = () => {
               data={tableData}
               keyExtractor={(r) => r.id}
               renderCell={(row, col) => renderRoleCell(row, col, handleEdit, handleDelete)}
-              emptyMessage="No roles found."
+              emptyTitle="No Roles Found"
+              emptyMessage="There are currently no roles matching your criteria."
+              emptyIcon="mdi:shield-account-outline"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

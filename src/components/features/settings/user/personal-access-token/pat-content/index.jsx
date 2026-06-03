@@ -43,6 +43,7 @@ export const PatContent = () => {
     closeDeleteModal,
     confirmDelete,
     handlePageSizeChange,
+    isLoading,
   } = usePatScreen();
 
   return (
@@ -70,7 +71,10 @@ export const PatContent = () => {
               data={tableData}
               keyExtractor={(t) => t.id}
               renderCell={(row, col) => renderTokenCell(row, col, handleEdit, handleDelete)}
-              emptyMessage="No access tokens found."
+              emptyTitle="No Access Tokens Found"
+              emptyMessage="There are currently no access tokens matching your criteria."
+              emptyIcon="mdi:key-chain-variant"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

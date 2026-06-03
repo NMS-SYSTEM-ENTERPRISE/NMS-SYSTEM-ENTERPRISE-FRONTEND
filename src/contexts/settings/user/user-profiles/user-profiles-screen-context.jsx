@@ -20,8 +20,10 @@ export const UserProfilesScreenProvider = ({ children }) => {
   const [editingItem, setEditingItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchProfiles = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) params.search = searchTags.join(' ');
     const data = await getAllUserProfiles(params);
@@ -29,6 +31,7 @@ export const UserProfilesScreenProvider = ({ children }) => {
       setProfilesList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllUserProfiles]);
 
   useEffect(() => {
@@ -150,6 +153,7 @@ export const UserProfilesScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     }),
     [
       searchTags,
@@ -173,6 +177,7 @@ export const UserProfilesScreenProvider = ({ children }) => {
       closeDeleteModal,
       confirmDelete,
       handlePageSizeChange,
+      isLoading,
     ]
   );
 

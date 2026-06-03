@@ -28,8 +28,10 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
   const [showActionsMenu, setShowActionsMenu] = useState(null);
   const [profilesList, setProfilesList] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchProfiles = useCallback(async () => {
+    setIsLoading(true);
     const params = { page: currentPage, limit: pageSize };
     if (searchTags.length > 0) params.search = searchTags.join(' ');
     const data = await getAllDiscoveryProfiles(params);
@@ -37,6 +39,7 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
       setProfilesList(data.items || []);
       setTotalRecords(data.total_records || 0);
     }
+    setIsLoading(false);
   }, [currentPage, pageSize, searchTags, getAllDiscoveryProfiles]);
 
   useEffect(() => {
@@ -245,6 +248,7 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
       handleViewLogs,
       closeLogsModal,
       handleReDiscover,
+      isLoading,
     }),
     [
       searchTags,
@@ -280,6 +284,7 @@ export const DiscoveryProfileScreenProvider = ({ children }) => {
       handleViewLogs,
       closeLogsModal,
       handleReDiscover,
+      isLoading,
     ]
   );
 

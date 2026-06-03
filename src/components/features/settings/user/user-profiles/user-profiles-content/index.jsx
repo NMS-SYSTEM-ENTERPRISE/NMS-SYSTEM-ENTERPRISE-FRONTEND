@@ -42,6 +42,7 @@ export const UserProfilesContent = () => {
     closeDeleteModal,
     confirmDelete,
     handlePageSizeChange,
+    isLoading,
   } = useUserProfilesScreen();
 
   return (
@@ -69,7 +70,10 @@ export const UserProfilesContent = () => {
               data={tableData}
               keyExtractor={(p) => p.id}
               renderCell={(row, col) => renderProfileCell(row, col, handleEdit, handleDelete)}
-              emptyMessage="No user profiles found."
+              emptyTitle="No User Profiles Found"
+              emptyMessage="There are currently no user profiles matching your criteria."
+              emptyIcon="mdi:card-account-details-outline"
+              isLoading={isLoading}
             />
             <Pagination
               className={sharedStyles.settingsListPagination}

@@ -8,6 +8,25 @@ const getCssVar = (name) => {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 };
 
+const withAlpha = (color, alpha) => {
+  if (!color) return `rgba(0, 0, 0, ${alpha})`;
+  if (color.startsWith('#')) {
+    const hex = color.replace('#', '');
+    const normalized = hex.length === 3
+      ? hex.split('').map((char) => char + char).join('')
+      : hex;
+    const value = Number.parseInt(normalized, 16);
+    const red = (value >> 16) & 255;
+    const green = (value >> 8) & 255;
+    const blue = value & 255;
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+  }
+  if (color.startsWith('rgb(')) {
+    return color.replace('rgb(', 'rgba(').replace(')', `, ${alpha})`);
+  }
+  return color;
+};
+
 export const useAlertDetailCharts = (analyticsOpen) => {
   const trendChartRef = useRef(null);
   const countChartRef = useRef(null);
@@ -77,7 +96,7 @@ export const useAlertDetailCharts = (analyticsOpen) => {
           showSymbol: false,
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(var(--color-accent-cyan-rgb), 0.2)' },
+              { offset: 0, color: withAlpha(cyan, 0.2) },
               { offset: 1, color: 'transparent' },
             ]),
           },

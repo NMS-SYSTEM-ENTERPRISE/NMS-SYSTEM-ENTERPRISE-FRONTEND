@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 export const SloGridView = () => {
   const router = useRouter();
-  const { paginatedSLOs } = useSlo();
+  const { paginatedSLOs, isLoading, errorMessage } = useSlo();
 
   const handleCardClick = (slo) => {
     router.push(`/slo/${slo.id}`);
@@ -18,6 +18,8 @@ export const SloGridView = () => {
   return (
     <div className={styles.gridWrapper}>
       <div className={styles.gridContainer}>
+        {isLoading && <div className={styles.gridCard}>Loading SLOs from monitoring history...</div>}
+        {errorMessage && <div className={styles.gridCard}>{errorMessage}</div>}
         {paginatedSLOs.map((slo) => (
           <div
             key={slo.id}

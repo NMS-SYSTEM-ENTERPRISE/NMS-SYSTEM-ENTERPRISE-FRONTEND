@@ -37,6 +37,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ==
 
+OBJECTIVE:
+
+### 2.6 `/slo` (Service Level Objectives)
+
+- **Concept**: Uptime and performance SLAs.
+- **Backend Architecture**: A scheduled cron job that calculates the percentage of "UP" time versus "DOWN" time over a month for grouped devices (e.g., "All Core Switches").
+============================================
+
+IT IS THE MAJOR CORE MODULE OKAY DONE WITH MORE CAREFULLY MORE EFFECTIVELY WITH OUT ANY ISSUES 
 check this table how data is there based on this done it okay 
 select * from discovered_devices
 
@@ -44,14 +53,16 @@ select * from device_monitoring
 
 select * from device_metrics_history
 
-db tables based on this neatly dislay the data if not check the missing oid and relevant mib and get the response of it neatly fit it okay no more data placing in the backend as well okay everything is dynamic and no more stale dummy and statis dat aokat fromt he db basisi it neede dokay
+db tables based on this neatly display the data if not check the missing oid and relevant mib and get the response of it neatly fit it okay no more data placing in the backend as well okay everything is dynamic and no more stale dummy and statistics from the db basis it needed okay
 
-ext we need to develop this /netpathscreen apis okay for this first screen related
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/netpath
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/netpath
+ext we need to develop this //slo apis okay for this first screen related
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/slo
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/slo-detail
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/slo
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/slo-detail
 end to check based on this front end expectation we are the current data
 we are able to have and able o display wont miss any single widget single detailing okay every thing needed thats why take time first
- ana;yze this and if we are okay with in this then go head develop the apis okay if need check the db tables discovered_devices
+ analyze this and if we are okay with in this then go head develop the apis okay if need check the db tables discovered_devices
 device_monitoring
 device_metric_history okay
 so that  what is the we have till now you will get clarity okay take time done this once
@@ -64,3 +75,10 @@ needed write it okay
 it is the major module right thats why
 
 once everything is fine remove the dummy data okay no need it once every thing is dynamic one
+
+
+-NAME OF THE SCREEN : slo
+-DESCRIPTION:
+NEED AN GENUINE FEED BACK ALL SLO INTEGRATIONS COMPLETED OR NOT PLEASE CHECK THE BACKEND AND FRONT END GAVE ME THE CONFIRMATION MESSAGE 
+ON IT 
+so here i need one confirmation in backend and front end regarding this slo we don't have amy dummy data and dummy calculations right just gave me confirmation okay.

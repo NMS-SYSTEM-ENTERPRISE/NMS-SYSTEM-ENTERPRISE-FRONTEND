@@ -107,9 +107,21 @@
 }
 
 @keyframes pulse {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 12px rgba(16, 185, 129, 0.8); }
-  100% { transform: scale(0.95); opacity: 0.8; }
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+  }
+
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
 }
 
 .chevron {
@@ -138,7 +150,8 @@
 .filterGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0; /* Remove gap to use dividers */
+  gap: 0;
+  /* Remove gap to use dividers */
 }
 
 .filterField {
@@ -156,17 +169,20 @@
   top: 15%;
   bottom: 15%;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0.15) 80%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.15) 20%,
+      rgba(255, 255, 255, 0.15) 80%,
+      transparent);
 }
 
-.filterField:first-child { padding-left: 0; }
-.filterField:last-child { padding-right: 0; }
+.filterField:first-child {
+  padding-left: 0;
+}
+
+.filterField:last-child {
+  padding-right: 0;
+}
 
 .filterField label {
   font-size: 10px;
@@ -288,13 +304,11 @@
 .statDivider {
   width: 1px;
   height: 30px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.25) 20%,
-    rgba(255, 255, 255, 0.25) 80%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.25) 20%,
+      rgba(255, 255, 255, 0.25) 80%,
+      transparent);
 }
 
 /* Explorer Table */
@@ -421,8 +435,14 @@
   border-radius: 50%;
 }
 
-.active { background: var(--color-success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
-.closed { background: var(--color-text-secondary); }
+.active {
+  background: var(--color-success);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.closed {
+  background: var(--color-text-secondary);
+}
 
 .statusText {
   font-size: 11px;
@@ -529,8 +549,13 @@
 }
 
 @keyframes flowLine {
-  from { stroke-dashoffset: 200; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 200;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .centralNode {
@@ -582,4 +607,7 @@
   color: var(--color-text-muted);
   font-family: 'JetBrains Mono', monospace;
 }
-.accordionContentNoPadding { padding: 0; }
+
+.accordionContentNoPadding {
+  padding: 0;
+}

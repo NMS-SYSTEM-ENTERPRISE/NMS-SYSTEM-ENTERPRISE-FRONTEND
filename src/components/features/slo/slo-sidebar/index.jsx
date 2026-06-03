@@ -1,18 +1,23 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Icon } from '@iconify/react';
 import { useSlo } from '@/hooks/slo';
 import { SLO_CATEGORIES } from '@/utils/constants/slo';
+import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 export const SloSidebar = () => {
-  const { activeCategory, setActiveCategory, isSidebarOpen, setIsSidebarOpen } = useSlo();
+  const { activeCategory, setActiveCategory, isSidebarOpen, setIsSidebarOpen } =
+    useSlo();
 
   return (
-    <aside className={`${styles.sidebar} ${!isSidebarOpen ? styles.sidebarCollapsed : ''}`}>
+    <aside
+      className={`${styles.sidebar} ${!isSidebarOpen ? styles.sidebarCollapsed : ''}`}
+    >
       <div className={styles.sidebarHeader}>
-        <span className={`${styles.sidebarTitle} ${!isSidebarOpen ? styles.hidden : ''}`}>
+        <span
+          className={`${styles.sidebarTitle} ${!isSidebarOpen ? styles.hidden : ''}`}
+        >
           Categories
         </span>
         <Button
@@ -22,7 +27,10 @@ export const SloSidebar = () => {
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           title={isSidebarOpen ? 'Collapse' : 'Expand'}
         >
-          <Icon icon={isSidebarOpen ? 'mdi:menu-open' : 'mdi:menu'} width={20} />
+          <Icon
+            icon={isSidebarOpen ? 'mdi:menu-open' : 'mdi:menu'}
+            width={20}
+          />
         </Button>
       </div>
 
@@ -33,7 +41,7 @@ export const SloSidebar = () => {
         </div>
 
         <div className={styles.treeChildren}>
-          {SLO_CATEGORIES.map((cat) => (
+          {SLO_CATEGORIES?.map((cat) => (
             <div
               key={cat.id}
               className={`${styles.navItem} ${activeCategory === cat.id ? styles.navItemActive : ''}`}
@@ -41,7 +49,9 @@ export const SloSidebar = () => {
               title={!isSidebarOpen ? cat.label : ''}
             >
               <div className={styles.treeBranch} />
-              <div className={`${styles.itemIconWrapper} ${styles[`categoryIcon_${cat.colorToken}`]}`}>
+              <div
+                className={`${styles.itemIconWrapper} ${styles[`categoryIcon_${cat.colorToken}`]}`}
+              >
                 <Icon icon={cat.icon} width={18} />
               </div>
               <span className={styles.navText}>{cat.label}</span>

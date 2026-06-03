@@ -36,6 +36,16 @@ export const getMetricExplorerBootstrap = async () => {
   return response.data;
 };
 
+export const getSloPortfolio = async () => {
+  const response = await authApi.get(`${BASE_URL}/slo`);
+  return response.data;
+};
+
+export const getSloDetail = async (sloId) => {
+  const response = await authApi.get(`${BASE_URL}/slo/${sloId}`);
+  return response.data;
+};
+
 export const getMetricExplorerSeries = async ({ deviceIp, metric, timeRange = '6h' }) => {
   const response = await authApi.get(`${BASE_URL}/metric-explorer/series`, {
     params: {

@@ -7,11 +7,10 @@ import {
   getSparklineHeightTier,
 } from '@/utils/constants/slo-detail/sparkline';
 import { HISTORY_STATUS_BADGE_VARIANT } from '@/utils/constants/slo-detail';
-import { SLO_HISTORY_DATA } from '@/utils/dummy-data/slo-detail';
 
-export const SloHistorySection = () => (
+export const SloHistorySection = ({ history = [] }) => (
   <div className={sharedStyles.timelineStrip}>
-    {SLO_HISTORY_DATA.map((item) => (
+    {history.map((item) => (
       <div key={item.name} className={sharedStyles.historyRow}>
         <div className={sharedStyles.historyInfo}>
           <span className={sharedStyles.historyTitle}>{item.name}</span>

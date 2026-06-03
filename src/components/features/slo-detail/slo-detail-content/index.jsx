@@ -10,21 +10,33 @@ import { SloOverviewSection } from '@/components/features/slo-detail/slo-overvie
 import { useSloDetail } from '@/hooks/slo-detail';
 import { useSloDetailCharts } from '@/hooks/slo-detail/useSloDetailCharts';
 import { SLO_DETAIL_SECTIONS } from '@/utils/constants/slo-detail';
-import { SLO_DETAILS, SLO_MONITOR_DATA } from '@/utils/dummy-data/slo-detail';
 import clsx from 'clsx';
 import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const SloDetailContent = () => {
   const { sloId } = useParams();
-  const { openSections, toggleSection } = useSloDetail();
-  const sloData = SLO_DETAILS[sloId] || SLO_DETAILS[1];
+  const { openSections, toggleSection, sloData, isLoading, errorMessage, loadSloDetail } = useSloDetail();
+
+  useEffect(() => {
+    loadSloDetail(sloId);
+  }, [loadSloDetail, sloId]);
+
   const { trendChartRef, burndownChartRef, burnRateChartRef } =
     useSloDetailCharts({
       sloData,
       openSections,
     });
 
-  const achievedMet = sloData.achieved >= sloData.target;
+  if (isLoading) {
+    return <div className={sharedStyles.sloDetail}>Loading SLO detail...</div>;
+  }
+
+  if (errorMessage || !sloData) {
+    return <div className={sharedStyles.sloDetail}>{errorMessage || 'SLO not found.'}</div>;
+  }
+
+  const achievedMet = Number(sloData.achieved) >= Number(sloData.target);
 
   return (
     <div className={sharedStyles.sloDetail}>
@@ -68,10 +80,10 @@ export const SloDetailContent = () => {
             icon={SLO_DETAIL_SECTIONS.monitors.icon}
             isOpen={openSections.monitors}
             onToggle={() => toggleSection('monitors')}
-            badge={`${SLO_MONITOR_DATA.length} Monitors`}
+            badge={`${sloData.monitors?.length || 0} Monitors`}
             badgeClassName={sharedStyles.badgeWarning}
           >
-            <SloMonitorsSection />
+            <SloMonitorsSection monitors={sloData.monitors || []} />
           </SloDetailAccordion>
 
           <SloDetailAccordion
@@ -79,10 +91,10 @@ export const SloDetailContent = () => {
             icon={SLO_DETAIL_SECTIONS.history.icon}
             isOpen={openSections.history}
             onToggle={() => toggleSection('history')}
-            badge="Last 4 Periods"
+            badge={`${sloData.history?.length || 0} Periods`}
             badgeClassName={sharedStyles.badgeMuted}
           >
-            <SloHistorySection />
+            <SloHistorySection history={sloData.history || []} />
           </SloDetailAccordion>
         </div>
       </main>

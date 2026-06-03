@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Icon } from '@iconify/react';
+import { SearchInput } from '@/components/ui/search-input';
 import { useSlo } from '@/hooks/slo';
+import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 export const SloHeader = () => {
@@ -13,7 +13,15 @@ export const SloHeader = () => {
     viewMode,
     setViewMode,
     setShowActionSidebar,
+    refreshSloPortfolio,
+    handleResetFilters,
   } = useSlo();
+
+  const tags = searchQuery ? searchQuery.split(' ').filter(Boolean) : [];
+
+  const handleTagsChange = (newTags) => {
+    setSearchQuery(newTags.join(' '));
+  };
 
   return (
     <header className={styles.header}>
@@ -26,12 +34,10 @@ export const SloHeader = () => {
 
       <div className={styles.headerRight}>
         <div className={styles.headerSearch}>
-          <Input
-            type="text"
+          <SearchInput
             placeholder="Search resources..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            icon="ph:magnifying-glass-bold"
+            tags={tags}
+            onTagsChange={handleTagsChange}
             className={styles.searchInput}
           />
         </div>
@@ -67,11 +73,23 @@ export const SloHeader = () => {
           >
             <Icon icon="ph:funnel-bold" />
           </Button>
-          <Button variant="ghost" size="icon" className={styles.actionBtn} title="Refresh">
+          {/* <Button
+            variant="ghost"
+            size="icon"
+            className={styles.actionBtn}
+            title="Reset Search and Filters"
+            onClick={handleResetFilters}
+          >
+            <Icon icon="ph:x-circle-bold" />
+          </Button> */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className={styles.actionBtn}
+            title="Refresh Data"
+            onClick={refreshSloPortfolio}
+          >
             <Icon icon="ph:arrows-clockwise-bold" />
-          </Button>
-          <Button variant="cyan" size="icon" className={styles.actionBtnPrimary} title="Create SLO">
-            <Icon icon="ph:plus-bold" className={styles.addIcon} />
           </Button>
         </div>
       </div>

@@ -28,6 +28,8 @@ export const SloTableView = () => {
     setCurrentPage,
     itemsPerPage,
     setItemsPerPage,
+    isLoading,
+    errorMessage,
   } = useSlo();
 
   const handleRowClick = (slo) => {
@@ -98,6 +100,8 @@ export const SloTableView = () => {
 
   return (
     <div className={styles.listContainer}>
+      {isLoading && <div className={styles.metricSlot}>Loading SLOs from monitoring history...</div>}
+      {errorMessage && <div className={styles.metricValueNegative}>{errorMessage}</div>}
       <Table
         columns={SLO_TABLE_COLUMNS}
         data={paginatedSLOs}

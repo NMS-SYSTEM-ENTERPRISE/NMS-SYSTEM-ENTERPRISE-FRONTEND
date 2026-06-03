@@ -8,6 +8,25 @@ const getCssVar = (varName) => {
   return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
 };
 
+const withAlpha = (color, alpha) => {
+  if (!color) return `rgba(0, 0, 0, ${alpha})`;
+  if (color.startsWith('#')) {
+    const hex = color.replace('#', '');
+    const normalized = hex.length === 3
+      ? hex.split('').map((char) => char + char).join('')
+      : hex;
+    const value = Number.parseInt(normalized, 16);
+    const red = (value >> 16) & 255;
+    const green = (value >> 8) & 255;
+    const blue = value & 255;
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+  }
+  if (color.startsWith('rgb(')) {
+    return color.replace('rgb(', 'rgba(').replace(')', `, ${alpha})`);
+  }
+  return color;
+};
+
 export const useSloDetailCharts = ({ sloData, openSections }) => {
   const trendChartRef = useRef(null);
   const burndownChartRef = useRef(null);
@@ -15,6 +34,8 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
   const charts = useRef({});
 
   useEffect(() => {
+    if (!sloData) return undefined;
+
     const timer = setTimeout(() => {
       if (openSections.overview) drawTrendChart();
       if (openSections.metrics) {
@@ -44,20 +65,14 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
     const chart = echarts.init(trendChartRef.current);
     charts.current.trend = chart;
 
-    const dataCount = 24;
-    const times = Array.from({ length: dataCount + 4 }, (_, i) =>
-      `${String(i % 24).padStart(2, '0')}:00`
-    );
-    const values = Array.from({ length: dataCount }, () =>
-      parseFloat((92 + Math.random() * 7).toFixed(2))
-    );
-    const forecastValues = new Array(dataCount + 4).fill(null);
-    forecastValues[dataCount - 1] = values[dataCount - 1];
-    let lastVal = values[dataCount - 1];
-    for (let i = 0; i < 4; i++) {
-      lastVal += (Math.random() - 0.5) * 1.2;
-      forecastValues[dataCount + i] = parseFloat(Math.min(100, lastVal).toFixed(2));
-    }
+    const trend = sloData.trend || [];
+    const forecast = sloData.forecast || [];
+    const times = [...trend.map((point) => point.label), ...forecast.map((point) => point.label)];
+    const values = [...trend.map((point) => point.value), ...forecast.map(() => null)];
+    const forecastValues = [
+      ...trend.map((point, index) => (index === trend.length - 1 ? point.value : null)),
+      ...forecast.map((point) => point.value),
+    ];
 
     const cyanColor = getCssVar('--color-chart-cyan') || '#06b6d4';
     const violetColor = getCssVar('--color-chart-violet') || '#8b5cf6';
@@ -66,7 +81,6 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
     const mutedColor = getCssVar('--color-text-muted') || '#6b7280';
     const bgSecondary = getCssVar('--color-bg-secondary') || '#111827';
     const textPrimary = getCssVar('--color-text-primary') || '#e4e7eb';
-    const textSecondary = getCssVar('--color-text-secondary') || '#9ca3af';
 
     chart.setOption({
       backgroundColor: 'transparent',
@@ -109,7 +123,7 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
       },
       yAxis: {
         type: 'value',
-        min: 85,
+        min: Math.max(0, Math.min(85, sloData.target - 10)),
         max: 100,
         splitLine: { lineStyle: { color: borderColor, type: 'dashed' } },
         axisLabel: { color: mutedColor, fontSize: 9, formatter: '{value}%' },
@@ -124,7 +138,7 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
           lineStyle: { width: 3, color: cyanColor },
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(var(--color-accent-cyan-rgb), 0.2)' },
+              { offset: 0, color: withAlpha(cyanColor, 0.2) },
               { offset: 1, color: 'transparent' },
             ]),
           },
@@ -165,10 +179,11 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
     const chart = echarts.init(burndownChartRef.current);
     charts.current.burndown = chart;
 
-    const dataCount = 12;
-    const labels = Array.from({ length: dataCount }, (_, i) => `Day ${i + 1}`);
-    const values = [100, 98, 95, 96, 92, 88, 85, 84, 80, 82, 78, 75];
-    const ideal = labels.map((_, i) => (100 - (i * 100) / dataCount).toFixed(2));
+    const actual = sloData.burndown || [];
+    const idealSeries = sloData.idealBurndown || [];
+    const labels = actual.map((point) => point.label);
+    const values = actual.map((point) => point.value);
+    const ideal = idealSeries.map((point) => point.value);
 
     const successColor = getCssVar('--color-success') || '#10b981';
     const mutedColor = getCssVar('--color-text-muted') || '#6b7280';
@@ -211,7 +226,7 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
           data: values,
           symbol: 'none',
           lineStyle: { width: 2, color: successColor },
-          areaStyle: { color: 'rgba(var(--color-success-rgb), 0.1)' },
+          areaStyle: { color: withAlpha(successColor, 0.1) },
         },
       ],
     });
@@ -230,7 +245,8 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
     const borderColor = getCssVar('--color-border') || '#1f2937';
     const textPrimary = getCssVar('--color-text-primary') || '#e4e7eb';
 
-    const data = [1.2, 0.8, 2.4, 4.5, 1.1, 0.9, 3.2, 1.4, 0.7, 1.2, 0.9, 1.1];
+    const series = sloData.burnRateSeries || [];
+    const data = series.map((point) => point.value);
 
     chart.setOption({
       backgroundColor: 'transparent',
@@ -243,7 +259,7 @@ export const useSloDetailCharts = ({ sloData, openSections }) => {
       grid: { left: 5, right: 5, top: 10, bottom: 0, containLabel: true },
       xAxis: {
         type: 'category',
-        data: Array.from({ length: 12 }, (_, i) => i),
+        data: series.map((point) => point.label),
         axisLabel: { show: false },
         axisLine: { show: false },
       },

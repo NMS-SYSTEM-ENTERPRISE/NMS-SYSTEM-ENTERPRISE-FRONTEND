@@ -3,20 +3,17 @@ import { Icon } from '@iconify/react';
 import styles from './styles.module.css';
 
 export const NoDataFound = ({
-  icon = "lucide:inbox",
-  title = "No Data Found",
-  message = "There is no data available to display at this moment.",
-  actionButton,
-  className
+  title = "No Data Available",
+  description = "There is currently no information to display for this section.",
+  icon = "lucide:database"
 }) => {
   return (
-    <div className={`${styles.container} ${className || ''}`}>
+    <div className={styles.container}>
       <div className={styles.iconWrapper}>
-        <Icon icon={icon} className={styles.icon} />
+        <Icon icon={icon} width={36} className={styles.icon} />
       </div>
       <h3 className={styles.title}>{title}</h3>
-      <p className={styles.message}>{message}</p>
-      {actionButton && <div className={styles.actionWrapper}>{actionButton}</div>}
+      <p className={styles.description}>{description}</p>
     </div>
   );
 };

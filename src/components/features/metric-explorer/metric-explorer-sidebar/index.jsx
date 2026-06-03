@@ -5,6 +5,7 @@ import styles from './styles.module.css';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { MetricSidebarSkeleton } from '@/components/ui/skeleton-loaders/metric-explorer-skeleton';
 
 // Helper to get unique categories from metrics list
 const getCategories = (metricsList) => {
@@ -103,19 +104,15 @@ export const MetricExplorerSidebar = ({
         </div>
 
         <div className={styles.metricsList}>
-          {isLoading && (
-            <div className={styles.metricItem}>
-              <span className={styles.metricName}>Loading metrics...</span>
-            </div>
-          )}
+          {isLoading && <MetricSidebarSkeleton />}
           {!isLoading && monitors.length === 0 && (
             <div className={styles.metricItem}>
-              <span className={styles.metricName}>No monitored devices found</span>
+              <span className={styles.metricName} style={{ opacity: 0.6 }}>No monitored devices found.</span>
             </div>
           )}
           {!isLoading && monitors.length > 0 && !activeTab?.monitor && (
             <div className={styles.metricItem}>
-              <span className={styles.metricName}>Select a monitor to view metrics</span>
+              <span className={styles.metricName} style={{ opacity: 0.6 }}>Select a monitor to view metrics.</span>
             </div>
           )}
           {Object.entries(

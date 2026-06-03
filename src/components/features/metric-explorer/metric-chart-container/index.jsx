@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import { MetricChart } from '../metric-chart';
+import { NoDataFound } from '@/components/ui/no-data-found';
 import styles from './styles.module.css';
 
 export const MetricChartContainer = ({
@@ -11,17 +12,12 @@ export const MetricChartContainer = ({
 }) => {
   if (metrics.length === 0) {
     return (
-      <div className={styles.emptyState}>
-        <div className={styles.emptyStateContent}>
-          <div className={styles.iconWrapper}>
-            <div className={styles.iconGlow} />
-            <Icon icon="mdi:chart-timeline-variant" width={64} height={64} className={styles.mainIcon} />
-          </div>
-          <h3 className={styles.emptyTitle}>No Metrics Selected</h3>
-          <p className={styles.emptyDescription}>
-            Select a metric from the sidebar or drag and drop it here to visualize trends and analyze performance.
-          </p>
-        </div>
+      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <NoDataFound 
+          title="No Metrics Selected" 
+          description="Select a metric from the sidebar or drag and drop it here to visualize trends and analyze performance." 
+          icon="mdi:chart-timeline-variant" 
+        />
       </div>
     );
   }

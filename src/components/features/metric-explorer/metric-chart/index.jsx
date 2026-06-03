@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { TimeRangeSelector } from '../time-range-selector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { MetricChartSkeleton } from '@/components/ui/skeleton-loaders/metric-explorer-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 import styles from './styles.module.css';
 
 export const MetricChart = ({
@@ -248,9 +250,15 @@ export const MetricChart = ({
       </div>
 
       <div className={styles.chartBody}>
-        {isLoading || !hasData ? (
-          <div style={{ display: 'grid', placeItems: 'center', width: '100%', height: '100%', color: '#9ca3af' }}>
-            {isLoading ? 'Loading metric data...' : message || 'No data available for this metric yet.'}
+        {isLoading ? (
+          <MetricChartSkeleton />
+        ) : !hasData ? (
+          <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <NoDataFound 
+              title="No Metric Data" 
+              description={message || 'No data available for this metric yet.'} 
+              icon="mdi:chart-line-variant"
+            />
           </div>
         ) : (
           <div ref={chartRef} style={{ width: '100%', height: '100%' }} />

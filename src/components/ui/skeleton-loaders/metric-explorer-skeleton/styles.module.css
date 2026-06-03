@@ -1,0 +1,94 @@
+/* Hardware Accelerated Shimmer Base */
+.skeletonInner {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 6px;
+}
+
+.skeletonInner::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.015) 20%, 
+    rgba(255,255,255,0.04) 50%, 
+    rgba(255,255,255,0.015) 80%, 
+    transparent 100%
+  );
+  animation: smoothShimmer 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes smoothShimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Sidebar Skeleton */
+.sidebarSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.sidebarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+.iconPlaceholder {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.textPlaceholder {
+  height: 14px;
+}
+
+.groupItems {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 42px;
+}
+
+.itemPlaceholder {
+  height: 12px;
+  opacity: 0.6;
+}
+
+/* Chart Skeleton */
+.chartSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.chartArea {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  border-radius: 8px;
+  background-color: var(--color-bg-secondary, #121621);
+}

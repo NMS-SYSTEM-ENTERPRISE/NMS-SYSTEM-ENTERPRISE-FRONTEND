@@ -32,13 +32,13 @@ export const NetworkMonitoringSkeleton = () => {
       {/* Bottom Table/Grid Row */}
       <div className={`${styles.skeleton} ${styles.tablePanel}`}>
         <div className={styles.tableHeader}>
-           <div className={`${styles.skeletonInner} ${styles.panelHeader}`} />
-           <div className={`${styles.skeletonInner} ${styles.tableAction}`} />
+          <div className={`${styles.skeletonInner} ${styles.panelHeader}`} />
+          <div className={`${styles.skeletonInner} ${styles.tableAction}`} />
         </div>
         <div className={styles.tableRows}>
-           {[1, 2, 3, 4, 5].map(i => (
-             <div key={i} className={`${styles.skeletonInner} ${styles.tableRow}`} />
-           ))}
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className={`${styles.skeletonInner} ${styles.tableRow}`} />
+          ))}
         </div>
       </div>
     </div>

@@ -567,7 +567,7 @@
 .metricValue {
   font-size: 24px;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   color: #fff;
 }
 
@@ -686,7 +686,7 @@
   font-size: 38px;
   font-weight: 800;
   color: var(--color-accent-cyan);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   letter-spacing: -2px;
   line-height: 1;
   text-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
@@ -748,7 +748,7 @@
 .val {
   font-size: 16px;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   color: #fff;
   letter-spacing: -0.5px;
 }
@@ -768,7 +768,7 @@
 .val {
   font-size: 14px;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   color: #fff;
 }
 
@@ -879,7 +879,7 @@
 
 .monitorText {
   color: var(--color-accent-cyan);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 12px;
 }
 
@@ -888,7 +888,7 @@
   border-radius: 4px;
   font-size: 11px;
   font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   width: fit-content;
 }
 
@@ -984,7 +984,7 @@
 .metaValue {
   font-size: 12px;
   color: #fff;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 /* Pagination Wrapper */

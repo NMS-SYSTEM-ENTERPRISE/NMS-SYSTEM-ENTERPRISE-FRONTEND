@@ -232,7 +232,7 @@
   height: 100%;
   overflow-y: auto;
   padding: var(--padding-md);
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 13px;
   line-height: 1.6;
 }

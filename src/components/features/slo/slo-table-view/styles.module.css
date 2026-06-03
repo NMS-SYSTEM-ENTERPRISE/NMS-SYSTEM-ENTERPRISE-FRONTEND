@@ -54,7 +54,7 @@
 }
 
 .metricValue {
-  font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-sm);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);

@@ -281,7 +281,7 @@
   text-align: right;
   font-size: 13px;
   font-weight: 600;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
   letter-spacing: -0.5px;
   min-width: 60px; /* Fixed alignment width */
   flex-shrink: 0;

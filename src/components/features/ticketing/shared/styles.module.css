@@ -572,7 +572,7 @@
 }
 
 .ticketId {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   color: #ef4444; /* Audit uses colors for IDs/key data */
   font-weight: 500;
   font-size: 11px;
@@ -706,7 +706,7 @@
   font-weight: 800;
   color: #fff;
   line-height: 1;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
   letter-spacing: -0.5px;
 }
 

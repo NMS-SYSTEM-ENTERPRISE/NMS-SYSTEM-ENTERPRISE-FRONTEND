@@ -408,7 +408,7 @@
   padding: 8px 16px;
   border-radius: 4px;
   font-weight: bold;
-  font-family: monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 /* Table Section */

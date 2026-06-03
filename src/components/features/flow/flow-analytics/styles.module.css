@@ -148,7 +148,7 @@
 }
 
 .detailValue {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 11px;
   font-weight: 800;
   color: var(--color-text-primary);
@@ -251,7 +251,7 @@
 }
 
 .rankValue {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 13px;
   font-weight: 800;
   color: var(--color-chart-purple);
@@ -311,7 +311,7 @@
 
 .insightMeta {
   margin-top: auto;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 10px;
   color: var(--color-chart-cyan);
   opacity: 0.6;
@@ -385,7 +385,7 @@
   font-size: 24px;
   font-weight: 800;
   color: var(--color-text-primary);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   line-height: 1;
 }
 
@@ -457,7 +457,7 @@
 }
 
 .listValue {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 11px;
   font-weight: 800;
   color: var(--color-text-primary);

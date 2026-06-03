@@ -56,13 +56,13 @@ export const MetricChart = ({
       xAxis: {
         type: 'category',
         data: timeLabels,
-        axisLabel: { color: '#9ca3af', fontSize: 11, fontFamily: 'Inter' },
+        axisLabel: { color: '#9ca3af', fontSize: 11, fontFamily: 'var(--font-manrope), var(--font-geist-sans), sans-serif' },
         axisLine: { show: false },
         axisTick: { show: false },
       },
       yAxis: {
         type: 'value',
-        axisLabel: { color: '#9ca3af', fontSize: 11, fontFamily: 'Inter', formatter: `{value}${unit === 'bytes' ? ' B' : unit}` },
+        axisLabel: { color: '#9ca3af', fontSize: 11, fontFamily: 'var(--font-manrope), var(--font-geist-sans), sans-serif', formatter: `{value}${unit === 'bytes' ? ' B' : unit}` },
         splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)', type: 'dashed' } },
       },
       series: [
@@ -107,7 +107,7 @@ export const MetricChart = ({
         padding: 12,
         textStyle: {
           color: '#f3f4f6',
-          fontFamily: 'Inter',
+          fontFamily: 'var(--font-manrope), var(--font-geist-sans), sans-serif',
           fontSize: 12
         },
         formatter: (params) => {

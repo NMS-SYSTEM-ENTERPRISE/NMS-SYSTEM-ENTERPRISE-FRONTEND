@@ -477,7 +477,7 @@ const CloudDetail = () => {
         <div className={styles.listContainer} style={{ padding: '0 8px' }}>
           {topEC2Data.map((item, idx) => (
             <div key={idx} className={styles.listItem} style={{ padding: '12px 0', borderBottom: '1px solid #1f2937' }}>
-              <span className={styles.listLabel} style={{ fontSize: '13px', color: '#d1d5db', fontFamily: 'monospace' }}>{item.name}</span>
+              <span className={styles.listLabel} style={{ fontSize: '13px', color: '#d1d5db', fontFamily: 'var(--font-geist-mono), monospace' }}>{item.name}</span>
               <span className={styles.listValue} style={{ fontSize: '14px', color: '#fff', fontWeight: 600 }}>{item.value}</span>
             </div>
           ))}

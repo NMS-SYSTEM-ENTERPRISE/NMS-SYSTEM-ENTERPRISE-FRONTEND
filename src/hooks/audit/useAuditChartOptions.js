@@ -118,7 +118,7 @@ export const useAuditChartOptions = (auditEvents = []) => {
             color: text,
             fontSize: 11,
             fontWeight: '800',
-            fontFamily: 'JetBrains Mono',
+            fontFamily: 'var(--font-geist-mono), monospace',
             offset: [10, 0],
             formatter: '{c}',
           },

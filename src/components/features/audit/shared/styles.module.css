@@ -504,7 +504,7 @@
 .metricValue {
   font-size: 28px;
   font-weight: 800;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
   letter-spacing: -1px;
 }
 
@@ -605,7 +605,7 @@
   margin-left: auto;
   font-weight: 800;
   color: #ffffff;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .horizontalBarWrap {
@@ -658,7 +658,7 @@
 .eventsTable tr:last-child td { border-bottom: none; }
 
 .timeCell { 
-  font-family: 'JetBrains Mono', monospace; 
+  font-family: var(--font-geist-mono), monospace; 
   font-size: 11px; 
   color: #9ca3af; 
 }

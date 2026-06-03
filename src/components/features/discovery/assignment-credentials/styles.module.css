@@ -274,7 +274,7 @@
 }
 
 .monoText {
-  font-family: monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .mutedText {

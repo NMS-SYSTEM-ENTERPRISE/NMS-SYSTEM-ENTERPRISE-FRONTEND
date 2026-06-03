@@ -182,7 +182,7 @@
   padding: 2px 6px;
   border-radius: 10px;
   font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-weight: 700;
 }
 
@@ -308,7 +308,7 @@
   padding: 2px 5px;
   border-radius: 8px;
   font-size: 9px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-weight: 700;
 }
 

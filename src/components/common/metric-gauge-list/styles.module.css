@@ -65,7 +65,7 @@
   font-size: var(--font-md);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   min-width: 60px;
   text-align: right;
 }

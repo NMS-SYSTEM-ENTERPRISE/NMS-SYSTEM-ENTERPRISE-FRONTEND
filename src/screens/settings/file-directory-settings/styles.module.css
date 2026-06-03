@@ -245,7 +245,7 @@
 .pathCell {
   color: var(--color-text-primary);
   font-weight: var(--font-weight-medium);
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .typeCell {

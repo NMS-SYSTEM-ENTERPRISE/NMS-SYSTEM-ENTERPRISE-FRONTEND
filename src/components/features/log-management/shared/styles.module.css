@@ -438,7 +438,7 @@
 .eventsTable td { padding: 12px 16px; font-size: 12px; color: #9ca3af; border-bottom: 1px solid rgba(255, 255, 255, 0.02); }
 .eventsTable tr:hover { background: rgba(255, 255, 255, 0.015); cursor: pointer; }
 
-.timeCell { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6b7280; }
+.timeCell { font-family: var(--font-geist-mono), monospace; font-size: 11px; color: #6b7280; }
 .ipCell { color: #22d3ee; font-weight: 600; }
 .msgCell { color: #e5e7eb; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -710,7 +710,7 @@
 }
 
 .logPart {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 12px;
   line-height: 1.5;
   word-break: break-all;

@@ -89,7 +89,7 @@ export const FlowDashboard = () => {
         padding: [8, 12],
         formatter: (params) => {
           const item = params[0];
-          return `<div style="font-family: 'JetBrains Mono', monospace;">
+          return `<div style="font-family: var(--font-geist-mono), monospace;">
             <div style="color: #9ca3af; margin-bottom: 4px;">${item.name}</div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${color}"></span>

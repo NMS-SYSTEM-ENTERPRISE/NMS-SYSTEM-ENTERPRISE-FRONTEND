@@ -423,7 +423,7 @@
   padding: var(--padding-md);
   border-radius: var(--radius-md);
   font-size: var(--font-md);
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
   outline: none;
   transition: border-color var(--transition-fast);
 }

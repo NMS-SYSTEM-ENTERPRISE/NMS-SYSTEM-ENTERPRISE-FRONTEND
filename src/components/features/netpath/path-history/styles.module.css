@@ -139,7 +139,7 @@
   gap: 2px;
   font-size: 10px;
   color: var(--color-text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-weight: 500;
 }
 
@@ -188,7 +188,7 @@
 .timeLabel {
   font-size: 10px;
   color: var(--color-text-secondary);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-weight: 600;
   width: 0;
   display: flex;

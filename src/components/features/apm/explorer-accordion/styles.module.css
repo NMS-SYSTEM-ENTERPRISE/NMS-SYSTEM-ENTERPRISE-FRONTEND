@@ -763,7 +763,7 @@
 }
 
 .resourceCell {
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 12px;
   color: var(--color-text-secondary);
   max-width: 300px;

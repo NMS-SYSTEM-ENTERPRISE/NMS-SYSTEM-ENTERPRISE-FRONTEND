@@ -351,7 +351,7 @@
 }
 
 .commandCode {
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-sm);
   color: var(--color-text-primary);
   margin: 0;

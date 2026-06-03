@@ -172,7 +172,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
 }
 
 .metricAdd {

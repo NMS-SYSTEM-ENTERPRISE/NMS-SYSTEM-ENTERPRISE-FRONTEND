@@ -147,7 +147,7 @@
 .metricVal {
   font-size: 28px;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   letter-spacing: -1px;
 }
 
@@ -227,7 +227,7 @@
 }
 
 .legendVal {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   color: var(--color-text-primary);
   font-weight: 600;
 }
@@ -298,7 +298,7 @@
 .timelineTime {
   font-size: 11px;
   color: var(--color-text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .timelineDesc {
@@ -371,7 +371,7 @@
   font-size: 14px;
   font-weight: 700;
   color: var(--color-chart-cyan);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   letter-spacing: -0.5px;
 }
 
@@ -379,7 +379,7 @@
   font-size: 12px;
   font-weight: 800;
   color: var(--color-text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .sourceBar {

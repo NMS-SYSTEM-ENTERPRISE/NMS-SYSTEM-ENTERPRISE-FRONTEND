@@ -161,7 +161,7 @@
   background: rgba(255, 255, 255, 0.03);
   padding: 4px 10px;
   border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 /* Stats Column */
@@ -182,7 +182,7 @@
   font-size: 15px;
   font-weight: 700;
   color: var(--color-text-primary);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 /* Time Column */
@@ -377,7 +377,7 @@
   font-size: 13px;
   line-height: 1.7;
   color: var(--color-text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
 }
 
 /* Metadata Grid Improvements */
@@ -410,7 +410,7 @@
 .metaValue {
   font-size: 13px;
   color: #fff;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   word-break: break-all;
   padding: 0;
 }
@@ -470,7 +470,7 @@
 .timelineTime {
   font-size: 10px;
   color: var(--color-text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 .timelineSub {
@@ -548,6 +548,6 @@
 .paginationCount {
   font-size: 12px;
   color: var(--color-text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.5px;
 }

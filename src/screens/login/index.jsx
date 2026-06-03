@@ -53,7 +53,7 @@ const LoginScreen = () => {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.card}>
-        
+
         {/* Left Side - Graphic & Welcome Text */}
         <div className={styles.cardLeft}>
           <div className={styles.shape1}></div>
@@ -61,7 +61,7 @@ const LoginScreen = () => {
           <div className={styles.sphere1}></div>
           <div className={styles.sphere2}></div>
           <div className={styles.sphere3}></div>
-          
+
           <div className={styles.leftContent}>
             <h1>Welcome Back</h1>
             <p>Enter your credentials to access your secure enterprise dashboard.</p>

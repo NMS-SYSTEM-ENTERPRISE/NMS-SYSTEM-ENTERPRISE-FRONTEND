@@ -298,7 +298,7 @@
 .jsonData {
   margin: 0;
   padding: var(--padding-lg);
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-sm);
   color: var(--color-text-primary);
   white-space: pre-wrap;

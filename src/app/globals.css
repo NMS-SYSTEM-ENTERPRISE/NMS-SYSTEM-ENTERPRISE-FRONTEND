@@ -248,7 +248,7 @@ body {
 }
 
 code {
-  font-family: "Courier New", Courier, monospace;
+  font-family: var(--font-geist-mono), monospace;
 }
 
 /* Scrollbar Styles */

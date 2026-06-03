@@ -68,7 +68,7 @@
 .metricVal {
   font-size: 28px;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   letter-spacing: -1px;
 }
 
@@ -260,7 +260,7 @@
 }
 
 .legendVal {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   color: var(--color-text-primary);
   font-weight: 600;
 }
@@ -340,7 +340,7 @@
 
 .accentText {
   color: var(--color-chart-cyan);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 13px;
 }
 
@@ -355,7 +355,7 @@
 }
 
 .monoText {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 12px;
   color: var(--color-text-primary);
 }
@@ -424,7 +424,7 @@
 .tilePercent {
   font-size: 11px;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   margin-left: auto;
   opacity: 0.9;
 }
@@ -439,7 +439,7 @@
   font-size: 20px;
   font-weight: 800;
   color: var(--color-text-primary);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   letter-spacing: -0.5px;
 }
 

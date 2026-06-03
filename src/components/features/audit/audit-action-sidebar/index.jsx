@@ -78,7 +78,7 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
             <head>
               <title>Audit Logs Export</title>
               <style>
-                table { width: 100%; border-collapse: collapse; font-family: sans-serif; }
+                table { width: 100%; border-collapse: collapse; font-family: var(--font-manrope), var(--font-geist-sans), sans-serif; }
                 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
                 th { background-color: #f2f2f2; }
               </style>

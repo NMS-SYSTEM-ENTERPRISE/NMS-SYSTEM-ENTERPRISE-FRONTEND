@@ -98,7 +98,7 @@
 }
 
 .metricValueGrid {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-lg);
   font-weight: var(--font-weight-bold);
 }

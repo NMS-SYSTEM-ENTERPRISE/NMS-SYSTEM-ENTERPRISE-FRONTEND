@@ -133,7 +133,7 @@
   background-color: var(--color-bg-tertiary);
   overflow-y: auto;
   padding: var(--padding-lg);
-  font-family: 'Fira Code', 'Consolas', monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 0.85rem;
   line-height: 1.5;
   color: var(--color-text-primary);

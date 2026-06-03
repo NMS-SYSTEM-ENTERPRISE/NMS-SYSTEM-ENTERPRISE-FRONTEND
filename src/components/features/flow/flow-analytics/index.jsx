@@ -80,18 +80,18 @@ export const FlowAnalytics = () => {
         type: 'category',
         data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
-        axisLabel: { color: 'var(--color-text-muted)', fontSize: 10, fontFamily: 'JetBrains Mono' }
+        axisLabel: { color: 'var(--color-text-muted)', fontSize: 10, fontFamily: 'var(--font-geist-mono), monospace' }
       },
       yAxis: {
         type: 'value',
         splitLine: { lineStyle: { color: 'rgba(255,255,255,0.03)' } },
-        axisLabel: { color: 'var(--color-text-muted)', fontSize: 10, fontFamily: 'JetBrains Mono' }
+        axisLabel: { color: 'var(--color-text-muted)', fontSize: 10, fontFamily: 'var(--font-geist-mono), monospace' }
       },
       tooltip: {
         trigger: 'axis',
         backgroundColor: '#111827',
         borderColor: 'rgba(255,255,255,0.1)',
-        textStyle: { color: '#fff', fontSize: 11, fontFamily: 'JetBrains Mono' }
+        textStyle: { color: '#fff', fontSize: 11, fontFamily: 'var(--font-geist-mono), monospace' }
       },
       series: [{
         data: analyticsData.trend,
@@ -120,7 +120,7 @@ export const FlowAnalytics = () => {
         trigger: 'item',
         backgroundColor: '#111827',
         borderColor: 'rgba(255,255,255,0.1)',
-        textStyle: { color: '#fff', fontSize: 11, fontFamily: 'JetBrains Mono' }
+        textStyle: { color: '#fff', fontSize: 11, fontFamily: 'var(--font-geist-mono), monospace' }
       },
       series: [{
         type: 'pie',

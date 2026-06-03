@@ -3,7 +3,7 @@
   padding: var(--padding-lg);
   border-radius: var(--radius-md);
   margin-top: var(--margin-lg);
-  font-family: monospace;
+  font-family: var(--font-geist-mono), monospace;
   font-size: var(--font-sm);
   word-break: break-all;
 }

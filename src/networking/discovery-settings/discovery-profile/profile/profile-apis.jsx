@@ -35,3 +35,11 @@ export const reDiscoverProfileApi = async (id) => {
   const endpoint = DISCOVERY_PROFILE_ENDPOINTS.REDISCOVER_PROFILE.replace('{id}', id);
   return authApi.post(endpoint);
 };
+
+export const uploadCsvApi = async (formData) => {
+  return authApi.post('/discovery-settings/discovery-profile/upload-csv', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};

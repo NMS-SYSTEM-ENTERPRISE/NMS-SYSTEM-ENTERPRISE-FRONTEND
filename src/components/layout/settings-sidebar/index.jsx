@@ -67,6 +67,7 @@ const settingsMenuItems = [
     subItems: [
       { label: 'Credential Profile', path: '/settings/discovery/credential' },
       { label: 'Discovery Profile', path: '/settings/discovery/profile' },
+      { label: 'Add Device Manually', path: '/settings/discovery/manual-add' },
     ],
   },
   /*

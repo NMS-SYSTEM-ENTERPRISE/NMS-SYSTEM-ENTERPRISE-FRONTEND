@@ -99,3 +99,10 @@ so that only easily we can reproduce this one other systems as well thats why
 instead system base installation sudo avoid this one okay
 
 OR ELSE GAVE ME THE PACKAGES INSTALLATION IN THE requirements.txt i can install it okay
+
+
+
+=====
+now go head with this screen okay 
+/network-monitoring take your own time handle this gracefully with out any issues
+with out breaking the ui and ux and functionality and integrations okay

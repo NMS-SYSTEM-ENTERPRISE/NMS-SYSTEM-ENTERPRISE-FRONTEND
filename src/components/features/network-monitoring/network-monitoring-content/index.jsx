@@ -7,6 +7,8 @@ import LeftSidebar from '@/components/features/networkmonitoring/LeftSidebar';
 import { NetworkMonitoringHeader } from '@/components/features/network-monitoring/network-monitoring-header';
 import sharedStyles from '@/components/features/networkmonitoring/styles.module.css';
 import { useNetworkMonitoring } from '@/hooks/network-monitoring';
+import { NetworkMonitoringSkeleton } from '@/components/ui/skeleton-loaders/network-monitoring-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const NetworkMonitoringContent = () => {
   const {
@@ -26,6 +28,8 @@ export const NetworkMonitoringContent = () => {
     handleCloseFilterSidebar,
   } = useNetworkMonitoring();
 
+  const hasData = filteredData && filteredData.length > 0;
+
   return (
     <div className={sharedStyles.networkMonitoring}>
       <LeftSidebar
@@ -41,9 +45,13 @@ export const NetworkMonitoringContent = () => {
 
         <div className={sharedStyles.contentArea}>
           {isLoading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--color-text-secondary)' }}>
-              Fetching live telemetry...
-            </div>
+            <NetworkMonitoringSkeleton />
+          ) : !hasData ? (
+            <NoDataFound 
+              title="No Telemetry Data Found" 
+              description={`There is currently no active telemetry or device data available for the '${activeCategory}' category.`} 
+              icon="lucide:activity" 
+            />
           ) : viewMode === 'details' ? (
             <DetailsView
               category={activeCategory}

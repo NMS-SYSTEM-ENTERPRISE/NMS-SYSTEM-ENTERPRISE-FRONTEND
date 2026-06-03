@@ -16,6 +16,8 @@ import {
 } from 'react-icons/fi';
 import { NETWORK_DETAIL_TABS } from '@/utils/constants/network-monitoring';
 import { getDeviceById } from '@/networking/network-monitoring/network-monitoring-apis';
+import { NetworkMonitoringSkeleton } from '@/components/ui/skeleton-loaders/network-monitoring-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 const NetworkMonitoringDetail = () => {
   const router = useRouter();
@@ -45,8 +47,17 @@ const NetworkMonitoringDetail = () => {
 
   const renderDashboard = () => {
     if (isLoading) {
-       return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--color-text-secondary)' }}>Loading telemetry...</div>;
+       return <NetworkMonitoringSkeleton />;
     }
+    
+    if (!deviceData || Object.keys(deviceData).length === 0) {
+       return <NoDataFound 
+         title="No Device Data Found" 
+         description={`Unable to retrieve telemetry data for the device at ${decodedDeviceId}.`} 
+         icon="lucide:server-crash"
+       />;
+    }
+
     switch (decodedCategory) {
       case 'Server & Apps':
         return <ServerDetail data={deviceData} />;

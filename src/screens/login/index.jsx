@@ -1,4 +1,3 @@
-
 "use client";
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
@@ -22,10 +21,6 @@ const LoginScreen = () => {
     if (error) setError(null);
   };
 
-  const handleFocus = () => {
-    if (error) setError(null);
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -37,7 +32,7 @@ const LoginScreen = () => {
         password: formData.password
       });
 
-      const data = response.data || response; // depending on axios setup
+      const data = response.data || response;
       if (data.access_token) {
         localStorage.setItem('accessToken', data.access_token);
         if (data.user) {
@@ -47,7 +42,6 @@ const LoginScreen = () => {
       }
     } catch (err) {
       console.error('Login failed', err);
-      // Try to extract useful error message if FastAPI raises HTTPException
       const detail = err.detail || err.message || 'Login failed. Please check your credentials.';
       const msg = Array.isArray(detail) ? detail[0]?.msg : detail;
       setError(typeof msg === 'string' ? msg : 'An unexpected error occurred');
@@ -57,64 +51,45 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
-      {/* Corner Decorations */}
-      <div className={`${styles.cornerDecor} ${styles.topLeft}`}>
-        <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none">
-          <path d="M0 20V0H20M0 40V100M40 0H100" stroke="currentColor" strokeWidth="1" />
-          <path d="M0 0L30 0L0 30Z" fill="currentColor" opacity="0.1" />
-        </svg>
-      </div>
-      <div className={`${styles.cornerDecor} ${styles.topRight}`}>
-        <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none">
-          <path d="M0 20V0H20M0 40V100M40 0H100" stroke="currentColor" strokeWidth="1" />
-          <path d="M0 0L30 0L0 30Z" fill="currentColor" opacity="0.1" />
-        </svg>
-      </div>
-      <div className={`${styles.cornerDecor} ${styles.bottomLeft}`}>
-        <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none">
-          <path d="M0 20V0H20M0 40V100M40 0H100" stroke="currentColor" strokeWidth="1" />
-          <path d="M0 0L30 0L0 30Z" fill="currentColor" opacity="0.1" />
-        </svg>
-      </div>
-      <div className={`${styles.cornerDecor} ${styles.bottomRight}`}>
-        <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none">
-          <path d="M0 20V0H20M0 40V100M40 0H100" stroke="currentColor" strokeWidth="1" />
-          <path d="M0 0L30 0L0 30Z" fill="currentColor" opacity="0.1" />
-        </svg>
-      </div>
-
-      <div className={styles.loginLeft}>
-        <div className={styles.loginContent}>
-          {/* Logo Section */}
-          <div className={styles.logoArea}>
-            <div className={styles.logoIcon}>
-              <Icon icon="mdi:alpha-n-circle-outline" width={28} color="white" />
-            </div>
-            <div className={styles.logoText}>
-              Net<span>Monitor</span>
-            </div>
+    <div className={styles.pageWrapper}>
+      <div className={styles.card}>
+        
+        {/* Left Side - Graphic & Welcome Text */}
+        <div className={styles.cardLeft}>
+          <div className={styles.shape1}></div>
+          <div className={styles.shape2}></div>
+          <div className={styles.sphere1}></div>
+          <div className={styles.sphere2}></div>
+          <div className={styles.sphere3}></div>
+          
+          <div className={styles.leftContent}>
+            <h1>Welcome Back</h1>
+            <p>Enter your credentials to access your secure enterprise dashboard.</p>
           </div>
 
-          {/* Header Texts */}
-          <div className={styles.headerArea}>
-            <h1>Welcome Back</h1>
-            <p>Please enter your details to login and securely access your dashboard.</p>
+          <div className={styles.logoBottom}>
+            NETMONITOR
+          </div>
+        </div>
+
+        {/* Right Side - Form */}
+        <div className={styles.cardRight}>
+          <div className={styles.rightHeader}>
+            <span className={styles.greeting}>NetMonitor System</span>
+            <h2 className={styles.rightTitle}><span>Sign In</span> To Your Account</h2>
           </div>
 
           {error && (
-            <div className={styles.errorMessage} style={{ color: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', padding: '12px', borderRadius: '6px', marginBottom: '16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Icon icon="mdi:alert-circle-outline" width={18} />
+            <div className={styles.errorMessage}>
+              <Icon icon="lucide:alert-circle" width={18} />
               {error}
             </div>
           )}
 
-          {/* Login Form */}
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
               <label htmlFor="username">Username or Email</label>
               <div className={styles.inputWrapper}>
-                <Icon icon="lucide:user" className={styles.inputIcon} width={20} />
                 <input
                   type="text"
                   id="username"
@@ -123,7 +98,6 @@ const LoginScreen = () => {
                   placeholder="e.g. admin@nms.com"
                   value={formData.username}
                   onChange={handleInputChange}
-                  onFocus={handleFocus}
                   required
                 />
               </div>
@@ -132,7 +106,6 @@ const LoginScreen = () => {
             <div className={styles.formGroup}>
               <label htmlFor="password">Password</label>
               <div className={styles.inputWrapper}>
-                <Icon icon="lucide:lock" className={styles.inputIcon} width={20} />
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
@@ -141,15 +114,15 @@ const LoginScreen = () => {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleInputChange}
-                  onFocus={handleFocus}
                   required
                 />
                 <button
                   type="button"
                   className={styles.passwordToggle}
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  <Icon icon={showPassword ? "lucide:eye-off" : "lucide:eye"} width={20} />
+                  <Icon icon={showPassword ? "lucide:eye-off" : "lucide:eye"} width={18} />
                 </button>
               </div>
             </div>
@@ -171,35 +144,24 @@ const LoginScreen = () => {
             </button>
           </form>
 
-          {/* Enterprise Logins */}
-          <div className={styles.divider}>
-            <span>Or sign in with SSO</span>
+          <div className={styles.ssoDivider}>
+            <span>Or continue with SSO</span>
           </div>
 
           <div className={styles.socialLogin}>
             <button className={styles.socialBtn} type="button">
-              <Icon icon="simple-icons:okta" width={20} color="#007dc1" />
-              <span>OKTA</span>
+              <Icon icon="simple-icons:okta" width={18} color="#007dc1" />
+              <span>Okta</span>
             </button>
             <button className={styles.socialBtn} type="button">
-              <Icon icon="simple-icons:auth0" width={20} color="#eb5424" />
-              <span>One Login</span>
+              <Icon icon="simple-icons:microsoft" width={18} color="#00a4ef" />
+              <span>Microsoft</span>
             </button>
           </div>
 
           <div className={styles.footerText}>
-            Don't have an account? <a href="#">Contact IT Admin</a>
+            Need assistance? <a href="#">Contact IT Support</a>
           </div>
-        </div>
-      </div>
-
-      <div className={styles.loginRight}>
-        <div className={styles.illustrationWrapper}>
-          <img
-            src="/images/login-illustration.png"
-            alt="NMS Monitoring Illustration"
-            className={styles.illustrationImage}
-          />
         </div>
       </div>
     </div>

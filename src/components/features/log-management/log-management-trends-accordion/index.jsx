@@ -6,9 +6,10 @@ import { LogManagementChart } from '@/components/features/log-management/log-man
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
 import { useLogManagement } from '@/hooks/log-management';
 import { useLogManagementChartOptions } from '@/hooks/log-management/useLogManagementChartOptions';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const LogManagementTrendsAccordion = () => {
-  const { expandedSections, toggleSection } = useLogManagement();
+  const { expandedSections, toggleSection, filteredEvents } = useLogManagement();
   const { lineChartOption } = useLogManagementChartOptions();
   const isOpen = expandedSections.has('trends');
 
@@ -38,9 +39,15 @@ export const LogManagementTrendsAccordion = () => {
 
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
-          <div className={sharedStyles.analyticsSection}>
-            <LogManagementChart option={lineChartOption} size="md" />
-          </div>
+          {filteredEvents?.length === 0 ? (
+            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+              <NoDataFound title="No Analytics Data" description="Not enough data to display stream trends." icon="mdi:trending-up" />
+            </div>
+          ) : (
+            <div className={sharedStyles.analyticsSection}>
+              <LogManagementChart option={lineChartOption} size="md" />
+            </div>
+          )}
         </div>
       )}
     </div>

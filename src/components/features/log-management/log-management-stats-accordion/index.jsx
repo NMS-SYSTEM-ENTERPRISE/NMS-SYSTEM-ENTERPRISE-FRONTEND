@@ -7,6 +7,7 @@ import sharedStyles from '@/components/features/log-management/shared/styles.mod
 import { useLogManagement } from '@/hooks/log-management';
 import { useLogManagementChartOptions } from '@/hooks/log-management/useLogManagementChartOptions';
 import { LOG_METRIC_VALUE_CLASS } from '@/utils/constants/log-management';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const LogManagementStatsAccordion = () => {
   const { expandedSections, toggleSection, filteredEvents } = useLogManagement();
@@ -50,32 +51,38 @@ export const LogManagementStatsAccordion = () => {
 
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
-          <div className={sharedStyles.realtimeGrid}>
-            {dynamicMetrics.map((metric) => (
-              <div key={metric.id} className={sharedStyles.metricWidget}>
-                <div className={sharedStyles.metricMeta}>
-                  <span className={sharedStyles.metricLabel}>{metric.label}</span>
-                  <span
-                    className={clsx(
-                      sharedStyles.metricValue,
-                      sharedStyles[LOG_METRIC_VALUE_CLASS[metric.colorToken]]
-                    )}
-                  >
-                    {metric.value}
-                  </span>
+          {filteredEvents?.length === 0 ? (
+            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+              <NoDataFound title="No Overview Data" description="No log events match your current criteria." icon="mdi:chart-timeline-variant" />
+            </div>
+          ) : (
+            <div className={sharedStyles.realtimeGrid}>
+              {dynamicMetrics.map((metric) => (
+                <div key={metric.id} className={sharedStyles.metricWidget}>
+                  <div className={sharedStyles.metricMeta}>
+                    <span className={sharedStyles.metricLabel}>{metric.label}</span>
+                    <span
+                      className={clsx(
+                        sharedStyles.metricValue,
+                        sharedStyles[LOG_METRIC_VALUE_CLASS[metric.colorToken]]
+                      )}
+                    >
+                      {metric.value}
+                    </span>
+                  </div>
+                  <div className={sharedStyles.sparklineWrap}>
+                    <LogManagementChart
+                      option={getSummarySparklineOption(
+                        [],
+                        metric.colorToken
+                      )}
+                      size="sm"
+                    />
+                  </div>
                 </div>
-                <div className={sharedStyles.sparklineWrap}>
-                  <LogManagementChart
-                    option={getSummarySparklineOption(
-                      [],
-                      metric.colorToken
-                    )}
-                    size="sm"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

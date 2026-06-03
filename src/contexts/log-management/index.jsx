@@ -112,6 +112,7 @@ export const LogManagementProvider = ({ children }) => {
     handleResetFilters,
     filteredEvents,
     loadSyslogs,
+    isLoading,
   };
 
   return (

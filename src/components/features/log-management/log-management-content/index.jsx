@@ -9,25 +9,35 @@ import { LogManagementStatsAccordion } from '@/components/features/log-managemen
 import { LogManagementTrendsAccordion } from '@/components/features/log-management/log-management-trends-accordion';
 import { LogManagementWidgetSidebar } from '@/components/features/log-management/log-management-widget-sidebar';
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
+import { useLogManagement } from '@/hooks/log-management';
+import { LogManagementSkeleton } from '@/components/ui/skeleton-loaders/log-management-skeleton';
 
-export const LogManagementContent = () => (
-  <div className={sharedStyles.logManagement}>
+export const LogManagementContent = () => {
+  const { isLoading } = useLogManagement();
+
+  return (
+    <div className={sharedStyles.logManagement}>
     <LogManagementSidebar />
 
     <div className={sharedStyles.mainContentWrapper}>
       <LogManagementHeader />
 
       <div className={sharedStyles.contentArea}>
-        <div className={sharedStyles.timelineContainer}>
-          <LogManagementStatsAccordion />
-          <LogManagementTrendsAccordion />
-          <LogManagementEventsAccordion />
-        </div>
+        {isLoading ? (
+          <LogManagementSkeleton />
+        ) : (
+          <div className={sharedStyles.timelineContainer}>
+            <LogManagementStatsAccordion />
+            <LogManagementTrendsAccordion />
+            <LogManagementEventsAccordion />
+          </div>
+        )}
       </div>
     </div>
 
     <LogManagementEventDetail />
     <LogManagementWidgetSidebar />
     <LogManagementFilterSidebar />
-  </div>
-);
+    </div>
+  );
+};

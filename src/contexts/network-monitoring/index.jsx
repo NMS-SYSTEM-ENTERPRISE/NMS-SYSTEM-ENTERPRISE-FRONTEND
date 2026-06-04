@@ -74,14 +74,48 @@ export const NetworkMonitoringProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const filteredData = useMemo(
-    () =>
-      devicesData.filter((item) =>
-        item.category === activeCategory &&
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    [devicesData, activeCategory, searchQuery]
-  );
+  const filteredData = useMemo(() => {
+    return devicesData.filter((item) => {
+      // 1. Category Filter
+      if (item.category !== activeCategory) return false;
+
+      // 2. Search Query
+      if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.ip.includes(searchQuery)) {
+        return false;
+      }
+
+      // 3. Dynamic Filters
+      if (filters) {
+        if (filters.status && item.status !== filters.status) return false;
+
+        if (filters.type && item.type !== filters.type) return false;
+        if (filters.deviceType && item.type !== filters.deviceType) return false;
+        if (filters.provider && item.type !== filters.provider) return false;
+        if (filters.region && (!item.tags || !item.tags.includes(filters.region))) return false;
+
+        // Ranges
+        if (filters.cpu && Array.isArray(filters.cpu)) {
+          const [min, max] = filters.cpu;
+          if (item.cpu < min || item.cpu > max) return false;
+        }
+        if (filters.memory && Array.isArray(filters.memory)) {
+          const [min, max] = filters.memory;
+          if (item.memory < min || item.memory > max) return false;
+        }
+        if (filters.disk && Array.isArray(filters.disk)) {
+          const [min, max] = filters.disk;
+          if (item.disk !== undefined && (item.disk < min || item.disk > max)) return false;
+        }
+        if (filters.latency && Array.isArray(filters.latency)) {
+          const [min, max] = filters.latency;
+          // assuming ping is somewhere, if not just skip
+          if (item.ping !== undefined && (item.ping < min || item.ping > max)) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [devicesData, activeCategory, searchQuery, filters]);
 
   const handleCloseFilterSidebar = useCallback(() => {
     setShowFilterSidebar(false);

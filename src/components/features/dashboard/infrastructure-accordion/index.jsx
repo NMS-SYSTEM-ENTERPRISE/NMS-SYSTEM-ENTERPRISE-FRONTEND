@@ -57,7 +57,7 @@ const LatencyBar = ({ ping }) => {
 const UptimeVisual = ({ uptime }) => {
   if (!uptime) return <span style={{ color: 'var(--color-text-muted)' }}>—</span>;
   const days = parseFloat(uptime) || 0;
-  
+
   let color = '#ef4444'; // Red
   if (days >= 20) color = '#22c55e'; // Green
   else if (days >= 5) color = '#eab308'; // Yellow

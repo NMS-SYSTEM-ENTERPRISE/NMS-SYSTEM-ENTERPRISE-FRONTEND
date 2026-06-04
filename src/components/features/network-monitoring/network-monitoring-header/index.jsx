@@ -32,8 +32,12 @@ export const NetworkMonitoringHeader = () => {
           className={sharedStyles.headerSearchInput}
           containerClassName={sharedStyles.headerSearch}
           icon={<Icon icon="mdi:magnify" width={18} />}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          defaultValue={searchQuery}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setSearchQuery(e.target.value);
+            }
+          }}
         />
 
         <div className={sharedStyles.viewToggle}>

@@ -1,4 +1,5 @@
 'use client';
+import clsx from 'clsx';
 
 import CategoryFilterSidebar from '@/components/features/networkmonitoring/CategoryFilterSidebar';
 import DashboardView from '@/components/features/networkmonitoring/DashboardView';
@@ -25,6 +26,8 @@ export const NetworkMonitoringContent = () => {
     getProgressBarColor,
     filters,
     setFilters,
+    searchQuery,
+    setSearchQuery,
     handleCloseFilterSidebar,
   } = useNetworkMonitoring();
 
@@ -43,14 +46,14 @@ export const NetworkMonitoringContent = () => {
       <div className={sharedStyles.mainContentWrapper}>
         <NetworkMonitoringHeader />
 
-        <div className={sharedStyles.contentArea}>
+        <div className={clsx(sharedStyles.contentArea, viewMode === 'details' && sharedStyles.contentAreaNoPadding)}>
           {isLoading ? (
             <NetworkMonitoringSkeleton />
           ) : !hasData ? (
-            <NoDataFound 
-              title="No Telemetry Data Found" 
-              description={`There is currently no active telemetry or device data available for the '${activeCategory}' category.`} 
-              icon="lucide:activity" 
+            <NoDataFound
+              title="No Telemetry Data Found"
+              description={`There is currently no active telemetry or device data available for the '${activeCategory}' category.`}
+              icon="lucide:activity"
             />
           ) : viewMode === 'details' ? (
             <DetailsView
@@ -58,6 +61,10 @@ export const NetworkMonitoringContent = () => {
               config={currentConfig}
               data={filteredData}
               getProgressBarColor={getProgressBarColor}
+              filters={filters}
+              setFilters={setFilters}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
             />
           ) : (
             <DashboardView

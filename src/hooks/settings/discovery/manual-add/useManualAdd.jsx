@@ -4,8 +4,7 @@ import { useToast } from '@/hooks/useToast';
 import { allCredentialProfilesApi } from '@/networking/discovery-settings/credential-profile/profile/profile-apis';
 import { allDiscoveryGroupsApi, createDiscoveryGroupApi } from '@/networking/discovery-settings/discovery-profile/groups/groups-apis';
 import { allDiscoveryTagsApi, createDiscoveryTagApi } from '@/networking/discovery-settings/discovery-profile/tags/tags-apis';
-import { createDiscoveryProfileApi, reDiscoverProfileApi, uploadCsvApi } from '@/networking/discovery-settings/discovery-profile/profile/profile-apis';
-import * as XLSX from 'xlsx';
+import { createManualDeviceApi, uploadManualDevicesXlsxApi } from '@/networking/discovery-settings/manual-devices/manual-devices-apis';
 
 export const useManualAdd = () => {
   const [activeTab, setActiveTab] = useState('single');
@@ -59,53 +58,6 @@ export const useManualAdd = () => {
     }
   };
 
-  const processFileToCsv = async (inputFile) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const csvStr = XLSX.utils.sheet_to_csv(firstSheet);
-          
-          const blob = new Blob([csvStr], { type: 'text/csv' });
-          const file = new File([blob], 'upload.csv', { type: 'text/csv' });
-          resolve(file);
-        } catch (error) {
-          reject(error);
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(inputFile);
-    });
-  };
-
-  const createCustomDependencies = async () => {
-    const newGroups = [...selectedGroups];
-    const newTags = [...selectedTags];
-
-    if (customGroup.trim()) {
-      try {
-        const res = await createDiscoveryGroupApi({ name: customGroup.trim() });
-        if (res.data?.id) newGroups.push(res.data.id);
-      } catch (err) {
-        console.error("Failed to create custom group:", err);
-      }
-    }
-
-    if (customTag.trim()) {
-      try {
-        const res = await createDiscoveryTagApi({ name: customTag.trim() });
-        if (res.data?.id) newTags.push(res.data.id);
-      } catch (err) {
-        console.error("Failed to create custom tag:", err);
-      }
-    }
-
-    return { finalGroups: newGroups, finalTags: newTags };
-  };
-
   const submitSingleDevice = async () => {
     if (!ipAddress.trim()) {
       showError('IP Address or Hostname is required');
@@ -114,29 +66,51 @@ export const useManualAdd = () => {
     
     try {
       setIsSubmitting(true);
-      const { finalGroups, finalTags } = await createCustomDependencies();
+      
+      let protocol = "Ping";
+      let snmp_community = "";
+      let snmp_version = "";
+      let ssh_username = "";
+      let ssh_password = "";
+
+      // Attempt to grab credentials from the selected credential profiles
+      if (selectedCredentials.length > 0) {
+        const cred = credentialProfiles.find(c => c.id === selectedCredentials[0]);
+        if (cred) {
+          protocol = cred.type || "Ping";
+          snmp_community = cred.community_string || "";
+          snmp_version = cred.type || "";
+          ssh_username = cred.username || "";
+          ssh_password = cred.password || "";
+        }
+      }
+
+      let groupName = customGroup.trim();
+      if (!groupName && selectedGroups.length > 0) {
+         const g = groups.find(g => g.id === selectedGroups[0]);
+         if (g) groupName = g.name;
+      }
+
       const finalDiscoveryType = discoveryType === 'Other' ? (customDiscoveryType.trim() || 'Other') : discoveryType;
 
       const payload = {
-        name: name.trim() || `Manual Add - ${ipAddress}`,
-        description: 'Manually added device',
-        discovery_type: finalDiscoveryType,
-        target_input_method: 'Single IP',
-        ip_address_or_hostname: ipAddress,
-        credential_ids: selectedCredentials,
-        group_ids: finalGroups,
-        tag_ids: finalTags,
+        ip_address: ipAddress.trim(),
+        device_name: name.trim() || `Manual Add - ${ipAddress}`,
+        device_type: finalDiscoveryType,
+        device_group: groupName,
+        protocol: protocol,
+        snmp_community: snmp_community,
+        snmp_version: snmp_version,
+        ssh_username: ssh_username,
+        ssh_password: ssh_password
       };
 
-      const res = await createDiscoveryProfileApi(payload);
-      if (res.data?.id) {
-        await reDiscoverProfileApi(res.data.id);
-        showSuccess('Device discovery started successfully. Please check Discovery Profiles for progress.');
-        router.push('/settings/discovery/profile');
-      }
+      await createManualDeviceApi(payload);
+      showSuccess('Manual device added and discovery queued successfully.');
+      router.push('/settings/discovery/profile'); // Or wherever you want to redirect
     } catch (err) {
       console.error(err);
-      showError(err?.detail || 'Failed to start device discovery');
+      showError(err?.detail || 'Failed to add manual device');
     } finally {
       setIsSubmitting(false);
     }
@@ -150,44 +124,15 @@ export const useManualAdd = () => {
 
     try {
       setIsSubmitting(true);
-      let uploadFile = file;
-      
-      // Convert to CSV if it's XLSX
-      if (file.name.endsWith('.xlsx')) {
-        uploadFile = await processFileToCsv(file);
-      }
-
       const formData = new FormData();
-      formData.append('file', uploadFile);
+      formData.append('file', file);
 
-      const uploadRes = await uploadCsvApi(formData);
-      const csvPath = uploadRes.data?.csv_file_path;
-
-      if (!csvPath) throw new Error('Failed to upload file to backend');
-
-      const { finalGroups, finalTags } = await createCustomDependencies();
-      const finalDiscoveryType = discoveryType === 'Other' ? (customDiscoveryType.trim() || 'Other') : discoveryType;
-
-      const payload = {
-        name: name.trim() || `Manual Upload - ${file.name}`,
-        description: 'Bulk added devices via upload',
-        discovery_type: finalDiscoveryType,
-        target_input_method: 'CSV',
-        csv_file_path: csvPath,
-        credential_ids: selectedCredentials,
-        group_ids: finalGroups,
-        tag_ids: finalTags,
-      };
-
-      const res = await createDiscoveryProfileApi(payload);
-      if (res.data?.id) {
-        await reDiscoverProfileApi(res.data.id);
-        showSuccess('Bulk device discovery started successfully. Please check Discovery Profiles for progress.');
-        router.push('/settings/discovery/profile');
-      }
+      const res = await uploadManualDevicesXlsxApi(formData);
+      showSuccess(res.data?.message || 'Bulk manual devices added and discovery queued successfully.');
+      router.push('/settings/discovery/profile');
     } catch (err) {
       console.error(err);
-      showError(err?.detail || err?.message || 'Failed to start bulk discovery');
+      showError(err?.response?.data?.detail || err?.detail || err?.message || 'Failed to upload manual devices');
     } finally {
       setIsSubmitting(false);
     }

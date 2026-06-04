@@ -35,68 +35,79 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-==
 
-OBJECTIVE:
+NOTE:
+IT IS THE MAJOR MAJOR MAIN TASK WE NEED TO DONE WITH OUT ANY ISSUES HANDLE THIS ONE GRACEFULLY OKAY 
 
-### `/alerts` & `/trap-explorer` (Event Management)
+TAKE YOUR OWN TIME HANDLE IT OKAY HOW MUCH TIME YOU WANT TAKE IT NO PROBLEM BUT DONE IT WITH OUT ANY ISSUES.
 
-- **Concept**: Real-time fault detection.
-- **Backend Architecture**:
-  - *Active Polling*: If the Go poller detects CPU > 90% or a Node Down, it inserts a record into the `alerts` table.
-  - *Passive Listening (Traps)*: A UDP listener daemon runs on port 162. When a switch interface goes down, it sends an SNMP Trap. The daemon parses the trap and streams it to the `/trap-explorer` via WebSockets, and evaluates it against Alert Rules.
-============================================
+DON'T SKIP ANYTHING OKAY WITH OUT ANY ISSUES HANDLE IT GRACEFULLY OKAY 
 
-IT IS THE MAJOR CORE MODULE OKAY DONE WITH MORE CAREFULLY MORE EFFECTIVELY WITH OUT ANY ISSUES 
-check this table how data is there based on this done it okay 
-select * from discovered_devices
+BECAUSE BASED ON THIS ONLY THE CORE OF THE APPLICATION WILL RUN OKAY THAT WHY IAM SAYING VERY VERY SENSITIVE
+IMPORTANT TASK 
 
-select * from device_monitoring
 
-select * from device_metrics_history
+CHECK THE DB CURRENTLY WE HAVE NOW PROCESS IS
+CREATING CREDENTIAL PROFILE AND THEN DISCOVERY PROFILE WE ARE DISCOVERING THOSE DISCOVERY RELATED DATA WE STORED
+IN THE discovered_devices TABLE
+HERE YOU DONE GO ENGINE POLLING SNMP OID'S CAPTURING AND MIBS PARSING EVERYTHING IT IS FINE
+AND THEN HANDLED
+THE COMMISSIONING SO THAT THIS DEVICES ADDED IN TO THE device_monitoring TABLE WITH NEAT DATA STORING AS FRONT END DATA CELL
 
-db tables based on this neatly display the data if not check the missing oid and relevant mib and get the response of it neatly fit it okay no more data placing in the backend as well okay everything is dynamic and no more stale dummy and statistics from the db basis it needed okay
+NOW THIS PROCESS IS FINE
 
- we need to develop this /reports apis okay for this first screen related
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/screens/reports
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/features/reports
+BASED ON THIS YOU DONE THE
 
-end to check based on this front end expectation we are the current data
-we are able to have and able o display wont miss any single widget single detailing okay every thing needed thats why take time first
- analyze this and if we are okay with in this then go head develop the apis okay if need check the db tables discovered_devices
+ANALYSIS HANDLED THE MULTIPLE TABLES
+
+device_metrics_history
 device_monitoring
-device_metric_history okay
-so that  what is the we have till now you will get clarity okay take time done this once
-everything is fine develop the apis and then g head with the front e end integrations as well okay
-with out breaking the ui and ux and functionality handle it gracefully okay
+etc features it is fine
 
-implement it effectively okay as per the front end expectation neatly what are all the apis
-needed write it okay
+BASED ON THIS YOU DISPLAY THE DATA IN THE DASHBOARD
+RESPECTIVE SCREEN AS PER THEIR EXPECTATION
+EX:
+/dashboard
+/network-monitoring
+/network-topology
+/metric-explorer
+/netpath
+/flow
+/slo
+/trap-explorer
+/alerts
+/reports
+/audit
+/log-management
+/ticketing
+/settings
 
-it is the major module right thats why    
+EVERYTHING IS FINE UP TO HERE
 
-once everything is fine remove the dummy data okay no need it once every thing is dynamic one
+NOW ALONG WITH THIS NOW WHAT IS THE PROCESS WE NEEDED IS
 
+IF YOU SEEN THIS SCREEN : /settings/discovery/manual-add
+WE ARE ABLE TO ADD THE DEVICE MANUALLY ALSO
+EITHER ONE BY ONE OR BULK CSV UPLOAD OR XLSX UPLOAD
 
--NAME OF THE SCREENS: trap-explorer and alerts
--DESCRIPTION:
-NEED AN GENUINE FEED BACK ALL SLO INTEGRATIONS COMPLETED OR NOT PLEASE CHECK THE BACKEND AND FRONT END GAVE ME THE CONFIRMATION MESSAGE 
-ON IT 
-so here i need one confirmation in backend and front end regarding this slo we don't have amy dummy data and dummy calculations right just gave me confirmation okay.
+SEE HERE WHAT I WANT IS
+IT IS THE XLSX FILE FIRST ANALYZE THIS DATA
+SO YOU CAN GET CLARITY ABOUT IT AND THEN
+UPLOAD THE XLSX STORE THIS DATA IN ONE TABLE SEPARATELY
+XLSX PATH :
 
+NOTE : IN THE XLSX WE HAVE THIS FIELDS
+IP Address	Device Name	Device Type	Device Group	Protocol	SNMP Community	SNMP Version	SSH Username	SSH Password
 
+BASED ON THIS WHAT EVER THE CHANGES NEEDED IN THE BACKEND AND FRONT END ACCORDINGLY DONE IT OKAY
+IP Address Device Name Device Type Protocol SNMP Community SNMP Version SSH Username SSH Password Device Group
+IF ANY ONE NOT AVAILABLE LEAVE IT OKAY LATER WE CAN ADD THIS THOSE EDITING AND DELETING FEATURE ALSO NEEDED
+IMPLEMENT IT CAREFULLY OKAY
+devices_added_manually TABLE ALSO SAME HOW THE DISCOVERED DEVICES SYNCED WITH THE
+GO ENGINE POLLING SNMP OID'S CAPTURING AND MIBS PARSING EVERYTHING HANDLED SAME WAY OKAY
+THEN ONCE EVERYTHING DONE HERE
+THEN ADDED IN TO THE device_monitoring  TABLE WITH OUT ANY ISSUES
 
-IT IS THE MAIN CONCERN RIGHT THATS WHY IAM SAYING
-what ever the packages you installed
-please check this
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-BACKEND/requirements.txt
+SO THAT WE HAVE ACHIEVED THE BOTH AUTOMATED DISCOVERY AND MANUAL PROCESS AS WELL OKAY
 
-we have already the environment nms-enterprise-backend
-so in this using relevant pip package install it okay 
-
-so that only easily we can reproduce this one other systems as well thats why
-
-instead system base installation sudo avoid this one okay
-
-OR ELSE GAVE ME THE PACKAGES INSTALLATION IN THE requirements.txt i can install it okay
-
+AND DATA AUTOMATICALLY  SYNCED NEATLY WITH OUT ANY ISSUES OKAY ALONG WITH THE EXISTING APIS

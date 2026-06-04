@@ -37,5 +37,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ===
 NEXT BEFORE PROCEEDING TO THIS SCREEN
-/network-topology
+/metric-explorer
 ANALYZE THIS SCREEN RELATED FRONT END BACKEND NEATLY WITH OUT ANY ISSUES OKAY

@@ -72,6 +72,11 @@ export const deleteMetricExplorerWorkspace = async (workspaceId) => {
   return response.data;
 };
 
+export const shareMetricExplorerWidget = async (payload) => {
+  const response = await authApi.post(`${BASE_URL}/metric-explorer/share`, payload);
+  return response.data;
+};
+
 export const getNetPaths = async () => {
   const response = await authApi.get(`${BASE_URL}/netpath/paths`);
   return response.data;

@@ -1,4 +1,5 @@
 'use client';
+import { shareMetricExplorerWidget } from '@/networking/network-monitoring/network-monitoring-apis';
 import { ChartModal } from '@/components/features/metric-explorer/chart-modal';
 import { MetricChartContainer } from '@/components/features/metric-explorer/metric-chart-container';
 import { MetricExplorerSidebar } from '@/components/features/metric-explorer/metric-explorer-sidebar';
@@ -50,8 +51,14 @@ export const MetricExplorerContent = () => {
 
   const handleShareWidget = async ({ shareWith, message }) => {
     try {
-      // Simulate API integration for sharing the widget
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (shareWidget) {
+        await shareMetricExplorerWidget({
+          shareWith,
+          message,
+          metricName: shareWidget.displayName || shareWidget.name,
+          monitorName: shareWidget.monitor
+        });
+      }
       showSuccess(`Widget successfully shared with ${shareWith}`);
       setShareWidget(null);
     } catch (error) {

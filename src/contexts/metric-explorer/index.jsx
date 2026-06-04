@@ -7,6 +7,7 @@ import {
   updateMetricExplorerWorkspace,
 } from '@/networking/network-monitoring/network-monitoring-apis';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { useToast } from '@/hooks/useToast';
 
 export const MetricExplorerContext = createContext(null);
 
@@ -34,6 +35,7 @@ const serializeMetric = (metric) => ({
 const serializeWorkspaceMetrics = (metrics = []) => metrics.map(serializeMetric);
 
 export const MetricExplorerProvider = ({ children }) => {
+  const { showSuccess, showError } = useToast();
   const [metricTabs, setMetricTabs] = useState([buildEmptyWorkspace()]);
   const [activeTabId, setActiveTabId] = useState('local-1');
   const [expandedChart, setExpandedChart] = useState(null);
@@ -190,11 +192,13 @@ export const MetricExplorerProvider = ({ children }) => {
       };
       setMetricTabs((prev) => [...prev, tab]);
       setActiveTabId(tab.id);
+      showSuccess(`Workspace "${created.name}" created successfully.`);
     } catch (error) {
       console.error('Failed to create metric workspace:', error);
+      showError('Unable to create workspace right now.');
       setErrorMessage('Unable to create workspace right now.');
     }
-  }, [metricTabs.length]);
+  }, [metricTabs.length, showSuccess, showError]);
 
   const handleCloseTab = useCallback((tabId, e) => {
     e?.stopPropagation();
@@ -252,8 +256,9 @@ export const MetricExplorerProvider = ({ children }) => {
       );
       persistWorkspace(activeTab.id, { selected_metrics: serializeWorkspaceMetrics(nextMetrics) });
       loadMetricSeries(activeTab.id, newMetric);
+      showSuccess(`Metric "${newMetric.displayName}" added to workspace.`);
     },
-    [activeTab, loadMetricSeries, monitors, persistWorkspace]
+    [activeTab, loadMetricSeries, monitors, persistWorkspace, showSuccess, showError]
   );
 
   const handleRemoveMetric = useCallback(
@@ -266,8 +271,9 @@ export const MetricExplorerProvider = ({ children }) => {
         )
       );
       persistWorkspace(activeTab.id, { selected_metrics: serializeWorkspaceMetrics(nextMetrics) });
+      showSuccess('Metric removed from workspace.');
     },
-    [activeTab, persistWorkspace]
+    [activeTab, persistWorkspace, showSuccess]
   );
 
   const handleUpdateMetric = useCallback(
@@ -286,9 +292,12 @@ export const MetricExplorerProvider = ({ children }) => {
 
       if (targetMetric && Object.prototype.hasOwnProperty.call(updates, 'timeRange')) {
         loadMetricSeries(activeTab.id, { ...targetMetric, ...updates });
+        showSuccess(`Time range updated for "${targetMetric.displayName}".`);
+      } else if (targetMetric && Object.prototype.hasOwnProperty.call(updates, 'displayName')) {
+        showSuccess(`Metric renamed to "${updates.displayName}".`);
       }
     },
-    [activeTab, loadMetricSeries, persistWorkspace]
+    [activeTab, loadMetricSeries, persistWorkspace, showSuccess]
   );
 
   const handleRenameClick = useCallback((tab) => {
@@ -308,8 +317,9 @@ export const MetricExplorerProvider = ({ children }) => {
       );
       await persistWorkspace(renamingTab.id, { name });
       setRenamingTab(null);
+      showSuccess(`Workspace renamed to "${name}".`);
     }
-  }, [newTabName, persistWorkspace, renamingTab]);
+  }, [newTabName, persistWorkspace, renamingTab, showSuccess]);
 
   const confirmDelete = useCallback(async () => {
     if (!deletingTab || metricTabs.length <= 1) {
@@ -325,13 +335,15 @@ export const MetricExplorerProvider = ({ children }) => {
         }
         return nextTabs;
       });
+      showSuccess(`Workspace "${deletingTab.name}" deleted successfully.`);
     } catch (error) {
       console.error('Failed to delete metric workspace:', error);
+      showError('Unable to delete workspace right now.');
       setErrorMessage('Unable to delete workspace right now.');
     } finally {
       setDeletingTab(null);
     }
-  }, [activeTabId, deletingTab, metricTabs.length]);
+  }, [activeTabId, deletingTab, metricTabs.length, showSuccess, showError]);
 
   const value = {
     metricTabs,

@@ -23,7 +23,7 @@ export const SloGridView = () => {
 
   if (errorMessage || paginatedSLOs.length === 0) {
     return (
-      <div className={styles.gridWrapper} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+      <div className={styles.gridWrapper} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%', minHeight: '400px' }}>
         <NoDataFound 
           title="No SLOs Found" 
           description={errorMessage || "No Service Level Objectives match your current filters."}

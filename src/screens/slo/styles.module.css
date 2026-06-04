@@ -377,6 +377,12 @@
   gap: var(--gap-lg);
 }
 
+.contentAreaTableMode {
+  padding: 0;
+  overflow: hidden;
+  gap: 0;
+}
+
 .resultCount {
   font-size: var(--font-xs);
   color: var(--color-text-muted);

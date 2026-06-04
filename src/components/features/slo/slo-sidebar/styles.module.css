@@ -123,22 +123,29 @@
   font-weight: var(--font-weight-medium);
   position: relative;
   min-height: 40px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .sidebarCollapsed .navItem {
-  padding: 10px 0;
+  padding: 0;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 8px auto;
+  border-radius: 12px;
 }
 
 .navItem:hover {
   color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .navItemActive {
-  color: var(--color-accent-cyan) !important;
-  background: rgba(var(--color-accent-cyan-rgb), 0.05);
+  color: var(--color-text-primary) !important;
+  background: rgba(255, 255, 255, 0.1);
   font-weight: var(--font-weight-semibold);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .itemIconWrapper {

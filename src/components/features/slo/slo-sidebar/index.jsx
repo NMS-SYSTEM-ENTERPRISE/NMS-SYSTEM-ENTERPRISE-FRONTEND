@@ -36,7 +36,9 @@ export const SloSidebar = () => {
 
       <nav className={styles.sidebarNav}>
         <div className={styles.treeRoot}>
-          <Icon icon="ph:target-bold" className={styles.rootIcon} />
+          <div className={styles.itemIconWrapper}>
+            <Icon icon="ph:target-bold" className={styles.rootIcon} width={18} />
+          </div>
           <span className={styles.rootLabel}>SLO Management</span>
         </div>
 

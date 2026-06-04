@@ -19,7 +19,7 @@ const SloContent = () => {
       <div className={styles.mainContentWrapper}>
         <SloHeader />
 
-        <div className={styles.contentArea}>
+        <div className={`${styles.contentArea} ${viewMode === 'table' ? styles.contentAreaTableMode : ''}`}>
           {/* <SloToolbar /> */}
           {viewMode === 'table' ? <SloTableView /> : <SloGridView />}
         </div>

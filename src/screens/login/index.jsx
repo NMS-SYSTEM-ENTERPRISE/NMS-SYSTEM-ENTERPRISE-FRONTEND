@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './styles.module.css';
 import { loginApi } from '@/networking/auth/auth-apis';
+import NetworkBackground from './NetworkBackground';
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -52,6 +53,8 @@ const LoginScreen = () => {
 
   return (
     <div className={styles.pageWrapper}>
+      <NetworkBackground />
+      
       <div className={styles.card}>
 
         {/* Left Side - Graphic & Welcome Text */}

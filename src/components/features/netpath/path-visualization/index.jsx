@@ -12,12 +12,11 @@ export const PathVisualization = ({ pathInfo }) => {
   // Calculate unified percentage positions for perfect alignment
   const nodesWithPositions = useMemo(() => {
     return pathNodes.map((node, index) => {
-      const step = 100 / (pathNodes.length);
       return {
         ...node,
         // Distribute nodes horizontally and vertically
-        x: 10 + (index * (80 / (pathNodes.length - 1))), // 10% to 90%
-        y: 15 + (index * (70 / (pathNodes.length - 1))), // 15% to 85%
+        x: 10 + (index * (80 / (Math.max(1, pathNodes.length - 1)))), // 10% to 90%
+        y: 28 + (index * (44 / (Math.max(1, pathNodes.length - 1)))), // 28% to 72%
       };
     });
   }, [pathNodes]);

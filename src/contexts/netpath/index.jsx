@@ -41,12 +41,31 @@ export const NetPathProvider = ({ children }) => {
     fetchPaths();
   }, []);
 
-  const filteredPaths = paths.filter(
-    (path) =>
+  const filteredPaths = paths.filter((path) => {
+    // Basic search query
+    const matchesSearch = 
       path.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       path.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      path.destination.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      path.destination.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (!matchesSearch) return false;
+
+    // Advanced Sidebar Filters
+    if (filters.status && path.status !== filters.status) return false;
+    if (filters.source && !path.source.toLowerCase().includes(filters.source.toLowerCase())) return false;
+    if (filters.destination && !path.destination.toLowerCase().includes(filters.destination.toLowerCase())) return false;
+    
+    // Port filtering (if applicable)
+    if (filters.portMin || filters.portMax) {
+      const portNum = parseInt(path.port, 10);
+      if (!isNaN(portNum)) {
+        if (filters.portMin && portNum < parseInt(filters.portMin, 10)) return false;
+        if (filters.portMax && portNum > parseInt(filters.portMax, 10)) return false;
+      }
+    }
+
+    return true;
+  });
 
   const activePath = paths.find((p) => p.id === activePathId) || paths[0] || null;
 

@@ -87,6 +87,11 @@ export const getNetPathDetail = async (pathId) => {
   return response.data;
 };
 
+export const getOverallNetFlow = async () => {
+  const response = await authApi.get(`${BASE_URL}/netpath/overall-flow`);
+  return response.data;
+};
+
 // ==========================================
 // ALERTS (FAULT MANAGEMENT) APIS
 // ==========================================

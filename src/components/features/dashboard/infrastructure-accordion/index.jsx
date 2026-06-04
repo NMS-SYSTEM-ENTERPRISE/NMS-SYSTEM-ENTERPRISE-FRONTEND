@@ -1,15 +1,22 @@
 'use client';
 
 import { Activity, ChevronDown, Server, ListFilter } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 import CountUp from 'react-countup';
 import { Battery, CheckCircle2, Network, XCircle, Server as ServerIcon } from 'lucide-react';
 
 const CircularGauge = ({ value, max = 100, color, size = 48, strokeWidth = 4 }) => {
+  const [currentValue, setCurrentValue] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setCurrentValue(value), 100);
+    return () => clearTimeout(timer);
+  }, [value]);
+
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const normalizedValue = Math.min(Math.max(value, 0), max);
+  const normalizedValue = Math.min(Math.max(currentValue, 0), max);
   const percent = max > 0 ? normalizedValue / max : 0;
   const offset = circumference - percent * circumference;
 
@@ -18,7 +25,7 @@ const CircularGauge = ({ value, max = 100, color, size = 48, strokeWidth = 4 }) 
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--color-bg-tertiary)" strokeWidth={strokeWidth} />
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
         strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round"
-        transform={`rotate(-90 ${size / 2} ${size / 2})`} style={{ transition: 'stroke-dashoffset 1s ease' }} />
+        transform={`rotate(-90 ${size / 2} ${size / 2})`} style={{ transition: 'stroke-dashoffset 2s ease-out' }} />
     </svg>
   );
 };
@@ -50,14 +57,15 @@ const LatencyBar = ({ ping }) => {
 const UptimeVisual = ({ uptime }) => {
   if (!uptime) return <span style={{ color: 'var(--color-text-muted)' }}>—</span>;
   const days = parseFloat(uptime) || 0;
-  const percent = Math.min((days / 30) * 100, 100);
+  
+  let color = '#ef4444'; // Red
+  if (days >= 20) color = '#22c55e'; // Green
+  else if (days >= 5) color = '#eab308'; // Yellow
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <div style={{ width: '36px', height: '4px', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: '2px', overflow: 'hidden', flexShrink: 0 }}>
-        <div style={{ width: `${percent}%`, height: '100%', backgroundColor: '#3b82f6' }} />
-      </div>
-      <div style={{ width: '70px', fontSize: '0.85rem', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <CircularGauge value={days} max={30} color={color} size={28} strokeWidth={4} />
+      <div style={{ width: '70px', color, fontSize: '0.85rem', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
         <CountUp end={days} decimals={1} duration={2} /> days
       </div>
     </div>

@@ -44,6 +44,9 @@ export const mapDashboardResponse = (data) => ({
     total: data.statistics?.total ?? 0,
     online: data.statistics?.online ?? 0,
     offline: data.statistics?.offline ?? 0,
+    total_devices: data.statistics?.total_devices || [],
+    online_devices: data.statistics?.online_devices || [],
+    offline_devices: data.statistics?.offline_devices || [],
   },
   performance: {
     cpuGroupData: data.performance?.cpu_group_data?.length ? data.performance.cpu_group_data : dummyCpuGroup,

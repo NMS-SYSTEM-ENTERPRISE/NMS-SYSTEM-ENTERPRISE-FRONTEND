@@ -1,6 +1,6 @@
 'use client';
 
-import { DeviceStatsBar } from '@/components/features/dashboard/device-stats-bar';
+import { InfrastructureAccordion } from '@/components/features/dashboard/infrastructure-accordion';
 import { PerformanceAccordion } from '@/components/features/dashboard/performance-accordion';
 import { ResourceAccordion } from '@/components/features/dashboard/resource-accordion';
 import sharedStyles from '@/components/features/dashboard/shared/styles.module.css';
@@ -27,10 +27,10 @@ export const DashboardContent = () => {
     return (
       <div className={sharedStyles.dashboard}>
         <main className={sharedStyles.dashboardContent}>
-          <NoDataFound 
-            title="Dashboard Data Unavailable" 
-            description="There are currently no network metrics or statistics to display." 
-            icon="lucide:layout-dashboard" 
+          <NoDataFound
+            title="Dashboard Data Unavailable"
+            description="There are currently no network metrics or statistics to display."
+            icon="lucide:layout-dashboard"
           />
         </main>
       </div>
@@ -41,7 +41,7 @@ export const DashboardContent = () => {
     <div className={sharedStyles.dashboard}>
       <main className={sharedStyles.dashboardContent}>
         <div className={sharedStyles.dashboardSection}>
-          <DeviceStatsBar statistics={statistics} />
+          <InfrastructureAccordion statistics={statistics} />
         </div>
 
         <div className={sharedStyles.dashboardSection}>

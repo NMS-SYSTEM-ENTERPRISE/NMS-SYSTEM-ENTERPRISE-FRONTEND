@@ -1,0 +1,437 @@
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.accordionItem {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  /* Restored for connection line */
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+
+
+.accordionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.accordionHeader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.headerTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.5px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statBadge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.chevron {
+  color: var(--color-text-secondary);
+  transition: transform 0.3s ease;
+}
+
+.accordionItem[data-open="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.accordionContent {
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+  animation: slideDown 0.3s ease-out;
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Custom Scrollbar for the table container */
+.tableContainer::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.tableContainer::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+.deviceTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.deviceTable th {
+  text-align: left;
+  padding: 12px 20px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  letter-spacing: 0.5px;
+}
+
+.deviceTable td {
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.deviceTable tr:last-child td {
+  border-bottom: none;
+}
+
+.deviceTable tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.statusIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.statusUp {
+  color: #22c55e;
+}
+
+.statusDown {
+  color: #ef4444;
+}
+
+.typeContainer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deviceNameContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.deviceNameText {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.2px;
+}
+
+.typeIconOnly {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  /* Align right since pageInfo is removed */
+  align-items: center;
+  padding: 16px 20px;
+  /* Pad nicely inside the container */
+  margin-top: 0;
+}
+
+.pageControls {
+  display: flex;
+  gap: 8px;
+}
+
+.pageButton {
+  padding: 6px 12px;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageButton:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.pageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.noData {
+  text-align: center;
+  padding: 24px;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Controls Row (Tabs + Filters) */
+.controlsRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabsGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.verticalDivider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--color-border);
+  margin: 0 4px;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  /* Push to the right */
+}
+
+.filterToggleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.filterToggleButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+}
+
+.filterToggleButton.activeFilter {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.filterDot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  border: 2px solid var(--color-bg-primary);
+}
+
+.subTabsGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  /* keep in same row */
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+}
+
+.tabButton.activeTab {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.tabBadge {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.tabButton.activeTab .tabBadge {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+/* Sub Tabs Styles */
+.subTabButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid transparent;
+  border-radius: 16px;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subTabButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+}
+
+.subTabButton.activeSubTab {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.subTabBadge {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.subTabButton.activeSubTab .subTabBadge {
+  background-color: #10b981;
+  color: #fff;
+}
+
+/* Latency Visual Bar */
+.latencyViz {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.latencyStrip {
+  display: flex;
+  gap: 2px;
+}
+
+.latencyBlock {
+  width: 6px;
+  height: 12px;
+  border-radius: 1px;
+  transition: all 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

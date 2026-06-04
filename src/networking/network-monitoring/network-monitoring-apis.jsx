@@ -92,6 +92,11 @@ export const getOverallNetFlow = async () => {
   return response.data;
 };
 
+export const getOverallFlowAnalysis = async () => {
+  const response = await authApi.get(`${BASE_URL}/flow/overall-analysis`);
+  return response.data;
+};
+
 // ==========================================
 // ALERTS (FAULT MANAGEMENT) APIS
 // ==========================================

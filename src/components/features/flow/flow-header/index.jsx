@@ -52,20 +52,9 @@ export const FlowHeader = () => {
           />
         </div>
 
-        <div className={sharedStyles.headerActions}>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Refresh">
-            <Icon icon="mdi:refresh" width={20} height={20} />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            className={sharedStyles.actionBtn}
-            onClick={() => setShowActionSidebar(true)}
-            title={activeView === 'dashboard' ? 'Dashboard Actions' : 'Explorer Configuration'}
-          >
-            <Icon icon="mdi:cog" width={20} height={20} />
-          </Button>
-        </div>
+        <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Refresh">
+          <Icon icon="mdi:refresh" width={20} height={20} />
+        </Button>
       </div>
     </div>
   );

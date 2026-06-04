@@ -191,7 +191,7 @@ export const SelectComponent = ({
 
   const Component = isCreatable ? CreatableSelect : Select;
 
-  // Custom Option to render Edit/Delete icons
+  // Custom Option to render Edit/Delete icons, avatars, and custom icons
   const CustomOption = (props) => {
     return (
       <components.Option {...props}>
@@ -203,7 +203,30 @@ export const SelectComponent = ({
             width: '100%',
           }}
         >
-          <span>{props.label}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {props.data.icon && <Icon icon={props.data.icon} width={18} height={18} color="var(--color-text-muted)" />}
+            {props.data.avatar && (
+              <div style={{ 
+                width: 24, 
+                height: 24, 
+                borderRadius: '50%', 
+                backgroundColor: props.data.color || 'var(--color-bg-tertiary)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                fontSize: 10, 
+                fontWeight: 'bold',
+                color: '#fff',
+                border: '1px solid var(--color-border)'
+              }}>
+                {props.data.avatar}
+              </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span>{props.label}</span>
+              {props.data.subLabel && <span style={{ fontSize: '10px', color: 'var(--color-text-muted)' }}>{props.data.subLabel}</span>}
+            </div>
+          </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             {restProps.onEditOption && (
               <Icon
@@ -234,6 +257,34 @@ export const SelectComponent = ({
           </div>
         </div>
       </components.Option>
+    );
+  };
+
+  // Custom SingleValue to render avatar/icon in the selected value
+  const CustomSingleValue = (props) => {
+    return (
+      <components.SingleValue {...props}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {props.data.icon && <Icon icon={props.data.icon} width={16} height={16} color="var(--color-text-muted)" />}
+          {props.data.avatar && (
+            <div style={{ 
+              width: 18, 
+              height: 18, 
+              borderRadius: '50%', 
+              backgroundColor: props.data.color || 'var(--color-bg-tertiary)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: 9, 
+              fontWeight: 'bold',
+              color: '#fff',
+            }}>
+              {props.data.avatar}
+            </div>
+          )}
+          <span>{props.data.label}</span>
+        </div>
+      </components.SingleValue>
     );
   };
 
@@ -286,7 +337,7 @@ export const SelectComponent = ({
         isMulti={isMulti}
         isClearable={isClearable}
         isSearchable={isSearchable}
-        components={{ Option: CustomOption, MenuList: CustomMenuList }}
+        components={{ Option: CustomOption, MenuList: CustomMenuList, SingleValue: CustomSingleValue }}
         formatCreateLabel={
           isCreatable
             ? (inputValue) => (

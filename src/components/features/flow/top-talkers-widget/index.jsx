@@ -84,12 +84,6 @@ export const TopTalkersWidget = ({ data = [] }) => {
               );
             })}
           </div>
-
-          <div className={styles.widgetFooter}>
-            <Button variant="ghost" className={styles.viewAllBtn}>
-              VIEW ALL <Icon icon="mdi:arrow-right" />
-            </Button>
-          </div>
         </div>
       </div>
     </div>

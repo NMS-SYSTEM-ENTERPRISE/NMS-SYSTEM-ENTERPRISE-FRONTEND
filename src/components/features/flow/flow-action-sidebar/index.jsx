@@ -96,148 +96,42 @@ export const FlowActionSidebar = ({
 
         {/* Content */}
         <div className={styles.content}>
-          {/* Common Filters for Dashboard Mode */}
-          {mode === 'dashboard' && (
-            <>
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Filters</h3>
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Filters</h3>
 
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Event Source:</label>
-                  <SelectComponent
-                    value={localConfig.eventSource || ''}
-                    onChange={(e) => handleChange('eventSource', e.target.value)}
-                    options={[
-                      { value: '', label: 'Select' },
-                      { value: 'source1', label: 'Source 1' },
-                      { value: 'source2', label: 'Source 2' },
-                      { value: 'source3', label: 'Source 3' },
-                    ]}
-                    placeholder="Select event source"
-                  />
-                </div>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Event Source:</label>
+              <SelectComponent
+                value={localConfig.eventSource || ''}
+                onChange={(e) => handleChange('eventSource', e.target.value)}
+                options={[
+                  { value: '', label: 'Select' },
+                  { value: 'source1', label: 'Source 1' },
+                  { value: 'source2', label: 'Source 2' },
+                  { value: 'source3', label: 'Source 3' },
+                ]}
+                placeholder="Select event source"
+              />
+            </div>
 
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Interface:</label>
-                  <SelectComponent
-                    value={localConfig.interface || ''}
-                    onChange={(e) => handleChange('interface', e.target.value)}
-                    options={[
-                      { value: '', label: 'Select' },
-                      { value: 'interface-index-1', label: 'Interface-Index-1' },
-                      { value: 'interface-index-2', label: 'Interface-Index-2' },
-                      { value: 'interface-index-3', label: 'Interface-Index-3' },
-                      { value: 'interface-index-4', label: 'Interface-Index-4' },
-                    ]}
-                    placeholder="Select interface"
-                  />
-                </div>
-              </div>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Interface:</label>
+              <SelectComponent
+                value={localConfig.interface || ''}
+                onChange={(e) => handleChange('interface', e.target.value)}
+                options={[
+                  { value: '', label: 'Select' },
+                  { value: 'interface-index-1', label: 'Interface-Index-1' },
+                  { value: 'interface-index-2', label: 'Interface-Index-2' },
+                  { value: 'interface-index-3', label: 'Interface-Index-3' },
+                  { value: 'interface-index-4', label: 'Interface-Index-4' },
+                ]}
+                placeholder="Select interface"
+              />
+            </div>
+          </div>
 
-              <div className={styles.divider} />
-            </>
-          )}
-
-          {/* Explorer Mode Configuration */}
-          {mode === 'explorer' && (
-            <>
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Data Configuration</h3>
-
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>
-                    Counter <span className={styles.required}>*</span>
-                  </label>
-                  <SelectComponent
-                    value={localConfig.counter || 'volume.bytes'}
-                    onChange={(e) => handleChange('counter', e.target.value)}
-                    options={[
-                      { value: 'volume.bytes', label: 'volume.bytes' },
-                      { value: 'volume.packets', label: 'volume.packets' },
-                      { value: 'flow.count', label: 'flow.count' },
-                      { value: 'bandwidth.utilization', label: 'bandwidth.utilization' },
-                    ]}
-                    placeholder="Select counter"
-                  />
-                </div>
-
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>
-                    Aggregation <span className={styles.required}>*</span>
-                  </label>
-                  <SelectComponent
-                    value={localConfig.aggregation || 'sum'}
-                    onChange={(e) => handleChange('aggregation', e.target.value)}
-                    options={[
-                      { value: 'sum', label: 'Sum' },
-                      { value: 'avg', label: 'Avg' },
-                      { value: 'min', label: 'Min' },
-                      { value: 'max', label: 'Max' },
-                      { value: 'count', label: 'Count' },
-                    ]}
-                    placeholder="Select aggregation"
-                  />
-                </div>
-
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Flow Source</label>
-                  <SelectComponent
-                    value={localConfig.flowSource || ''}
-                    onChange={(e) => handleChange('flowSource', e.target.value)}
-                    options={[
-                      { value: '', label: 'Select' },
-                      { value: 'netflow', label: 'NetFlow' },
-                      { value: 'sflow', label: 'sFlow' },
-                      { value: 'ipfix', label: 'IPFIX' },
-                    ]}
-                    placeholder="Select flow source"
-                  />
-                </div>
-
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Result by</label>
-                  <SelectComponent
-                    value={localConfig.resultBy || 'source.ip'}
-                    onChange={(e) => handleChange('resultBy', e.target.value)}
-                    options={[
-                      { value: 'source.ip', label: 'source.ip' },
-                      { value: 'destination.ip', label: 'destination.ip' },
-                      { value: 'source.port', label: 'source.port' },
-                      { value: 'destination.port', label: 'destination.port' },
-                      { value: 'protocol', label: 'protocol' },
-                      { value: 'application', label: 'application' },
-                    ]}
-                    placeholder="Select result by"
-                    isMulti={true}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.divider} />
-
-              {/* Chart Type Selection */}
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Chart Type</h3>
-                <div className={styles.chartTypeGrid}>
-                  {CHART_TYPES.map((chart) => (
-                    <Button
-                      variant="ghost"
-                      key={chart.id}
-                      className={`${styles.chartTypeCard} ${localConfig.chartType === chart.id ? styles.chartTypeCardActive : ''
-                        }`}
-                      onClick={() => handleChartTypeSelect(chart.id)}
-                      title={chart.name}
-                    >
-                      <Icon icon={chart.icon} width={28} style={{ color: chart.color }} />
-                      <span>{chart.name}</span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={styles.divider} />
-            </>
-          )}
+          <div className={styles.divider} />
 
           {/* Additional Actions Section */}
           <div className={styles.section}>
@@ -247,40 +141,11 @@ export const FlowActionSidebar = ({
               <label className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
-                  checked={localConfig.showLegend || false}
-                  onChange={(e) => handleChange('showLegend', e.target.checked)}
+                  checked={localConfig.autoRefresh || false}
+                  onChange={(e) => handleChange('autoRefresh', e.target.checked)}
                 />
-                <span>Show Legend</span>
+                <span>Auto Refresh</span>
               </label>
-
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={localConfig.showDataLabels || false}
-                  onChange={(e) => handleChange('showDataLabels', e.target.checked)}
-                />
-                <span>Show Data Labels</span>
-              </label>
-
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={localConfig.enableZoom || false}
-                  onChange={(e) => handleChange('enableZoom', e.target.checked)}
-                />
-                <span>Enable Zoom</span>
-              </label>
-
-              {mode === 'explorer' && (
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={localConfig.autoRefresh || false}
-                    onChange={(e) => handleChange('autoRefresh', e.target.checked)}
-                  />
-                  <span>Auto Refresh</span>
-                </label>
-              )}
             </div>
           </div>
         </div>
@@ -291,12 +156,6 @@ export const FlowActionSidebar = ({
             <Icon icon="mdi:refresh" width={18} />
             Reset
           </Button>
-          {mode === 'explorer' && (
-            <Button variant="default" className={styles.saveWidgetBtn} onClick={handleSave}>
-              <Icon icon="mdi:content-save" width={18} />
-              Save as Widget
-            </Button>
-          )}
           <Button variant="default" className={styles.applyBtn} onClick={handleSave}>
             <Icon icon="mdi:check" width={18} />
             Apply

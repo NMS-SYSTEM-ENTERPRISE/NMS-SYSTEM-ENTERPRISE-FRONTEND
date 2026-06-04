@@ -6,6 +6,7 @@ import { FlowDashboard } from '@/components/features/flow/flow-dashboard';
 import { FlowExplorer } from '@/components/features/flow/flow-explorer';
 import { FlowHeader } from '@/components/features/flow/flow-header';
 import { FlowSidebar } from '@/components/features/flow/flow-sidebar';
+import { OverallFlowAnalysis } from '@/components/features/flow/overall-flow-analysis';
 import sharedStyles from '@/components/features/flow/shared/styles.module.css';
 import { Icon } from '@iconify/react';
 import { useFlow } from '@/hooks/flow';
@@ -21,7 +22,7 @@ export const FlowContent = () => {
   } = useFlow();
 
   const placeholderItem = FLOW_SIDEBAR_ITEMS.find((i) => i.id === activeView);
-  const isKnownView = ['dashboard', 'explorer', 'analytics'].includes(activeView);
+  const isKnownView = ['dashboard', 'explorer', 'analytics', 'overall_flow'].includes(activeView);
 
   return (
     <div className={sharedStyles.flow}>
@@ -34,6 +35,7 @@ export const FlowContent = () => {
           {activeView === 'dashboard' && <FlowDashboard config={flowConfig} />}
           {activeView === 'explorer' && <FlowExplorer config={flowConfig} />}
           {activeView === 'analytics' && <FlowAnalytics config={flowConfig} />}
+          {activeView === 'overall_flow' && <OverallFlowAnalysis />}
 
           {!isKnownView && (
             <div className={sharedStyles.placeholderView}>
@@ -44,15 +46,6 @@ export const FlowContent = () => {
           )}
         </div>
       </div>
-
-      <FlowActionSidebar
-        isOpen={showActionSidebar}
-        onClose={() => setShowActionSidebar(false)}
-        mode={activeView}
-        config={flowConfig}
-        onConfigChange={(newConfig) => setFlowConfig(newConfig)}
-        onSave={(savedConfig) => setFlowConfig(savedConfig)}
-      />
     </div>
   );
 };

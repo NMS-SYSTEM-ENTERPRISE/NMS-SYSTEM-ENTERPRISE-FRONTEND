@@ -35,6 +35,11 @@ export const FlowExplorer = () => {
     port: ''
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil((explorerData?.streams?.length || 0) / itemsPerPage);
+  const paginatedStreams = explorerData?.streams?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,6 +51,7 @@ export const FlowExplorer = () => {
         };
         const data = await getFlowExplorer(params);
         setExplorerData(data);
+        setCurrentPage(1);
       } catch (error) {
         console.error("Failed to fetch flow explorer data:", error);
       } finally {
@@ -66,9 +72,9 @@ export const FlowExplorer = () => {
   if (!explorerData) {
     return (
       <div style={{ padding: '40px' }}>
-        <NoDataFound 
-          title="Explorer Data Unavailable" 
-          description="Unable to load flow explorer topology and results for the selected query." 
+        <NoDataFound
+          title="Explorer Data Unavailable"
+          description="Unable to load flow explorer topology and results for the selected query."
           icon="mdi:database-search-outline"
         />
       </div>
@@ -184,11 +190,21 @@ export const FlowExplorer = () => {
                           <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.2" />
                         </linearGradient>
                       </defs>
-                      <path d="M 0 50 C 100 50, 100 100, 200 100" stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
-                      <path d="M 0 150 C 100 150, 100 100, 200 100" stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
-                      <circle r="3" fill="#22d3ee">
-                        <animateMotion dur="2s" repeatCount="indefinite" path="M 0 50 C 100 50, 100 100, 200 100" />
-                      </circle>
+                      {explorerData.sources.map((_, i) =>
+                        explorerData.services.map((_, j) => {
+                          const startY = ((i + 0.5) / Math.max(1, explorerData.sources.length)) * 200;
+                          const endY = ((j + 0.5) / Math.max(1, explorerData.services.length)) * 200;
+                          const pathStr = `M 0 ${startY} C 100 ${startY}, 100 ${endY}, 200 ${endY}`;
+                          return (
+                            <g key={`s2s-${i}-${j}`}>
+                              <path d={pathStr} stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
+                              <circle r="3" fill="#22d3ee">
+                                <animateMotion dur={`${1.5 + Math.random()}s`} repeatCount="indefinite" path={pathStr} />
+                              </circle>
+                            </g>
+                          );
+                        })
+                      )}
                     </svg>
                   </div>
 
@@ -212,11 +228,21 @@ export const FlowExplorer = () => {
                   {/* Connecting Lines Area */}
                   <div className={styles.flowLinesArea}>
                     <svg width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="none">
-                      <path d="M 0 100 L 200 50" stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
-                      <path d="M 0 100 L 200 150" stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
-                      <circle r="3" fill="#f43f5e">
-                        <animateMotion dur="1.5s" repeatCount="indefinite" path="M 0 100 L 200 50" />
-                      </circle>
+                      {explorerData.services.map((_, i) =>
+                        explorerData.destinations.map((_, j) => {
+                          const startY = ((i + 0.5) / Math.max(1, explorerData.services.length)) * 200;
+                          const endY = ((j + 0.5) / Math.max(1, explorerData.destinations.length)) * 200;
+                          const pathStr = `M 0 ${startY} C 100 ${startY}, 100 ${endY}, 200 ${endY}`;
+                          return (
+                            <g key={`svc2d-${i}-${j}`}>
+                              <path d={pathStr} stroke="url(#flowGrad)" strokeWidth="2" fill="none" className={styles.animatedPath} />
+                              <circle r="3" fill="#f43f5e">
+                                <animateMotion dur={`${1.5 + Math.random()}s`} repeatCount="indefinite" path={pathStr} />
+                              </circle>
+                            </g>
+                          );
+                        })
+                      )}
                     </svg>
                   </div>
 
@@ -277,9 +303,9 @@ export const FlowExplorer = () => {
                 </div>
               </div>
 
-              <div className={styles.explorerTableContainer}>
+              <div className={styles.explorerTableContainer} style={{ maxHeight: '450px', overflowY: 'auto' }}>
                 <table className={styles.explorerTable}>
-                  <thead>
+                  <thead style={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: 'var(--color-bg-secondary)' }}>
                     <tr>
                       <th>TIMESTAMP</th>
                       <th>SOURCE <span className={styles.subHeader}>PORT</span></th>
@@ -292,9 +318,14 @@ export const FlowExplorer = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {explorerData.streams.map((flow, idx) => (
+                    {paginatedStreams.map((flow, idx) => (
                       <tr key={idx} className={styles.flowRow}>
-                        <td className={styles.timeCell}>{flow.time}</td>
+                        <td className={styles.timeCell}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-primary)' }}>{flow.time}</span>
+                            <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>{flow.date}</span>
+                          </div>
+                        </td>
                         <td>
                           <div className={styles.ipGroup}>
                             <span className={styles.ipText}>{flow.source}</span>
@@ -327,6 +358,53 @@ export const FlowExplorer = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Pagination Controls */}
+              {explorerData.streams && explorerData.streams.length > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderTop: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg-primary)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
+                    Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, explorerData.streams.length)} of {explorerData.streams.length} entries
+                  </span>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      style={{ height: '32px', fontSize: '12px' }}
+                    >
+                      <Icon icon="mdi:chevron-left" width={16} /> Previous
+                    </Button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).filter(p => p === 1 || p === totalPages || Math.abs(currentPage - p) <= 1).map((page, index, array) => {
+                        if (index > 0 && page - array[index - 1] > 1) {
+                          return <span key={`ellipsis-${page}`} style={{ color: 'var(--color-text-muted)', padding: '0 4px' }}>...</span>;
+                        }
+                        return (
+                          <Button
+                            key={page}
+                            variant={currentPage === page ? "primary" : "ghost"}
+                            size="sm"
+                            onClick={() => setCurrentPage(page)}
+                            style={{ height: '32px', width: '32px', padding: 0, fontSize: '12px' }}
+                          >
+                            {page}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      style={{ height: '32px', fontSize: '12px' }}
+                    >
+                      Next <Icon icon="mdi:chevron-right" width={16} />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

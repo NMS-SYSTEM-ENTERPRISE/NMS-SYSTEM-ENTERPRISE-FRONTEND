@@ -100,7 +100,15 @@ export const FlowDashboard = () => {
           </div>`;
         },
       },
-      grid: { left: '2%', right: '2%', top: '10', bottom: '0', containLabel: false },
+      grid: { left: '2%', right: '2%', top: '10', bottom: '25', containLabel: false },
+      legend: {
+        data: [title],
+        bottom: 0,
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
+        textStyle: { color: '#9ca3af', fontSize: 10, fontFamily: 'var(--font-geist-mono), monospace' },
+      },
       xAxis: { type: 'category', data: data.map(d => d.time.toLocaleTimeString()), show: false },
       yAxis: { type: 'value', show: false },
       series: [{

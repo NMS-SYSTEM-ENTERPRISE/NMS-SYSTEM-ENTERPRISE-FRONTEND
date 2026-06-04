@@ -95,7 +95,16 @@ export const FlowAnalytics = () => {
         borderColor: 'rgba(255,255,255,0.1)',
         textStyle: { color: '#fff', fontSize: 11, fontFamily: 'var(--font-geist-mono), monospace' }
       },
+      legend: {
+        data: ['Total Throughput'],
+        bottom: 0,
+        icon: 'circle',
+        itemWidth: 10,
+        itemHeight: 10,
+        textStyle: { color: '#9ca3af', fontSize: 11, fontFamily: 'var(--font-geist-mono), monospace' }
+      },
       series: [{
+        name: 'Total Throughput',
         data: analyticsData.trend,
         type: 'line',
         smooth: true,

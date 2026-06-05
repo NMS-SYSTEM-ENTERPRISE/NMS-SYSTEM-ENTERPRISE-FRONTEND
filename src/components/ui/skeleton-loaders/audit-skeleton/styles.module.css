@@ -38,6 +38,7 @@
   gap: 16px;
   animation: fadeIn 0.4s ease-out;
   width: 100%;
+  padding: 16px;
 }
 
 .accordionSkeleton {

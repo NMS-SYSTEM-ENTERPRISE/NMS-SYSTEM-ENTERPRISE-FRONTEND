@@ -37,7 +37,8 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  width: 100%;
+  width: calc(100% + 11px);
+  margin-left: -11px;
   animation: fadeIn 0.3s ease-out;
 }
 

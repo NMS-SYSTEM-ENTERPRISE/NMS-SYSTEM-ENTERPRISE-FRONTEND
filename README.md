@@ -41,4 +41,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 ======================
-IN THIS ACCORDION HEADERS NEED THE BCKGROUND THEN ONLY FEEL THAT DIFRENCE RIGHT REFERENCE PLEASE THE SEOCN DTTAHCED IMAGE OKAY
+

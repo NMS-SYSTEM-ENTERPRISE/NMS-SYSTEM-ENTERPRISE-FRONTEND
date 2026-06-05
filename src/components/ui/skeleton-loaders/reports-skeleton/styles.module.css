@@ -6,6 +6,11 @@
   border-radius: 6px;
 }
 
+.tableSkeletonWrapper {
+  padding: 16px;
+  width: 100%;
+}
+
 .skeletonInner::after {
   content: '';
   position: absolute;
@@ -76,6 +81,7 @@
   flex-direction: column;
   gap: 24px;
   animation: fadeIn 0.4s ease-out;
+  padding: 16px;
 }
 
 .headerSkeleton {

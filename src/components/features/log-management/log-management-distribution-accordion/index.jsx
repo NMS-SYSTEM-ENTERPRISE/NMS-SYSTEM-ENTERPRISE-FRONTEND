@@ -134,31 +134,33 @@ export const LogManagementDistributionAccordion = () => {
 
   return (
     <div className={sharedStyles.accordionGroup} data-open={isOpen}>
-      <button
-        type="button"
-        className={clsx(sharedStyles.accordionHeader, sharedStyles.accordionHeaderBtn)}
-        onClick={() => toggleSection('distribution')}
-      >
-        <div className={clsx(sharedStyles.headerNode, sharedStyles.headerNodeViolet)}>
-          <Icon icon="mdi:chart-arc" width={16} height={16} />
-        </div>
-        <div className={sharedStyles.headerInfo}>
-          <h3 className={sharedStyles.sectionTitle}>
-            Traffic & Distribution
-            <span className={sharedStyles.badge} data-type="analytics">
-              DISTRIBUTION
-            </span>
-          </h3>
-        </div>
-        <Icon
-          icon="lucide:chevron-down"
-          className={clsx(
-            sharedStyles.accordionChevron,
-            isOpen && sharedStyles.accordionChevronExpanded
-          )}
-          width={18}
-        />
-      </button>
+      <div className={sharedStyles.accordionHeaderWrap}>
+        <button
+          type="button"
+          className={clsx(sharedStyles.accordionHeader, sharedStyles.accordionHeaderBtn)}
+          onClick={() => toggleSection('distribution')}
+        >
+          <div className={clsx(sharedStyles.headerNode, sharedStyles.headerNodeViolet)}>
+            <Icon icon="mdi:chart-arc" width={16} height={16} />
+          </div>
+          <div className={sharedStyles.headerInfo}>
+            <h3 className={sharedStyles.sectionTitle}>
+              Traffic & Distribution
+              <span className={sharedStyles.badge} data-type="analytics">
+                DISTRIBUTION
+              </span>
+            </h3>
+          </div>
+          <Icon
+            icon="lucide:chevron-down"
+            className={clsx(
+              sharedStyles.accordionChevron,
+              isOpen && sharedStyles.accordionChevronExpanded
+            )}
+            width={18}
+          />
+        </button>
+      </div>
 
       {isOpen && (
         <div className={sharedStyles.accordionContent} style={{ padding: '20px 24px' }}>

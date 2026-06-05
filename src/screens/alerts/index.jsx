@@ -4,6 +4,7 @@ import { AlertsHeader } from '@/components/features/alerts/alerts-header';
 import { AlertsList } from '@/components/features/alerts/alerts-list';
 import { AlertsOverview } from '@/components/features/alerts/alerts-overview';
 import { AlertsSidebar } from '@/components/features/alerts/alerts-sidebar';
+import { AlertsActionSidebar } from '@/components/features/alerts/alerts-action-sidebar';
 import { AlertsProvider } from '@/contexts/alerts';
 import { useAlerts } from '@/hooks/alerts';
 import styles from './styles.module.css';
@@ -20,6 +21,7 @@ const AlertsContent = () => {
           {view === 'overview' ? <AlertsOverview /> : <AlertsList />}
         </div>
       </div>
+      <AlertsActionSidebar />
     </div>
   );
 };

@@ -109,6 +109,11 @@ export const getAlerts = async ({ activeOnly = false, severity = null } = {}) =>
   return response.data;
 };
 
+export const getAlertById = async (alertId) => {
+  const response = await authApi.get(`${BASE_URL}/alerts/${alertId}`);
+  return response.data;
+};
+
 export const acknowledgeAlert = async (alertId, { acknowledged, incidentRef = null, notes = null } = {}) => {
   const response = await authApi.put(`${BASE_URL}/alerts/${alertId}/acknowledge`, {
     acknowledged,

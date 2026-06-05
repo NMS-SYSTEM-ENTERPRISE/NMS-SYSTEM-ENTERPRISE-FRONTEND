@@ -1,11 +1,11 @@
 'use client';
 import { NavLink } from '@/components/ui/nav-link';
-import { Icon } from '@iconify/react';
-import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import styles from './styles.module.css';
 import { getAlerts } from '@/networking/network-monitoring/network-monitoring-apis';
 import { fetchTicketsApi } from '@/networking/network-monitoring/ticketing-apis';
+import { Icon } from '@iconify/react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import styles from './styles.module.css';
 
 const menuGroups = [
   {
@@ -87,10 +87,10 @@ const menuGroups = [
     items: [
       { icon: 'lucide:bell', label: 'Alert Center', path: '/alerts', badge: 5 },
       {
-        icon: 'lucide:bar-chart-3',
-        label: 'Report Builder',
-        path: '/reports',
-        badge: null,
+        icon: 'lucide:ticket',
+        label: 'Support Desk',
+        path: '/ticketing',
+        badge: 3,
       },
       {
         icon: 'lucide:file-text',
@@ -98,17 +98,19 @@ const menuGroups = [
         path: '/audit',
         badge: null,
       },
+
       {
         icon: 'lucide:file-stack',
         label: 'Log Explorer',
         path: '/log-management',
         badge: null,
       },
+
       {
-        icon: 'lucide:ticket',
-        label: 'Support Desk',
-        path: '/ticketing',
-        badge: 3,
+        icon: 'lucide:bar-chart-3',
+        label: 'Report Builder',
+        path: '/reports',
+        badge: null,
       },
     ],
   },
@@ -138,15 +140,19 @@ export const Sidebar = () => {
       try {
         const [alertsRes, ticketsRes] = await Promise.all([
           getAlerts({ activeOnly: true }),
-          fetchTicketsApi({ limit: 100 })
+          fetchTicketsApi({ limit: 100 }),
         ]);
 
         if (!isMounted) return;
 
-        const activeAlerts = (alertsRes.data || alertsRes || []).filter(a => a.is_active).length;
+        const activeAlerts = (alertsRes.data || alertsRes || []).filter(
+          (a) => a.is_active
+        ).length;
         setAlertCount(activeAlerts);
 
-        const activeTickets = (ticketsRes.data || ticketsRes || []).filter(t => t.status === 'Open' || t.status === 'In Progress').length;
+        const activeTickets = (ticketsRes.data || ticketsRes || []).filter(
+          (t) => t.status === 'Open' || t.status === 'In Progress'
+        ).length;
         setTicketCount(activeTickets);
       } catch (error) {
         console.error('Error fetching sidebar badges:', error);
@@ -162,12 +168,12 @@ export const Sidebar = () => {
   }, []);
 
   const getDynamicMenuGroups = () => {
-    return menuGroups.map(group => {
+    return menuGroups.map((group) => {
       if (group.id !== 'management') return group;
 
       return {
         ...group,
-        items: group.items.map(item => {
+        items: group.items.map((item) => {
           if (item.label === 'Alert Center') {
             return { ...item, badge: alertCount > 0 ? alertCount : null };
           }
@@ -175,7 +181,7 @@ export const Sidebar = () => {
             return { ...item, badge: ticketCount > 0 ? ticketCount : null };
           }
           return item;
-        })
+        }),
       };
     });
   };

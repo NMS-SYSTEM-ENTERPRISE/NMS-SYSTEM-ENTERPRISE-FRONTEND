@@ -14,6 +14,7 @@ export const AlertsHeader = () => {
     setSeverityFilter,
     alertCounts,
     setShowFilterSidebar,
+    fetchAlerts,
   } = useAlerts();
 
   return (
@@ -69,7 +70,13 @@ export const AlertsHeader = () => {
           >
             <Icon icon="mdi:filter-variant" width={20} />
           </Button>
-          <Button variant="ghost" size="icon" className={sharedStyles.actionBtn} title="Refresh">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={sharedStyles.actionBtn}
+            onClick={fetchAlerts}
+            title="Refresh"
+          >
             <Icon icon="mdi:refresh" width={20} />
           </Button>
         </div>

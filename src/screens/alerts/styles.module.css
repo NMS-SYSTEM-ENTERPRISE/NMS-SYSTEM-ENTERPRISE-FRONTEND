@@ -21,8 +21,10 @@
 
 .contentArea {
   flex: 1;
-  overflow-y: auto;
-  padding: var(--padding-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 @media (max-width: 768px) {

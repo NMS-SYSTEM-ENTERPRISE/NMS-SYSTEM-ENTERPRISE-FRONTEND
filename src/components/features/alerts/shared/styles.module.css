@@ -252,11 +252,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 14, 26, 1) 0%,
-    rgba(18, 22, 33, 1) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(10, 14, 26, 1) 0%,
+      rgba(18, 22, 33, 1) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -338,7 +336,7 @@
 }
 
 .severityTabActive {
-  background: var(--color-accent-cyan);
+  background-color: var(--color-accent-cyan) !important;
   color: #000 !important;
   font-weight: 700;
 }
@@ -381,7 +379,7 @@
 }
 
 .viewToggleBtnActive {
-  background: #334155;
+  background-color: #334155 !important;
   color: #fff !important;
 }
 
@@ -426,6 +424,8 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .accordionSection {
@@ -548,12 +548,10 @@
   top: 15%;
   bottom: 15%;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent);
 }
 
 .metricLabel {
@@ -587,12 +585,10 @@
   top: 15%;
   bottom: 15%;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent);
 }
 
 .chartGroup {
@@ -605,6 +601,7 @@
 .chartGroup:first-child {
   padding-left: 0;
 }
+
 .chartGroup:last-child {
   padding-right: 0;
 }
@@ -649,6 +646,7 @@
 .categoryTile:first-child {
   padding-left: 0;
 }
+
 .categoryTile:last-child {
   padding-right: 0;
 }
@@ -660,12 +658,10 @@
   top: 10%;
   bottom: 10%;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent);
 }
 
 .catHeader {
@@ -707,13 +703,11 @@
   top: 10px;
   bottom: 10px;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(255, 255, 255, 0.1) 80%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.1) 20%,
+      rgba(255, 255, 255, 0.1) 80%,
+      transparent);
 }
 
 .envNode {
@@ -781,15 +775,20 @@
 
 /* List View - Accordion Table Style */
 .tableContainer {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .tableHeaderRow {
   display: grid;
-  grid-template-columns: 40px 2.5fr 1fr 1.5fr 1fr 0.8fr 1.2fr 40px 40px;
+  grid-template-columns: 40px 2.5fr 2.5fr 1fr 1fr 1.2fr 40px 40px;
   padding: 12px 16px;
   background: var(--color-bg-tertiary);
   border-bottom: 1px solid var(--color-border);
@@ -798,6 +797,29 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
   letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.tableBody {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-light) transparent;
+}
+
+.tableBody::-webkit-scrollbar {
+  width: 5px;
+}
+
+.tableBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tableBody::-webkit-scrollbar-thumb {
+  background: var(--color-border-light);
+  border-radius: 4px;
 }
 
 .accordionRow {
@@ -815,7 +837,7 @@
 
 .rowMain {
   display: grid;
-  grid-template-columns: 40px 2.5fr 1fr 1.5fr 1fr 0.8fr 1.2fr 40px 40px;
+  grid-template-columns: 40px 2.5fr 2.5fr 1fr 1fr 1.2fr 40px 40px;
   padding: 12px 16px;
   align-items: center;
   cursor: pointer;
@@ -839,21 +861,47 @@
   background: #ef4444;
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
 }
+
 .severityUnreachable {
   background: #a855f7;
   box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
 }
+
 .severityCritical {
   background: #dc2626;
   box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
 }
+
 .severityMajor {
   background: #f97316;
   box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
 }
+
 .severityWarning {
-  background: #eab308;
-  box-shadow: 0 0 8px rgba(234, 179, 8, 0.4);
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.rowQuickActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rowActionBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.rowActionBtn:hover {
+  color: var(--color-accent-cyan);
+  border-color: var(--color-accent-cyan);
+  background: rgba(6, 182, 212, 0.05);
 }
 
 .alertName {
@@ -863,6 +911,46 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.rowIdentityPill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+}
+
+.identityInitialsRow {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.identityNameRow {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.identityActionRow {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-cyan);
 }
 
 .typeTag {
@@ -896,18 +984,22 @@
   background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
 }
+
 .valUnreachable {
   background: rgba(168, 85, 247, 0.15);
   color: #a855f7;
 }
+
 .valCritical {
   background: rgba(220, 38, 38, 0.15);
   color: #dc2626;
 }
+
 .valMajor {
   background: rgba(249, 115, 22, 0.15);
   color: #f97316;
 }
+
 .valWarning {
   background: rgba(234, 179, 8, 0.15);
   color: #eab308;
@@ -945,12 +1037,10 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.05) 50%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent);
 }
 
 .detailTitle {
@@ -995,6 +1085,7 @@
   padding: 12px 16px;
   background: var(--color-bg-tertiary);
   border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .pagination {
@@ -1018,7 +1109,7 @@
 }
 
 .paginationBtnActive {
-  background: var(--color-accent-cyan);
+  background-color: var(--color-accent-cyan) !important;
   color: var(--color-bg-primary) !important;
   font-weight: 700;
 }
@@ -1028,16 +1119,41 @@
   height: 240px;
 }
 
-.metricLabel_danger { color: var(--color-danger); }
-.metricLabel_major { color: var(--color-chart-orange); }
-.metricLabel_success { color: var(--color-success); }
-.metricValue_danger { color: var(--color-danger); }
-.metricValue_major { color: var(--color-chart-orange); }
-.metricValue_success { color: var(--color-success); }
+.metricLabel_danger {
+  color: var(--color-danger);
+}
 
-.nodeMarker_danger { border-color: var(--color-danger); }
-.nodeMarker_critical { border-color: var(--color-danger); }
-.nodeMarker_warning { border-color: var(--color-warning); }
+.metricLabel_major {
+  color: var(--color-chart-orange);
+}
+
+.metricLabel_success {
+  color: var(--color-success);
+}
+
+.metricValue_danger {
+  color: var(--color-danger);
+}
+
+.metricValue_major {
+  color: var(--color-chart-orange);
+}
+
+.metricValue_success {
+  color: var(--color-success);
+}
+
+.nodeMarker_danger {
+  border-color: var(--color-danger);
+}
+
+.nodeMarker_critical {
+  border-color: var(--color-danger);
+}
+
+.nodeMarker_warning {
+  border-color: var(--color-warning);
+}
 
 .chevronExpanded {
   transform: rotate(180deg);

@@ -26,22 +26,6 @@ export const AlertDetailHeader = ({ alertData }) => {
           <h1 className={sharedStyles.title}>{alertData.title}</h1>
         </div>
       </div>
-      <div className={sharedStyles.headerRight}>
-        <div className={sharedStyles.headerActions}>
-          <Button variant="ghost" size="icon" className={sharedStyles.backBtn} title="Acknowledge">
-            <Icon icon="mdi:check-circle" width={18} />
-          </Button>
-          <Button variant="ghost" size="icon" className={sharedStyles.backBtn} title="Assign">
-            <Icon icon="mdi:account-plus" width={18} />
-          </Button>
-          <Button variant="ghost" size="icon" className={sharedStyles.backBtn} title="Silence">
-            <Icon icon="mdi:bell-off" width={18} />
-          </Button>
-          <Button variant="ghost" size="icon" className={sharedStyles.backBtn} title="History">
-            <Icon icon="mdi:clock-history" width={18} />
-          </Button>
-        </div>
-      </div>
     </header>
   );
 };

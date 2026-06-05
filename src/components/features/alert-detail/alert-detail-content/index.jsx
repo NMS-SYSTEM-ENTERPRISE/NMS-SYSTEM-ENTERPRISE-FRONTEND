@@ -11,18 +11,40 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AlertDetailSkeleton } from '@/components/ui/skeleton-loaders/alerts-skeleton';
 import { NoDataFound } from '@/components/ui/no-data-found';
+import { getAlertById } from '@/networking/network-monitoring/network-monitoring-apis';
+import { Icon } from '@iconify/react';
 
 export const AlertDetailContent = () => {
   const { alertId } = useParams();
   const { openSections, toggleSection } = useAlertDetail();
   const [isLoading, setIsLoading] = useState(true);
+  const [alertData, setAlertData] = useState(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 600);
-    return () => clearTimeout(timer);
+    const fetchAlert = async () => {
+      try {
+        const data = await getAlertById(alertId);
+        // Map the backend fields to what the UI expects if necessary
+        // e.g., mapping id -> alertId for UI compatibility
+        if (data) {
+          setAlertData({
+            ...data,
+            alertId: data.id,
+            title: data.alert,
+            count: 1, // backend doesn't provide count yet
+            triggerCondition: 'Threshold exceeded',
+            instance: data.instance || 'System',
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch alert detail:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAlert();
   }, [alertId]);
 
-  const alertData = ALERT_DETAILS[alertId] || (alertId === 'default' ? DEFAULT_ALERT_DETAIL : null);
   const { trendChartRef, countChartRef } = useAlertDetailCharts(openSections.analytics);
 
   if (isLoading) {
@@ -31,7 +53,7 @@ export const AlertDetailContent = () => {
 
   if (!alertData) {
     return (
-      <div style={{ padding: '60px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: '100%', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <NoDataFound 
           title="Alert Not Found" 
           description="The requested alert ID does not exist or has been archived."
@@ -61,8 +83,8 @@ export const AlertDetailContent = () => {
               </div>
               <div className={sharedStyles.metricTile}>
                 <span className={sharedStyles.metricLabel}>STATUS</span>
-                <span className={`${sharedStyles.metricValue} ${sharedStyles.metricValue_danger}`}>
-                  ACTIVE
+                <span className={`${sharedStyles.metricValue} ${alertData.isActive ? sharedStyles.metricValue_danger : sharedStyles.metricValue_success}`}>
+                  {alertData.isActive ? 'ACTIVE' : 'CLEARED'}
                 </span>
               </div>
               <div className={sharedStyles.metricTile}>
@@ -97,7 +119,24 @@ export const AlertDetailContent = () => {
                   </div>
                   <div className={sharedStyles.metaItem}>
                     <span className={sharedStyles.metaLabel}>Monitor Entity</span>
-                    <span className={sharedStyles.metaValue}>{alertData.monitor}</span>
+                    <div className={sharedStyles.identityPill}>
+                      <div className={sharedStyles.identityIconWrapper}>
+                        <span className={sharedStyles.identityInitials}>
+                          {alertData.deviceName ? alertData.deviceName.substring(0, 2).toUpperCase() : 'IP'}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className={sharedStyles.identityName}>{alertData.deviceName || 'Unknown Device'}</span>
+                        <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-geist-mono), monospace' }}>{alertData.monitor}</span>
+                      </div>
+                      <div className={sharedStyles.identityAction}>
+                        <Icon icon="mdi:sitemap-outline" width={14} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className={sharedStyles.metaItem}>
+                    <span className={sharedStyles.metaLabel}>Location</span>
+                    <span className={sharedStyles.metaValue}>{alertData.location || 'Unknown Location'}</span>
                   </div>
                   <div className={sharedStyles.metaItem}>
                     <span className={sharedStyles.metaLabel}>Component</span>
@@ -109,20 +148,20 @@ export const AlertDetailContent = () => {
                 <span className={sharedStyles.intelTitle}>METADATA & TAGS</span>
                 <div className={sharedStyles.metaGrid}>
                   <div className={sharedStyles.metaItem}>
-                    <span className={sharedStyles.metaLabel}>Environment Zone</span>
-                    <span className={sharedStyles.metaValue}>Production-NOC</span>
+                    <span className={sharedStyles.metaLabel}>First Seen</span>
+                    <span className={sharedStyles.metaValue}>{alertData.firstSeen}</span>
                   </div>
                   <div className={sharedStyles.metaItem}>
-                    <span className={sharedStyles.metaLabel}>Correlation ID</span>
-                    <span className={sharedStyles.metaValue}>POL-992-X1</span>
+                    <span className={sharedStyles.metaLabel}>Last Seen</span>
+                    <span className={sharedStyles.metaValue}>{alertData.lastSeen}</span>
                   </div>
                   <div className={sharedStyles.metaItem}>
-                    <span className={sharedStyles.metaLabel}>Assignment Group</span>
-                    <span className={sharedStyles.metaValue}>L2_Network_Support</span>
+                    <span className={sharedStyles.metaLabel}>Category</span>
+                    <span className={sharedStyles.metaValue}>{alertData.category || 'Network'}</span>
                   </div>
                   <div className={sharedStyles.metaItem}>
-                    <span className={sharedStyles.metaLabel}>App Business Unit</span>
-                    <span className={sharedStyles.metaValue}>FinTech_Operations</span>
+                    <span className={sharedStyles.metaLabel}>Value</span>
+                    <span className={sharedStyles.metaValue}>{alertData.value}</span>
                   </div>
                 </div>
               </div>
@@ -138,11 +177,11 @@ export const AlertDetailContent = () => {
           >
             <div className={sharedStyles.analyticsRow}>
               <div className={sharedStyles.chartContainer}>
-                <span className={sharedStyles.chartName}>Vulnerability Trend (24H)</span>
+                <span className={sharedStyles.chartName}>ALERT CLASSIFICATION</span>
                 <div ref={trendChartRef} className={sharedStyles.chartBox} />
               </div>
               <div className={sharedStyles.chartContainer}>
-                <span className={sharedStyles.chartName}>Violation Distribution</span>
+                <span className={sharedStyles.chartName}>POLICY PERFORMANCE</span>
                 <div ref={countChartRef} className={sharedStyles.chartBox} />
               </div>
             </div>

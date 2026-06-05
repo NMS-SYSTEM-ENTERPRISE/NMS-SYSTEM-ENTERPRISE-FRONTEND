@@ -5,19 +5,30 @@ import { useAlerts } from '@/hooks/alerts';
 import { AlertsListRow } from './alerts-list-row';
 import { AlertsListSkeleton } from '@/components/ui/skeleton-loaders/alerts-skeleton';
 import { NoDataFound } from '@/components/ui/no-data-found';
+import { Pagination } from '@/components/ui/pagination';
 
 export const AlertsList = () => {
-  const { filteredAlerts, expandedRows, toggleRow, isLoading } = useAlerts();
+  const {
+    filteredAlerts,
+    paginatedAlerts,
+    expandedRows,
+    toggleRow,
+    isLoading,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage
+  } = useAlerts();
 
   if (isLoading) {
     return <AlertsListSkeleton />;
   }
 
-  if (filteredAlerts.length === 0) {
+  if (paginatedAlerts.length === 0) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-        <NoDataFound 
-          title="No Alerts Found" 
+      <div style={{ height: '100%', width: '100%', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <NoDataFound
+          title="No Alerts Found"
           description="There are currently no active alerts matching your criteria."
           icon="mdi:bell-off-outline"
         />
@@ -29,16 +40,15 @@ export const AlertsList = () => {
     <div className={sharedStyles.tableContainer}>
       <div className={sharedStyles.tableHeaderRow}>
         <span>#</span>
+        <span>MONITOR</span>
         <span>ALERT NAME & SEVERITY</span>
-        <span>TYPE</span>
-        <span>MONITOR / SOURCE</span>
-        <span>INSTANCE</span>
+        <span style={{ textAlign: 'center' }}>TYPE</span>
         <span>VALUE</span>
         <span>DURATION</span>
         <span />
       </div>
       <div className={sharedStyles.tableBody}>
-        {filteredAlerts.map((alert, i) => (
+        {paginatedAlerts.map((alert, i) => (
           <AlertsListRow
             key={alert.id}
             alert={alert}
@@ -48,6 +58,16 @@ export const AlertsList = () => {
           />
         ))}
       </div>
+
+      <Pagination
+        className={sharedStyles.pagination_wrapper}
+        currentPage={currentPage}
+        totalItems={filteredAlerts.length}
+        pageSize={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setItemsPerPage}
+        pageSizeOptions={[50, 100]}
+      />
     </div>
   );
 };

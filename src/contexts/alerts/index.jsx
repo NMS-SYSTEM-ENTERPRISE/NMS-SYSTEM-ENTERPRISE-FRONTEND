@@ -24,6 +24,9 @@ export const AlertsProvider = ({ children }) => {
   const [severityFilter, setSeverityFilter] = useState(null);
   const [expandedRows, setExpandedRows] = useState(new Set());
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [openSections, setOpenSections] = useState(
     DEFAULT_ALERT_OVERVIEW_SECTIONS
   );
@@ -106,9 +109,30 @@ export const AlertsProvider = ({ children }) => {
   );
 
   const filteredAlerts = useMemo(() => {
-    if (!severityFilter) return alerts;
-    return alerts.filter((alert) => alert.severity === severityFilter);
-  }, [severityFilter, alerts]);
+    let result = alerts;
+    if (severityFilter) {
+      result = result.filter((alert) => alert.severity === severityFilter);
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (alert) =>
+          (alert.name && alert.name.toLowerCase().includes(q)) ||
+          (alert.source && alert.source.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [severityFilter, searchQuery, alerts]);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [severityFilter]);
+
+  const paginatedAlerts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredAlerts.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredAlerts, currentPage, itemsPerPage]);
 
   const toggleSection = useCallback((section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -136,11 +160,18 @@ export const AlertsProvider = ({ children }) => {
     toggleRow,
     showFilterSidebar,
     setShowFilterSidebar,
+    searchQuery,
+    setSearchQuery,
     openSections,
     toggleSection,
     alertCounts,
     categoryStats,
     filteredAlerts,
+    paginatedAlerts,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
     isLoading,
     handleAcknowledge,
     fetchAlerts,

@@ -67,23 +67,6 @@ export const NetworkMonitoringHeader = () => {
           </Button>
         </div>
 
-        <div className={sharedStyles.headerActions}>
-          <Button
-            type="button"
-            variant="ghost"
-            className={sharedStyles.actionBtn}
-            onClick={() => setShowFilterSidebar(true)}
-            title="Filters"
-          >
-            <Icon icon="mdi:filter-variant" width={20} height={20} />
-          </Button>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Refresh">
-            <Icon icon="mdi:refresh" width={20} height={20} />
-          </Button>
-          <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Export">
-            <Icon icon="mdi:download" width={20} height={20} />
-          </Button>
-        </div>
       </div>
     </div>
   );

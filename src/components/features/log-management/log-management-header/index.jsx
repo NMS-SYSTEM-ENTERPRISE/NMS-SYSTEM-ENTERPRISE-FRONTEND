@@ -3,12 +3,7 @@
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SelectComponent } from '@/components/ui/select';
 import { useLogManagement } from '@/hooks/log-management';
-import {
-  LOG_SEVERITY_FILTER_OPTIONS,
-  LOG_TIME_RANGE_OPTIONS,
-} from '@/utils/constants/log-management';
 import { Icon } from '@iconify/react';
 import { toast } from 'sonner';
 
@@ -61,98 +56,6 @@ export const LogManagementHeader = () => {
         <div className={sharedStyles.headerText}>
           <h1 className={sharedStyles.headerTitle}>Log Management</h1>
         </div>
-
-        <div className={sharedStyles.headerDivider} />
-
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '2px', 
-          marginRight: '16px', 
-          background: 'rgba(0, 0, 0, 0.2)', 
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '2px', 
-          borderRadius: '8px' 
-        }}>
-          <Button
-            variant="ghost"
-            size="icon"
-            style={{ 
-              width: '28px', 
-              height: '28px', 
-              backgroundColor: layoutView === 'dashboard' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-              color: layoutView === 'dashboard' ? 'var(--text-primary)' : 'var(--text-muted)',
-              borderRadius: '6px',
-              padding: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.15s ease'
-            }}
-            onClick={() => setLayoutView('dashboard')}
-            title="Dashboard"
-          >
-            <Icon icon="lucide:layout-grid" width={16} height={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            style={{ 
-              width: '28px', 
-              height: '28px', 
-              backgroundColor: layoutView === 'list' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-              color: layoutView === 'list' ? 'var(--text-primary)' : 'var(--text-muted)',
-              borderRadius: '6px',
-              padding: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.15s ease'
-            }}
-            onClick={() => setLayoutView('list')}
-            title="List"
-          >
-            <Icon icon="lucide:list" width={16} height={16} />
-          </Button>
-        </div>
-
-        <div className={sharedStyles.headerDivider} />
-        <div className={sharedStyles.filterGroup}>
-          <label
-            className={sharedStyles.filterLabel}
-            htmlFor="log-severity-filter"
-          >
-            Severity:
-          </label>
-          <SelectComponent
-            id="log-severity-filter"
-            className={sharedStyles.select}
-            variant="borderless"
-            value={filters.severity}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, severity: e.target.value }))
-            }
-            options={LOG_SEVERITY_FILTER_OPTIONS}
-            placeholder="All"
-          />
-        </div>
-
-        <div className={sharedStyles.filterGroup}>
-          <label className={sharedStyles.filterLabel} htmlFor="log-time-filter">
-            Time:
-          </label>
-          <SelectComponent
-            id="log-time-filter"
-            className={sharedStyles.select}
-            variant="borderless"
-            value={filters.timeRange}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, timeRange: e.target.value }))
-            }
-            options={LOG_TIME_RANGE_OPTIONS}
-            placeholder="Range"
-          />
-        </div>
       </div>
 
       <div className={sharedStyles.headerRight}>
@@ -165,6 +68,71 @@ export const LogManagementHeader = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2px',
+            background: 'rgba(0, 0, 0, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: '2px',
+            borderRadius: '8px',
+          }}
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            style={{
+              width: '28px',
+              height: '28px',
+              backgroundColor:
+                layoutView === 'dashboard'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'transparent',
+              color:
+                layoutView === 'dashboard'
+                  ? 'var(--text-primary)'
+                  : 'var(--text-muted)',
+              borderRadius: '6px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.15s ease',
+            }}
+            onClick={() => setLayoutView('dashboard')}
+            title="Dashboard"
+          >
+            <Icon icon="lucide:layout-grid" width={16} height={16} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            style={{
+              width: '28px',
+              height: '28px',
+              backgroundColor:
+                layoutView === 'list'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'transparent',
+              color:
+                layoutView === 'list'
+                  ? 'var(--text-primary)'
+                  : 'var(--text-muted)',
+              borderRadius: '6px',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.15s ease',
+            }}
+            onClick={() => setLayoutView('list')}
+            title="List"
+          >
+            <Icon icon="lucide:list" width={16} height={16} />
+          </Button>
+        </div>
 
         <div className={sharedStyles.headerDivider} />
 

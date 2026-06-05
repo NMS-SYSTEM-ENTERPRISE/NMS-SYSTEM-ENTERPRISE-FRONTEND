@@ -39,12 +39,12 @@ export const useLogManagementChartOptions = () => {
         borderColor: border,
         textStyle: { color: text },
       },
-      grid: { left: '2%', right: '2%', bottom: '2%', top: '10%', containLabel: true },
+      grid: { left: '24px', right: '32px', bottom: '24px', top: '32px', containLabel: true },
       xAxis: {
         type: 'category',
         boundaryGap: false,
         data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-        axisLabel: { color: muted, fontSize: 10 },
+        axisLabel: { color: muted, fontSize: 10, margin: 16 },
         axisLine: { show: false },
         axisTick: { show: false },
       },
@@ -61,10 +61,10 @@ export const useLogManagementChartOptions = () => {
           type: 'line',
           smooth: 0.4,
           symbol: 'none',
-          lineStyle: { color: accentCyan, width: 3 },
+          lineStyle: { color: accentCyan, width: 2 },
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(6, 182, 212, 0.6)' },
+              { offset: 0, color: 'rgba(6, 182, 212, 0.4)' },
               { offset: 1, color: 'rgba(6, 182, 212, 0.01)' },
             ]),
           },
@@ -78,7 +78,7 @@ export const useLogManagementChartOptions = () => {
           lineStyle: { color: resolveColor('green'), width: 2 },
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(16, 185, 129, 0.4)' },
+              { offset: 0, color: 'rgba(16, 185, 129, 0.3)' },
               { offset: 1, color: 'rgba(16, 185, 129, 0.01)' },
             ]),
           },
@@ -92,7 +92,7 @@ export const useLogManagementChartOptions = () => {
           lineStyle: { color: resolveColor('violet'), width: 2 },
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(192, 132, 252, 0.4)' },
+              { offset: 0, color: 'rgba(192, 132, 252, 0.3)' },
               { offset: 1, color: 'rgba(192, 132, 252, 0.01)' },
             ]),
           },
@@ -108,8 +108,8 @@ export const useLogManagementChartOptions = () => {
       if (colorToken === 'green') color = '#10b981';
 
       return {
-        grid: { left: 0, right: 0, top: 0, bottom: 0 },
-        xAxis: { type: 'category', show: false },
+        grid: { left: 4, right: 4, top: 6, bottom: 6 },
+        xAxis: { type: 'category', show: false, boundaryGap: false },
         yAxis: { type: 'value', show: false, min: 'dataMin' },
         series: [
           {
@@ -117,13 +117,13 @@ export const useLogManagementChartOptions = () => {
             data: data.map((d) => d.value),
             smooth: 0.4,
             showSymbol: false,
-            lineStyle: { width: 3, color },
+            lineStyle: { width: 2, color },
             areaStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 { offset: 0, color },
                 { offset: 1, color: 'transparent' },
               ]),
-              opacity: 0.4,
+              opacity: 0.2,
             },
           },
         ],

@@ -51,17 +51,15 @@ export const LogManagementStatsAccordion = () => {
           onClick={() => toggleSection('stats')}
         >
           <div
-            className={clsx(sharedStyles.headerNode, sharedStyles.headerNodeCyan)}
+            className={clsx(
+              sharedStyles.headerNode,
+              sharedStyles.headerNodeCyan
+            )}
           >
             <Icon icon="mdi:chart-timeline-variant" width={16} height={16} />
           </div>
           <div className={sharedStyles.headerInfo}>
-            <h3 className={sharedStyles.sectionTitle}>
-              Performance Overview
-              <span className={sharedStyles.badge} data-type="live">
-                LIVE
-              </span>
-            </h3>
+            <h3 className={sharedStyles.sectionTitle}>Performance Overview</h3>
           </div>
           <Icon
             icon="lucide:chevron-down"

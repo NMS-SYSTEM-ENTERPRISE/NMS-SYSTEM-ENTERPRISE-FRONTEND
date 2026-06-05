@@ -3,12 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Icon } from '@iconify/react';
+import clsx from 'clsx';
 import sharedStyles from '@/components/features/ticketing/shared/styles.module.css';
 import { useTicketing } from '@/hooks/ticketing';
 import { TICKETING_SIDEBAR_ITEMS } from '@/utils/constants/ticketing';
 
 export const TicketingHeader = () => {
-  const { activeCategory, searchQuery, setSearchQuery, handleOpenSidebar } = useTicketing();
+  const { activeCategory, searchQuery, setSearchQuery, handleOpenSidebar, viewMode, setViewMode } = useTicketing();
 
   const activeItem = TICKETING_SIDEBAR_ITEMS.find((i) => i.id === activeCategory);
 
@@ -32,6 +33,29 @@ export const TicketingHeader = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+
+          <div className={sharedStyles.viewToggleGroup}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className={clsx(sharedStyles.actionBtn, viewMode === 'dashboard' && sharedStyles.activeActionBtn)}
+              onClick={() => setViewMode('dashboard')}
+              title="Dashboard View"
+            >
+              <Icon icon="mdi:view-dashboard-outline" width={18} />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className={clsx(sharedStyles.actionBtn, viewMode === 'list' && sharedStyles.activeActionBtn)}
+              onClick={() => setViewMode('list')}
+              title="List View"
+            >
+              <Icon icon="mdi:format-list-bulleted" width={18} />
+            </Button>
+          </div>
 
           <div className={sharedStyles.headerActions}>
             <Button

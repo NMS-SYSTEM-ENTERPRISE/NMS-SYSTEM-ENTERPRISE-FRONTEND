@@ -13,6 +13,7 @@ export const TicketingContext = createContext(null);
 export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETING_CATEGORY }) => {
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('dashboard'); // 'dashboard' or 'list'
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState(
     () => new Set(DEFAULT_TICKETING_EXPANDED_SECTIONS)
@@ -22,6 +23,9 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
     mode: 'details',
     ticketData: null,
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
 
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,10 +39,12 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
         limit: 100,
       });
       const data = response.data || response;
-      
+
       const formattedTickets = (data || []).map(t => ({
         id: t.ticket_ref,
         subject: t.subject,
+        deviceName: t.device_name,
+        deviceIp: t.device_ip,
         requester: t.requester,
         createdDate: new Date(t.created_at).toLocaleString(),
         assignee: t.assignee,
@@ -63,7 +69,7 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
   const filteredRequests = useMemo(() => {
     return tickets.filter((req) => {
       let matchesCategory = true;
-      if (activeCategory === 'open') matchesCategory = req.status === 'Open';
+      if (activeCategory === 'open') matchesCategory = req.status === 'Open' || req.status === 'In Progress';
       if (activeCategory === 'closed') {
         matchesCategory = req.status === 'Resolved' || req.status === 'Closed';
       }
@@ -73,6 +79,15 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
       return matchesCategory;
     });
   }, [tickets, activeCategory, CURRENT_USER]);
+
+  const paginatedRequests = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredRequests.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredRequests, currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, activeCategory]);
 
   const toggleSection = useCallback((section) => {
     setExpandedSections((prev) => {
@@ -101,6 +116,8 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
     setActiveCategory: setCategory,
     searchQuery,
     setSearchQuery,
+    viewMode,
+    setViewMode,
     isSidebarOpen,
     setIsSidebarOpen,
     expandedSections,
@@ -109,9 +126,15 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
     handleOpenSidebar,
     handleCloseSidebar,
     filteredRequests,
+    paginatedRequests,
     loadTickets,
     isLoading,
     CURRENT_USER,
+    tickets,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
   };
 
   return <TicketingContext.Provider value={value}>{children}</TicketingContext.Provider>;

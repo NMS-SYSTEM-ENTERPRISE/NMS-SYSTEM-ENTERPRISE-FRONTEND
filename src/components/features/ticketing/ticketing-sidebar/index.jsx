@@ -8,7 +8,14 @@ import { useTicketing } from '@/hooks/ticketing';
 import { TICKETING_SIDEBAR_ITEMS } from '@/utils/constants/ticketing';
 
 export const TicketingSidebar = () => {
-  const { isSidebarOpen, setIsSidebarOpen, activeCategory, setActiveCategory } = useTicketing();
+  const { isSidebarOpen, setIsSidebarOpen, activeCategory, setActiveCategory, tickets } = useTicketing();
+
+  const getBadgeCount = (item) => {
+    if (item.id === 'open') {
+      return tickets ? tickets.filter(t => t.status === 'Open' || t.status === 'In Progress').length : 0;
+    }
+    return item.badgeCount;
+  };
 
   return (
     <aside
@@ -54,8 +61,8 @@ export const TicketingSidebar = () => {
                 <Icon icon={item.icon} width={18} />
               </div>
               <span className={sharedStyles.navText}>{item.label}</span>
-              {item.badgeCount && isSidebarOpen && (
-                <span className={sharedStyles.badge}>{item.badgeCount}</span>
+              {getBadgeCount(item) > 0 && isSidebarOpen && (
+                <span className={sharedStyles.badge}>{getBadgeCount(item)}</span>
               )}
             </button>
           ))}

@@ -1,27 +1,24 @@
-/* ================================================================
-   Trap Explorer Header — Clean, Balanced Layout
-   ================================================================ */
+/* ═══════════════════════════════════════════════════════════
+   TRAP EXPLORER HEADER — Inspired by Network Monitoring view
+   ═══════════════════════════════════════════════════════════ */
 
+/* ── Header wrapper ─────────────────────────────────────────── */
 .headerContainer {
-  display: flex;
-  flex-direction: column;
   flex-shrink: 0;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
 }
 
-/* ── Main header bar ──────────────────────────────────────────── */
+/* ── Top bar ────────────────────────────────────────────────── */
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  background: rgba(18, 22, 33, 0.5);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border);
-  min-height: 54px;
-  gap: 16px;
+  gap: var(--gap-lg);
+  padding: 0 var(--padding-lg);
+  height: 56px;
 }
 
-/* Left: Icon + Title */
+/* ── Left: Icon + Title ─────────────────────────────────────── */
 .headerLeft {
   display: flex;
   align-items: center;
@@ -32,54 +29,45 @@
 .headerIcon {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
-  background: rgba(var(--color-accent-cyan-rgb), 0.1);
-  color: var(--color-accent-cyan);
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05));
+  border: 1px solid rgba(6, 182, 212, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  color: var(--color-accent-cyan);
 }
 
 .headerTitle {
-  margin: 0;
-  font-size: 16px;
-  font-weight: var(--font-weight-bold);
+  font-size: 15px;
+  font-weight: 700;
   color: var(--color-text-primary);
   white-space: nowrap;
+  margin: 0;
 }
 
-/* Right: Search + Toggle + Actions */
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-  justify-content: flex-end;
-  min-width: 0;
-}
-
-/* ── Search Bar ───────────────────────────────────────────────── */
+/* ── Center: Search ─────────────────────────────────────────── */
 .searchWrapper {
+  flex: 1;
   display: flex;
   align-items: center;
-  background: var(--color-bg-primary);
+  gap: 0;
+  background: var(--color-bg-tertiary);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  overflow: hidden;
-  width: 240px;
-  flex-shrink: 0;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  border-radius: var(--radius-md);
+  padding: 0 10px;
+  height: 36px;
+  max-width: 380px;
+  transition: border-color 0.2s;
 }
 
 .searchWrapper:focus-within {
   border-color: var(--color-accent-cyan);
-  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.08);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.08);
 }
 
 .searchLeadIcon {
   color: var(--color-text-muted);
-  margin-left: 10px;
   flex-shrink: 0;
 }
 
@@ -90,7 +78,7 @@
   outline: none;
   color: var(--color-text-primary);
   font-size: 13px;
-  padding: 8px 8px;
+  padding: 0 8px;
   min-width: 0;
 }
 
@@ -99,14 +87,14 @@
 }
 
 .searchClear {
-  background: none;
+  background: transparent;
   border: none;
   color: var(--color-text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 0 4px;
-  transition: color 0.15s;
+  padding: 2px;
+  transition: color 0.2s;
 }
 
 .searchClear:hover {
@@ -114,113 +102,110 @@
 }
 
 .searchBtn {
-  background: rgba(var(--color-accent-cyan-rgb), 0.12);
+  background: var(--color-accent-cyan);
   border: none;
-  border-left: 1px solid var(--color-border);
-  color: var(--color-accent-cyan);
+  border-radius: var(--radius-sm);
+  color: #000;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
-  height: 100%;
-  min-height: 34px;
-  transition: background 0.15s;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  margin-left: 4px;
+  transition: opacity 0.2s;
 }
 
-.searchBtn:hover {
-  background: rgba(var(--color-accent-cyan-rgb), 0.22);
+.searchBtn:hover { opacity: 0.85; }
+
+/* ── Right side ─────────────────────────────────────────────── */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
 }
 
-/* ── View Toggle ──────────────────────────────────────────────── */
+/* ── View Toggle ────────────────────────────────────────────── */
 .viewToggle {
   display: flex;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 3px;
-  border-radius: 8px;
+  align-items: center;
+  background: var(--color-bg-tertiary);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 3px;
   gap: 2px;
-  flex-shrink: 0;
 }
 
 .viewToggleBtn {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   padding: 5px 12px;
-  background: transparent;
   border: none;
   border-radius: 6px;
+  background: transparent;
   color: var(--color-text-muted);
   font-size: 12px;
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
-}
-
-.viewToggleBtn:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .viewToggleBtnActive {
-  background: var(--color-accent-cyan) !important;
-  color: #0a0f1a !important;
+  background: var(--color-accent-cyan);
+  color: #000 !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
 }
 
-/* ── Action Buttons ───────────────────────────────────────────── */
+/* ── Icon Action Buttons ─────────────────────────────────────── */
 .headerActions {
   display: flex;
+  align-items: center;
   gap: 4px;
-  flex-shrink: 0;
 }
 
 .actionBtn {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--color-border);
-  border-radius: 7px;
-  color: var(--color-text-muted);
-  cursor: pointer;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
   transition: all 0.15s;
 }
 
-.actionBtn:hover:not(:disabled) {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--color-text-muted);
+.actionBtn:hover {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan);
+  background: rgba(6, 182, 212, 0.06);
 }
 
-.actionBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.actionBtnSpin svg {
-  animation: spin 0.7s linear infinite;
+.actionBtnSpin {
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* ── Filter Tags Strip ────────────────────────────────────────── */
+/* ── Sub-row: Active Filter Tags ────────────────────────────── */
 .filterTags {
   display: flex;
   align-items: center;
+  gap: 8px;
+  padding: 8px var(--padding-lg);
+  background: rgba(6, 182, 212, 0.03);
+  border-top: 1px solid var(--color-border);
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 20px;
-  background: rgba(18, 22, 33, 0.35);
-  border-bottom: 1px solid var(--color-border);
-  min-height: 36px;
 }
 
 .filterTagsIcon {
@@ -230,70 +215,67 @@
 
 .filterTagsLabel {
   font-size: 11px;
+  font-weight: 700;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-right: 2px;
+  letter-spacing: 0.5px;
   flex-shrink: 0;
 }
 
 .filterTag {
   display: inline-flex;
   align-items: center;
-  gap: 0;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--color-border);
-  border-radius: 5px;
+  gap: 4px;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: var(--radius-full);
+  padding: 2px 8px 2px 10px;
   font-size: 11px;
-  overflow: hidden;
 }
 
 .filterTagKey {
-  padding: 2px 6px;
-  color: var(--color-text-muted);
-  background: rgba(255, 255, 255, 0.03);
-  border-right: 1px solid var(--color-border);
+  color: var(--color-accent-cyan);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .filterTagValue {
-  padding: 2px 6px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 .filterTagClose {
-  background: none;
+  background: transparent;
   border: none;
-  border-left: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 2px 5px;
-  transition: color 0.15s, background 0.15s;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 1px;
+  border-radius: 50%;
+  transition: color 0.15s;
 }
 
 .filterTagClose:hover {
   color: var(--color-danger);
-  background: rgba(239, 68, 68, 0.1);
 }
 
 .resetAllBtn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  border-radius: var(--radius-full);
+  padding: 2px 10px;
   font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 3px 8px;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
+  transition: all 0.15s;
+  margin-left: 4px;
 }
 
 .resetAllBtn:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(239, 68, 68, 0.08);
 }

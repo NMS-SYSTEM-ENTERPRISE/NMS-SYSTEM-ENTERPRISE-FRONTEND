@@ -10,18 +10,9 @@
   align-items: center;
   justify-content: center;
   min-height: 500px;
-  border-radius: var(--radius-xl);
-  background: rgba(17, 24, 39, 0.4);
   position: relative;
-  border: 1px dashed var(--color-border-accent);
   transition: all var(--transition-normal);
   overflow: hidden;
-}
-
-.emptyState:hover {
-  border-color: var(--color-chart-cyan);
-  background: rgba(17, 24, 39, 0.6);
-  box-shadow: 0 0 30px rgba(var(--color-chart-cyan-rgb), 0.05);
 }
 
 .emptyStateContent {

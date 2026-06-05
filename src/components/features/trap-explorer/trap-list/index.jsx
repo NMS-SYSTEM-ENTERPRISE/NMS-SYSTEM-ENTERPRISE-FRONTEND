@@ -1,6 +1,5 @@
 'use client';
 
-import { Checkbox } from '@/components/ui/checkbox';
 import { Pagination } from '@/components/ui/pagination';
 import { useTrapExplorer } from '@/hooks/trap-explorer';
 import { TrapListRow } from './trap-list-row';
@@ -17,16 +16,10 @@ export const TrapList = () => {
     itemsPerPage,
     setItemsPerPage,
     expandedTrapIds,
-    selectedTrapIds,
     toggleTrapExpanded,
-    toggleTrapSelected,
-    toggleSelectAllTraps,
     setSelectedTrapForHistory,
     isLoading,
   } = useTrapExplorer();
-
-  const allSelected =
-    paginatedTraps.length > 0 && selectedTrapIds.length === paginatedTraps.length;
 
   if (isLoading) {
     return <TrapListSkeleton />;
@@ -34,9 +27,9 @@ export const TrapList = () => {
 
   if (paginatedTraps.length === 0) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-        <NoDataFound 
-          title="No Traps Found" 
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <NoDataFound
+          title="No Traps Found"
           description="No SNMP traps match your current filters or search query."
           icon="mdi:inbox-remove-outline"
         />
@@ -45,22 +38,19 @@ export const TrapList = () => {
   }
 
   return (
+    /* listContainer is flex-column: header (fixed) → listBody (scrolls) → pagination (fixed) */
     <div className={styles.listContainer}>
+      {/* Column headers — fixed, never scroll */}
       <div className={styles.tableHeaderRow}>
-        <div className={styles.headerSelect}>
-          <Checkbox
-            checked={allSelected}
-            onChange={(e) => toggleSelectAllTraps(e.target.checked)}
-          />
-        </div>
-        <span>Identity & Trap OID</span>
+        <span>Identity &amp; Trap OID</span>
         <span>Source Node</span>
-        <span>Stats</span>
+        <span>Count</span>
         <span>Timestamp</span>
         <span>Status</span>
         <span />
       </div>
 
+      {/* Scrollable rows */}
       <div className={styles.listBody}>
         {paginatedTraps.map((trap) => (
           <TrapListRow
@@ -68,13 +58,12 @@ export const TrapList = () => {
             trap={trap}
             isExpanded={expandedTrapIds.has(trap.id)}
             onToggle={() => toggleTrapExpanded(trap.id)}
-            isSelected={selectedTrapIds.includes(trap.id)}
-            onSelect={toggleTrapSelected}
             onViewHistory={setSelectedTrapForHistory}
           />
         ))}
       </div>
 
+      {/* Pagination — pinned to bottom of the card */}
       <Pagination
         className={styles.pagination}
         currentPage={currentPage}

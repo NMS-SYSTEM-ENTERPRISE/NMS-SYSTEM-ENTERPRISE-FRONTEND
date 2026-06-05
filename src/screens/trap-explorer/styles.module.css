@@ -1,49 +1,45 @@
+/* ═══════════════════════════════════════════════════════════
+   TRAP EXPLORER — Integrated Layout
+   Header (fixed) → Scrollable Content → Pagination (fixed)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Root Shell ────────────────────────────────────────────── */
 .trapExplorer {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: var(--color-bg-primary);
   overflow: hidden;
+  background-color: var(--color-bg-primary);
 }
 
+/* ── Main content area (sidebar + workspace) ───────────────── */
 .mainContentWrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(
-    135deg,
-    var(--color-bg-primary) 0%,
-    var(--color-bg-secondary) 100%
-  );
-  position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
+/* ── Scrollable viewport — header & pagination sit outside ─── */
 .contentArea {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-  padding: var(--padding-md);
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-light) transparent;
 }
 
-.contentArea::-webkit-scrollbar {
-  width: 8px;
-}
-
-.contentArea::-webkit-scrollbar-track {
-  background: var(--color-bg-tertiary);
-}
-
+.contentArea::-webkit-scrollbar { width: 6px; }
+.contentArea::-webkit-scrollbar-track { background: transparent; }
 .contentArea::-webkit-scrollbar-thumb {
   background: var(--color-border-light);
   border-radius: var(--radius-sm);
 }
-
-.contentArea::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-cyan);
-}
+.contentArea::-webkit-scrollbar-thumb:hover { background: var(--color-accent-cyan); }
 
 @media (max-width: 768px) {
-  .trapExplorer {
-    flex-direction: column;
-  }
+  .trapExplorer { flex-direction: column; }
 }

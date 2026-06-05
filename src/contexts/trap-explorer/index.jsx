@@ -36,7 +36,18 @@ export const TrapExplorerProvider = ({ children }) => {
         severity = filters.severity;
       }
 
-      const res = await getTraps({ skip, limit: itemsPerPage, severity, source: filters.source || null });
+      const res = await getTraps({ 
+        skip, 
+        limit: itemsPerPage, 
+        severity, 
+        source: filters.source || null,
+        search: searchQuery || null,
+        trapOid: filters.trapOid || null,
+        vendor: filters.vendor || null,
+        acknowledged: filters.acknowledged,
+        countMin: filters.countMin || null,
+        countMax: filters.countMax || null
+      });
       setTraps(res.items || []);
       setTotalTrapsCount(res.total || 0);
     } catch (error) {
@@ -44,7 +55,7 @@ export const TrapExplorerProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, itemsPerPage, activeCategory, filters.severity, filters.source]);
+  }, [currentPage, itemsPerPage, activeCategory, filters, searchQuery]);
 
   useEffect(() => {
     fetchTraps();

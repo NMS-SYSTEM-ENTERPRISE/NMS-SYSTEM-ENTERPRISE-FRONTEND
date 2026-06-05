@@ -127,10 +127,16 @@ export const ALERTS_WEBSOCKET_URL =
 // TRAPS (SNMP) APIS
 // ==========================================
 
-export const getTraps = async ({ skip = 0, limit = 100, severity = null, source = null } = {}) => {
+export const getTraps = async ({ skip = 0, limit = 100, severity = null, source = null, search = null, trapOid = null, vendor = null, acknowledged = null, countMin = null, countMax = null } = {}) => {
   const params = { skip, limit };
   if (severity) params.severity = severity;
   if (source) params.source = source;
+  if (search) params.search = search;
+  if (trapOid) params.trapOid = trapOid;
+  if (vendor) params.vendor = vendor;
+  if (acknowledged !== null && acknowledged !== '') params.acknowledged = acknowledged;
+  if (countMin) params.countMin = countMin;
+  if (countMax) params.countMax = countMax;
   const response = await authApi.get(`${BASE_URL}/traps`, { params });
   return response.data;
 };

@@ -85,10 +85,9 @@ export const SloActionSidebar = () => {
                 <Input
                   type="text"
                   placeholder="Search by SLO name..."
-                  className={styles.searchInput}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  icon="ph:magnifying-glass-bold"
+                  icon={<Icon icon="ph:magnifying-glass-bold" width={18} />}
                 />
               </div>
 

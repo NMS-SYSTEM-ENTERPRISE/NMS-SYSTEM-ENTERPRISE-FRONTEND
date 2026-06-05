@@ -45,7 +45,7 @@ export const TrapDashboard = () => {
 
   if (!dashboardStats) {
     return (
-      <div style={{ padding: '40px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <NoDataFound
           title="Dashboard Unavailable"
           description="Unable to load trap dashboard statistics."
@@ -109,7 +109,7 @@ export const TrapDashboard = () => {
           onToggle={() => toggleSection('trends')}
         >
           {dashboardStats?.totalEvents === 0 ? (
-            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <NoDataFound
                 title="No Trend Data"
                 description="Not enough trap data in the last 24 hours to generate trend visualizations."
@@ -151,7 +151,7 @@ export const TrapDashboard = () => {
           onToggle={() => toggleSection('sources')}
         >
           {topSources.length === 0 ? (
-            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <NoDataFound
                 title="No Top Sources"
                 description="No devices have emitted traps in the current timeframe."
@@ -181,7 +181,7 @@ export const TrapDashboard = () => {
           onToggle={() => toggleSection('activity')}
         >
           {incidentStream.length === 0 ? (
-            <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <NoDataFound
                 title="No Incident Stream"
                 description="No recent live traps to display in the incident feed."

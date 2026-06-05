@@ -105,7 +105,7 @@ export const SloTableView = () => {
 
   if (errorMessage || paginatedSLOs.length === 0) {
     return (
-      <div className={styles.listContainer} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%', minHeight: '400px' }}>
+      <div className={styles.listContainer} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%', minHeight: '400px', padding: 'var(--padding-xl)' }}>
         <NoDataFound
           title="No SLOs Found"
           description={errorMessage || "No Service Level Objectives match your current filters."}

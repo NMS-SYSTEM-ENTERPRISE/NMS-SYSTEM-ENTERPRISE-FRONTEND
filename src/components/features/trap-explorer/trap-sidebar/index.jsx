@@ -28,7 +28,9 @@ export const TrapSidebar = () => {
 
       <nav className={styles.sidebarNav}>
         <div className={styles.treeRoot}>
-          <Icon icon="mdi:bell-ring" className={styles.rootIcon} />
+          <div className={styles.itemIconWrapper} style={{ width: '20px' }}>
+            <Icon icon="mdi:bell-ring" width={18} className={styles.rootIcon} />
+          </div>
           <span className={styles.rootLabel}>Trap Management</span>
         </div>
 

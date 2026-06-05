@@ -2,7 +2,6 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 import { TRAP_SEVERITY } from '@/utils/constants/trap-explorer';
@@ -12,8 +11,6 @@ export const TrapListRow = ({
   trap,
   isExpanded,
   onToggle,
-  isSelected,
-  onSelect,
   onViewHistory,
 }) => {
   const config = TRAP_SEVERITY[trap.severity] || TRAP_SEVERITY.info;
@@ -22,10 +19,6 @@ export const TrapListRow = ({
   return (
     <div className={styles.accordionRow} data-expanded={isExpanded}>
       <div className={styles.rowMain} onClick={onToggle}>
-        <div className={styles.rowSelect} onClick={(e) => e.stopPropagation()}>
-          <Checkbox checked={isSelected} onChange={() => onSelect(trap.id)} />
-        </div>
-
         <div className={styles.rowIdentity}>
           <div
             className={clsx(

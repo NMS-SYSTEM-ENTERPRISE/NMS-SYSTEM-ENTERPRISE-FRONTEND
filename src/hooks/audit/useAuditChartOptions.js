@@ -19,38 +19,67 @@ const COLOR_TOKEN_MAP = {
 
 const resolveColor = (token) => getCssVar(COLOR_TOKEN_MAP[token]) || '#06b6d4';
 
-export const useAuditChartOptions = (auditEvents = []) => {
+export const useAuditChartOptions = (auditEvents = [], analyticsData = null) => {
   return useMemo(() => {
     const bg = getCssVar('--audit-content-bg') || getCssVar('--color-bg-primary') || '#0b0f19';
     const border = getCssVar('--color-border') || 'rgba(255,255,255,0.1)';
     const text = getCssVar('--color-text-primary') || '#f3f4f6';
     const muted = getCssVar('--color-text-muted') || '#6b7280';
-
-    // Dynamically calculate pie chart data
-    const moduleCounts = auditEvents.reduce((acc, event) => {
-      const mod = event.module || 'Unknown';
-      acc[mod] = (acc[mod] || 0) + 1;
-      return acc;
-    }, {});
-
     const colors = ['cyan', 'violet', 'rose', 'sky', 'green'];
-    const pieData = Object.entries(moduleCounts).map(([name, value], idx) => ({
-      name,
-      value,
-      colorToken: colors[idx % colors.length]
-    })).sort((a, b) => b.value - a.value).slice(0, 5); // top 5
 
-    // Dynamically calculate user activity data
-    const userCounts = auditEvents.reduce((acc, event) => {
-      const user = event.user || 'Unknown';
-      acc[user] = (acc[user] || 0) + 1;
-      return acc;
-    }, {});
+    let pieData = [];
+    let userActivityData = [];
 
-    const userActivityData = Object.entries(userCounts).map(([name, value]) => ({
-      name,
-      value
-    })).sort((a, b) => b.value - a.value).slice(0, 5); // top 5 active users
+    if (analyticsData) {
+      pieData = (analyticsData.top_modules || []).map((item, idx) => ({
+        name: item.name,
+        value: item.count,
+        colorToken: colors[idx % colors.length]
+      }));
+
+      userActivityData = (analyticsData.top_users || []).map(item => ({
+        name: item.name,
+        value: item.count
+      }));
+    } else {
+      // Fallback
+      const moduleCounts = auditEvents.reduce((acc, event) => {
+        const mod = event.module || 'Unknown';
+        acc[mod] = (acc[mod] || 0) + 1;
+        return acc;
+      }, {});
+
+      pieData = Object.entries(moduleCounts).map(([name, value], idx) => ({
+        name,
+        value,
+        colorToken: colors[idx % colors.length]
+      })).sort((a, b) => b.value - a.value).slice(0, 5);
+
+      const userCounts = auditEvents.reduce((acc, event) => {
+        const user = event.user || 'Unknown';
+        acc[user] = (acc[user] || 0) + 1;
+        return acc;
+      }, {});
+
+      userActivityData = Object.entries(userCounts).map(([name, value]) => ({
+        name,
+        value
+      })).sort((a, b) => b.value - a.value).slice(0, 5);
+    }
+
+    let actionData = [];
+    if (analyticsData && analyticsData.top_actions) {
+      actionData = analyticsData.top_actions.map((item, idx) => ({
+        name: item.name,
+        value: item.count,
+        colorToken: colors[idx % colors.length]
+      }));
+    }
+
+    let trendData = [];
+    if (analyticsData && analyticsData.trend) {
+      trendData = analyticsData.trend;
+    }
 
     const auditEventOption = {
       tooltip: {
@@ -127,6 +156,77 @@ export const useAuditChartOptions = (auditEvents = []) => {
       ],
     };
 
+    const actionDistributionOption = {
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(11, 15, 25, 0.9)',
+        borderColor: border,
+        textStyle: { color: text, fontSize: 11 },
+      },
+      series: [
+        {
+          name: 'Operations',
+          type: 'pie',
+          radius: ['20%', '85%'],
+          roseType: 'area',
+          itemStyle: { borderRadius: 6, borderColor: bg, borderWidth: 2 },
+          label: {
+            show: true,
+            color: muted,
+            fontSize: 10,
+            formatter: '{b}\n{c}',
+          },
+          labelLine: { length: 10, length2: 10, lineStyle: { color: border } },
+          data: actionData.length > 0 ? actionData.map((item) => ({
+            value: item.value,
+            name: item.name,
+            itemStyle: { color: resolveColor(item.colorToken) },
+          })) : [{ value: 1, name: 'No Data', itemStyle: { color: resolveColor('muted') } }],
+        },
+      ],
+    };
+
+    const eventTimelineOption = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(11, 15, 25, 0.95)',
+        borderColor: border,
+        textStyle: { color: text, fontSize: 11 },
+      },
+      grid: { left: '2%', right: '5%', top: '10%', bottom: '5%', containLabel: true },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: trendData.map(d => new Date(d.timestamp).toLocaleDateString()),
+        axisLine: { lineStyle: { color: border } },
+        axisTick: { show: false },
+        axisLabel: { color: muted, fontSize: 10 },
+      },
+      yAxis: {
+        type: 'value',
+        splitLine: { lineStyle: { color: border, type: 'dashed' } },
+        axisLabel: { color: muted, fontSize: 10 },
+      },
+      series: [
+        {
+          name: 'Events',
+          type: 'line',
+          smooth: true,
+          showSymbol: false,
+          itemStyle: { color: resolveColor('cyan') },
+          lineStyle: { width: 3, color: resolveColor('cyan') },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: resolveColor('cyan') },
+              { offset: 1, color: 'transparent' },
+            ]),
+            opacity: 0.2,
+          },
+          data: trendData.map(d => d.count),
+        },
+      ],
+    };
+
     const getSparklineOption = (data, colorToken) => {
       const color = resolveColor(colorToken);
       return {
@@ -161,14 +261,14 @@ export const useAuditChartOptions = (auditEvents = []) => {
       return getSparklineOption(data, colorToken);
     }
 
-    const totalLogs = auditEvents.length || 1; // avoid divide by zero
+    const totalLogs = analyticsData ? analyticsData.total_events : (auditEvents.length || 1);
     const legendData = pieData.map(item => ({
       label: item.name,
       colorToken: item.colorToken,
       percent: Math.round((item.value / totalLogs) * 100) + '%'
     }));
 
-    const totalEvents = auditEvents.length;
+    const totalEvents = analyticsData ? analyticsData.total_events : auditEvents.length;
     const failures = auditEvents.filter(e => e.status === 'Failed').length;
     const successRate = totalEvents > 0 ? (((totalEvents - failures) / totalEvents) * 100).toFixed(1) + '%' : '100%';
 
@@ -181,10 +281,12 @@ export const useAuditChartOptions = (auditEvents = []) => {
     return {
       auditEventOption,
       userActivityOption,
+      actionDistributionOption,
+      eventTimelineOption,
       getSparklineOption,
       getSummarySparklineOption,
       legendData,
       summaryMetrics,
     };
-  }, [auditEvents]);
+  }, [auditEvents, analyticsData]);
 };

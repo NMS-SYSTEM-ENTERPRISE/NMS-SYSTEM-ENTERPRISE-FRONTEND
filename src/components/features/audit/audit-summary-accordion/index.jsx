@@ -10,8 +10,8 @@ import { AUDIT_METRIC_VALUE_CLASS } from '@/utils/constants/audit';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AuditSummaryAccordion = () => {
-  const { activeView, expandedSections, toggleSection, auditEvents } = useAudit();
-  const { getSummarySparklineOption, summaryMetrics } = useAuditChartOptions(auditEvents);
+  const { activeView, expandedSections, toggleSection, auditEvents, analyticsData } = useAudit();
+  const { getSummarySparklineOption, summaryMetrics } = useAuditChartOptions(auditEvents, analyticsData);
 
   if (activeView !== 'overview') return null;
 

@@ -23,7 +23,10 @@ export default function ClientLayout({ children }) {
       {isSettings && <SettingsSidebar />}
       <div className="standardMainWrapper">
         {!isCustomDashboard && <Header />}
-        <main className={isCustomDashboard ? "fullContent" : "standardContent"}>
+        <main 
+          className={isCustomDashboard ? "fullContent" : "standardContent"}
+          style={pathname === '/log-management' ? { overflow: 'hidden' } : {}}
+        >
            {children}
         </main>
       </div>

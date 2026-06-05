@@ -38,15 +38,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ===
 
 NEXT BEFORE PROCEEDING TO THIS SCREEN
-/ticketing ANALYZE THIS ENTIRE RELATED BACKEND AND FRONT END MODULES OKAY
+/reports ANALYZE THIS ENTIRE RELATED BACKEND AND FRONT END MODULES OKAY
 
-NEXT CHECK THIS SEARCH BAR DIRECT FILTERING HAPPENED INSTEAD THIS 
-INSIDE THE SEARCH INPUT PLACE THE SEARCH ENTER AND THEN SEARCH NEEDED
-ENTER THE TEXT SEARCH FILTER TAGS AND RESET FILTER TAGS CLEAR EVERY USER FLEXIBLE ACTIONS NEEDED OKAY
-TAKE TIME HANDLE THIS NEATLY WITH OUT ANY ISSUES OKAY 
+
 ======================
 
-
+SEE CURRENT ONE IS NOT MEETING THE REQUIREMENT UPDATE AS PER THIS GIVEN REQUIREMENTS OKAY WITH OUT SKIPPING ANYTHING
 SEE BASED ON THIS REQUIREMENT UPDATE THE BOTH BACKEND AND FRONT END NEATLY OKAY
 WITH OUT ANY ISSUES 
 IT IS MAJOR MAJOR TASK MAIN APPLICATION SYSTEM HANDLED HERE BY ITSELF OKAY 
@@ -485,3 +482,4 @@ Schedule Use this toggle button to schedule your custom report. Configure the sc
 Select Save & Exit to create the report and exit.
 
 By following these three steps, you can create custom reports tailored to your organization's specific monitoring requirements, enabling you to gain deeper insights and make informed decisions about your IT environment.
+========================

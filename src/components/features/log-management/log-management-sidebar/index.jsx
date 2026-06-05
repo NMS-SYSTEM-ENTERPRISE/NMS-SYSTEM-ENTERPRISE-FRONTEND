@@ -11,8 +11,8 @@ export const LogManagementSidebar = () => {
   const { isSidebarOpen, setIsSidebarOpen, activeView, setActiveView, filteredEvents } = useLogManagement();
 
   const totalEvents = filteredEvents?.length || 0;
-  const sysEvents = filteredEvents?.filter(e => e.category === 'System').length || 0;
-  const netEvents = filteredEvents?.filter(e => e.category === 'Network Device').length || 0;
+  const sysEvents = filteredEvents?.filter(e => e.type === 'Syslog').length || 0;
+  const netEvents = filteredEvents?.filter(e => e.type === 'Network Log').length || 0;
 
   const dynamicGroups = [
     {

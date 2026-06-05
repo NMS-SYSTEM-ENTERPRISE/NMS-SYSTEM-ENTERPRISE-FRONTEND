@@ -1,19 +1,53 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@iconify/react';
 import sharedStyles from '@/components/features/log-management/shared/styles.module.css';
 import { useLogManagement } from '@/hooks/log-management';
+import { toast } from 'sonner';
 
 const getSeverityIcon = (severity) => {
-  const key = severity.toLowerCase();
-  if (key === 'critical') return 'mdi:alert-octagon';
-  if (key === 'warning') return 'mdi:alert';
+  const key = severity?.toLowerCase();
+  if (key === 'critical' || key === 'error' || key === 'alert' || key === 'emergency') return 'mdi:alert-circle';
+  if (key === 'warning' || key === 'notice') return 'mdi:alert';
   return 'mdi:information';
+};
+
+const formatTimestamp = (ts) => {
+  if (!ts) return '';
+  const date = new Date(ts);
+  return isNaN(date.getTime()) ? ts : date.toLocaleString('en-US', { hour12: false }).replace(',', '');
 };
 
 export const LogManagementEventDetail = () => {
   const { showEventDetail, selectedEvent, closeEventDetail } = useLogManagement();
+  const [activeTab, setActiveTab] = useState('parsed');
+
+  useEffect(() => {
+    if (selectedEvent) {
+      setActiveTab('parsed');
+    }
+  }, [selectedEvent]);
+
+  const handleCopyMessage = () => {
+    if (!selectedEvent) return;
+    navigator.clipboard.writeText(selectedEvent.message);
+    toast.success('Log message copied to clipboard');
+  };
+
+  const handleCopyAllDetails = () => {
+    if (!selectedEvent) return;
+    const text = `Event ID: ${selectedEvent.id}
+Timestamp: ${formatTimestamp(selectedEvent.timestamp)}
+Severity: ${selectedEvent.severity.toUpperCase()}
+Source: ${selectedEvent.source}
+Category: ${selectedEvent.category}
+Log Type: ${selectedEvent.type}
+Message: ${selectedEvent.message}`;
+    navigator.clipboard.writeText(text);
+    toast.success('All event details copied to clipboard');
+  };
 
   if (!showEventDetail) return null;
 
@@ -62,7 +96,7 @@ export const LogManagementEventDetail = () => {
                   variant="ghost"
                   size="icon"
                   className={sharedStyles.miniActionBtn}
-                  onClick={() => navigator.clipboard.writeText(selectedEvent.message)}
+                  onClick={handleCopyMessage}
                   title="Copy Log Message"
                 >
                   <Icon icon="mdi:content-copy" width={16} />
@@ -71,9 +105,10 @@ export const LogManagementEventDetail = () => {
                   variant="ghost"
                   size="icon"
                   className={sharedStyles.miniActionBtn}
-                  title="Share Event"
+                  onClick={handleCopyAllDetails}
+                  title="Copy All Details"
                 >
-                  <Icon icon="mdi:share-variant" width={16} />
+                  <Icon icon="mdi:clipboard-text-outline" width={16} />
                 </Button>
               </div>
             </div>
@@ -86,7 +121,7 @@ export const LogManagementEventDetail = () => {
               <div className={sharedStyles.metadataCard}>
                 <div className={sharedStyles.metaRow}>
                   <label>Timestamp</label>
-                  <div className={sharedStyles.metaValueText}>{selectedEvent.timestamp}</div>
+                  <div className={sharedStyles.metaValueText}>{formatTimestamp(selectedEvent.timestamp)}</div>
                 </div>
                 <div className={sharedStyles.metaRow}>
                   <label>Source Host</label>
@@ -98,6 +133,14 @@ export const LogManagementEventDetail = () => {
                   <label>Category</label>
                   <div className={sharedStyles.metaValueText}>{selectedEvent.category}</div>
                 </div>
+                <div className={sharedStyles.metaRow}>
+                  <label>Log Type</label>
+                  <div className={sharedStyles.metaValueText}>
+                    <span className={sharedStyles.badge} data-type="info">
+                      {selectedEvent.type}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -108,29 +151,51 @@ export const LogManagementEventDetail = () => {
                   <span>Log Message</span>
                 </div>
                 <div className={sharedStyles.viewToggle}>
-                  <button type="button" className={`${sharedStyles.toggleBtn} ${sharedStyles.active}`}>
+                  <button
+                    type="button"
+                    className={`${sharedStyles.toggleBtn} ${activeTab === 'parsed' ? sharedStyles.active : ''}`}
+                    onClick={() => setActiveTab('parsed')}
+                  >
                     Parsed
                   </button>
-                  <button type="button" className={sharedStyles.toggleBtn}>
+                  <button
+                    type="button"
+                    className={`${sharedStyles.toggleBtn} ${activeTab === 'raw' ? sharedStyles.active : ''}`}
+                    onClick={() => setActiveTab('raw')}
+                  >
                     Raw
                   </button>
                 </div>
               </div>
               <div className={sharedStyles.messageBox}>
-                <div className={sharedStyles.parsedMessage}>
-                  {selectedEvent.message.split(', ').map((part, i) => (
-                    <div key={i} className={sharedStyles.logPart}>
-                      {part.includes(':') ? (
-                        <>
-                          <span className={sharedStyles.partKey}>{part.split(': ')[0]}:</span>
-                          <span className={sharedStyles.partVal}>{part.split(': ')[1]}</span>
-                        </>
-                      ) : (
-                        <span className={sharedStyles.partText}>{part}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                {activeTab === 'parsed' ? (
+                  <div className={sharedStyles.parsedMessage}>
+                    {selectedEvent.message.split(', ').map((part, i) => {
+                      const sepIdx = part.indexOf(': ');
+                      if (sepIdx !== -1) {
+                        const key = part.slice(0, sepIdx);
+                        const val = part.slice(sepIdx + 2);
+                        return (
+                          <div key={i} className={sharedStyles.logPart}>
+                            <span className={sharedStyles.partKey}>{key}:</span>
+                            <span className={sharedStyles.partVal}>{val}</span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={i} className={sharedStyles.logPart}>
+                          <span className={sharedStyles.partText}>{part}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className={sharedStyles.rawMessage}>
+                    <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontFamily: 'var(--font-geist-mono), monospace', fontSize: '12px', color: '#94a3b8', lineHeight: '1.5' }}>
+                      {selectedEvent.message}
+                    </pre>
+                  </div>
+                )}
               </div>
             </div>
 

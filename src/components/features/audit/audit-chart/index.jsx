@@ -8,6 +8,7 @@ import sharedStyles from '@/components/features/audit/shared/styles.module.css';
 const SIZE_CLASS = {
   sm: sharedStyles.chartBoxSm,
   md: sharedStyles.chartBoxMd,
+  lg: sharedStyles.chartBoxLg,
 };
 
 export const AuditChart = ({ option, size = 'md' }) => {

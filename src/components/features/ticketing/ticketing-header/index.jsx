@@ -1,17 +1,26 @@
 'use client';
 
+import sharedStyles from '@/components/features/ticketing/shared/styles.module.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Icon } from '@iconify/react';
-import clsx from 'clsx';
-import sharedStyles from '@/components/features/ticketing/shared/styles.module.css';
 import { useTicketing } from '@/hooks/ticketing';
 import { TICKETING_SIDEBAR_ITEMS } from '@/utils/constants/ticketing';
+import { Icon } from '@iconify/react';
+import clsx from 'clsx';
 
 export const TicketingHeader = () => {
-  const { activeCategory, searchQuery, setSearchQuery, handleOpenSidebar, viewMode, setViewMode } = useTicketing();
+  const {
+    activeCategory,
+    searchQuery,
+    setSearchQuery,
+    handleOpenSidebar,
+    viewMode,
+    setViewMode,
+  } = useTicketing();
 
-  const activeItem = TICKETING_SIDEBAR_ITEMS.find((i) => i.id === activeCategory);
+  const activeItem = TICKETING_SIDEBAR_ITEMS.find(
+    (i) => i.id === activeCategory
+  );
 
   return (
     <header className={sharedStyles.header}>
@@ -19,7 +28,9 @@ export const TicketingHeader = () => {
         <div className={sharedStyles.headerIcon}>
           <Icon icon={activeItem?.icon || 'mdi:ticket'} width={20} />
         </div>
-        <h1 className={sharedStyles.headerTitle}>{activeItem?.label || 'Tickets'}</h1>
+        <h1 className={sharedStyles.headerTitle}>
+          {activeItem?.label || 'Tickets'}
+        </h1>
       </div>
 
       <div className={sharedStyles.headerRight}>
@@ -39,7 +50,10 @@ export const TicketingHeader = () => {
               type="button"
               variant="ghost"
               size="icon"
-              className={clsx(sharedStyles.actionBtn, viewMode === 'dashboard' && sharedStyles.activeActionBtn)}
+              className={clsx(
+                sharedStyles.actionBtn,
+                viewMode === 'dashboard' && sharedStyles.activeActionBtn
+              )}
               onClick={() => setViewMode('dashboard')}
               title="Dashboard View"
             >
@@ -49,7 +63,10 @@ export const TicketingHeader = () => {
               type="button"
               variant="ghost"
               size="icon"
-              className={clsx(sharedStyles.actionBtn, viewMode === 'list' && sharedStyles.activeActionBtn)}
+              className={clsx(
+                sharedStyles.actionBtn,
+                viewMode === 'list' && sharedStyles.activeActionBtn
+              )}
               onClick={() => setViewMode('list')}
               title="List View"
             >

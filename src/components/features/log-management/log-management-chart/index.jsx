@@ -8,6 +8,7 @@ import sharedStyles from '@/components/features/log-management/shared/styles.mod
 const SIZE_CLASS = {
   sm: sharedStyles.chartBoxSm,
   md: sharedStyles.chartBoxMd,
+  full: sharedStyles.chartBoxFull,
 };
 
 export const LogManagementChart = ({ option, size = 'md' }) => {
@@ -22,11 +23,20 @@ export const LogManagementChart = ({ option, size = 'md' }) => {
     chartInstance.current = chart;
     chart.setOption(option);
 
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize();
+    });
+
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current);
+    }
+
     const handleResize = () => chart.resize();
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       chart.dispose();
       chartInstance.current = null;
     };

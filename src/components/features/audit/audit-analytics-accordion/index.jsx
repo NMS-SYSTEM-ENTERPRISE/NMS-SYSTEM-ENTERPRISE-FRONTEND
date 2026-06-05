@@ -10,8 +10,8 @@ import { AUDIT_LEGEND_DOT_CLASS } from '@/utils/constants/audit';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AuditAnalyticsAccordion = () => {
-  const { activeView, expandedSections, toggleSection, auditEvents } = useAudit();
-  const { auditEventOption, userActivityOption, legendData } = useAuditChartOptions(auditEvents);
+  const { activeView, expandedSections, toggleSection, auditEvents, analyticsData } = useAudit();
+  const { auditEventOption, userActivityOption, actionDistributionOption, eventTimelineOption, legendData } = useAuditChartOptions(auditEvents, analyticsData);
 
   if (activeView !== 'overview') return null;
 
@@ -55,7 +55,7 @@ export const AuditAnalyticsAccordion = () => {
               <div className={sharedStyles.distributionCard}>
                 <span className={sharedStyles.subHeader}>MODULES DISTRIBUTION</span>
                 <div className={sharedStyles.chartFlex}>
-                  <AuditChart option={auditEventOption} size="md" />
+                  <AuditChart option={auditEventOption} size="lg" />
                   <div className={sharedStyles.simpleLegend}>
                     {(legendData || []).map((row) => (
                       <div key={row.label} className={sharedStyles.legendRow}>
@@ -74,7 +74,19 @@ export const AuditAnalyticsAccordion = () => {
               <div className={sharedStyles.distributionCard}>
                 <span className={sharedStyles.subHeader}>USER ACTIVITY (TOP LOGS)</span>
                 <div className={sharedStyles.horizontalBarWrap}>
-                  <AuditChart option={userActivityOption} size="md" />
+                  <AuditChart option={userActivityOption} size="lg" />
+                </div>
+              </div>
+              <div className={sharedStyles.distributionCard}>
+                <span className={sharedStyles.subHeader}>OPERATIONAL ACTIONS</span>
+                <div className={sharedStyles.horizontalBarWrap}>
+                  <AuditChart option={actionDistributionOption} size="lg" />
+                </div>
+              </div>
+              <div className={sharedStyles.distributionCard}>
+                <span className={sharedStyles.subHeader}>EVENTS TIMELINE</span>
+                <div className={sharedStyles.horizontalBarWrap}>
+                  <AuditChart option={eventTimelineOption} size="lg" />
                 </div>
               </div>
             </div>

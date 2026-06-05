@@ -6,7 +6,7 @@ import {
   DEFAULT_AUDIT_FILTERS,
   DEFAULT_AUDIT_VIEW,
 } from '@/utils/constants/audit';
-import { getAuditLogs } from '@/networking/settings/system/audit-logs/audit-apis';
+import { getAuditLogs, getAuditAnalytics } from '@/networking/settings/system/audit-logs/audit-apis';
 
 export const AuditContext = createContext(null);
 
@@ -23,13 +23,19 @@ export const AuditProvider = ({ children }) => {
   const [filters, setFilters] = useState(DEFAULT_AUDIT_FILTERS);
 
   const [auditEvents, setAuditEvents] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchAuditLogs = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await getAuditLogs();
+      const apiParams = {
+        module: filters.module !== 'All' ? filters.module : undefined,
+        status: filters.status !== 'All' ? filters.status : undefined,
+      };
+      
+      const data = await getAuditLogs(apiParams);
       // Transform backend response to match frontend expectations if necessary
       const mappedData = (data.items || []).map(item => {
         const dateObj = new Date(item.timestamp + 'Z'); // ensure UTC parsing if missing Z
@@ -55,13 +61,20 @@ export const AuditProvider = ({ children }) => {
         };
       });
       setAuditEvents(mappedData);
+
+      try {
+        const analytics = await getAuditAnalytics(apiParams);
+        setAnalyticsData(analytics);
+      } catch (analyticsErr) {
+        console.error('Failed to load audit analytics', analyticsErr);
+      }
     } catch (err) {
       console.error('Failed to load audit logs', err);
       setError('Failed to load audit logs');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filters]);
 
   useEffect(() => {
     fetchAuditLogs();
@@ -137,6 +150,7 @@ export const AuditProvider = ({ children }) => {
     handleOpenActionSidebar,
     filteredEvents,
     auditEvents,
+    analyticsData,
     loading,
     error,
     fetchAuditLogs,

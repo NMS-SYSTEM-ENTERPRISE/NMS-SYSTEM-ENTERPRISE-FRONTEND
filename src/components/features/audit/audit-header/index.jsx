@@ -10,6 +10,7 @@ import {
   AUDIT_STATUS_FILTER_OPTIONS,
 } from '@/utils/constants/audit';
 import { Icon } from '@iconify/react';
+import clsx from 'clsx';
 
 export const AuditHeader = () => {
   const {
@@ -18,9 +19,10 @@ export const AuditHeader = () => {
     filters,
     setFilters,
     setShowFilterSidebar,
-    handleOpenActionSidebar,
     fetchAuditLogs,
     loading,
+    activeView,
+    setActiveView,
   } = useAudit();
 
   return (
@@ -31,13 +33,10 @@ export const AuditHeader = () => {
         </div>
         <div className={sharedStyles.headerText}>
           <h1 className={sharedStyles.headerTitle}>Audit Logs</h1>
-          <span className={sharedStyles.headerSubtitle}>
-            System Activity Monitor
-          </span>
         </div>
-      </div>
 
-      <div className={sharedStyles.headerRight}>
+        <div className={sharedStyles.headerDivider} />
+
         <div className={sharedStyles.filterGroup}>
           <label
             className={sharedStyles.filterLabel}
@@ -77,7 +76,9 @@ export const AuditHeader = () => {
             placeholder="Status"
           />
         </div>
+      </div>
 
+      <div className={sharedStyles.headerRight}>
         <Input
           type="text"
           placeholder="Search logs..."
@@ -88,6 +89,31 @@ export const AuditHeader = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
+        <div className={sharedStyles.viewToggleGroup}>
+          <button
+            className={clsx(
+              sharedStyles.viewToggleBtn,
+              activeView === 'overview' && sharedStyles.viewToggleBtnActive
+            )}
+            onClick={() => setActiveView('overview')}
+            title="Dashboard View"
+          >
+            <Icon icon="mdi:view-dashboard-outline" width={18} height={18} />
+          </button>
+          <button
+            className={clsx(
+              sharedStyles.viewToggleBtn,
+              activeView === 'events' && sharedStyles.viewToggleBtnActive
+            )}
+            onClick={() => setActiveView('events')}
+            title="List View"
+          >
+            <Icon icon="mdi:format-list-bulleted" width={18} height={18} />
+          </button>
+        </div>
+
+        <div className={sharedStyles.headerDivider} />
+
         <div className={sharedStyles.headerActions}>
           <Button
             variant="ghost"
@@ -97,7 +123,12 @@ export const AuditHeader = () => {
             onClick={fetchAuditLogs}
             disabled={loading}
           >
-            <Icon icon="mdi:refresh" width={20} height={20} className={loading ? sharedStyles.spin : ''} />
+            <Icon
+              icon="mdi:refresh"
+              width={20}
+              height={20}
+              className={loading ? sharedStyles.spin : ''}
+            />
           </Button>
           <Button
             variant="ghost"

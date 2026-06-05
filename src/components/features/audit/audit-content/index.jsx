@@ -2,7 +2,7 @@
 
 import { AuditActionSidebar } from '@/components/features/audit/audit-action-sidebar';
 import { AuditAnalyticsAccordion } from '@/components/features/audit/audit-analytics-accordion';
-import { AuditEventsAccordion } from '@/components/features/audit/audit-events-accordion';
+import { AuditEventsTable } from '@/components/features/audit/audit-events-table';
 import { AuditFilterSidebar } from '@/components/features/audit/audit-filter-sidebar';
 import { AuditHeader } from '@/components/features/audit/audit-header';
 import { AuditSidebar } from '@/components/features/audit/audit-sidebar';
@@ -18,6 +18,7 @@ export const AuditContent = () => {
     activeActionTab,
     auditEvents,
     loading,
+    activeView,
   } = useAudit();
 
   return (
@@ -30,12 +31,13 @@ export const AuditContent = () => {
         <div className={sharedStyles.contentArea}>
           {loading ? (
             <AuditSkeleton />
-          ) : (
+          ) : activeView === 'overview' ? (
             <div className={sharedStyles.timelineContainer}>
               <AuditSummaryAccordion />
               <AuditAnalyticsAccordion />
-              <AuditEventsAccordion />
             </div>
+          ) : (
+            <AuditEventsTable />
           )}
         </div>
       </div>

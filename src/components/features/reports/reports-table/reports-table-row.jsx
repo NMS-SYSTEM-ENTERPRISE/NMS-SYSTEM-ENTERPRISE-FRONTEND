@@ -15,6 +15,7 @@ export const ReportsTableRow = ({ report }) => {
     activePopup,
     setActivePopup,
     handleDownload,
+    activeTab,
   } = useReports();
 
   const isExpanded = expandedRows.has(report.id);
@@ -24,10 +25,13 @@ export const ReportsTableRow = ({ report }) => {
     router.push(`/reports/detail/${report.id}`);
   };
 
+  const isCompliance = activeTab === 'Log Compliance';
+
   return (
     <div className={sharedStyles.accordionRow}>
       <div
         className={sharedStyles.rowMain}
+        style={isCompliance ? { gridTemplateColumns: '40px 2fr 2fr 1.2fr 1fr 0.8fr 60px' } : undefined}
         onClick={() => toggleRow(report.id)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -63,7 +67,13 @@ export const ReportsTableRow = ({ report }) => {
             </>
           )}
         </div>
-        <span>{report.type}</span>
+        {isCompliance ? (
+          <span style={{ fontFamily: 'var(--font-geist-mono), monospace', color: 'var(--color-accent-cyan)', fontSize: '12px' }}>
+            {report.complianceRef}
+          </span>
+        ) : (
+          <span>{report.type}</span>
+        )}
         <span>{report.reportType}</span>
         <Button
           variant="ghost"

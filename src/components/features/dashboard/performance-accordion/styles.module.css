@@ -5,8 +5,7 @@
   border-radius: 0;
   overflow: hidden;
   margin-bottom: 0;
-  border: 1px solid var(--color-border);
-  border-top: none;
+  border: none;
 }
 
 .accordionItem {
@@ -18,18 +17,6 @@
 
 .accordionItem:last-child {
   border-bottom: none;
-}
-
-/* Add a visual colored line on the left to indicate active/group color context even when closed */
-.accordionItem::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: transparent;
-  transition: background-color 0.3s ease;
 }
 
 .accordionHeader {

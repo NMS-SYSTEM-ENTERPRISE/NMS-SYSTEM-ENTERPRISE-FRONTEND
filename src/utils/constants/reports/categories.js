@@ -1,4 +1,15 @@
-export const REPORT_TABS = ['Metric'];
+export const REPORT_TABS = [
+  'Metric',
+  'Log',
+  'Flow',
+  'Trap',
+  'Audit',
+  'NCCM',
+  'APM',
+  'RUM',
+  'NetRoute',
+  'Log Compliance',
+];
 
 export const REPORT_CATEGORIES = [
   { id: 'favorites', label: 'Favorites', icon: 'mdi:star' },

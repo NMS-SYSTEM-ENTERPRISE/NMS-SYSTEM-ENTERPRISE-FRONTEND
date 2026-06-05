@@ -2,7 +2,6 @@
 
 import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
 import {
-  DEFAULT_REPORT_CATEGORY,
   DEFAULT_REPORT_FILTERS,
   DEFAULT_REPORT_TAB,
 } from '@/utils/constants/reports';
@@ -13,7 +12,7 @@ export const ReportsContext = createContext(null);
 export const ReportsProvider = ({ children }) => {
   const [activeTab, setActiveTab] = useState(DEFAULT_REPORT_TAB);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(DEFAULT_REPORT_CATEGORY);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [expandedRows, setExpandedRows] = useState(new Set(['1']));
@@ -21,22 +20,34 @@ export const ReportsProvider = ({ children }) => {
   const [filters, setFilters] = useState(DEFAULT_REPORT_FILTERS);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  
+
+  // Log Compliance Specific State
+  const [selectedComplianceStandard, setSelectedComplianceStandard] = useState(null);
+  const [complianceRefFilter, setComplianceRefFilter] = useState('');
+
   const [reports, setReports] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch reports when tab changes
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const [reportsData, categoriesData] = await Promise.all([
-          getReports(),
-          getReportCategories(),
+          getReports(activeTab),
+          getReportCategories(activeTab),
         ]);
         setReports(reportsData.items || []);
         setCategories(categoriesData || []);
+
+        // Reset category selection
+        if (activeTab === 'Metric') {
+          setSelectedCategory('capacity-planning');
+        } else {
+          setSelectedCategory('all');
+        }
       } catch (err) {
         console.error('Failed to fetch reports or categories:', err);
         setError('Failed to load reports');
@@ -45,7 +56,13 @@ export const ReportsProvider = ({ children }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [activeTab]);
+
+  // Reset compliance drilldown state when switching tabs
+  useEffect(() => {
+    setSelectedComplianceStandard(null);
+    setComplianceRefFilter('');
+  }, [activeTab]);
 
   const filteredReports = useMemo(
     () =>
@@ -56,9 +73,34 @@ export const ReportsProvider = ({ children }) => {
         const matchesSchedule = !filters.schedule || String(report.schedule) === filters.schedule;
         const matchesFavorite = !filters.favorite || report.favorite;
 
-        return matchesSearch && matchesType && matchesReportType && matchesSchedule && matchesFavorite;
+        // Tab-specific filters
+        let matchesCategory = true;
+        if (selectedCategory === 'favorites') {
+          matchesCategory = report.favorite === true;
+        } else if (selectedCategory && selectedCategory !== 'all') {
+          // Normalize both for flexible matching, e.g. "capacity-planning" vs "Capacity Planning"
+          const normalizedCategory = selectedCategory.replace(/-/g, ' ').toLowerCase();
+          const normalizedReportType = report.type?.toLowerCase() || '';
+          matchesCategory = normalizedReportType === normalizedCategory;
+        }
+
+        // Compliance standard filters
+        let matchesCompliance = true;
+        if (activeTab === 'Log Compliance') {
+          if (selectedComplianceStandard) {
+            matchesCompliance = report.complianceStandard === selectedComplianceStandard;
+            if (complianceRefFilter) {
+              matchesCompliance = matchesCompliance && report.complianceRef === complianceRefFilter;
+            }
+          } else {
+            // Tile view of compliance standards, do not show list items
+            matchesCompliance = false;
+          }
+        }
+
+        return matchesSearch && matchesType && matchesReportType && matchesSchedule && matchesFavorite && matchesCategory && matchesCompliance;
       }),
-    [searchQuery, reports, filters]
+    [searchQuery, reports, filters, selectedCategory, activeTab, selectedComplianceStandard, complianceRefFilter]
   );
 
   const toggleRow = useCallback((id) => {
@@ -143,6 +185,12 @@ export const ReportsProvider = ({ children }) => {
     loading,
     error,
     categories,
+    reports,
+    // Compliance drilldown states
+    selectedComplianceStandard,
+    setSelectedComplianceStandard,
+    complianceRefFilter,
+    setComplianceRefFilter,
   };
 
   return <ReportsContext.Provider value={value}>{children}</ReportsContext.Provider>;

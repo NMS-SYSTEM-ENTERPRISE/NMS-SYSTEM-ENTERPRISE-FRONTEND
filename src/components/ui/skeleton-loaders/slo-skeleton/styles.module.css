@@ -6,6 +6,11 @@
   border-radius: 6px;
 }
 
+.skeletonWrapper {
+  padding: 16px;
+  width: 100%;
+}
+
 .skeletonInner::after {
   content: '';
   position: absolute;

@@ -531,9 +531,32 @@
 
 .sectionContent {
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.formGroupFullWidth {
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .sectionContent {
+    grid-template-columns: 1fr;
+  }
+  .formGroupFullWidth {
+    grid-column: span 1;
+  }
 }
 
 .formGroup {

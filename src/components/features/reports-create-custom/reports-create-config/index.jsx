@@ -66,7 +66,7 @@ export const ReportsCreateConfig = () => {
                 placeholder="Enter report name"
               />
             </div>
-            <div className={sharedStyles.formGroup}>
+            <div className={sharedStyles.formGroupFullWidth}>
               <label htmlFor="report-description">Description</label>
               <textarea
                 id="report-description"
@@ -143,7 +143,7 @@ export const ReportsCreateConfig = () => {
                 placeholder="Select format"
               />
             </div>
-            <div className={sharedStyles.formGroup}>
+            <div className={sharedStyles.checkboxGroup}>
               <Checkbox
                 checked={reportConfig.schedule}
                 onChange={(e) => updateReportConfig({ schedule: e.target.checked })}

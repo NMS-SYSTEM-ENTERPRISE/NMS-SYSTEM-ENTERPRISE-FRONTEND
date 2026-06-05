@@ -3,21 +3,23 @@ import styles from './styles.module.css';
 
 export const AlertsListSkeleton = () => {
   return (
-    <div className={styles.listSkeleton}>
-      <div className={styles.tableHeaderSkeleton} />
-      <div className={styles.listBodySkeleton}>
-        {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-          <div key={i} className={styles.listRowSkeleton}>
-            <div className={`${styles.skeletonInner} ${styles.colSmall}`} />
-            <div className={`${styles.skeletonInner} ${styles.colIdentity}`} style={{ width: `${30 + (i % 3) * 5}%` }} />
-            <div className={`${styles.skeletonInner} ${styles.colType}`} />
-            <div className={`${styles.skeletonInner} ${styles.colMonitor}`} />
-            <div className={`${styles.skeletonInner} ${styles.colInstance}`} />
-            <div className={`${styles.skeletonInner} ${styles.colValue}`} />
-            <div className={`${styles.skeletonInner} ${styles.colDuration}`} />
-            <div className={`${styles.skeletonInner} ${styles.colAction}`} />
-          </div>
-        ))}
+    <div className={styles.listSkeletonWrapper}>
+      <div className={styles.listSkeleton}>
+        <div className={styles.tableHeaderSkeleton} />
+        <div className={styles.listBodySkeleton}>
+          {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <div key={i} className={styles.listRowSkeleton}>
+              <div className={`${styles.skeletonInner} ${styles.colSmall}`} />
+              <div className={`${styles.skeletonInner} ${styles.colIdentity}`} style={{ width: `${30 + (i % 3) * 5}%` }} />
+              <div className={`${styles.skeletonInner} ${styles.colType}`} />
+              <div className={`${styles.skeletonInner} ${styles.colMonitor}`} />
+              <div className={`${styles.skeletonInner} ${styles.colInstance}`} />
+              <div className={`${styles.skeletonInner} ${styles.colValue}`} />
+              <div className={`${styles.skeletonInner} ${styles.colDuration}`} />
+              <div className={`${styles.skeletonInner} ${styles.colAction}`} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

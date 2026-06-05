@@ -25,11 +25,6 @@ const getSeverityColor = (value, inverse = false) => {
 const AccordionItem = ({ title, icon: Icon, color, isOpen, onToggle, children, badge, badgeColor, layout = 'split' }) => {
   return (
     <div className={styles.accordionItem} data-open={isOpen}>
-      <style>{`
-        .${styles.accordionItem}[data-open="true"]::before {
-           background-color: ${color};
-        }
-      `}</style>
       <div className={styles.accordionHeader} onClick={onToggle}>
         <div className={styles.headerLeft}>
           <div className={styles.iconWrapper} style={{ color: isOpen ? color : '#94a3b8' }}>

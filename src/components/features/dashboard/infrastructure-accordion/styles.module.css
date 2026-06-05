@@ -1,16 +1,15 @@
 .accordionContainer {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
   width: 100%;
 }
 
 .accordionItem {
   background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  border: none;
   border-bottom: 1px solid var(--color-border);
-  /* Restored for connection line */
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
   overflow: hidden;
   transition: all 0.3s ease;
 }
@@ -25,17 +24,6 @@
   cursor: pointer;
   user-select: none;
   position: relative;
-}
-
-.accordionHeader::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background-color: transparent;
-  transition: background-color 0.3s ease;
 }
 
 .headerLeft {

@@ -209,11 +209,6 @@ export const InfrastructureAccordion = ({ statistics }) => {
   return (
     <div className={styles.accordionContainer}>
       <div className={styles.accordionItem} data-open={isOpen}>
-        <style>{`
-          .${styles.accordionHeader}[data-open="true"]::before {
-             background-color: #3b82f6;
-          }
-        `}</style>
         <div className={styles.accordionHeader} data-open={isOpen} onClick={() => setIsOpen(!isOpen)}>
           <div className={styles.headerLeft}>
             <div className={styles.iconWrapper} style={{ color: isOpen ? '#3b82f6' : '#94a3b8' }}>

@@ -29,7 +29,7 @@ export const TicketingProvider = ({ children, initialCategory = DEFAULT_TICKETIN
 
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const CURRENT_USER = localStorage.getItem('userEmail') || 'System'; // Dynamic user from auth
+  const CURRENT_USER = typeof window !== 'undefined' ? (localStorage.getItem('userEmail') || 'System') : 'System'; // Dynamic user from auth
 
   const loadTickets = useCallback(async () => {
     setIsLoading(true);

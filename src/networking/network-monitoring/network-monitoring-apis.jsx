@@ -194,13 +194,13 @@ export const getFlowExplorerData = async (params) => {
 // REPORTS APIS
 // ==========================================
 
-export const getReports = async () => {
-  const response = await authApi.get(`${BASE_URL}/reports/`);
+export const getReports = async (tab) => {
+  const response = await authApi.get(`${BASE_URL}/reports/`, { params: { tab } });
   return response.data;
 };
 
-export const getReportCategories = async () => {
-  const response = await authApi.get(`${BASE_URL}/reports/categories`);
+export const getReportCategories = async (tab) => {
+  const response = await authApi.get(`${BASE_URL}/reports/categories`, { params: { tab } });
   return response.data;
 };
 

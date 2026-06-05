@@ -8,7 +8,7 @@
 
 .dashboardContent {
   flex: 1;
-  padding: var(--padding-xl);
+  padding: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;

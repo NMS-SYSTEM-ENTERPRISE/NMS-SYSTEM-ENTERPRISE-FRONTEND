@@ -205,7 +205,7 @@
 .treeChildren::before {
   content: '';
   position: absolute;
-  top: -16px;
+  top: -58px;
   bottom: 20px;
   left: 0px;
   width: 1px;
@@ -385,7 +385,7 @@
 .tableContainer {
   flex: 1;
   overflow: hidden;
-  padding: 16px;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
@@ -395,8 +395,8 @@
   display: flex;
   flex-direction: column;
   background: var(--color-bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   flex: 1;
   min-height: 0;

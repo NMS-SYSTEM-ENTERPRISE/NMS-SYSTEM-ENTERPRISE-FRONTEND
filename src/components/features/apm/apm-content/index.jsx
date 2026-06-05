@@ -36,6 +36,8 @@ export const ApmContent = () => {
     setFilters,
     filteredServices,
     filteredTraces,
+    analyticsData,
+    isLoading,
     handleResetFilters,
   } = useApm();
 
@@ -196,9 +198,9 @@ export const ApmContent = () => {
 
           {activeView === 'analytics' && (
             <AnalyticsAccordion
-              performanceData={ANALYTICS_PERFORMANCE_DATA}
-              distributionData={ANALYTICS_DISTRIBUTION_DATA}
-              topServices={ANALYTICS_TOP_SERVICES}
+              performanceData={analyticsData?.performanceData || ANALYTICS_PERFORMANCE_DATA}
+              distributionData={analyticsData?.distributionData || ANALYTICS_DISTRIBUTION_DATA}
+              topServices={analyticsData?.topServices || ANALYTICS_TOP_SERVICES}
             />
           )}
         </div>

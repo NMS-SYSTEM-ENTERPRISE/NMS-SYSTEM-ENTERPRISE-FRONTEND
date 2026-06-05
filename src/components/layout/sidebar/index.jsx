@@ -42,7 +42,12 @@ const menuGroups = [
         path: '/metric-explorer',
         badge: null,
       },
-      // { icon: 'lucide:gauge', label: 'Performance Insights', path: '/apm', badge: null },
+      {
+        icon: 'lucide:gauge',
+        label: 'Performance Insights',
+        path: '/apm',
+        badge: null,
+      },
     ],
   },
   {

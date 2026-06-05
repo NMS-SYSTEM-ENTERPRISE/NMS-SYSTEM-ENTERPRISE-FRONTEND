@@ -306,7 +306,7 @@
 .contentArea {
   flex: 1;
   overflow-y: auto;
-  padding: var(--padding-xl);
+  padding: 0;
 }
 
 .contentArea::-webkit-scrollbar {

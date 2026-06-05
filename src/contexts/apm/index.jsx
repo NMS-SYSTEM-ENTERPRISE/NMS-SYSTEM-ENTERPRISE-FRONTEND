@@ -1,6 +1,6 @@
 'use client';
-import { APM_SERVICES, TRACE_DATA } from '@/utils/dummy-data/apm';
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState, useEffect } from 'react';
+import { getApmServices, getApmTraces, getApmAnalytics } from '@/networking/apm/apm-apis';
 
 export const ApmContext = createContext(null);
 
@@ -11,6 +11,12 @@ export const ApmProvider = ({ children }) => {
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Real Data State
+  const [servicesData, setServicesData] = useState([]);
+  const [tracesData, setTracesData] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -18,8 +24,39 @@ export const ApmProvider = ({ children }) => {
     type: '',
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const results = await Promise.allSettled([
+          getApmServices(),
+          getApmTraces(),
+          getApmAnalytics()
+        ]);
+
+        if (results[0].status === 'fulfilled') setServicesData(results[0].value || []);
+        else console.error("Failed to fetch services:", results[0].reason);
+
+        if (results[1].status === 'fulfilled') setTracesData(results[1].value || []);
+        else console.error("Failed to fetch traces:", results[1].reason);
+
+        if (results[2].status === 'fulfilled') setAnalyticsData(results[2].value || null);
+        else console.error("Failed to fetch analytics:", results[2].reason);
+
+      } catch (error) {
+        console.error("Critical failure during APM fetch:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // refresh every 30s
+    return () => clearInterval(interval);
+  }, []);
+
   const filteredServices = useMemo(() => {
-    return APM_SERVICES.filter((service) => {
+    return servicesData.filter((service) => {
       const matchesSearch = service.name
         .toLowerCase()
         .includes((filters.search || searchQuery).toLowerCase());
@@ -30,15 +67,15 @@ export const ApmProvider = ({ children }) => {
       const matchesType = !filters.type || service.type === filters.type;
       return matchesSearch && matchesStatus && matchesLanguage && matchesType;
     });
-  }, [filters, searchQuery]);
+  }, [servicesData, filters, searchQuery]);
 
   const filteredTraces = useMemo(() => {
-    return TRACE_DATA.filter(
+    return tracesData.filter(
       (trace) =>
-        trace.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        trace.resource.toLowerCase().includes(searchQuery.toLowerCase())
+        (trace.serviceName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (trace.resource || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [tracesData, searchQuery]);
 
   const handleResetFilters = useCallback(() => {
     setFilters({
@@ -65,6 +102,8 @@ export const ApmProvider = ({ children }) => {
     setFilters,
     filteredServices,
     filteredTraces,
+    analyticsData,
+    isLoading,
     handleResetFilters,
   };
 

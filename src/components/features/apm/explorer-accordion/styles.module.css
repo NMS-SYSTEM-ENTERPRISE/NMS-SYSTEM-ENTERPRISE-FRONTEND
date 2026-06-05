@@ -22,18 +22,6 @@
   border-bottom: none;
 }
 
-/* Add a visual colored line on the left to indicate active/group color context even when closed */
-.accordionItem::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: transparent;
-  transition: background-color 0.3s ease;
-}
-
 .accordionHeader {
   display: flex;
   align-items: center;

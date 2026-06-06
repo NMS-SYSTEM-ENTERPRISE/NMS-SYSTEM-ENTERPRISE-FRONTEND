@@ -87,12 +87,10 @@
   /* Dashboard Custom layout */
   --dashboard-custom-sidebar-width: 260px;
   --dashboard-custom-sidebar-collapsed: 72px;
-  --dashboard-custom-timeline-gradient: linear-gradient(
-    90deg,
-    var(--color-chart-cyan) 0%,
-    var(--color-chart-blue) 50%,
-    var(--color-chart-violet) 100%
-  );
+  --dashboard-custom-timeline-gradient: linear-gradient(90deg,
+      var(--color-chart-cyan) 0%,
+      var(--color-chart-blue) 50%,
+      var(--color-chart-violet) 100%);
 
   /* Ticketing layout */
   --ticketing-sidebar-width: 240px;
@@ -335,4 +333,11 @@ code {
 
 .reports-collapse-btn-start {
   margin-left: 0;
+}
+
+/* Force hide Next.js development indicators */
+nextjs-portal,
+#__next-build-watcher,
+#next-route-announcer {
+  display: none !important;
 }

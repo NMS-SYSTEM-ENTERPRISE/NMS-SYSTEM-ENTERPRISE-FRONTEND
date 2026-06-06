@@ -149,6 +149,23 @@ const TraceTable = ({ traces, onTraceClick }) => {
     return 'var(--color-success)';
   };
 
+  const formatTimestamp = (ts) => {
+    try {
+      const date = new Date(ts);
+      if (isNaN(date.getTime())) return ts;
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }).format(date);
+    } catch (e) {
+      return ts;
+    }
+  };
+
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.traceTable}>
@@ -174,7 +191,7 @@ const TraceTable = ({ traces, onTraceClick }) => {
               >
                 <td className={styles.timestampCell}>
                   <Clock size={14} />
-                  <span>{trace.timestamp}</span>
+                  <span>{formatTimestamp(trace.timestamp)}</span>
                 </td>
                 <td>
                   <div className={styles.serviceCell}>

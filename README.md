@@ -39,3 +39,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 BEFORE PROCEEDING THE IMPLEMENTATION 
 GO THROUGH THIS SCREEN ANALYZE THE ALL MODULES RELATED TO THIS 
 LET ME KNOW ONCE YOU ANALYZED EVERYTHING 
+/netpath

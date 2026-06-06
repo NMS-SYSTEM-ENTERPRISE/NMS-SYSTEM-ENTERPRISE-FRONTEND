@@ -231,7 +231,7 @@ const TopServicesList = ({
                         <Bar
                           dataKey="value"
                           fill={mainColor}
-                          radius={[2, 2, 0, 0]}
+                          radius={[0, 0, 0, 0]}
                           isAnimationActive={false}
                           barSize={6}
                         >

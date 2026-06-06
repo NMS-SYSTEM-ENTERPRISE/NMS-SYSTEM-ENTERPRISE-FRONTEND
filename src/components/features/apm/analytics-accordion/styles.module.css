@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   box-shadow: var(--shadow-md);
   margin-bottom: var(--margin-lg);
@@ -39,7 +39,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--padding-md) var(--padding-lg);
-  background: var(--color-bg-secondary); /* Darker header */
+  background: var(--color-bg-secondary);
+  /* Darker header */
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -63,9 +64,10 @@
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.05); /* Subtle transparent bg */
+  background: rgba(255, 255, 255, 0.05);
+  /* Subtle transparent bg */
   color: var(--color-text-primary);
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .headerTitle {
@@ -112,7 +114,8 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 0; /* Remove default padding */
+  padding: 0;
+  /* Remove default padding */
 }
 
 .column {
@@ -148,8 +151,9 @@
 .gaugeGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0; /* Use borders for separation */
-  flex: 1; 
+  gap: 0;
+  /* Use borders for separation */
+  flex: 1;
   align-content: start;
 }
 
@@ -161,7 +165,7 @@
   background: transparent;
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid var(--color-border); 
+  border-bottom: 1px solid var(--color-border);
   transition: all 0.2s ease;
 }
 
@@ -335,13 +339,11 @@
 /* Unique Splitter Divider */
 .verticalDivider {
   width: 1px;
-  background: linear-gradient(
-    to bottom, 
-    transparent, 
-    var(--color-border), 
-    var(--color-border), 
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      var(--color-border),
+      var(--color-border),
+      transparent);
   position: relative;
   display: flex;
   align-items: center;
@@ -365,28 +367,28 @@
     grid-template-columns: 1fr;
     gap: 0;
   }
-  
+
   .accordionContent::after {
     display: none;
   }
-  
+
   /* Split layout shifts to stack on mobile */
   .splitLayout {
     grid-template-columns: 1fr;
     gap: var(--gap-md);
   }
-  
+
   .verticalDivider {
     width: 100%;
     height: 1px;
     margin: 12px 0;
     background: linear-gradient(to right, transparent, var(--color-border), transparent);
   }
-  
+
   .verticalDivider::after {
     display: none;
   }
-  
+
   .column:last-child {
     border-bottom: none;
   }
@@ -394,7 +396,7 @@
 
 /* Service-specific layouts */
 .fullLayout {
-  padding: 16px;
+  padding: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -410,7 +412,7 @@
 .metricCard {
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -515,13 +517,11 @@
 /* Unique Splitter Divider */
 .verticalDivider {
   width: 1px;
-  background: linear-gradient(
-    to bottom, 
-    transparent, 
-    var(--color-border), 
-    var(--color-border), 
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      var(--color-border),
+      var(--color-border),
+      transparent);
   position: relative;
   display: flex;
   align-items: center;
@@ -550,20 +550,20 @@
   .metricsGrid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
-  
+
   /* Split layout shifts to stack on mobile */
   .splitLayout {
     grid-template-columns: 1fr;
     gap: 0;
   }
-  
+
   .verticalDivider {
     width: 100%;
     height: 1px;
     margin: 16px 0;
     background: linear-gradient(to right, transparent, var(--color-border), transparent);
   }
-  
+
   .verticalDivider::after {
     display: none;
   }
@@ -573,11 +573,11 @@
   .metricsGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .fullLayout {
     padding: 16px;
   }
-  
+
   .column {
     padding: 16px;
   }
@@ -589,7 +589,8 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   width: 100%;
-  border-bottom: 1px solid var(--color-border); /* Optional bottom border for the section */
+  border-bottom: 1px solid var(--color-border);
+  /* Optional bottom border for the section */
 }
 
 .metricWidget {
@@ -610,7 +611,8 @@
 }
 
 .metricWidget:hover {
-  background: rgba(255, 255, 255, 0.02); /* Subtle hover effect */
+  background: rgba(255, 255, 255, 0.02);
+  /* Subtle hover effect */
   transform: none;
   box-shadow: none;
 }
@@ -686,8 +688,9 @@
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
 }
 
 .traceTable {
@@ -816,7 +819,7 @@
   .metricsWidgetGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .traceTable th,
   .traceTable td {
     padding: 10px 12px;
@@ -871,12 +874,12 @@
 .analyticsIconBadge {
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid;
+  border: none;
   transition: all 0.3s ease;
 }
 

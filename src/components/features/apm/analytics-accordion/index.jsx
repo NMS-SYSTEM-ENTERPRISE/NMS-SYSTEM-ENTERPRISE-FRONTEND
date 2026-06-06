@@ -82,7 +82,7 @@ const PerformanceTrendWidget = ({ title, data, color, icon: Icon, trend }) => {
         <div className={styles.analyticsWidgetHeader}>
           <div
             className={styles.analyticsIconBadge}
-            style={{ backgroundColor: color + '15', borderColor: color + '40' }}
+            style={{ backgroundColor: color + '15' }}
           >
             <Icon size={20} style={{ color }} />
           </div>
@@ -156,7 +156,7 @@ const DistributionWidget = ({ title, data, color }) => {
         <div className={styles.analyticsWidgetHeader}>
           <div
             className={styles.analyticsIconBadge}
-            style={{ backgroundColor: color + '15', borderColor: color + '40' }}
+            style={{ backgroundColor: color + '15' }}
           >
             <BarChart3 size={20} style={{ color }} />
           </div>
@@ -175,7 +175,7 @@ const DistributionWidget = ({ title, data, color }) => {
               data={chartData}
               margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
             >
-              <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
+              <Bar dataKey="value" radius={[0, 0, 0, 0]} barSize={40}>
                 {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}

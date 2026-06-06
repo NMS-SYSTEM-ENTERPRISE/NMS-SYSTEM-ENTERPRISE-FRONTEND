@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   box-shadow: var(--shadow-md);
   margin-bottom: var(--margin-lg);
@@ -384,7 +384,7 @@
 
 /* Service-specific layouts */
 .fullLayout {
-  padding: 16px;
+  padding: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -400,7 +400,7 @@
 .metricCard {
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -676,8 +676,9 @@
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
 }
 
 .traceTable {

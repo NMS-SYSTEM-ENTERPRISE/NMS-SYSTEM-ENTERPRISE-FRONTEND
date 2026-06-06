@@ -166,7 +166,7 @@
   margin-bottom: var(--margin-xs);
 }
 
-.treeNodeChildren > .treeNode::before {
+.treeNodeChildren>.treeNode::before {
   content: '';
   position: absolute;
   top: 14px;

@@ -7,7 +7,7 @@ export const TrapListSkeleton = () => {
       <div className={styles.listSkeleton}>
         <div className={styles.tableHeaderSkeleton} />
         <div className={styles.listBodySkeleton}>
-          {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((i) => (
             <div key={i} className={styles.listRowSkeleton}>
               <div className={`${styles.skeletonInner} ${styles.checkboxSkeleton}`} />
               <div className={`${styles.skeletonInner} ${styles.colIdentity}`} style={{ width: `${25 + (i % 3) * 5}%` }} />

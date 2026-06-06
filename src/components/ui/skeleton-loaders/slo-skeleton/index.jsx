@@ -20,22 +20,22 @@ export const SloTableSkeleton = () => {
               <div className={`${styles.skeletonInner} ${styles.textSkeleton}`} style={{ width: `${40 + (i % 3) * 10}%` }} />
             </div>
             <div className={`${styles.skeletonInner} ${styles.cellStatus}`} />
-            
+
             <div className={styles.metricSlotSkeleton}>
               <div className={`${styles.skeletonInner} ${styles.metricValSkeleton}`} style={{ width: '40px' }} />
               <div className={`${styles.skeletonInner} ${styles.metricLblSkeleton}`} style={{ width: '30px' }} />
             </div>
-            
+
             <div className={styles.metricSlotSkeleton}>
               <div className={`${styles.skeletonInner} ${styles.metricValSkeleton}`} style={{ width: '40px' }} />
               <div className={`${styles.skeletonInner} ${styles.metricLblSkeleton}`} style={{ width: '30px' }} />
             </div>
-            
+
             <div className={styles.metricSlotSkeleton}>
               <div className={`${styles.skeletonInner} ${styles.metricValSkeleton}`} style={{ width: '60px' }} />
               <div className={`${styles.skeletonInner} ${styles.metricLblSkeleton}`} style={{ width: '45px' }} />
             </div>
-            
+
             <div className={`${styles.skeletonInner} ${styles.cellAction}`} />
           </div>
         ))}

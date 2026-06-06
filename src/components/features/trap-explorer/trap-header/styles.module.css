@@ -15,7 +15,9 @@
   align-items: center;
   gap: var(--gap-lg);
   padding: 0 var(--padding-lg);
-  height: 56px;
+  height: 64px;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 /* ── Left: Icon + Title ─────────────────────────────────────── */
@@ -117,7 +119,9 @@
   transition: opacity 0.2s;
 }
 
-.searchBtn:hover { opacity: 0.85; }
+.searchBtn:hover {
+  opacity: 0.85;
+}
 
 /* ── Right side ─────────────────────────────────────────────── */
 .headerRight {
@@ -194,7 +198,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ── Sub-row: Active Filter Tags ────────────────────────────── */

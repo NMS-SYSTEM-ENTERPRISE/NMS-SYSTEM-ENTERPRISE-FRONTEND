@@ -670,3 +670,91 @@
     max-width: 100%;
   }
 }
+
+/* Logout Modal Redesign */
+.logoutModalContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px 24px;
+  overflow: hidden;
+}
+
+.logoutModalHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.logoutModalIconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(244, 67, 54, 0.1);
+  color: var(--color-danger, #f44336);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.logoutModalContent h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.logoutModalContent p {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.logoutModalDivider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 0 -24px 24px;
+  z-index: 1;
+}
+
+.logoutModalActions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+.logoutModalActions button {
+  min-width: 100px;
+}
+
+/* Geometric projection */
+.geometricProjection {
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(244, 67, 54, 0.08) 0%, rgba(244, 67, 54, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.geometricProjection::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 80px;
+  height: 80px;
+  border: 1px dashed rgba(244, 67, 54, 0.2);
+  border-radius: 50%;
+  transform: rotate(15deg);
+}

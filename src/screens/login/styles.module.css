@@ -143,18 +143,24 @@
   margin: 0 auto;
 }
 
-.logoBottom {
-  position: absolute;
-  bottom: 30px;
-  left: 0;
+.logoTopRight {
+  margin-bottom: 24px;
   width: 100%;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: #eff6ff;
-  z-index: 10;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: -12px;
+}
+
+.logoImageWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.logoImageWrapper:hover {
+  transform: translateY(-2px);
 }
 
 /* Right Side - Form */
@@ -338,6 +344,7 @@
   text-align: center;
   font-size: 13px;
   color: #64748b;
+  margin-top: 24px;
 }
 
 .footerText a {

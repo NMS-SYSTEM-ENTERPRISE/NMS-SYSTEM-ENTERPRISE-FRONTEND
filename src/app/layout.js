@@ -5,6 +5,7 @@ import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { Providers } from '@/providers/providers';
 import { Toaster } from 'sonner';
+import { AuthGuard } from '@/guards/auth-guard';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -45,7 +46,9 @@ export default function RootLayout({ children }) {
           zIndex={9999}
         />
         <Providers>
-          <ClientLayout>{children}</ClientLayout>
+          <AuthGuard>
+            <ClientLayout>{children}</ClientLayout>
+          </AuthGuard>
         </Providers>
         <Toaster position="top-right" richColors />
       </body>

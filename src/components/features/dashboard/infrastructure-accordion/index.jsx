@@ -34,11 +34,11 @@ const LatencyBar = ({ ping }) => {
   if (!ping) return <span style={{ color: 'var(--color-text-muted)' }}>—</span>;
   const ms = parseInt(ping);
   let blocks = 5;
-  let color = '#22c55e'; // Green
-  if (ms > 200) { blocks = 1; color = '#ef4444'; } // Red
-  else if (ms > 100) { blocks = 2; color = '#f97316'; } // Orange
-  else if (ms > 50) { blocks = 3; color = '#eab308'; } // Yellow
-  else if (ms > 20) { blocks = 4; color = '#22c55e'; } // Green
+  let color = '#059669'; // Muted Green
+  if (ms > 200) { blocks = 1; color = '#dc2626'; } // Muted Red
+  else if (ms > 100) { blocks = 2; color = '#ea580c'; } // Muted Orange
+  else if (ms > 50) { blocks = 3; color = '#d97706'; } // Muted Yellow
+  else if (ms > 20) { blocks = 4; color = '#10b981'; } // Emerald
 
   return (
     <div className={styles.latencyViz}>
@@ -58,9 +58,9 @@ const UptimeVisual = ({ uptime }) => {
   if (!uptime) return <span style={{ color: 'var(--color-text-muted)' }}>—</span>;
   const days = parseFloat(uptime) || 0;
 
-  let color = '#ef4444'; // Red
-  if (days >= 20) color = '#22c55e'; // Green
-  else if (days >= 5) color = '#eab308'; // Yellow
+  let color = '#dc2626'; // Muted Red
+  if (days >= 20) color = '#059669'; // Muted Green
+  else if (days >= 5) color = '#d97706'; // Muted Yellow
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

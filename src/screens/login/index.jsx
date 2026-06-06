@@ -3,7 +3,10 @@ import { loginApi } from '@/networking/auth/auth-apis';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 import NetworkBackground from './NetworkBackground';
+import { snrLogo } from '@/resources/images/logo';
+import { useAuthContext } from '@/hooks/useauth';
 import styles from './styles.module.css';
 
 const LoginScreen = () => {
@@ -13,45 +16,19 @@ const LoginScreen = () => {
     username: '',
     password: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { userLogin, isLoading: isAuthLoading } = useAuthContext();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (error) setError(null);
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await loginApi({
-        username_or_email: formData.username,
-        password: formData.password,
-      });
-
-      const data = response.data || response;
-      if (data.access_token) {
-        localStorage.setItem('accessToken', data.access_token);
-        if (data.user) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-        router.push('/dashboard');
-      }
-    } catch (err) {
-      console.error('Login failed', err);
-      const detail =
-        err.detail ||
-        err.message ||
-        'Login failed. Please check your credentials.';
-      const msg = Array.isArray(detail) ? detail[0]?.msg : detail;
-      setError(typeof msg === 'string' ? msg : 'An unexpected error occurred');
-    } finally {
-      setIsLoading(false);
-    }
+    await userLogin({
+      username_or_email: formData.username,
+      password: formData.password,
+    });
   };
 
   return (
@@ -74,24 +51,29 @@ const LoginScreen = () => {
             </p>
           </div>
 
-          <div className={styles.logoBottom}>NETMONITOR</div>
         </div>
 
         {/* Right Side - Form */}
         <div className={styles.cardRight}>
+          <div className={styles.logoTopRight}>
+            <div className={styles.logoImageWrapper}>
+              <Image
+                src={snrLogo}
+                alt="SNR Edatas"
+                width={200}
+                height={65}
+                priority
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
+          </div>
+
           <div className={styles.rightHeader}>
             <span className={styles.greeting}>NetMonitor System</span>
             <h2 className={styles.rightTitle}>
               <span>Sign In</span> To Your Account
             </h2>
           </div>
-
-          {error && (
-            <div className={styles.errorMessage}>
-              <Icon icon="lucide:alert-circle" width={18} />
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
@@ -150,30 +132,15 @@ const LoginScreen = () => {
             <button
               type="submit"
               className={styles.submitBtn}
-              disabled={isLoading}
+              disabled={isAuthLoading}
             >
-              {isLoading ? (
+              {isAuthLoading ? (
                 <Icon icon="line-md:loading-twotone-loop" width={24} />
               ) : (
                 'Sign In'
               )}
             </button>
           </form>
-
-          <div className={styles.ssoDivider}>
-            <span>Or continue with SSO</span>
-          </div>
-
-          <div className={styles.socialLogin}>
-            <button className={styles.socialBtn} type="button">
-              <Icon icon="simple-icons:okta" width={18} color="#007dc1" />
-              <span>Okta</span>
-            </button>
-            <button className={styles.socialBtn} type="button">
-              <Icon icon="simple-icons:microsoft" width={18} color="#00a4ef" />
-              <span>Microsoft</span>
-            </button>
-          </div>
 
           <div className={styles.footerText}>
             Need assistance? <a href="#">Contact IT Support</a>

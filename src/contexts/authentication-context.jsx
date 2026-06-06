@@ -1,5 +1,4 @@
 import { useToast } from '@/hooks/useToast';
-import { Loader } from '@/components/ui/loader';
 import { loginApi } from '@/networking/auth/auth-apis';
 import { setAxiosSession } from '@/services/auth';
 import { getDataFromToken, isTokenExpired } from '@/services/jwt';
@@ -101,7 +100,7 @@ const AuthProvider = (props) => {
 
           // Extract user data from response
           const userData = data?.user || data;
-          const userRole =
+          let userRole =
             userData?.role || userData?.account_type || userData?.user_type;
 
           // Validate token exists and is a string
@@ -117,11 +116,20 @@ const AuthProvider = (props) => {
             return;
           }
 
+          // Try to decode userRole from token if not in response body
+          if (!userRole) {
+            try {
+              const tokenData = await getDataFromToken(accessToken);
+              userRole = tokenData?.user_type || tokenData?.role || 'User';
+            } catch (e) {
+              userRole = 'User'; // safe fallback
+            }
+          }
+
           // Validate user data exists
-          if (!userData || !userRole) {
+          if (!userData) {
             console.error('Invalid user data received:', {
               userData,
-              userRole,
               responseData: data,
             });
             const errorMsg = 'Invalid user data received from server';
@@ -198,7 +206,6 @@ const AuthProvider = (props) => {
 
   return (
     <AuthContext.Provider value={memoizedValue}>
-      <Loader show={isLoading} />
       {props.children}
     </AuthContext.Provider>
   );

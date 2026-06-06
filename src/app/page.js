@@ -1,5 +1,10 @@
 import Screen from '@/screens/login';
+import { GuestGuard } from '@/guards/guest-guard';
 
 export default function Page() {
-  return <Screen />;
+  return (
+    <GuestGuard>
+      <Screen />
+    </GuestGuard>
+  );
 }

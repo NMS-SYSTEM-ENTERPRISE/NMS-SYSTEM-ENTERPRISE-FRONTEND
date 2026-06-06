@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
 import { Popup } from '@/components/ui/popup';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/navigation';
@@ -7,16 +8,20 @@ import { MultiDateTimePicker } from '@/components/ui/multi-date-time-picker';
 import { format } from 'date-fns';
 import styles from './styles.module.css';
 
+import { useAuthContext } from '@/hooks/useauth';
+
 export const Header = () => {
   const router = useRouter();
+  const { logOut } = useAuthContext();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('user');
+      const stored = localStorage.getItem('user') || localStorage.getItem('userData');
       if (stored) setCurrentUser(JSON.parse(stored));
     } catch (e) {
       console.error('Failed to parse user', e);
@@ -35,10 +40,16 @@ export const Header = () => {
     status: 'online', // Keep online status for aesthetics
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
+  const handleSignOutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmSignOut = () => {
+    logOut();
+    localStorage.clear();
     router.push('/');
+    setShowUserProfile(false);
+    setShowLogoutConfirm(false);
   };
 
   const handleDateTimeApply = (result) => {
@@ -120,7 +131,7 @@ export const Header = () => {
 
         {/* Footer */}
         <div className={styles.profileFooter}>
-          <button className={styles.logoutButton} onClick={handleSignOut}>
+          <button className={styles.logoutButton} onClick={handleSignOutClick}>
             <Icon icon="mdi:logout" width={18} height={18} />
             Sign Out
           </button>
@@ -187,6 +198,25 @@ export const Header = () => {
           </div>
         </div>
       )}
+
+      {/* Logout Confirmation Modal */}
+      <Modal isOpen={showLogoutConfirm} onClose={() => setShowLogoutConfirm(false)}>
+        <div className={styles.logoutModalContent}>
+          <div className={styles.geometricProjection}></div>
+          <div className={styles.logoutModalHeader}>
+            <div className={styles.logoutModalIconWrapper}>
+              <Icon icon="mdi:logout-variant" width={28} />
+            </div>
+            <h3>Sign Out</h3>
+            <p>Are you sure you want to sign out of the NetMonitor System?</p>
+          </div>
+          <div className={styles.logoutModalDivider}></div>
+          <div className={styles.logoutModalActions}>
+            <Button variant="secondary" onClick={() => setShowLogoutConfirm(false)}>Cancel</Button>
+            <Button variant="danger" onClick={confirmSignOut}>Sign Out</Button>
+          </div>
+        </div>
+      </Modal>
     </header>
   );
 };

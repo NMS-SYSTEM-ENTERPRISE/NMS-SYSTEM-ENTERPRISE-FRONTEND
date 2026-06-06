@@ -98,7 +98,15 @@ export const ApmContent = () => {
 
       <div className={sharedStyles.mainContentWrapper}>
         <div className={sharedStyles.header}>
-          <div className={sharedStyles.headerLeft} />
+          <div className={sharedStyles.headerLeft}>
+            <div className={sharedStyles.headerIcon}>
+              <Icon icon="mdi:chart-timeline-variant-shimmer" width={22} height={22} />
+            </div>
+            <div>
+              <h1 className={sharedStyles.headerTitle}>APM</h1>
+
+            </div>
+          </div>
           <div className={sharedStyles.headerRight}>
             <Input
               type="text"

@@ -1,17 +1,19 @@
 'use client';
 import NetPathDetail from '@/components/features/netpath/netpath-detail';
+import { OverallNetFlowModal } from '@/components/features/netpath/overall-netflow-modal';
+import sharedStyles from '@/components/features/netpath/shared/styles.module.css';
 import { Button } from '@/components/ui/button';
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
 import { Input } from '@/components/ui/input';
-import { useNetPath } from '@/hooks/netpath';
-import { getPathInitials, FILTER_SIDEBAR_CONFIG } from '@/utils/constants/netpath/helpers';
-import { Icon } from '@iconify/react';
-import clsx from 'clsx';
-import sharedStyles from '@/components/features/netpath/shared/styles.module.css';
-import { NetPathSidebarSkeleton } from '@/components/ui/skeleton-loaders/netpath-skeleton';
 import { NoDataFound } from '@/components/ui/no-data-found';
+import { NetPathSidebarSkeleton } from '@/components/ui/skeleton-loaders/netpath-skeleton';
+import { useNetPath } from '@/hooks/netpath';
+import {
+  FILTER_SIDEBAR_CONFIG,
+  getPathInitials,
+} from '@/utils/constants/netpath/helpers';
+import { Icon } from '@iconify/react';
 import { useMemo, useState } from 'react';
-import { OverallNetFlowModal } from '@/components/features/netpath/overall-netflow-modal';
 
 export const NetPathContent = () => {
   const [showOverallFlow, setShowOverallFlow] = useState(false);
@@ -55,9 +57,16 @@ export const NetPathContent = () => {
 
   const getGroupIcon = (groupName) => {
     const name = groupName.toLowerCase();
-    if (name.includes('network') || name.includes('router') || name.includes('switch')) return 'mdi:sitemap-outline';
-    if (name.includes('ups') || name.includes('power')) return 'mdi:battery-charging-high';
-    if (name.includes('server') || name.includes('compute')) return 'mdi:server-network';
+    if (
+      name.includes('network') ||
+      name.includes('router') ||
+      name.includes('switch')
+    )
+      return 'mdi:sitemap-outline';
+    if (name.includes('ups') || name.includes('power'))
+      return 'mdi:battery-charging-high';
+    if (name.includes('server') || name.includes('compute'))
+      return 'mdi:server-network';
     return 'mdi:folder-network-outline';
   };
 
@@ -111,45 +120,82 @@ export const NetPathContent = () => {
           )}
 
           {/* Path List with Tree Structure - Grouped by Category */}
-          <div className={sharedStyles.treeChildren} style={{ paddingLeft: isSidebarOpen ? '11px' : '0' }}>
+          <div
+            className={sharedStyles.treeChildren}
+            style={{ paddingLeft: isSidebarOpen ? '11px' : '0' }}
+          >
             {isLoading ? (
               <NetPathSidebarSkeleton isSidebarOpen={isSidebarOpen} />
             ) : filteredPaths.length === 0 ? (
-              <div style={{ padding: isSidebarOpen ? '32px 16px' : '32px 0', display: 'flex', justifyContent: 'center' }}>
+              <div
+                style={{
+                  padding: isSidebarOpen ? '32px 16px' : '32px 0',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
                 {isSidebarOpen ? (
-                 <NoDataFound 
-                    title="No Paths Found" 
-                    description="Adjust your search or filters to see paths." 
+                  <NoDataFound
+                    title="No Paths Found"
+                    description="Adjust your search or filters to see paths."
                     icon="mdi:magnify-close"
-                 />
+                  />
                 ) : (
-                  <div 
-                    style={{ padding: '12px', background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }} 
+                  <div
+                    style={{
+                      padding: '12px',
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px dashed rgba(255,255,255,0.1)',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: '16px',
+                    }}
                     title="No Paths Found"
                   >
-                    <Icon icon="mdi:magnify-close" width={24} height={24} color="var(--color-text-muted)" />
+                    <Icon
+                      icon="mdi:magnify-close"
+                      width={24}
+                      height={24}
+                      color="var(--color-text-muted)"
+                    />
                   </div>
                 )}
               </div>
             ) : (
               Object.entries(groupedPaths).map(([groupName, paths]) => {
                 const isExpanded = expandedGroups[groupName] !== false; // Default true
-                
+
                 return (
-                  <div key={groupName} style={{ width: '100%', marginBottom: '8px' }}>
+                  <div
+                    key={groupName}
+                    style={{ width: '100%', marginBottom: '8px' }}
+                  >
                     {/* Group Root Node */}
-                    <div 
-                      className={sharedStyles.treeRoot} 
-                      onClick={() => setExpandedGroups(prev => ({ ...prev, [groupName]: !isExpanded }))}
+                    <div
+                      className={sharedStyles.treeRoot}
+                      onClick={() =>
+                        setExpandedGroups((prev) => ({
+                          ...prev,
+                          [groupName]: !isExpanded,
+                        }))
+                      }
                       style={{ cursor: 'pointer' }}
                     >
-                      <Icon 
-                        icon={getGroupIcon(groupName)} 
-                        className={sharedStyles.rootIcon} 
-                        style={{ color: groupName.toLowerCase().includes('ups') ? '#f97316' : 'var(--color-chart-cyan)' }}
-                        width={18} 
+                      <Icon
+                        icon={getGroupIcon(groupName)}
+                        className={sharedStyles.rootIcon}
+                        style={{
+                          color: groupName.toLowerCase().includes('ups')
+                            ? '#f97316'
+                            : 'var(--color-chart-cyan)',
+                        }}
+                        width={18}
                       />
-                      <span className={sharedStyles.rootLabel}>{groupName}</span>
+                      <span className={sharedStyles.rootLabel}>
+                        {groupName}
+                      </span>
                     </div>
 
                     {/* Group Children */}
@@ -159,7 +205,9 @@ export const NetPathContent = () => {
                           <div
                             key={path.id}
                             className={`${sharedStyles.navItem} ${
-                              activePathId === path.id ? sharedStyles.navItemActive : ''
+                              activePathId === path.id
+                                ? sharedStyles.navItemActive
+                                : ''
                             }`}
                             onClick={() => setActivePathId(path.id)}
                             title={!isSidebarOpen ? path.name : ''}
@@ -168,13 +216,13 @@ export const NetPathContent = () => {
 
                             <div className={sharedStyles.itemIconWrapper}>
                               {isSidebarOpen ? (
-                                <Icon 
-                                  icon={getNodeIcon(path.type || '')} 
-                                  width={16} 
-                                  className={`${sharedStyles[`avatar_${path.status}`]}`} 
+                                <Icon
+                                  icon={getNodeIcon(path.type || '')}
+                                  width={16}
+                                  className={`${sharedStyles[`avatar_${path.status}`]}`}
                                 />
                               ) : (
-                                <div 
+                                <div
                                   className={`${sharedStyles.avatarText} ${sharedStyles[`avatar_${path.status}`]}`}
                                 >
                                   {getPathInitials(path.name)}
@@ -183,7 +231,9 @@ export const NetPathContent = () => {
                             </div>
 
                             <div className={sharedStyles.navContent}>
-                              <span className={sharedStyles.navText}>{path.name}</span>
+                              <span className={sharedStyles.navText}>
+                                {path.name}
+                              </span>
                               {isSidebarOpen && (
                                 <span className={sharedStyles.navSubtext}>
                                   {path.destination}:{path.port}
@@ -207,13 +257,16 @@ export const NetPathContent = () => {
         <div className={sharedStyles.header}>
           <div className={sharedStyles.headerLeft}>
             <div className={sharedStyles.headerIcon}>
-              <Icon icon="mdi:transit-connection-variant" width={22} height={22} />
+              <Icon
+                icon="mdi:transit-connection-variant"
+                width={22}
+                height={22}
+              />
             </div>
             <div>
-              <h1 className={sharedStyles.headerTitle}>Network Path Analysis</h1>
-              <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '2px' }}>
-                Monitoring {filteredPaths.length} Active Enterprise Paths
-              </div>
+              <h1 className={sharedStyles.headerTitle}>
+                Network Path Analysis
+              </h1>
             </div>
           </div>
           <div className={sharedStyles.headerRight}>
@@ -222,10 +275,26 @@ export const NetPathContent = () => {
                 className={sharedStyles.actionBtn}
                 onClick={() => setShowOverallFlow(true)}
                 title="Overall Net Flow"
-                style={{ width: 'auto', padding: '0 16px', gap: '8px', background: 'rgba(34, 211, 238, 0.1)', color: 'var(--color-chart-cyan)', borderColor: 'rgba(34, 211, 238, 0.2)' }}
+                style={{
+                  width: 'auto',
+                  padding: '0 16px',
+                  gap: '8px',
+                  background: 'rgba(34, 211, 238, 0.1)',
+                  color: 'var(--color-chart-cyan)',
+                  borderColor: 'rgba(34, 211, 238, 0.2)',
+                }}
               >
                 <Icon icon="mdi:hubline" width={18} height={18} />
-                <span style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Overall Net Flow</span>
+                <span
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Overall Net Flow
+                </span>
               </button>
               <button
                 className={sharedStyles.actionBtn}
@@ -239,17 +308,31 @@ export const NetPathContent = () => {
         </div>
         {/* Content Area */}
         <div className={sharedStyles.contentArea}>
-          {showOverallFlow && <OverallNetFlowModal onClose={() => setShowOverallFlow(false)} />}
-          
+          {showOverallFlow && (
+            <OverallNetFlowModal onClose={() => setShowOverallFlow(false)} />
+          )}
+
           {activePathId ? (
             <NetPathDetail pathId={activePathId} />
           ) : (
-            <div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <NoDataFound 
-                 title="Select a Network Path" 
-                 description="Choose a network path from the sidebar to view hop-by-hop details and latency." 
-                 icon="mdi:transit-connection-variant"
-                 style={{ height: '100%', border: 'none', background: 'transparent' }}
+            <div
+              style={{
+                height: '100%',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <NoDataFound
+                title="Select a Network Path"
+                description="Choose a network path from the sidebar to view hop-by-hop details and latency."
+                icon="mdi:transit-connection-variant"
+                style={{
+                  height: '100%',
+                  border: 'none',
+                  background: 'transparent',
+                }}
               />
             </div>
           )}
@@ -274,4 +357,3 @@ export const NetPathContent = () => {
     </div>
   );
 };
-

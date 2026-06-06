@@ -42,6 +42,13 @@
   animation: fadeIn 0.3s ease-out;
 }
 
+.sidebarSkeleton[data-collapsed="true"] {
+  width: 100%;
+  margin-left: 0;
+  padding: 12px 0;
+  align-items: center;
+}
+
 .navItemSkeleton {
   display: flex;
   align-items: center;
@@ -51,11 +58,24 @@
   background-color: rgba(255, 255, 255, 0.02);
 }
 
+.navItemSkeleton[data-collapsed="true"] {
+  padding: 8px;
+  justify-content: center;
+  gap: 0;
+  width: 40px;
+  height: 40px;
+}
+
 .avatarSkeleton {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: 8px;
   flex-shrink: 0;
+}
+
+.avatarSkeleton[data-collapsed="true"] {
+  width: 24px;
+  height: 24px;
 }
 
 .navContentSkeleton {

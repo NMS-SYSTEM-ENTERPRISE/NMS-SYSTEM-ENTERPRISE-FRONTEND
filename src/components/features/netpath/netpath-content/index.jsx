@@ -113,7 +113,7 @@ export const NetPathContent = () => {
           {/* Path List with Tree Structure - Grouped by Category */}
           <div className={sharedStyles.treeChildren} style={{ paddingLeft: isSidebarOpen ? '11px' : '0' }}>
             {isLoading ? (
-              <NetPathSidebarSkeleton />
+              <NetPathSidebarSkeleton isSidebarOpen={isSidebarOpen} />
             ) : filteredPaths.length === 0 ? (
               <div style={{ padding: isSidebarOpen ? '32px 16px' : '32px 0', display: 'flex', justifyContent: 'center' }}>
                 {isSidebarOpen ? (

@@ -15,26 +15,36 @@
 .skeletonInner::after {
   content: '';
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg, 
-    transparent 0%, 
-    rgba(255,255,255,0.015) 20%, 
-    rgba(255,255,255,0.04) 50%, 
-    rgba(255,255,255,0.015) 80%, 
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.015) 20%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.015) 80%,
+      transparent 100%);
   animation: smoothShimmer 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 @keyframes smoothShimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* List Skeleton */
@@ -69,12 +79,42 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.checkboxSkeleton { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
-.colIdentity { height: 36px; border-radius: 6px; flex: 1; }
-.colSource { height: 24px; width: 15%; border-radius: 4px; }
-.colStats { height: 32px; width: 10%; border-radius: 6px; }
-.colTime { height: 16px; width: 15%; border-radius: 4px; }
-.colStatus { height: 26px; width: 80px; border-radius: 12px; }
+.checkboxSkeleton {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.colIdentity {
+  height: 36px;
+  border-radius: 6px;
+  flex: 1;
+}
+
+.colSource {
+  height: 24px;
+  width: 15%;
+  border-radius: 4px;
+}
+
+.colStats {
+  height: 32px;
+  width: 10%;
+  border-radius: 6px;
+}
+
+.colTime {
+  height: 16px;
+  width: 15%;
+  border-radius: 4px;
+}
+
+.colStatus {
+  height: 26px;
+  width: 80px;
+  border-radius: 12px;
+}
 
 /* Dashboard Skeleton */
 .dashboardSkeleton {
@@ -110,9 +150,22 @@
   gap: 12px;
 }
 
-.iconSkeleton { width: 32px; height: 32px; border-radius: 8px; }
-.titleSkeleton { height: 18px; border-radius: 4px; }
-.badgeSkeleton { width: 60px; height: 20px; border-radius: 12px; }
+.iconSkeleton {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.titleSkeleton {
+  height: 18px;
+  border-radius: 4px;
+}
+
+.badgeSkeleton {
+  width: 60px;
+  height: 20px;
+  border-radius: 12px;
+}
 
 .accordionBodySkeleton {
   padding: 20px;

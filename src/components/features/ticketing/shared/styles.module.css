@@ -28,12 +28,14 @@
 }
 
 .sidebarHeader {
-  height: 50px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .sidebarTitle {
@@ -205,7 +207,6 @@
   color: #22d3ee;
 }
 
-/* Header Re-style */
 .header {
   display: flex;
   align-items: center;
@@ -213,7 +214,9 @@
   padding: 0 32px;
   background-color: #0b0f19;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  min-height: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  box-sizing: border-box;
   gap: 24px;
 }
 
@@ -364,7 +367,8 @@
 
 /* Content Area */
 .contentArea {
-  height: calc(100vh - 65px); /* Header (64px) + Border (1px) */
+  height: calc(100vh - 65px);
+  /* Header (64px) + Border (1px) */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -404,7 +408,8 @@
 }
 
 .accordionGroup:last-child[data-open='true'] {
-  min-height: 0; /* allows inner scroll if necessary */
+  min-height: 0;
+  /* allows inner scroll if necessary */
 }
 
 .accordionHeader {
@@ -619,7 +624,8 @@
   padding: 12px 16px;
   background: var(--color-bg-tertiary);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  margin-top: auto; /* Push to bottom */
+  margin-top: auto;
+  /* Push to bottom */
 }
 
 .pagination {
@@ -809,16 +815,7 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Horizontal Separators (Bottom) - Apply to first row */
-.metricWidget:nth-child(-n+3)::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-}
+
 
 .statHeader {
   display: flex;
@@ -1006,7 +1003,7 @@
   gap: 20px;
   padding: 32px;
   position: relative;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .distributionCard:first-child {

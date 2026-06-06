@@ -29,7 +29,7 @@ export const TicketingHeader = () => {
           <Icon icon={activeItem?.icon || 'mdi:ticket'} width={20} />
         </div>
         <h1 className={sharedStyles.headerTitle}>
-          {activeItem?.label || 'Tickets'}
+          {activeItem?.id === 'dashboard' ? 'Support Desk' : (activeItem?.label || 'Tickets')}
         </h1>
       </div>
 

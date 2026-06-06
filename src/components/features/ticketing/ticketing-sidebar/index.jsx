@@ -57,7 +57,7 @@ export const TicketingSidebar = () => {
               title={!isSidebarOpen ? item.label : ''}
             >
               <div className={sharedStyles.treeBranch} />
-              <div className={sharedStyles.itemIconWrapper}>
+              <div className={sharedStyles.itemIconWrapper} style={{ color: item.color }}>
                 <Icon icon={item.icon} width={18} />
               </div>
               <span className={sharedStyles.navText}>{item.label}</span>

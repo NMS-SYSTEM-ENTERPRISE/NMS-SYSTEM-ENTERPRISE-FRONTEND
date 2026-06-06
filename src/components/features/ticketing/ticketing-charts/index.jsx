@@ -10,6 +10,7 @@ import {
 } from '@/hooks/ticketing/useTicketingChartOptions';
 import { TICKETING_LEGEND_DOT_CLASS } from '@/utils/constants/ticketing';
 import { useTicketing } from '@/hooks/ticketing';
+import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingCharts = () => {
   const { resolveColor } = useTicketingChartOptions();
@@ -37,7 +38,12 @@ export const TicketingCharts = () => {
       const a = t.assignee || 'Unassigned';
       workloads[a] = (workloads[a] || 0) + 1;
     });
-    return Object.entries(workloads).map(([name, count]) => ({ name, value: count }));
+    
+    const entries = Object.entries(workloads);
+    return {
+      categories: entries.map(([name]) => name),
+      values: entries.map(([_, count]) => count),
+    };
   }, [filteredRequests]);
 
   const pieOption = useMemo(
@@ -55,24 +61,38 @@ export const TicketingCharts = () => {
       <div className={sharedStyles.distributionCard}>
         <span className={sharedStyles.subHeader}>TICKET DISTRIBUTION</span>
         <div className={sharedStyles.chartFlex}>
-          <TicketingChart option={pieOption} size="pie" />
-          <div className={sharedStyles.legendList}>
-            {pieData.map((row) => (
-              <div key={row.name} className={sharedStyles.legendRow}>
-                <span
-                  className={`${sharedStyles.legendDot} ${sharedStyles[TICKETING_LEGEND_DOT_CLASS[row.colorToken]]}`}
-                />
-                {row.name}
-                <span className={sharedStyles.legendCount}>{row.value}</span>
+          {pieData.reduce((acc, curr) => acc + curr.value, 0) === 0 ? (
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <NoDataFound title="No Data Found" description="No distribution data available." icon="mdi:chart-pie" />
+            </div>
+          ) : (
+            <>
+              <TicketingChart option={pieOption} size="pie" />
+              <div className={sharedStyles.legendList}>
+                {pieData.map((row) => (
+                  <div key={row.name} className={sharedStyles.legendRow}>
+                    <span
+                      className={`${sharedStyles.legendDot} ${sharedStyles[TICKETING_LEGEND_DOT_CLASS[row.colorToken]]}`}
+                    />
+                    {row.name}
+                    <span className={sharedStyles.legendCount}>{row.value}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
       <div className={sharedStyles.distributionCard}>
         <span className={sharedStyles.subHeader}>TECHNICIAN WORKLOAD</span>
         <div className={sharedStyles.horizontalBarWrap}>
-          <TicketingChart option={barOption} size="bar" />
+          {workloadData.categories.length === 0 ? (
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <NoDataFound title="No Data Found" description="No workload data available." icon="mdi:account-off" />
+            </div>
+          ) : (
+            <TicketingChart option={barOption} size="bar" />
+          )}
         </div>
       </div>
     </div>

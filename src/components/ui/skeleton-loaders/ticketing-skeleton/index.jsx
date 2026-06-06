@@ -38,7 +38,7 @@ export const TicketingSkeleton = () => {
             <div className={styles.accordionBodySkeleton}>
                <div className={styles.tableSkeleton}>
                   <div className={styles.tableHeaderSkeleton} />
-                  {[1, 2, 3, 4, 5].map((j) => (
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((j) => (
                      <div key={j} className={styles.tableRowSkeleton}>
                         <div className={`${styles.skeletonInner} ${styles.tableCell}`} style={{ width: '10%' }} />
                         <div className={`${styles.skeletonInner} ${styles.tableCell}`} style={{ width: '25%' }} />

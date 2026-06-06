@@ -40,13 +40,7 @@ export const TicketingAnalyticsAccordion = () => {
         />
       </button>
       <div className={sharedStyles.accordionContent}>
-        {filteredRequests?.length === 0 ? (
-          <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
-            <NoDataFound title="No Analytics Data" description="Not enough ticketing data to generate distribution charts." icon="mdi:chart-pie" />
-          </div>
-        ) : (
-          <TicketingCharts />
-        )}
+        <TicketingCharts />
       </div>
     </div>
   );

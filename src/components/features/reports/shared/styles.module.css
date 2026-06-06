@@ -22,7 +22,7 @@
 /* Hierarchical Sidebar - Trap Explorer Style */
 .sidebar {
   width: var(--reports-sidebar-width);
-  background-color: var(--reports-sidebar-bg);
+  background-color: var(--color-bg-secondary, #0b0f19);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
@@ -46,6 +46,8 @@
 
 .sidebarHeader {
   height: 56px;
+  box-sizing: border-box;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -245,12 +247,13 @@
 
 .categoryItem:hover {
   color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
 }
 
 .categoryItemActive {
   color: var(--color-accent-cyan) !important;
   font-weight: 600;
+  background: transparent !important;
 }
 
 .itemIconWrapper {
@@ -311,10 +314,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: rgba(18, 22, 33, 0.5);
-  backdrop-filter: blur(12px);
+  background-color: var(--color-bg-secondary, #0b0f19);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  min-height: 56px;
+  height: 56px;
+  box-sizing: border-box;
+  flex-shrink: 0;
   gap: 16px;
 }
 

@@ -1,11 +1,11 @@
 import ClientLayout from '@/components/layout/client-layout';
+import { AuthGuard } from '@/guards/auth-guard';
+import { Providers } from '@/providers/providers';
 import '@/styles/standard-layout.css';
 import { Geist, Geist_Mono, Manrope } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
-import './globals.css';
-import { Providers } from '@/providers/providers';
 import { Toaster } from 'sonner';
-import { AuthGuard } from '@/guards/auth-guard';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

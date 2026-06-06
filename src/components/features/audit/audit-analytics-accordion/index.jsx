@@ -86,7 +86,14 @@ export const AuditAnalyticsAccordion = () => {
               <div className={sharedStyles.distributionCard}>
                 <span className={sharedStyles.subHeader}>EVENTS TIMELINE</span>
                 <div className={sharedStyles.horizontalBarWrap}>
-                  <AuditChart option={eventTimelineOption} size="lg" />
+                  {!eventTimelineOption?.series?.[0]?.data?.length ? (
+                    <div className={sharedStyles.timelineEmptyState}>
+                      <Icon icon="mdi:timeline-text-outline" width={32} className={sharedStyles.timelineEmptyIcon} />
+                      <span className={sharedStyles.timelineEmptyText}>No timeline data available for the selected period.</span>
+                    </div>
+                  ) : (
+                    <AuditChart option={eventTimelineOption} size="lg" />
+                  )}
                 </div>
               </div>
             </div>

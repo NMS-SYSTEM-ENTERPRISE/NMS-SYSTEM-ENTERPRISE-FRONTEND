@@ -15,9 +15,10 @@ const COLOR_TOKEN_MAP = {
   sky: '--audit-accent-sky',
   green: '--color-success',
   danger: '--color-danger',
+  muted: '--color-text-muted',
 };
 
-const resolveColor = (token) => getCssVar(COLOR_TOKEN_MAP[token]) || '#06b6d4';
+const resolveColor = (token) => getCssVar(COLOR_TOKEN_MAP[token]) || (token === 'muted' ? '#374151' : '#06b6d4');
 
 export const useAuditChartOptions = (auditEvents = [], analyticsData = null) => {
   return useMemo(() => {

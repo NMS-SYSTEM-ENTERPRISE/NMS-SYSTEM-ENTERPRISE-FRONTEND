@@ -32,6 +32,7 @@ export const AuditEventsTable = () => {
         <span>REMOTE IP</span>
         <span>MESSAGE</span>
         <span>STATUS</span>
+        <span />
       </div>
 
       <div className={sharedStyles.tableBody}>
@@ -39,11 +40,11 @@ export const AuditEventsTable = () => {
           <div
             key={event.id}
             className={sharedStyles.tableRow}
-            onClick={() => handleOpenActionSidebar('details')}
+            onClick={() => handleOpenActionSidebar('details', event)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                handleOpenActionSidebar('details');
+                handleOpenActionSidebar('details', event);
               }
             }}
             role="button"
@@ -52,9 +53,24 @@ export const AuditEventsTable = () => {
             <div className={sharedStyles.cellItem}>
               <span className={sharedStyles.timeCell}>{event.timestamp}</span>
             </div>
-            <div className={sharedStyles.cellItem}>{event.module}</div>
             <div className={sharedStyles.cellItem}>
-              <span className={sharedStyles.opBadge}>{event.operationType}</span>
+              <div className={sharedStyles.moduleCell}>
+                <div
+                  className={sharedStyles.moduleAvatar}
+                  data-op={event.operationType?.toLowerCase() || 'default'}
+                >
+                  {event.module?.substring(0, 2).toUpperCase() || 'NA'}
+                </div>
+                <span>{event.module}</span>
+              </div>
+            </div>
+            <div className={sharedStyles.cellItem}>
+              <span
+                className={sharedStyles.opBadge}
+                data-op={event.operationType?.toLowerCase() || 'default'}
+              >
+                {event.operationType}
+              </span>
             </div>
             <div className={sharedStyles.cellItem}>
               <span className={sharedStyles.userCell}>{event.user}</span>
@@ -71,18 +87,26 @@ export const AuditEventsTable = () => {
               <span
                 className={sharedStyles.statusBadge}
                 data-status={event.status.toLowerCase()}
+                title={event.status}
               >
-                {event.status}
+                {event.status.toLowerCase() === 'success' ? (
+                  <Icon icon="mdi:check-circle" width={18} height={18} />
+                ) : (
+                  <Icon icon="mdi:close-circle" width={18} height={18} />
+                )}
               </span>
+            </div>
+            <div className={sharedStyles.cellItemAction}>
+              <Icon icon="mdi:open-in-new" width={16} className={sharedStyles.actionIconRow} />
             </div>
           </div>
         ))}
         {paginatedEvents.length === 0 && (
           <div className={sharedStyles.emptyState}>
-            <NoDataFound 
-              title="No Events Found" 
-              description="No audit events match your current filters or search criteria." 
-              icon="mdi:text-box-search-outline" 
+            <NoDataFound
+              title="No Events Found"
+              description="No audit events match your current filters or search criteria."
+              icon="mdi:text-box-search-outline"
             />
           </div>
         )}

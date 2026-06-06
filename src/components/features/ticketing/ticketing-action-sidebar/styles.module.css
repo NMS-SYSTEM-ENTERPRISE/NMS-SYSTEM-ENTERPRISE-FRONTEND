@@ -278,17 +278,22 @@
 }
 
 .priorityBadge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 20px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.low { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
-.medium { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-.high { background: rgba(249, 115, 22, 0.2); color: #f97316; }
-.critical { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+.low { background: rgba(156, 163, 175, 0.1); color: #9ca3af; }
+.medium { background: rgba(250, 204, 21, 0.12); color: #facc15; }
+.high { background: rgba(249, 115, 22, 0.12); color: #f97316; }
+.critical { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
 
 .dueText {
   color: #f59e0b;

@@ -35,16 +35,16 @@
 .auditSkeleton {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
   animation: fadeIn 0.4s ease-out;
+  flex: 1;
   width: 100%;
-  padding: 16px;
 }
 
 .accordionSkeleton {
   background-color: var(--color-bg-secondary, #121621);
-  border: 1px solid var(--color-border, #1f2937);
-  border-radius: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -52,8 +52,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  background-color: rgba(255, 255, 255, 0.01);
+  padding: 10px 16px;
+  background-color: var(--color-bg-secondary);
 }
 
 .accHeaderLeft {
@@ -68,8 +68,7 @@
 
 .accordionBodySkeleton {
   padding: 24px;
-  border-top: 1px solid var(--color-border, #1f2937);
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--color-bg-tertiary);
 }
 
 .grid4 {

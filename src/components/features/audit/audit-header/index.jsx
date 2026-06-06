@@ -35,47 +35,6 @@ export const AuditHeader = () => {
           <h1 className={sharedStyles.headerTitle}>Audit Logs</h1>
         </div>
 
-        <div className={sharedStyles.headerDivider} />
-
-        <div className={sharedStyles.filterGroup}>
-          <label
-            className={sharedStyles.filterLabel}
-            htmlFor="audit-module-filter"
-          >
-            Module:
-          </label>
-          <SelectComponent
-            id="audit-module-filter"
-            className={sharedStyles.select}
-            variant="borderless"
-            value={filters.module}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, module: e.target.value }))
-            }
-            options={AUDIT_MODULE_FILTER_OPTIONS}
-            placeholder="All"
-          />
-        </div>
-
-        <div className={sharedStyles.filterGroup}>
-          <label
-            className={sharedStyles.filterLabel}
-            htmlFor="audit-status-filter"
-          >
-            Status:
-          </label>
-          <SelectComponent
-            id="audit-status-filter"
-            className={sharedStyles.select}
-            variant="borderless"
-            value={filters.status}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, status: e.target.value }))
-            }
-            options={AUDIT_STATUS_FILTER_OPTIONS}
-            placeholder="Status"
-          />
-        </div>
       </div>
 
       <div className={sharedStyles.headerRight}>

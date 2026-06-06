@@ -8,8 +8,10 @@ import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 
 import { toast } from 'sonner';
+import { useAudit } from '@/hooks/audit';
 
 export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', auditData = [] }) => {
+  const { selectedEvent } = useAudit();
   const [currentTab, setCurrentTab] = useState(activeTab);
   const [exportFormat, setExportFormat] = useState('csv');
   const [autoRefresh, setAutoRefresh] = useState(false);
@@ -164,13 +166,56 @@ export const AuditActionSidebar = ({ isOpen, onClose, activeTab = 'details', aud
           {currentTab === 'details' && (
             <div className={styles.section}>
               <h3>Audit Details</h3>
-              <p className={styles.description}>
-                Select an audit log from the table to view detailed information here.
-              </p>
-              <div className={styles.emptyState}>
-                <Icon icon="mdi:file-document-outline" width={48} height={48} />
-                <span>No audit log selected</span>
-              </div>
+              {!selectedEvent ? (
+                <>
+                  <p className={styles.description}>
+                    Select an audit log from the table to view detailed information here.
+                  </p>
+                  <div className={styles.emptyState}>
+                    <Icon icon="mdi:file-document-outline" width={48} height={48} />
+                    <span>No audit log selected</span>
+                  </div>
+                </>
+              ) : (
+                <div className={styles.detailsGrid}>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>TIMESTAMP</span>
+                    <span className={styles.detailValue}>{selectedEvent.timestamp}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>MODULE</span>
+                    <span className={styles.detailValue}>{selectedEvent.module}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>OPERATION</span>
+                    <span className={styles.detailValue}>{selectedEvent.operationType}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>USER</span>
+                    <span className={styles.detailValue}>{selectedEvent.user}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>REMOTE IP</span>
+                    <span className={styles.detailValue}>{selectedEvent.remoteIp}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <span className={styles.detailLabel}>STATUS</span>
+                    <span className={styles.detailValue}>{selectedEvent.status}</span>
+                  </div>
+                  <div className={styles.detailItemFull}>
+                    <span className={styles.detailLabel}>MESSAGE</span>
+                    <span className={styles.detailValueBox}>{selectedEvent.message}</span>
+                  </div>
+                  {selectedEvent.details && Object.keys(selectedEvent.details).length > 0 && (
+                    <div className={styles.detailItemFull}>
+                      <span className={styles.detailLabel}>ADDITIONAL DATA</span>
+                      <pre className={styles.codeBox}>
+                        {JSON.stringify(selectedEvent.details, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

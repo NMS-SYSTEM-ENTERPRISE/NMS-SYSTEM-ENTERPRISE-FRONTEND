@@ -12,6 +12,15 @@ const getStatusClass = (status) => {
   return sharedStyles.statusProgress;
 };
 
+const getPriorityClass = (priority) => {
+  if (!priority) return sharedStyles.priorityLow;
+  const p = priority.toLowerCase();
+  if (p === 'critical') return sharedStyles.priorityCritical;
+  if (p === 'high') return sharedStyles.priorityHigh;
+  if (p === 'medium') return sharedStyles.priorityMedium;
+  return sharedStyles.priorityLow;
+};
+
 const getDeviceColor = (deviceName) => {
   if (!deviceName) return { bg: 'rgba(255, 255, 255, 0.05)', text: '#9ca3af' };
   const firstLetter = deviceName.charAt(0).toUpperCase();
@@ -86,10 +95,18 @@ export const TicketingRequestsTable = () => {
             </div>
             <div className={sharedStyles.cellItem}>
               <div className={sharedStyles.userCell}>
-                <div className={sharedStyles.userAvatar}>
-                  {request.assignee.charAt(0).toUpperCase()}
-                </div>
-                {request.assignee}
+                {request.assignee && request.assignee !== 'Unassigned' ? (
+                  <>
+                    <div className={sharedStyles.userAvatar}>
+                      {request.assignee.charAt(0).toUpperCase()}
+                    </div>
+                    {request.assignee}
+                  </>
+                ) : (
+                  <div className={clsx(sharedStyles.userAvatar, sharedStyles.unassignedAvatar)}>
+                    <Icon icon="mdi:account-off-outline" width={12} />
+                  </div>
+                )}
               </div>
             </div>
             <div className={sharedStyles.cellItem}>
@@ -98,7 +115,7 @@ export const TicketingRequestsTable = () => {
               </span>
             </div>
             <div className={sharedStyles.cellItem}>
-              <span className={clsx(sharedStyles.statusBadge, sharedStyles.priorityLow)}>
+              <span className={clsx(sharedStyles.statusBadge, getPriorityClass(request.priority))}>
                 {request.priority}
               </span>
             </div>

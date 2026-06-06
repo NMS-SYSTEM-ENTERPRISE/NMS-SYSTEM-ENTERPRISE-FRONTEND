@@ -26,12 +26,13 @@
 }
 
 .sidebarHeader {
-  height: 50px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
 }
 
 .sidebarTitle {
@@ -149,7 +150,7 @@
 
 .navItemActive {
   color: var(--color-accent-cyan) !important;
-  background: rgba(6, 182, 212, 0.05) !important;
+  background: transparent !important;
 }
 
 .navText {
@@ -653,7 +654,6 @@
   width: 100%;
 }
 
-/* 2. Distribution Style */
 .distributionGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -662,6 +662,32 @@
   position: relative;
   flex: 1;
   align-items: stretch;
+}
+
+.timelineEmptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  min-height: 250px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.timelineEmptyIcon {
+  color: #4b5563;
+  opacity: 0.6;
+}
+
+.timelineEmptyText {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
 }
 
 .distributionCard {
@@ -797,7 +823,7 @@
 
 .tableHeaderRow {
   display: grid;
-  grid-template-columns: 180px 1.2fr 100px 1fr 1fr 2fr 100px;
+  grid-template-columns: 180px 1.2fr 100px 1fr 1fr 2fr 100px 40px;
   padding: 12px 16px;
   background: var(--color-bg-tertiary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -819,7 +845,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 180px 1.2fr 100px 1fr 1fr 2fr 100px;
+  grid-template-columns: 180px 1.2fr 100px 1fr 1fr 2fr 100px 40px;
   padding: 14px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   cursor: pointer;
@@ -839,10 +865,22 @@
   display: flex;
   align-items: center;
   font-size: 13px;
-  color: #9ca3af;
+  color: #e5e7eb;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.cellItemAction {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.tableRow:hover .cellItemAction {
+  color: var(--audit-accent-sky);
 }
 
 .emptyState {
@@ -885,27 +923,60 @@
 .opBadge {
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
   color: #9ca3af;
+  text-transform: uppercase;
 }
 
-.statusBadge {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 8px;
+.opBadge[data-op="update"] {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+.opBadge[data-op="update"] { color: #f97316; background: rgba(249, 115, 22, 0.1); }
+.opBadge[data-op="create"] { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+.opBadge[data-op="delete"] { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+.opBadge[data-op="login"] { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+.opBadge[data-op="logout"] { color: #6366f1; background: rgba(99, 102, 241, 0.1); }
+
+.moduleCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.moduleAvatar {
+  width: 20px;
+  height: 20px;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.moduleAvatar[data-op="update"] { color: #f97316; background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.2); }
+.moduleAvatar[data-op="create"] { color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+.moduleAvatar[data-op="delete"] { color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+.moduleAvatar[data-op="login"] { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+.moduleAvatar[data-op="logout"] { color: #6366f1; background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.2); }
+.moduleAvatar[data-op="default"] { color: #9ca3af; background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .statusBadge[data-status="success"] {
   color: #10b981;
-  background: rgba(16, 185, 129, 0.05);
 }
 
 .statusBadge[data-status="failed"] {
   color: #ef4444;
-  background: rgba(239, 68, 68, 0.05);
 }
 
 /* Scrollbar */

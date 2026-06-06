@@ -16,6 +16,7 @@ export const AuditProvider = ({ children }) => {
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [showActionSidebar, setShowActionSidebar] = useState(false);
   const [activeActionTab, setActiveActionTab] = useState('details');
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [expandedSections, setExpandedSections] = useState(
     () => new Set(DEFAULT_AUDIT_EXPANDED_SECTIONS)
   );
@@ -34,7 +35,7 @@ export const AuditProvider = ({ children }) => {
         module: filters.module !== 'All' ? filters.module : undefined,
         status: filters.status !== 'All' ? filters.status : undefined,
       };
-      
+
       const data = await getAuditLogs(apiParams);
       // Transform backend response to match frontend expectations if necessary
       const mappedData = (data.items || []).map(item => {
@@ -123,8 +124,11 @@ export const AuditProvider = ({ children }) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const handleOpenActionSidebar = useCallback((tab) => {
+  const handleOpenActionSidebar = useCallback((tab, event = null) => {
     setActiveActionTab(tab);
+    if (event) {
+      setSelectedEvent(event);
+    }
     setShowActionSidebar(true);
   }, []);
 
@@ -138,6 +142,8 @@ export const AuditProvider = ({ children }) => {
     showActionSidebar,
     setShowActionSidebar,
     activeActionTab,
+    selectedEvent,
+    setSelectedEvent,
     expandedSections,
     toggleSection,
     isSidebarOpen,

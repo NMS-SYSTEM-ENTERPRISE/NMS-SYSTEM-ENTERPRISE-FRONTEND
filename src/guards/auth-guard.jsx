@@ -9,8 +9,15 @@ export const AuthGuard = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Routes that are accessible to unauthenticated users
+  const publicRoutes = ['/', '/manual'];
+
   useEffect(() => {
-    if (isInitialized && !isLoggedIn && pathname !== '/') {
+    if (
+      isInitialized &&
+      !isLoggedIn &&
+      !publicRoutes.includes(pathname)
+    ) {
       router.replace('/');
     }
   }, [isInitialized, isLoggedIn, pathname, router]);
@@ -19,9 +26,9 @@ export const AuthGuard = ({ children }) => {
     return null; // Render nothing while auth context initializes
   }
 
-  // If not logged in and not on the login page, don't render children
+  // If not logged in and not on a public route, don't render children
   // (Prevents a brief flash of protected content before the redirect happens)
-  if (!isLoggedIn && pathname !== '/') {
+  if (!isLoggedIn && !publicRoutes.includes(pathname)) {
     return null;
   }
 

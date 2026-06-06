@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import NetworkBackground from './NetworkBackground';
 import { snrLogo } from '@/resources/images/logo';
+import Link from 'next/link';
 import { useAuthContext } from '@/hooks/useauth';
 import styles from './styles.module.css';
 
@@ -143,7 +144,7 @@ const LoginScreen = () => {
           </form>
 
           <div className={styles.footerText}>
-            Need assistance? <a href="#">Contact IT Support</a>
+            Need assistance? <Link href="/manual">Read the User Manual</Link>
           </div>
         </div>
       </div>

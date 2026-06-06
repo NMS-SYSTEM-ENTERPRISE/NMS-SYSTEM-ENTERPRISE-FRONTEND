@@ -1,0 +1,36 @@
+/* ManualLayout.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8fafc;
+  font-family: var(--font-manrope), var(--font-geist-sans), sans-serif;
+  color: #0f172a;
+  overflow: hidden;
+}
+
+.mainWrapper {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .mainWrapper {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  /* Sidebar needs to be full width and not sticky on mobile */
+  :global(.ManualSidebar_sidebar__class) {
+    width: 100%;
+    position: relative;
+    top: 0;
+    max-height: 400px;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+  }
+}

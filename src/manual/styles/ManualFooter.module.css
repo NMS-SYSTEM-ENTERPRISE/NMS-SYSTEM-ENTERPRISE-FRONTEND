@@ -1,0 +1,97 @@
+/* ManualFooter.module.css */
+
+.footer {
+  background: linear-gradient(135deg, #0f172a 0%, #1a1f35 100%);
+  color: #94a3b8;
+  margin-top: auto;
+  border-top: 1px solid #1e293b;
+}
+
+.footerInner {
+  margin: 0 auto;
+  padding: 28px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.footerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.footerLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: -0.3px;
+}
+
+.footerIcon {
+  color: #3b82f6;
+  font-size: 18px;
+}
+
+.footerDesc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #64748b;
+  margin: 0;
+  letter-spacing: 0.1px;
+}
+
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  justify-content: center;
+}
+
+.footerLink {
+  font-size: 13px;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+}
+
+.footerLink:hover {
+  color: #3b82f6;
+}
+
+.footerBottom {
+  border-top: 1px solid #1e293b;
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.2px;
+}
+
+.footerBottomLinks {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.footerBottomLink {
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  letter-spacing: 0.2px;
+}
+
+.footerBottomLink:hover {
+  color: #3b82f6;
+}

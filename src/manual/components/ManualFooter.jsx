@@ -35,9 +35,7 @@ export const ManualFooter = () => {
       </div>
 
       <div className={styles.footerBottom}>
-        <span>
-          © 2025 SNR-Edatas. All rights reserved.
-        </span>
+        <span>© 2025 SNR-Edatas. All rights reserved.</span>
         <div className={styles.footerBottomLinks}>
           <a href="#" className={styles.footerBottomLink}>
             Privacy

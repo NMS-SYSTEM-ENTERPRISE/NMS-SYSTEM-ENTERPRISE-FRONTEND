@@ -69,8 +69,14 @@ const ImageGallery = ({ images, featureTitle }) => {
       )}
 
       {modalOpen && (
-        <div className={styles.imageModalOverlay} onClick={() => setModalOpen(false)}>
-          <div className={styles.imageModalContent} onClick={(event) => event.stopPropagation()}>
+        <div
+          className={styles.imageModalOverlay}
+          onClick={() => setModalOpen(false)}
+        >
+          <div
+            className={styles.imageModalContent}
+            onClick={(event) => event.stopPropagation()}
+          >
             <button
               type="button"
               className={styles.imageModalClose}
@@ -170,9 +176,10 @@ export const ManualContent = () => {
     return acc;
   }, []);
 
-  const workflowSteps = processSteps.length > 0
-    ? processSteps.slice(0, 4)
-    : activeFeature.sections.slice(0, 3).map((section) => section.title);
+  const workflowSteps =
+    processSteps.length > 0
+      ? processSteps.slice(0, 4)
+      : activeFeature.sections.slice(0, 3).map((section) => section.title);
 
   return (
     <main className={styles.content}>
@@ -224,7 +231,8 @@ export const ManualContent = () => {
             Continuous Workflow
           </div>
           <p className={styles.processIntro}>
-            Start with the key workflow steps below, then continue to the module overview and detailed guide for the full process.
+            Start with the key workflow steps below, then continue to the module
+            overview and detailed guide for the full process.
           </p>
           <ol className={styles.processList}>
             {workflowSteps.map((step, idx) => (

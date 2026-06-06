@@ -37,7 +37,13 @@
 .brandDivider {
   width: 1.5px;
   height: 36px;
-  background: linear-gradient(180deg, transparent 0%, #e2e8f0 20%, #e2e8f0 80%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    #e2e8f0 20%,
+    #e2e8f0 80%,
+    transparent 100%
+  );
   flex-shrink: 0;
 }
 
@@ -135,5 +141,11 @@
 
 .headerLine {
   height: 3px;
-  background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 30%, #06b6d4 60%, #8b5cf6 100%);
+  background: linear-gradient(
+    90deg,
+    #1e3a8a 0%,
+    #3b82f6 30%,
+    #06b6d4 60%,
+    #8b5cf6 100%
+  );
 }

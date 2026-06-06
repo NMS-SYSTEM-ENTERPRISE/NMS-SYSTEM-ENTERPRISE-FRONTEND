@@ -23,7 +23,7 @@
     flex-direction: column;
     overflow-y: auto;
   }
-  
+
   /* Sidebar needs to be full width and not sticky on mobile */
   :global(.ManualSidebar_sidebar__class) {
     width: 100%;

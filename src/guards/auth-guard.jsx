@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { useAuthContext } from '@/hooks/useauth';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const AuthGuard = ({ children }) => {
   const { isInitialized, isLoggedIn } = useAuthContext();
@@ -13,11 +13,7 @@ export const AuthGuard = ({ children }) => {
   const publicRoutes = ['/', '/manual'];
 
   useEffect(() => {
-    if (
-      isInitialized &&
-      !isLoggedIn &&
-      !publicRoutes.includes(pathname)
-    ) {
+    if (isInitialized && !isLoggedIn && !publicRoutes.includes(pathname)) {
       router.replace('/');
     }
   }, [isInitialized, isLoggedIn, pathname, router]);

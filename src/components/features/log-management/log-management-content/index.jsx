@@ -26,7 +26,7 @@ export const LogManagementContent = () => {
 
         <div className={sharedStyles.contentArea} style={{ padding: 0, flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {isLoading ? (
-            <div style={{ padding: '24px' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               <LogManagementSkeleton />
             </div>
           ) : displayedEvents.length === 0 ? (

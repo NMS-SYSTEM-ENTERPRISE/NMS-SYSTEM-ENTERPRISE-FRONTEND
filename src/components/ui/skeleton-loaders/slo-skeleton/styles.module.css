@@ -7,62 +7,130 @@
 }
 
 .skeletonWrapper {
-  padding: 16px;
+  padding: 0;
   width: 100%;
 }
 
 .skeletonInner::after {
   content: '';
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg, 
-    transparent 0%, 
-    rgba(255,255,255,0.015) 20%, 
-    rgba(255,255,255,0.04) 50%, 
-    rgba(255,255,255,0.015) 80%, 
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.015) 20%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.015) 80%,
+      transparent 100%);
   animation: smoothShimmer 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 @keyframes smoothShimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Table Skeleton */
 .tableSkeleton {
   width: 100%;
   animation: fadeIn 0.4s ease-out;
-  background-color: var(--color-bg-secondary, #121621);
-  border-radius: 8px;
+  background-color: transparent;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--color-border, #1f2937);
+  border: none;
 }
 
 .tableHeaderSkeleton {
-  height: 48px;
-  background-color: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid var(--color-border, #1f2937);
+  display: grid;
+  grid-template-columns: 2.2fr 100px 100px 100px 1.2fr 40px;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerCellSkeleton {
+  height: 12px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .tableRowSkeleton {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2.2fr 100px 100px 100px 1.2fr 40px;
   align-items: center;
   padding: 16px 24px;
-  gap: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-.cellLarge { height: 36px; width: 30%; border-radius: 6px; }
-.cellMedium { height: 36px; width: 15%; border-radius: 6px; }
-.cellSmall { height: 24px; width: 10%; border-radius: 12px; }
+.identityWrapperSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconSkeleton {
+  height: 32px;
+  width: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.textSkeleton {
+  height: 16px;
+  border-radius: 4px;
+}
+
+
+.cellIdentity {
+  height: 36px;
+  border-radius: 6px;
+}
+
+.cellStatus {
+  height: 24px;
+  width: 60px;
+  border-radius: 12px;
+}
+
+.metricSlotSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metricValSkeleton {
+  height: 16px;
+  border-radius: 4px;
+}
+
+.metricLblSkeleton {
+  height: 10px;
+  border-radius: 4px;
+}
+
+.cellAction {
+  height: 32px;
+  width: 32px;
+  border-radius: 6px;
+  justify-self: end;
+}
 
 /* Grid Skeleton */
 .gridWrapper {
@@ -92,8 +160,16 @@
   align-items: flex-start;
 }
 
-.titleSkeleton { height: 20px; border-radius: 4px; }
-.badgeSkeleton { width: 70px; height: 22px; border-radius: 12px; }
+.titleSkeleton {
+  height: 20px;
+  border-radius: 4px;
+}
+
+.badgeSkeleton {
+  width: 70px;
+  height: 22px;
+  border-radius: 12px;
+}
 
 .cardMeta {
   display: flex;
@@ -104,7 +180,11 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.metaSkeleton { height: 14px; width: 60%; border-radius: 4px; }
+.metaSkeleton {
+  height: 14px;
+  width: 60%;
+  border-radius: 4px;
+}
 
 .cardMetrics {
   display: grid;
@@ -113,7 +193,10 @@
   margin-top: 4px;
 }
 
-.metricSkeleton { height: 48px; border-radius: 8px; }
+.metricSkeleton {
+  height: 48px;
+  border-radius: 8px;
+}
 
 /* Detail Skeleton */
 .detailSkeleton {
@@ -148,8 +231,17 @@
   flex: 1;
 }
 
-.headerTitleSkeleton { height: 28px; width: 40%; border-radius: 6px; }
-.headerDescSkeleton { height: 16px; width: 60%; border-radius: 4px; }
+.headerTitleSkeleton {
+  height: 28px;
+  width: 40%;
+  border-radius: 6px;
+}
+
+.headerDescSkeleton {
+  height: 16px;
+  width: 60%;
+  border-radius: 4px;
+}
 
 .headerActionsSkeleton {
   display: flex;
@@ -157,7 +249,11 @@
   gap: 12px;
 }
 
-.actionBtnSkeleton { width: 90px; height: 36px; border-radius: 6px; }
+.actionBtnSkeleton {
+  width: 90px;
+  height: 36px;
+  border-radius: 6px;
+}
 
 .accordionContainer {
   display: flex;
@@ -186,17 +282,46 @@
   gap: 16px;
 }
 
-.accIconSkeleton { width: 24px; height: 24px; border-radius: 6px; }
-.accTitleSkeleton { height: 18px; border-radius: 4px; }
-.accBadgeSkeleton { width: 100px; height: 24px; border-radius: 12px; }
+.accIconSkeleton {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.accTitleSkeleton {
+  height: 18px;
+  border-radius: 4px;
+}
+
+.accBadgeSkeleton {
+  width: 100px;
+  height: 24px;
+  border-radius: 12px;
+}
 
 .accordionBodySkeleton {
   padding: 24px;
   border-top: 1px solid var(--color-border, #1f2937);
 }
 
-.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
 
-.chartSkeleton { height: 320px; border-radius: 12px; }
-.statBlockSkeleton { height: 120px; border-radius: 12px; }
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.chartSkeleton {
+  height: 320px;
+  border-radius: 12px;
+}
+
+.statBlockSkeleton {
+  height: 120px;
+  border-radius: 12px;
+}

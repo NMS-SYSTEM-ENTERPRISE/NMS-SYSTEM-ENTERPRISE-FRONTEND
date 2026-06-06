@@ -16,7 +16,7 @@ export const FlowDashboard = () => {
     conversations: true,
     protocols: true
   });
-  
+
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -200,9 +200,9 @@ export const FlowDashboard = () => {
   if (!dashboardData) {
     return (
       <div style={{ padding: '40px' }}>
-        <NoDataFound 
-          title="Flow Data Unavailable" 
-          description="Unable to load flow dashboard analytics for the selected interface." 
+        <NoDataFound
+          title="Flow Data Unavailable"
+          description="Unable to load flow dashboard analytics for the selected interface."
           icon="mdi:chart-box-outline"
         />
       </div>
@@ -320,7 +320,7 @@ export const FlowDashboard = () => {
             <Icon icon="mdi:chevron-down" className={`${styles.chevron} ${expandedSections.conversations ? styles.chevronOpen : ''}`} />
           </div>
           {expandedSections.conversations && (
-            <div className={styles.accordionContent}>
+            <div className={styles.accordionContentNoPadding}>
               <div className={styles.premiumTable}>
                 <div className={styles.tableHeaderRow}>
                   <span>SOURCE IP</span>
@@ -374,20 +374,20 @@ export const FlowDashboard = () => {
                       'SSH': 'mdi:terminal'
                     };
                     return (
-                    <div key={i} className={styles.protocolTile}>
-                      <div className={styles.tileHeader}>
-                        <div className={styles.tileIcon} style={{ color: s.color }}>
-                          <Icon icon={iconMap[s.name] || 'mdi:swap-horizontal'} width={18} />
+                      <div key={i} className={styles.protocolTile}>
+                        <div className={styles.tileHeader}>
+                          <div className={styles.tileIcon} style={{ color: s.color }}>
+                            <Icon icon={iconMap[s.name] || 'mdi:swap-horizontal'} width={18} />
+                          </div>
+                          <span className={styles.tileName}>{s.name}</span>
+                          <span className={styles.tilePercent} style={{ color: s.color }}>{s.size}%</span>
                         </div>
-                        <span className={styles.tileName}>{s.name}</span>
-                        <span className={styles.tilePercent} style={{ color: s.color }}>{s.size}%</span>
+                        <div className={styles.tileBody}>
+                          <div className={styles.tileValue}>{estimatedVol} MB</div>
+                          <div className={styles.tileSubText}>{estimatedFlows} Flows</div>
+                        </div>
                       </div>
-                      <div className={styles.tileBody}>
-                        <div className={styles.tileValue}>{estimatedVol} MB</div>
-                        <div className={styles.tileSubText}>{estimatedFlows} Flows</div>
-                      </div>
-                    </div>
-                  );
+                    );
                   })}
                 </div>
               </div>

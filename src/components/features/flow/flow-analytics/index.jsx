@@ -13,7 +13,7 @@ import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const FlowAnalytics = () => {
   const { selectedEventSource, selectedInterface } = useFlow();
-  
+
   const [expandedSections, setExpandedSections] = useState({
     summary: true,
     topTalkers: true,
@@ -80,7 +80,11 @@ export const FlowAnalytics = () => {
       grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
       xAxis: {
         type: 'category',
-        data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        data: Array.from({ length: 12 }, (_, i) => {
+          const d = new Date();
+          d.setHours(d.getHours() - (11 - i));
+          return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }),
         axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
         axisLabel: { color: 'var(--color-text-muted)', fontSize: 10, fontFamily: 'var(--font-geist-mono), monospace' }
       },
@@ -109,7 +113,7 @@ export const FlowAnalytics = () => {
         type: 'line',
         smooth: true,
         symbol: 'none',
-        lineStyle: { width: 3, color: 'var(--color-chart-purple-light)' },
+        lineStyle: { width: 3, color: '#c084fc' },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: 'rgba(192, 132, 252, 0.5)' },
@@ -137,7 +141,7 @@ export const FlowAnalytics = () => {
         type: 'pie',
         radius: ['60%', '85%'],
         avoidLabelOverlap: false,
-        itemStyle: { borderRadius: 6, borderColor: 'var(--color-bg-primary)', borderWidth: 2 },
+        itemStyle: { borderRadius: 6, borderColor: '#0b0f19', borderWidth: 2 },
         label: { show: false },
         data: analyticsData.appData.map(d => ({ value: d.size, name: d.name, itemStyle: { color: d.color } })),
         color: analyticsData.appData.map(d => d.color)
@@ -156,9 +160,9 @@ export const FlowAnalytics = () => {
   if (!analyticsData || !dashboardData) {
     return (
       <div style={{ padding: '40px' }}>
-        <NoDataFound 
-          title="Analytics Data Unavailable" 
-          description="Unable to load flow analytics trends and pattern recognition." 
+        <NoDataFound
+          title="Analytics Data Unavailable"
+          description="Unable to load flow analytics trends and pattern recognition."
           icon="mdi:chart-arc"
         />
       </div>

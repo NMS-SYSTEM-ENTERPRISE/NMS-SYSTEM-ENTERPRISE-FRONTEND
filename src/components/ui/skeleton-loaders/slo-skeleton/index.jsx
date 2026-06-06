@@ -5,14 +5,38 @@ export const SloTableSkeleton = () => {
   return (
     <div className={styles.skeletonWrapper}>
       <div className={styles.tableSkeleton}>
-        <div className={styles.tableHeaderSkeleton} />
-        {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div className={styles.tableHeaderSkeleton}>
+          <div className={`${styles.skeletonInner} ${styles.headerCellSkeleton}`} style={{ width: '80px' }} />
+          <div className={`${styles.skeletonInner} ${styles.headerCellSkeleton}`} style={{ width: '60px' }} />
+          <div className={`${styles.skeletonInner} ${styles.headerCellSkeleton}`} style={{ width: '80px' }} />
+          <div className={`${styles.skeletonInner} ${styles.headerCellSkeleton}`} style={{ width: '60px' }} />
+          <div className={`${styles.skeletonInner} ${styles.headerCellSkeleton}`} style={{ width: '100px' }} />
+          <div />
+        </div>
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((i) => (
           <div key={i} className={styles.tableRowSkeleton}>
-            <div className={`${styles.skeletonInner} ${styles.cellLarge}`} style={{ width: `${30 + (i % 3) * 10}%` }} />
-            <div className={`${styles.skeletonInner} ${styles.cellSmall}`} />
-            <div className={`${styles.skeletonInner} ${styles.cellMedium}`} />
-            <div className={`${styles.skeletonInner} ${styles.cellMedium}`} />
-            <div className={`${styles.skeletonInner} ${styles.cellSmall}`} />
+            <div className={styles.identityWrapperSkeleton}>
+              <div className={`${styles.skeletonInner} ${styles.iconSkeleton}`} />
+              <div className={`${styles.skeletonInner} ${styles.textSkeleton}`} style={{ width: `${40 + (i % 3) * 10}%` }} />
+            </div>
+            <div className={`${styles.skeletonInner} ${styles.cellStatus}`} />
+            
+            <div className={styles.metricSlotSkeleton}>
+              <div className={`${styles.skeletonInner} ${styles.metricValSkeleton}`} style={{ width: '40px' }} />
+              <div className={`${styles.skeletonInner} ${styles.metricLblSkeleton}`} style={{ width: '30px' }} />
+            </div>
+            
+            <div className={styles.metricSlotSkeleton}>
+              <div className={`${styles.skeletonInner} ${styles.metricValSkeleton}`} style={{ width: '40px' }} />
+              <div className={`${styles.skeletonInner} ${styles.metricLblSkeleton}`} style={{ width: '30px' }} />
+            </div>
+            
+            <div className={styles.metricSlotSkeleton}>
+              <div className={`${styles.skeletonInner} ${styles.metricValSkeleton}`} style={{ width: '60px' }} />
+              <div className={`${styles.skeletonInner} ${styles.metricLblSkeleton}`} style={{ width: '45px' }} />
+            </div>
+            
+            <div className={`${styles.skeletonInner} ${styles.cellAction}`} />
           </div>
         ))}
       </div>
@@ -25,7 +49,7 @@ export const SloGridSkeleton = () => {
     <div className={styles.skeletonWrapper}>
       <div className={styles.gridWrapper}>
         <div className={styles.gridContainer}>
-          {[1, 2, 3, 4, 5, 6].map((i) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
             <div key={i} className={styles.gridCardSkeleton}>
               <div className={styles.cardHeader}>
                 <div className={`${styles.skeletonInner} ${styles.titleSkeleton}`} style={{ width: `${40 + (i % 3) * 10}%` }} />

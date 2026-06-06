@@ -22,9 +22,16 @@
 /* ── Header ────────────────────────────────────────────── */
 .table thead {
   background-color: var(--color-bg-tertiary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-bg-tertiary);
   padding: var(--padding-md) var(--padding-lg);
   text-align: left;
   font-size: var(--font-2xs);

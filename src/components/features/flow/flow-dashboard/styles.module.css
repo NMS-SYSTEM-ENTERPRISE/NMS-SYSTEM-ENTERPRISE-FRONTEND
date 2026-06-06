@@ -183,6 +183,12 @@
   border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 
+.accordionContentNoPadding {
+  padding: 0;
+  background: rgba(11, 15, 25, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
 /* Distribution Grid */
 .distributionGrid {
   display: grid;
@@ -298,10 +304,10 @@
 }
 
 .premiumTable {
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.01);
+  background: transparent;
 }
 
 .tableHeaderRow {

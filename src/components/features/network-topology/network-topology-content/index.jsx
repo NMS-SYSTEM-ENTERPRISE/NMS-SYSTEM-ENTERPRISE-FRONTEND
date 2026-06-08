@@ -4,13 +4,16 @@ import sharedStyles from '@/components/features/network-topology/shared/styles.m
 import { DeviceDetailSidebar } from '@/components/features/topology/device-detail-sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { NoDataFound } from '@/components/ui/no-data-found';
 import { SelectComponent as Select } from '@/components/ui/select';
+import {
+  TopologyCanvasSkeleton,
+  TopologySidebarSkeleton,
+} from '@/components/ui/skeleton-loaders/network-topology-skeleton';
 import { useNetworkTopology } from '@/hooks/network-topology';
 import { useCytoscape } from '@/hooks/network-topology/useCytoscape';
 import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { TopologySidebarSkeleton, TopologyCanvasSkeleton } from '@/components/ui/skeleton-loaders/network-topology-skeleton';
-import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const NetworkTopologyContent = () => {
   const cyRef = useRef(null);
@@ -51,9 +54,9 @@ export const NetworkTopologyContent = () => {
       }
     };
     document.addEventListener('fullscreenchange', onFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+    return () =>
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
   }, []);
-
 
   const { getLayoutConfig, resetFocus, focusOnNode } = useCytoscape({
     containerRef,
@@ -203,10 +206,11 @@ export const NetworkTopologyContent = () => {
     };
 
     return (
-      <div key={node.name || node.id} className={styles.treeNode}>
+      <div key={node?.name || node?.id} className={styles.treeNode}>
         <div
-          className={`${styles.treeNodeLabel} ${isDevice ? styles.treeNodeDevice : ''
-            } ${focusedNode === node.id ? styles.treeNodeFocused : ''}`}
+          className={`${styles.treeNodeLabel} ${
+            isDevice ? styles.treeNodeDevice : ''
+          } ${focusedNode === node?.id ? styles.treeNodeFocused : ''}`}
           onClick={handleNodeClick}
         >
           {hasChildren && (
@@ -219,13 +223,14 @@ export const NetworkTopologyContent = () => {
           )}
           {!hasChildren && <span className={styles.treeNodeSpacer}></span>}
           <Icon
-            icon={getNodeIcon(node.type)}
+            icon={getNodeIcon(node?.type)}
             width={16}
             height={16}
-            className={`${styles.treeNodeIcon} ${isDevice ? getStatusColor(node.status) : ''
-              }`}
+            className={`${styles.treeNodeIcon} ${
+              isDevice ? getStatusColor(node.status) : ''
+            }`}
           />
-          <span className={styles.treeNodeText}>{node.name}</span>
+          <span className={styles.treeNodeText}>{node?.name}</span>
           {isDevice && node.ip && (
             <span className={styles.treeNodeIp}>{node.ip}</span>
           )}
@@ -245,8 +250,12 @@ export const NetworkTopologyContent = () => {
     if (!normalizedQuery) return node;
 
     const matchesNode =
-      String(node.name || '').toLowerCase().includes(normalizedQuery) ||
-      String(node.ip || '').toLowerCase().includes(normalizedQuery);
+      String(node.name || '')
+        .toLowerCase()
+        .includes(normalizedQuery) ||
+      String(node.ip || '')
+        .toLowerCase()
+        .includes(normalizedQuery);
     const children = (node.children || [])
       .map((child) => filterTree(child, query))
       .filter(Boolean);
@@ -265,7 +274,9 @@ export const NetworkTopologyContent = () => {
   const selectedConnections = useMemo(() => {
     if (!selectedDevice || !topologyData?.devices) return [];
     return (selectedDevice.connections || [])
-      .map((deviceId) => topologyData.devices.find((device) => device.id === deviceId))
+      .map((deviceId) =>
+        topologyData?.devices.find((device) => device.id === deviceId)
+      )
       .filter(Boolean)
       .map((device) => ({
         target: device.label || device.name,
@@ -276,7 +287,8 @@ export const NetworkTopologyContent = () => {
   }, [selectedDevice, topologyData]);
 
   const summary = topologyData?.summary || {};
-  const currentViewHasDevices = (currentTopologyData?.children || []).length > 0;
+  const currentViewHasDevices =
+    (currentTopologyData?.children || []).length > 0;
 
   return (
     <div className={styles.networkTopology}>
@@ -323,8 +335,9 @@ export const NetworkTopologyContent = () => {
           <div className={styles.viewTabs}>
             <Button
               variant="outline"
-              className={`${styles.viewTab} ${viewMode === 'network' ? styles.viewTabActive : ''
-                }`}
+              className={`${styles.viewTab} ${
+                viewMode === 'network' ? styles.viewTabActive : ''
+              }`}
               onClick={() => setViewMode('network')}
               title="Network View"
             >
@@ -332,8 +345,9 @@ export const NetworkTopologyContent = () => {
             </Button>
             <Button
               variant="outline"
-              className={`${styles.viewTab} ${viewMode === 'sdn' ? styles.viewTabActive : ''
-                }`}
+              className={`${styles.viewTab} ${
+                viewMode === 'sdn' ? styles.viewTabActive : ''
+              }`}
               onClick={() => setViewMode('sdn')}
               title="SDN View"
             >
@@ -341,8 +355,9 @@ export const NetworkTopologyContent = () => {
             </Button>
             <Button
               variant="outline"
-              className={`${styles.viewTab} ${viewMode === 'cloud' ? styles.viewTabActive : ''
-                }`}
+              className={`${styles.viewTab} ${
+                viewMode === 'cloud' ? styles.viewTabActive : ''
+              }`}
               onClick={() => setViewMode('cloud')}
               title="Cloud View"
             >
@@ -370,13 +385,16 @@ export const NetworkTopologyContent = () => {
                 <span>{topologyError}</span>
               </div>
             )}
-            {!isLoadingTopology && !topologyError && currentViewHasDevices && renderTreeNode(currentTopologyData)}
+            {!isLoadingTopology &&
+              !topologyError &&
+              currentViewHasDevices &&
+              renderTreeNode(currentTopologyData)}
             {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
               <div style={{ padding: '24px 16px' }}>
-                <NoDataFound 
-                   title="No Devices Found" 
-                   description="No topology data available for this view." 
-                   icon="mdi:lan-disconnect"
+                <NoDataFound
+                  title="No Devices Found"
+                  description="No topology data available for this view."
+                  icon="mdi:lan-disconnect"
                 />
               </div>
             )}
@@ -387,15 +405,21 @@ export const NetworkTopologyContent = () => {
             <div className={styles.legendTitle}>Status Legend</div>
             <div className={styles.legendItems}>
               <div className={styles.legendItem}>
-                <div className={`${styles.legendDot} ${styles.legendOnline}`}></div>
+                <div
+                  className={`${styles.legendDot} ${styles.legendOnline}`}
+                ></div>
                 <span>Online</span>
               </div>
               <div className={styles.legendItem}>
-                <div className={`${styles.legendDot} ${styles.legendWarning}`}></div>
+                <div
+                  className={`${styles.legendDot} ${styles.legendWarning}`}
+                ></div>
                 <span>Warning</span>
               </div>
               <div className={styles.legendItem}>
-                <div className={`${styles.legendDot} ${styles.legendOffline}`}></div>
+                <div
+                  className={`${styles.legendDot} ${styles.legendOffline}`}
+                ></div>
                 <span>Offline</span>
               </div>
             </div>
@@ -461,11 +485,19 @@ export const NetworkTopologyContent = () => {
               </div>
             )}
             {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
-              <div style={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
                 <div style={{ maxWidth: '400px' }}>
-                  <NoDataFound 
-                    title="Topology Empty" 
-                    description="Try adjusting your filters or switching views to map devices." 
+                  <NoDataFound
+                    title="Topology Empty"
+                    description="Try adjusting your filters or switching views to map devices."
                     icon="mdi:sitemap-outline"
                   />
                 </div>
@@ -532,9 +564,13 @@ export const NetworkTopologyContent = () => {
               variant="outline"
               className={styles.controlBtn}
               onClick={handleFullscreen}
-              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
             >
-              <Icon icon={isFullscreen ? "mdi:fullscreen-exit" : "mdi:fullscreen"} width={20} height={20} />
+              <Icon
+                icon={isFullscreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'}
+                width={20}
+                height={20}
+              />
             </Button>
           </div>
         </div>
@@ -550,7 +586,6 @@ export const NetworkTopologyContent = () => {
           setSelectedDevice(null);
         }}
       />
-
     </div>
   );
-}
+};

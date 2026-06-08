@@ -130,6 +130,24 @@ const menuGroups = [
       },
     ],
   },
+  {
+    id: 'help',
+    label: 'Help & Documentation',
+    items: [
+      {
+        icon: 'lucide:help-circle',
+        label: 'Manual',
+        path: '/manual',
+        badge: null,
+      },
+      // {
+      //   icon: 'lucide:book-open',
+      //   label: 'Developer Documentation',
+      //   path: '/developer-documentation',
+      //   badge: null,
+      // },
+    ],
+  },
 ];
 
 export const Sidebar = () => {

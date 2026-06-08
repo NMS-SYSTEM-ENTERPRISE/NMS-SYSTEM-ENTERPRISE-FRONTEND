@@ -41,41 +41,58 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 Services ui misaligne check tis clear this with out any issues okay
 '''
 
-SEE FIRST ANALYZE THIS END TO END TO CODE BASE AND UNDERSTAND THE CODE BASE
-ONCE COMPLETED LET ME KNOW OKAY
-=====================================
+see in the /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/layout/sidebar
+place menu item Developer Documentation click this navigate to new screen
+/developer-documentation
 
-NEXT SO YOU UNDERSTAND EACH AND EVERY FEATURE RIGHT NOW IT IS FINE WHAT IS THE PURPOSE OF EACH FEATURE 
-YOU WILL AWARE ABOUT IT RIGHT 
+in this neatly create end to end explanation of this things
 
-THEN 
-ANALYZE THIS  : /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/assets/work-flow-images
+SEE IT IS COMPLETELY SEPARATED FROM THE HOW WE DONE THE /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/app/manual
+SEPARATELY DONT NOT RELATE WITH EACH OTHER LIKE WISE NEEDED HERE AS WELL OKAY
 
-IMAGES WE CAN GET CLARITY JUST READ THE NAMES YOU CAN GET THE CLARITY OKAY 
+SO TAKE YOUR OWN TIME HANDLE THIS GRACEFULLY FULLY UNDERSTANDABLE SOUND TECHNICAL DOCUMENTATION NEEDED OKAY
 
-THEN AFTER THIS WHAT YOU NEED TO DONE IS 
-IN THIS /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/resources/images IN THIS CREATE MULTIPLE
-JS FILES BASED ON THE FOLDER-NAME AND PLACE ALL THOSE IMAGES HERE SO THAT IT IS FLEXIBLE FOR EXPORTING OKAY
+UI AND THEM AND DESIGN AND ALL HOW WE NEEDED IS LIKE THE
+/manual screen ONLY
+/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/app/manual
 
-THEN AFTER THIS IT IS MAJOR MODULE
-LOGIN SCREEN WE HAVE THIS OPTION RIGHT 
+SO IT IS MAJOR MAJOR TASK DONE WITH CARE WITH OUT ANY ISSUES HANDLE THIS GRACEFULLY WITH OUT ANY ISSUES OKAY
+ISOLATE THE CODE BASE APART FROM OTHERS HOW WE DONE THE MANUAL SAME PRACTICES HERE GO HEAD 
+// Backend
 
-Need assistance? Contact IT Support
+1. Project Architecture & Setup
+2. Database Layer & Models
+3. NMS Core Services & Data Ingestion
+4. API Layer & Routing
+5. Security & Authentication
+6. Performance & Scaling Optimization
+7.Folder structure
+8.code base each of them explanation
+7. Features implemented
+10.Git Details
+11.how to run the app
+12.if other developer seen this able to easily recognize each and everything
 
-CLICK THIS WE NEED TO NAVIGATE TO THE MANUAL PAGE OKAY 
+// Front end
 
-HERE WE NEED EXPLAIN EACH OF THE FEATURE NEATLY LIKE AN NEAT GUIDE AND MANUAL 
+1. Project Architecture & Setup
+1. Architecture & Framework Configuration
+1. State Management & Real-Time Ingestion
+1. UI Component Library & Visual Elements
+4.Interactive Data Visualization (Charts)
+5.Authentication & Access Enforcement
+1. Deployment & Build Pipelines
 
-NOTE THAT IT IS NOT MIXED OF THE THINGS OKAY src CREATE ONE FOLDER : manual
+7.Folder structure
+8.code base each of them explanation
+9. Features implemented
+10.Git Details
+11.how to run the app
+12.if other developer seen this able to easily recognize each and everything
+an clean neat explanation needed in the both the backend and front end
 
-IN THIS PLACE THOSE ALL RELATED COMPONENTS- CONTEXTS-SCREENS-UTILS-EVERYTHING NEATLY 
-AND THOSE FINAL SCREENS NEATLY PLACE IN THE /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/app
+// entire infrastructure working process
 
-OKAY SO THAT THIS MANUAL MODEL SHOULD ISOLATED OTHER MODULES IN FUTURE ALSO WE ARE ABEL TO HANDLE INDEPENDENTLY WITH OUT ANY ISSUES OKAY 
+NEAT CLEAR END TO END EXPLANATION OF EACH AND EVERY THING IN DETAIL
 
-THEME AND COLORING SHOULD BE LIKE THE LOGIN SCREEN DESIGN PATTERN
-
-AND HOW THIS ONE NEEDED IS 
-CREATE AN NEAT LAYOUT NEAT HEADER AND FOOTER AND MENU ITEMS AND LOGO NEAT CLEAN CLEAR BALANCED EFFECTIVE DESIGN NEEDED 
-WITH NEAT WEBSITE FEEL CLEAR EXPLANATION CLEAR DISPLAYING NEEDED WITH EFFECTIVE WAY SO
-TAKE TIME USING YOU INTELLIGENCE MAKE IT EFFECTIVE EXPLAIN EACH AND EVERY ONE NEATLY OKAY WITH OUT ANY ISSUES 
+WITH NEAT CLEAN SKETCHES USING THE MERMAID IF INSTALL RELEVANT PACKAGES OF THIS AND THEN USE IT

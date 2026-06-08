@@ -7,6 +7,7 @@ import sharedStyles from '@/components/features/apm/shared/styles.module.css';
 import { Button } from '@/components/ui/button';
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
 import { Input } from '@/components/ui/input';
+import { ApmSkeleton } from '@/components/ui/skeleton-loaders/apm-skeleton';
 import { useApm } from '@/hooks/apm';
 import { getServiceStatusColor } from '@/utils/constants/apm/status-colors';
 import {
@@ -48,10 +49,18 @@ export const ApmContent = () => {
   return (
     <div className={sharedStyles.apm}>
       <div
-        className={clsx(sharedStyles.leftSidebar, !isSidebarOpen && sharedStyles.sidebarCollapsed)}
+        className={clsx(
+          sharedStyles.leftSidebar,
+          !isSidebarOpen && sharedStyles.sidebarCollapsed
+        )}
       >
         <div className={sharedStyles.sidebarHeader}>
-          <span className={clsx(sharedStyles.sidebarTitle, !isSidebarOpen && sharedStyles.hidden)}>
+          <span
+            className={clsx(
+              sharedStyles.sidebarTitle,
+              !isSidebarOpen && sharedStyles.hidden
+            )}
+          >
             Categories
           </span>
           <Button
@@ -61,13 +70,20 @@ export const ApmContent = () => {
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             title={isSidebarOpen ? 'Collapse' : 'Expand'}
           >
-            <Icon icon={isSidebarOpen ? 'mdi:menu-open' : 'mdi:menu'} width={22} />
+            <Icon
+              icon={isSidebarOpen ? 'mdi:menu-open' : 'mdi:menu'}
+              width={22}
+            />
           </Button>
         </div>
 
         <div className={sharedStyles.sidebarNav}>
           <div className={sharedStyles.treeRoot}>
-            <Icon icon="mdi:server-network" width={18} className={sharedStyles.rootIcon} />
+            <Icon
+              icon="mdi:server-network"
+              width={18}
+              className={sharedStyles.rootIcon}
+            />
             <span className={sharedStyles.rootLabel}>Performance</span>
           </div>
 
@@ -100,18 +116,23 @@ export const ApmContent = () => {
         <div className={sharedStyles.header}>
           <div className={sharedStyles.headerLeft}>
             <div className={sharedStyles.headerIcon}>
-              <Icon icon="mdi:chart-timeline-variant-shimmer" width={22} height={22} />
+              <Icon
+                icon="mdi:chart-timeline-variant-shimmer"
+                width={22}
+                height={22}
+              />
             </div>
             <div>
               <h1 className={sharedStyles.headerTitle}>APM</h1>
-
             </div>
           </div>
           <div className={sharedStyles.headerRight}>
             <Input
               type="text"
               placeholder={
-                activeView === 'services' ? 'Search services...' : 'Search traces...'
+                activeView === 'services'
+                  ? 'Search services...'
+                  : 'Search traces...'
               }
               className={sharedStyles.headerSearchInput}
               containerClassName={sharedStyles.headerSearch}
@@ -130,10 +151,20 @@ export const ApmContent = () => {
               >
                 <Icon icon="mdi:filter-variant" width={20} height={20} />
               </Button>
-              <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Refresh">
+              <Button
+                type="button"
+                variant="ghost"
+                className={sharedStyles.actionBtn}
+                title="Refresh"
+              >
                 <Icon icon="mdi:refresh" width={20} height={20} />
               </Button>
-              <Button type="button" variant="ghost" className={sharedStyles.actionBtn} title="Export">
+              <Button
+                type="button"
+                variant="ghost"
+                className={sharedStyles.actionBtn}
+                title="Export"
+              >
                 <Icon icon="mdi:download" width={20} height={20} />
               </Button>
             </div>
@@ -141,75 +172,85 @@ export const ApmContent = () => {
         </div>
 
         <div className={sharedStyles.contentArea}>
-          {activeView === 'services' && (
-            <ServiceAccordion
-              servicesData={filteredServices.map((service) => ({
-                name: service.name,
-                type: service.type,
-                latency: service.responseTime,
-                throughput: service.throughput,
-                errors: service.errorCount,
-                trend: service.responseTimeTrend,
-                color: getServiceStatusColor(service.status),
-              }))}
-              topLatencyData={[...filteredServices]
-                .sort((a, b) => b.responseTime - a.responseTime)
-                .slice(0, 5)
-                .map((service) => ({
-                  name: service.name,
-                  endpoint: service.type,
-                  value: `${service.responseTime.toFixed(2)} ms`,
-                  sparkline: service.responseTimeTrend,
-                }))}
-              topThroughputData={[...filteredServices]
-                .sort((a, b) => b.throughput - a.throughput)
-                .slice(0, 5)
-                .map((service) => ({
-                  name: service.name,
-                  endpoint: service.type,
-                  value: `${service.throughput} tpm`,
-                  sparkline: service.throughputTrend,
-                }))}
-              topErrorsData={[...filteredServices]
-                .sort((a, b) => b.errorCount - a.errorCount)
-                .slice(0, 5)
-                .map((service) => ({
-                  name: service.name,
-                  endpoint: service.type,
-                  value: service.errorCount.toString(),
-                  sparkline: service.errorTrend,
-                }))}
-            />
-          )}
+          {isLoading ? (
+            <ApmSkeleton />
+          ) : (
+            <>
+              {activeView === 'services' && (
+                <ServiceAccordion
+                  servicesData={filteredServices.map((service) => ({
+                    name: service.name,
+                    type: service.type,
+                    latency: service.responseTime,
+                    throughput: service.throughput,
+                    errors: service.errorCount,
+                    trend: service.responseTimeTrend,
+                    color: getServiceStatusColor(service.status),
+                  }))}
+                  topLatencyData={[...filteredServices]
+                    .sort((a, b) => b.responseTime - a.responseTime)
+                    .slice(0, 5)
+                    .map((service) => ({
+                      name: service.name,
+                      endpoint: service.type,
+                      value: `${service.responseTime.toFixed(2)} ms`,
+                      sparkline: service.responseTimeTrend,
+                    }))}
+                  topThroughputData={[...filteredServices]
+                    .sort((a, b) => b.throughput - a.throughput)
+                    .slice(0, 5)
+                    .map((service) => ({
+                      name: service.name,
+                      endpoint: service.type,
+                      value: `${service.throughput} tpm`,
+                      sparkline: service.throughputTrend,
+                    }))}
+                  topErrorsData={[...filteredServices]
+                    .sort((a, b) => b.errorCount - a.errorCount)
+                    .slice(0, 5)
+                    .map((service) => ({
+                      name: service.name,
+                      endpoint: service.type,
+                      value: service.errorCount.toString(),
+                      sparkline: service.errorTrend,
+                    }))}
+                />
+              )}
 
-          {activeView === 'explorer' && (
-            <ExplorerAccordion
-              traceMetrics={EXPLORER_TRACE_METRICS}
-              traces={filteredTraces.map((trace) => ({
-                id: trace.id,
-                timestamp: trace.timestamp,
-                serviceName: trace.serviceName,
-                serviceType: trace.type || 'service',
-                resource: trace.resource,
-                duration: trace.duration,
-                spans: trace.spans,
-                status:
-                  trace.status === 200
-                    ? 'success'
-                    : trace.status >= 400
-                      ? 'error'
-                      : 'warning',
-              }))}
-              onTraceClick={handleTraceClick}
-            />
-          )}
+              {activeView === 'explorer' && (
+                <ExplorerAccordion
+                  traceMetrics={EXPLORER_TRACE_METRICS}
+                  traces={filteredTraces.map((trace) => ({
+                    id: trace.id,
+                    timestamp: trace.timestamp,
+                    serviceName: trace.serviceName,
+                    serviceType: trace.type || 'service',
+                    resource: trace.resource,
+                    duration: trace.duration,
+                    spans: trace.spans,
+                    status:
+                      trace.status === 200
+                        ? 'success'
+                        : trace.status >= 400
+                          ? 'error'
+                          : 'warning',
+                  }))}
+                  onTraceClick={handleTraceClick}
+                />
+              )}
 
-          {activeView === 'analytics' && (
-            <AnalyticsAccordion
-              performanceData={analyticsData?.performanceData || ANALYTICS_PERFORMANCE_DATA}
-              distributionData={analyticsData?.distributionData || ANALYTICS_DISTRIBUTION_DATA}
-              topServices={analyticsData?.topServices || ANALYTICS_TOP_SERVICES}
-            />
+              {activeView === 'analytics' && (
+                <AnalyticsAccordion
+                  performanceData={
+                    analyticsData?.performanceData || ANALYTICS_PERFORMANCE_DATA
+                  }
+                  distributionData={
+                    analyticsData?.distributionData || ANALYTICS_DISTRIBUTION_DATA
+                  }
+                  topServices={analyticsData?.topServices || ANALYTICS_TOP_SERVICES}
+                />
+              )}
+            </>
           )}
         </div>
       </div>

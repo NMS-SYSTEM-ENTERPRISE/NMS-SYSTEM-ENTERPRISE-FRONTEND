@@ -1,0 +1,315 @@
+/* Hardware Accelerated Shimmer Base */
+.skeletonInner {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 6px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.skeletonInner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.015) 20%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.015) 80%,
+    transparent 100%
+  );
+  animation: smoothShimmer 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes smoothShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Main Wrapper */
+.apmSkeletonWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Header Skeleton */
+.headerSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  background-color: var(--color-bg-secondary, #121621);
+  border-bottom: 1px solid var(--color-border, #2a3040);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconPlaceholder {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.titlePlaceholder {
+  width: 150px;
+  height: 28px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.searchBar {
+  flex: 1;
+  height: 36px;
+  max-width: 300px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+/* Section Skeleton */
+.sectionSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background-color: var(--color-bg-secondary, #121621);
+  border-radius: 8px;
+  border: 1px solid var(--color-border, #2a3040);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionTitle {
+  width: 200px;
+  height: 20px;
+}
+
+.badge {
+  width: 90px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+.errorBadge {
+  width: 120px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+/* Service Cards */
+.serviceCardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 8px;
+  border: 1px solid var(--color-border, #2a3040);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.serviceIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.cardHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.serviceName {
+  width: 150px;
+  height: 14px;
+}
+
+.serviceType {
+  width: 100px;
+  height: 12px;
+  opacity: 0.6;
+}
+
+.cardDivider {
+  height: 1px;
+  background-color: var(--color-border, #2a3040);
+}
+
+.cardMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metricLabel {
+  width: 60px;
+  height: 12px;
+  opacity: 0.6;
+}
+
+.metricValue {
+  width: 80px;
+  height: 16px;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.metricBox {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 8px;
+  border: 1px solid var(--color-border, #2a3040);
+}
+
+.boxTitle {
+  width: 130px;
+  height: 16px;
+}
+
+.metricsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metricRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metricName {
+  width: 120px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.sparkline {
+  flex: 1;
+  height: 24px;
+  min-width: 80px;
+}
+
+.metricNumber {
+  width: 60px;
+  height: 12px;
+  text-align: right;
+}
+
+/* Error List */
+.errorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.errorRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #2a3040);
+}
+
+.errorIcon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.errorTitle {
+  width: 180px;
+  height: 14px;
+}
+
+.errorDetail {
+  width: 120px;
+  height: 12px;
+  opacity: 0.6;
+}
+
+.errorCount {
+  width: 50px;
+  height: 16px;
+  text-align: right;
+}

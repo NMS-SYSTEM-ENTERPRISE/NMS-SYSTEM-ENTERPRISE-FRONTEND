@@ -87,10 +87,12 @@
   /* Dashboard Custom layout */
   --dashboard-custom-sidebar-width: 260px;
   --dashboard-custom-sidebar-collapsed: 72px;
-  --dashboard-custom-timeline-gradient: linear-gradient(90deg,
-      var(--color-chart-cyan) 0%,
-      var(--color-chart-blue) 50%,
-      var(--color-chart-violet) 100%);
+  --dashboard-custom-timeline-gradient: linear-gradient(
+    90deg,
+    var(--color-chart-cyan) 0%,
+    var(--color-chart-blue) 50%,
+    var(--color-chart-violet) 100%
+  );
 
   /* Ticketing layout */
   --ticketing-sidebar-width: 240px;
@@ -165,7 +167,7 @@
   --size-icon-lg: 24px;
 
   --size-sidebar-width: 56px;
-  --size-header-height: 48px;
+  --size-header-height: 64px;
 
   /* Border Radius */
   --radius-sm: 4px;
@@ -235,7 +237,7 @@ body {
 /* Manrope font is loaded via next/font in layout.js */
 
 body {
-  font-family: var(--font-manrope), "Manrope", sans-serif;
+  font-family: var(--font-manrope), 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg-primary);

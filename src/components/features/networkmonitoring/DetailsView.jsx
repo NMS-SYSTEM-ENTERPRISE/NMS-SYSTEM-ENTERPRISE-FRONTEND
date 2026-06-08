@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { SelectComponent } from '@/components/ui/select';
 import { ROUTE_PATHS } from '@/utils/constants/route-paths';
 import { Icon } from '@iconify/react';
@@ -31,11 +31,22 @@ const DetailCard = ({ label, value, icon, subValue }) => (
       {icon && <Icon icon={icon} width={16} height={16} color="#94a3b8" />}
       {value}
     </div>
-    {subValue && <span className={styles.rowSub} style={{ fontSize: '11px' }}>{subValue}</span>}
+    {subValue && (
+      <span className={styles.rowSub} style={{ fontSize: '11px' }}>
+        {subValue}
+      </span>
+    )}
   </div>
 );
 
-const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColor, config }) => {
+const AccordionRow = ({
+  item,
+  category,
+  isExpanded,
+  onToggle,
+  getProgressBarColor,
+  config,
+}) => {
   const router = useRouter();
 
   const handleDetailClick = (e) => {
@@ -67,8 +78,8 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
     const hue = Math.abs(hash % 360);
-    // Return a neat, light unique color
-    return `hsl(${hue}, 80%, 75%)`;
+    // Return a muted, softer unique color with reduced saturation
+    return `hsl(${hue}, 55%, 70%)`;
   };
 
   // Helper for metrics
@@ -82,32 +93,103 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
     const color = getProgressBarColor(value);
 
     return (
-      <div className={styles.compactMetric} style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: '0' }}>
-        <div style={{ width: size, height: size, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={strokeWidth} />
-            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
+      <div
+        className={styles.compactMetric}
+        style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: '0' }}
+      >
+        <div
+          style={{
+            width: size,
+            height: size,
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <svg
+            width={size}
+            height={size}
+            style={{ transform: 'rotate(-90deg)' }}
+          >
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              stroke="rgba(255,255,255,0.1)"
+              strokeWidth={strokeWidth}
+            />
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              stroke={color}
+              strokeWidth={strokeWidth}
               strokeDasharray={circumference}
               strokeDashoffset={offset}
               strokeLinecap="round"
             />
           </svg>
-          <span style={{ position: 'absolute', fontSize: '12px', fontWeight: '700', color: '#fff' }}>{value}</span>
+          <span
+            style={{
+              position: 'absolute',
+              fontSize: '12px',
+              fontWeight: '700',
+              color: '#fff',
+            }}
+          >
+            {value}
+          </span>
         </div>
       </div>
     );
   };
 
-  const renderMiniBar = (label, value, max = 300, color = 'var(--color-accent-cyan)') => {
+  const renderMiniBar = (
+    label,
+    value,
+    max = 300,
+    color = 'var(--color-accent-cyan)'
+  ) => {
     const percent = Math.min((value / max) * 100, 100);
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '4px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--color-text-secondary)' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          gap: '4px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: '11px',
+            color: 'var(--color-text-secondary)',
+          }}
+        >
           <span>{label}</span>
           <span style={{ color: 'var(--color-text-primary)' }}>{value}V</span>
         </div>
-        <div style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${percent}%`, background: color, borderRadius: '2px' }} />
+        <div
+          style={{
+            height: '4px',
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: '2px',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${percent}%`,
+              background: color,
+              borderRadius: '2px',
+            }}
+          />
         </div>
       </div>
     );
@@ -119,50 +201,92 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
          Table Grid Row 
          Columns: Identity | Type | IP | Status | Metric1 | Metric2 | Metric3 | Action 
       */}
-      <div className={styles.rowMain} onClick={onToggle}>
-
+      <div className={styles.rowMain} onClick={handleDetailClick} style={{ cursor: 'pointer' }}>
         {/* Col 1: Identity */}
-        <div className={styles.rowIdentity} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div 
-             className={styles.rowIconWrapper} 
-             style={{ 
-               backgroundColor: `color-mix(in srgb, ${getAvatarColor(item.name)} 20%, transparent)`, 
-               border: `1px solid color-mix(in srgb, ${getAvatarColor(item.name)} 40%, transparent)`, 
-               borderRadius: '8px', 
-               width: '36px', 
-               height: '36px', 
-               display: 'flex', 
-               alignItems: 'center', 
-               justifyContent: 'center',
-               flexShrink: 0
-             }}
-           >
-            <span style={{ color: getAvatarColor(item.name), fontWeight: 'bold', fontSize: '14px', letterSpacing: '0.5px' }}>
+        <div
+          className={styles.rowIdentity}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+        >
+          <div
+            className={styles.rowIconWrapper}
+            style={{
+              backgroundColor: `color-mix(in srgb, ${getAvatarColor(item.name)} 20%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${getAvatarColor(item.name)} 40%, transparent)`,
+              borderRadius: '8px',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <span
+              style={{
+                color: getAvatarColor(item.name),
+                fontWeight: 'bold',
+                fontSize: '14px',
+                letterSpacing: '0.5px',
+              }}
+            >
               {item.name ? item.name.substring(0, 2).toUpperCase() : 'NA'}
             </span>
           </div>
-          <div className={styles.rowInfo} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span className={styles.rowName} style={{ fontWeight: '600', color: 'var(--color-text-primary)', fontSize: '14px' }}>{item.name}</span>
+          <div
+            className={styles.rowInfo}
+            style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+          >
+            <span
+              className={styles.rowName}
+              style={{
+                fontWeight: '600',
+                color: 'var(--color-text-primary)',
+                fontSize: '14px',
+              }}
+            >
+              {item.name}
+            </span>
           </div>
         </div>
 
         {/* Col 2: Type */}
-        <div className={styles.rowType} style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ color: getIconColor(), background: 'var(--color-bg-tertiary)', border: '1px solid var(--color-border)', padding: '6px', borderRadius: '6px', display: 'flex' }} title={item.type || category}>
-             <Icon icon={getIcon()} width={18} height={18} />
+        <div
+          className={styles.rowType}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <div
+            style={{
+              color: getIconColor(),
+              background: 'var(--color-bg-tertiary)',
+              border: '1px solid var(--color-border)',
+              padding: '6px',
+              borderRadius: '6px',
+              display: 'flex',
+            }}
+            title={item.type || category}
+          >
+            <Icon icon={getIcon()} width={18} height={18} />
           </div>
         </div>
 
         {/* Col 3: IP */}
-        <div className={styles.rowIp} style={{ display: 'flex', alignItems: 'center' }}>
-            <span className={styles.rowSub} style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-              {item.ip}
-            </span>
+        <div
+          className={styles.rowIp}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <span
+            className={styles.rowSub}
+            style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}
+          >
+            {item.ip}
+          </span>
         </div>
 
         {/* Col 4: Status */}
         <div className={styles.rowStatus}>
-          <span className={`${styles.statusBadge} ${item.status === 'Up' ? styles.statusBadgeUp : styles.statusBadgeDown}`}>
+          <span
+            className={`${styles.statusBadge} ${item.status === 'Up' ? styles.statusBadgeUp : styles.statusBadgeDown}`}
+          >
             {item.status}
           </span>
         </div>
@@ -170,36 +294,80 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
         {/* Col 3: CPU or Battery */}
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
-            item.upsMetrics && item.upsMetrics.battery_charge_percent !== undefined ?
-              renderGauge('BATT', item.upsMetrics.battery_charge_percent) :
-              (item.battery !== undefined ? renderGauge('BATT', item.battery) : <span className={styles.rowSub}>-</span>)
+            item.upsMetrics &&
+            item.upsMetrics.battery_charge_percent !== undefined ? (
+              renderGauge('BATT', item.upsMetrics.battery_charge_percent)
+            ) : item.battery !== undefined ? (
+              renderGauge('BATT', item.battery)
+            ) : (
+              <span className={styles.rowSub}>-</span>
+            )
+          ) : item.cpu !== undefined ? (
+            renderGauge('CPU', item.cpu)
           ) : (
-            item.cpu !== undefined ? renderGauge('CPU', item.cpu) : <span className={styles.rowSub}>-</span>
+            <span className={styles.rowSub}>-</span>
           )}
         </div>
 
         {/* Col 4: Memory or Load */}
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
-            item.upsMetrics && item.upsMetrics.output_load_percent !== undefined ?
-              renderGauge('LOAD', item.upsMetrics.output_load_percent) :
-              (item.load !== undefined ? renderGauge('LOAD', item.load) : <span className={styles.rowSub}>-</span>)
+            item.upsMetrics &&
+            item.upsMetrics.output_load_percent !== undefined ? (
+              renderGauge('LOAD', item.upsMetrics.output_load_percent)
+            ) : item.load !== undefined ? (
+              renderGauge('LOAD', item.load)
+            ) : (
+              <span className={styles.rowSub}>-</span>
+            )
+          ) : item.memory !== undefined ? (
+            renderGauge('MEM', item.memory)
           ) : (
-            item.memory !== undefined ? renderGauge('MEM', item.memory) : <span className={styles.rowSub}>-</span>
+            <span className={styles.rowSub}>-</span>
           )}
         </div>
 
         {/* Col 5: Disk/Network or Voltage/Chart */}
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
-            item.upsMetrics && item.upsMetrics.input_voltage !== undefined && item.upsMetrics.output_voltage !== undefined ?
-              <span className={styles.rowSub} style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
-                <strong style={{ color: 'var(--color-text-primary)' }}>{item.upsMetrics.input_voltage}V</strong> / <strong style={{ color: 'var(--color-text-primary)' }}>{item.upsMetrics.output_voltage}V</strong>
-              </span> :
+            item.upsMetrics &&
+            item.upsMetrics.input_voltage !== undefined &&
+            item.upsMetrics.output_voltage !== undefined ? (
+              <span
+                className={styles.rowSub}
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
+                <strong style={{ color: 'var(--color-text-primary)' }}>
+                  {item.upsMetrics.input_voltage}V
+                </strong>{' '}
+                /{' '}
+                <strong style={{ color: 'var(--color-text-primary)' }}>
+                  {item.upsMetrics.output_voltage}V
+                </strong>
+              </span>
+            ) : (
               <span className={styles.rowSub}>-</span>
+            )
+          ) : item.disk !== undefined ? (
+            renderGauge('DISK', item.disk)
+          ) : item.bandwidthIn ? (
+            <span
+              className={styles.rowSub}
+              style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}
+            >
+              <strong style={{ color: 'var(--color-text-primary)' }}>
+                {item.bandwidthIn}
+              </strong>{' '}
+              /{' '}
+              <strong style={{ color: 'var(--color-text-primary)' }}>
+                {item.bandwidthOut}
+              </strong>
+            </span>
           ) : (
-            item.disk !== undefined ? renderGauge('DISK', item.disk) :
-              (item.bandwidthIn ? <span className={styles.rowSub} style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}><strong style={{ color: 'var(--color-text-primary)' }}>{item.bandwidthIn}</strong> / <strong style={{ color: 'var(--color-text-primary)' }}>{item.bandwidthOut}</strong></span> : <span className={styles.rowSub}>-</span>)
+            <span className={styles.rowSub}>-</span>
           )}
         </div>
 
@@ -225,19 +393,53 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
       {isExpanded && (
         <div className={styles.rowDetails}>
           <div className={styles.detailsContentWrapper}>
-
             {/* Section 1: System Info */}
             <div className={styles.detailSection}>
               <h4 className={styles.sectionTitle}>System Information</h4>
               <div className={styles.detailsGrid}>
-                <DetailCard label="Device Type" value={item.type || 'Unknown'} icon="mdi:devices" />
-                <DetailCard label="IP Address" value={item.ip || '192.168.1.10'} icon="mdi:ip-network" />
-                <DetailCard label="Location" value="Data Center A" icon="mdi:map-marker" />
-                <DetailCard label="Uptime" value={item.uptime || '12d 4h'} icon="mdi:clock-outline" />
+                <DetailCard
+                  label="Device Type"
+                  value={item.type || 'Unknown'}
+                  icon="mdi:devices"
+                />
+                <DetailCard
+                  label="IP Address"
+                  value={item.ip || '192.168.1.10'}
+                  icon="mdi:ip-network"
+                />
+                <DetailCard
+                  label="Location"
+                  value="Data Center A"
+                  icon="mdi:map-marker"
+                />
+                <DetailCard
+                  label="Uptime"
+                  value={item.uptime || '12d 4h'}
+                  icon="mdi:clock-outline"
+                />
               </div>
               {item.description && (
-                <div style={{ marginTop: '12px', padding: '12px', background: 'var(--color-bg-tertiary)', borderRadius: '6px', fontSize: '12px', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--color-text-primary)', display: 'block', marginBottom: '4px' }}>Hardware Description</span>
+                <div
+                  style={{
+                    marginTop: '12px',
+                    padding: '12px',
+                    background: 'var(--color-bg-tertiary)',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    color: 'var(--color-text-secondary)',
+                    border: '1px solid var(--color-border)',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: 'var(--color-text-primary)',
+                      display: 'block',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    Hardware Description
+                  </span>
                   {item.description}
                 </div>
               )}
@@ -248,13 +450,38 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
               <h4 className={styles.sectionTitle}>Performance Metrics</h4>
               <div className={styles.detailsGrid}>
                 {item.disk !== undefined && (
-                  <DetailCard label="Disk Usage" value={`${item.disk}%`} icon="mdi:harddisk"
-                    subValue={<div style={{ height: 4, width: '100%', background: 'var(--color-bg-tertiary)', borderRadius: 2, marginTop: 4 }}>
-                      <div style={{ width: `${item.disk}%`, background: getProgressBarColor(item.disk), height: '100%', borderRadius: 2 }} />
-                    </div>}
+                  <DetailCard
+                    label="Disk Usage"
+                    value={`${item.disk}%`}
+                    icon="mdi:harddisk"
+                    subValue={
+                      <div
+                        style={{
+                          height: 4,
+                          width: '100%',
+                          background: 'var(--color-bg-tertiary)',
+                          borderRadius: 2,
+                          marginTop: 4,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${item.disk}%`,
+                            background: getProgressBarColor(item.disk),
+                            height: '100%',
+                            borderRadius: 2,
+                          }}
+                        />
+                      </div>
+                    }
                   />
                 )}
-                <DetailCard label="Network Traffic" value="1.2 GB/s" icon="mdi:access-point-network" subValue="In: 800MB | Out: 400MB" />
+                <DetailCard
+                  label="Network Traffic"
+                  value="1.2 GB/s"
+                  icon="mdi:access-point-network"
+                  subValue="In: 800MB | Out: 400MB"
+                />
                 {/* Placeholder for more specific metrics */}
               </div>
             </div>
@@ -265,15 +492,33 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
               <div className={styles.detailsGrid}>
                 <div className={styles.detailCard}>
                   <span className={styles.detailLabel}>Tags & Groups</span>
-                  <div className={styles.tagsContainer} style={{ marginTop: 8 }}>
-                    {item.tags && item.tags.map(tag => <span key={tag} className={styles.tagPill}>{tag}</span>)}
-                    {item.group && item.group.map(g => <span key={g} className={styles.tagPill} style={{ borderColor: '#0ea5e9', color: '#0ea5e9' }}>{g}</span>)}
-                    {!item.tags && !item.group && <span className={styles.rowSub}>No tags assigned</span>}
+                  <div
+                    className={styles.tagsContainer}
+                    style={{ marginTop: 8 }}
+                  >
+                    {item.tags &&
+                      item.tags.map((tag) => (
+                        <span key={tag} className={styles.tagPill}>
+                          {tag}
+                        </span>
+                      ))}
+                    {item.group &&
+                      item.group.map((g) => (
+                        <span
+                          key={g}
+                          className={styles.tagPill}
+                          style={{ borderColor: '#0ea5e9', color: '#0ea5e9' }}
+                        >
+                          {g}
+                        </span>
+                      ))}
+                    {!item.tags && !item.group && (
+                      <span className={styles.rowSub}>No tags assigned</span>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Action Button - Removed to save space */}
@@ -283,9 +528,17 @@ const AccordionRow = ({ item, category, isExpanded, onToggle, getProgressBarColo
   );
 };
 
-
 // Main Component
-export const DetailsView = ({ category, config, data, getProgressBarColor, filters = {}, setFilters, searchQuery, setSearchQuery }) => {
+export const DetailsView = ({
+  category,
+  config,
+  data,
+  getProgressBarColor,
+  filters = {},
+  setFilters,
+  searchQuery,
+  setSearchQuery,
+}) => {
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(50);
@@ -305,7 +558,7 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
   const [expandedIds, setExpandedIds] = useState(() => new Set());
 
   const toggleRow = (id) => {
-    setExpandedIds(prev => {
+    setExpandedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -366,7 +619,10 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
             {searchQuery && (
               <div className={styles.filterTag}>
                 <span>Search: {searchQuery}</span>
-                <button onClick={() => setSearchQuery('')} className={styles.filterTagClose}>
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className={styles.filterTagClose}
+                >
                   <Icon icon="mdi:close" width={14} />
                 </button>
               </div>
@@ -374,11 +630,18 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
             {Object.entries(filters).map(([key, value]) => {
               if (value === undefined || value === '') return null;
               // format label, e.g., if array for range
-              let displayValue = Array.isArray(value) ? `${value[0]} - ${value[1]}` : value;
+              let displayValue = Array.isArray(value)
+                ? `${value[0]} - ${value[1]}`
+                : value;
               return (
                 <div key={key} className={styles.filterTag}>
-                  <span style={{ textTransform: 'capitalize' }}>{key}: {displayValue}</span>
-                  <button onClick={() => removeFilter(key)} className={styles.filterTagClose}>
+                  <span style={{ textTransform: 'capitalize' }}>
+                    {key}: {displayValue}
+                  </span>
+                  <button
+                    onClick={() => removeFilter(key)}
+                    className={styles.filterTagClose}
+                  >
                     <Icon icon="mdi:close" width={14} />
                   </button>
                 </div>
@@ -393,7 +656,6 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
 
       {/* Unified Table Container */}
       <div className={styles.listContainer}>
-
         {/* Table Header Row */}
         <div className={styles.tableHeaderRow}>
           <span>Identity</span>
@@ -417,7 +679,10 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
         </div>
 
         {/* Scrollable List Body */}
-        <div className={styles.listBody} style={{ flex: 1, overflowY: 'auto', paddingBottom: '16px' }}>
+        <div
+          className={styles.listBody}
+          style={{ flex: 1, overflowY: 'auto', paddingBottom: '16px' }}
+        >
           {paginatedData.map((item, idx) => {
             const rowId = item.id !== undefined ? item.id : idx;
             return (
@@ -433,7 +698,13 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
             );
           })}
           {paginatedData.length === 0 && (
-            <div style={{ padding: '32px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+            <div
+              style={{
+                padding: '32px',
+                textAlign: 'center',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
               No items found matching the current filters.
             </div>
           )}
@@ -447,14 +718,24 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
               className={styles.paginationBtn}
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
-            >«</button>
+            >
+              «
+            </button>
             <button
               className={styles.paginationBtn}
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-            >‹</button>
+            >
+              ‹
+            </button>
 
-            <span style={{ fontSize: '13px', margin: '0 8px', color: 'var(--color-text-secondary)' }}>
+            <span
+              style={{
+                fontSize: '13px',
+                margin: '0 8px',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
               Page {currentPage} of {totalPages}
             </span>
 
@@ -462,12 +743,16 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
               className={styles.paginationBtn}
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-            >›</button>
+            >
+              ›
+            </button>
             <button
               className={styles.paginationBtn}
               onClick={() => handlePageChange(totalPages)}
               disabled={currentPage === totalPages}
-            >»</button>
+            >
+              »
+            </button>
           </div>
 
           {/* Right: Info & Controls */}
@@ -486,7 +771,9 @@ export const DetailsView = ({ category, config, data, getProgressBarColor, filte
               ]}
             />
             <span className={styles.paginationCount}>
-              {data.length === 0 ? 0 : startIndex + 1} - {Math.min(startIndex + itemsPerPage, data.length)} of {data.length} items
+              {data.length === 0 ? 0 : startIndex + 1} -{' '}
+              {Math.min(startIndex + itemsPerPage, data.length)} of{' '}
+              {data.length} items
             </span>
           </div>
         </div>

@@ -212,47 +212,18 @@ export const Sidebar = () => {
       <div className={styles.logoSection}>
         {!isCollapsed && (
           <div className={styles.logoWrapper}>
-            <div className={styles.logoIcon}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#gradient1)" />
-                <path
-                  d="M2 17L12 22L22 17V12L12 17L2 12V17Z"
-                  fill="url(#gradient2)"
-                  opacity="0.7"
-                />
-                <defs>
-                  <linearGradient
-                    id="gradient1"
-                    x1="2"
-                    y1="2"
-                    x2="22"
-                    y2="12"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#06b6d4" />
-                    <stop offset="1" stopColor="#3b82f6" />
-                  </linearGradient>
-                  <linearGradient
-                    id="gradient2"
-                    x1="2"
-                    y1="12"
-                    x2="22"
-                    y2="22"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#3b82f6" />
-                    <stop offset="1" stopColor="#8b5cf6" />
-                  </linearGradient>
-                </defs>
-              </svg>
+            <div className={styles.snrLogoContainer}>
+              <img
+                src="/images/snr-logo-sm.svg"
+                alt="SNR"
+                className={styles.snrLogo}
+              />
             </div>
-            <div className={styles.logoText}>
-              <span className={styles.logoTitle}>NetMonitor</span>
-              <span className={styles.logoSubtitle}>Pro</span>
+            <div className={styles.logoTextWrapper}>
+              <div className={styles.logoText}>
+                <span className={styles.logoTitle}>NetMonitor</span>
+                <span className={styles.logoSubtitle}>Pro</span>
+              </div>
             </div>
           </div>
         )}

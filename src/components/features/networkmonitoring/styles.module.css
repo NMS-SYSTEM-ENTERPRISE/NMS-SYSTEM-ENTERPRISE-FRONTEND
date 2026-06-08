@@ -83,8 +83,6 @@
 /* Vertical Tree Line (Per Item Implementation) */
 /* Old global .treeLine removed from here */
 
-
-
 .categoryItem {
   display: flex;
   align-items: center;
@@ -433,9 +431,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  background: var(--color-bg-secondary);
-  border-bottom: 1px solid var(--color-border);
+  padding: 0 24px;
+  background: transparent;
+  border: none;
+  height: var(--size-header-height);
 }
 
 .detailsTitle {
@@ -450,38 +449,45 @@
 
 .detailsStats {
   display: flex;
-  gap: var(--gap-md);
+  gap: 0;
+  align-items: stretch;
+  height: 100%;
 }
 
 .statBadge {
   display: flex;
   align-items: center;
   gap: var(--gap-xs);
-  padding: var(--padding-xs) var(--padding-md);
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
+  padding: 0 var(--gap-md);
+  background-color: transparent !important;
+  border: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
   color: var(--color-text-secondary);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-medium);
 }
 
+.statBadge:last-child {
+  border-right: none;
+}
+
 .statBadgeUp {
-  background-color: color-mix(in srgb, var(--color-success) 10%, transparent);
-  border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+  background-color: transparent !important;
+  border-color: transparent !important;
   color: var(--color-success);
 }
 
 .statBadgeDown {
-  background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
-  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+  background-color: transparent !important;
+  border-color: transparent !important;
   color: var(--color-danger);
 }
 
 .statBadgeTotal {
-  background-color: color-mix(in srgb, var(--color-text-secondary) 10%, transparent);
-  border-color: color-mix(in srgb, var(--color-text-secondary) 30%, transparent);
-  color: var(--color-text-secondary);
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: var(--color-accent-blue);
 }
 
 /* --- Unified Table-Accordion View --- */
@@ -521,7 +527,7 @@
 }
 
 /* Active State just changes background, no floating */
-.accordionRow[data-expanded="true"] {
+.accordionRow[data-expanded='true'] {
   background: rgba(var(--color-accent-cyan-rgb), 0.03);
   box-shadow: inset 3px 0 0 0 var(--color-accent-cyan);
   /* Left Accent Line */
@@ -555,9 +561,14 @@
   min-height: 48px;
   /* Compact Table Height */
   gap: 16px;
+  transition: background-color 0.2s ease;
 }
 
-.accordionRow[data-expanded="true"] .rowMain {
+.rowMain:hover {
+  background-color: rgba(34, 211, 238, 0.05);
+}
+
+.accordionRow[data-expanded='true'] .rowMain {
   border-bottom: 1px solid var(--color-border);
   background: rgba(var(--color-accent-cyan-rgb), 0.05);
   /* Highlight active */
@@ -584,7 +595,7 @@
   flex-shrink: 0;
 }
 
-.accordionRow[data-expanded="true"] .rowIcon {
+.accordionRow[data-expanded='true'] .rowIcon {
   background: var(--color-accent-cyan);
   color: white;
 }
@@ -715,7 +726,7 @@
   transition: transform 0.3s ease;
 }
 
-.accordionRow[data-expanded="true"] .chevron {
+.accordionRow[data-expanded='true'] .chevron {
   transform: rotate(180deg);
   color: var(--color-accent-cyan);
 }
@@ -842,7 +853,9 @@
   align-items: center;
   gap: 6px;
   z-index: 10;
-  transition: transform 0.2s, background 0.2s;
+  transition:
+    transform 0.2s,
+    background 0.2s;
 }
 
 .viewAnalyticsBtn:hover {
@@ -1143,9 +1156,11 @@
 .cardHeader {
   padding: var(--padding-lg);
   border-bottom: 1px solid var(--color-border);
-  background: linear-gradient(135deg,
-      rgba(var(--color-accent-cyan-rgb), 0.05),
-      rgba(var(--color-accent-blue-rgb), 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-accent-cyan-rgb), 0.05),
+    rgba(var(--color-accent-blue-rgb), 0.05)
+  );
 }
 
 .cardTitle {
@@ -1274,9 +1289,11 @@
   justify-content: center;
   gap: var(--gap-md);
   padding: var(--padding-2xl);
-  background: linear-gradient(135deg,
-      rgba(var(--color-accent-cyan-rgb), 0.05),
-      rgba(var(--color-accent-blue-rgb), 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-accent-cyan-rgb), 0.05),
+    rgba(var(--color-accent-blue-rgb), 0.05)
+  );
   border-radius: var(--radius-md);
   border: 1px dashed var(--color-border);
   min-height: 200px;

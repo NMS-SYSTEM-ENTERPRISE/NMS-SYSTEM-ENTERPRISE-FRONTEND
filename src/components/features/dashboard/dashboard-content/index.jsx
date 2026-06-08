@@ -4,9 +4,9 @@ import { InfrastructureAccordion } from '@/components/features/dashboard/infrast
 import { PerformanceAccordion } from '@/components/features/dashboard/performance-accordion';
 import { ResourceAccordion } from '@/components/features/dashboard/resource-accordion';
 import sharedStyles from '@/components/features/dashboard/shared/styles.module.css';
-import { useDashboard } from '@/hooks/dashboard';
-import { DashboardSkeleton } from '@/components/ui/skeleton-loaders/dashboard-skeleton';
 import { NoDataFound } from '@/components/ui/no-data-found';
+import { DashboardSkeleton } from '@/components/ui/skeleton-loaders/dashboard-skeleton';
+import { useDashboard } from '@/hooks/dashboard';
 
 export const DashboardContent = () => {
   const { statistics, performance, resources, isLoading } = useDashboard();

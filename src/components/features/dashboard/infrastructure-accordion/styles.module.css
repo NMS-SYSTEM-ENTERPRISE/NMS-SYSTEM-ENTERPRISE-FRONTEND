@@ -14,8 +14,6 @@
   transition: all 0.3s ease;
 }
 
-
-
 .accordionHeader {
   display: flex;
   justify-content: space-between;
@@ -66,7 +64,7 @@
   transition: transform 0.3s ease;
 }
 
-.accordionItem[data-open="true"] .chevron {
+.accordionItem[data-open='true'] .chevron {
   transform: rotate(180deg);
 }
 
@@ -240,22 +238,25 @@
 /* Controls Row (Tabs + Filters) */
 .controlsRow {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px 12px 20px;
-  border-bottom: 1px solid var(--color-border);
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  height: var(--size-header-height);
 }
 
 .tabsGroup {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: stretch;
+  gap: 0;
+  height: 100%;
+  padding: 0 20px;
 }
 
 .verticalDivider {
   width: 1px;
-  height: 20px;
-  background-color: var(--color-border);
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.08);
   margin: 0 4px;
 }
 
@@ -264,6 +265,8 @@
   align-items: center;
   gap: 12px;
   margin-left: auto;
+  padding: 0 20px;
+  height: 100%;
   /* Push to the right */
 }
 
@@ -273,8 +276,8 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid transparent;
+  background-color: transparent;
+  border: none;
   border-radius: 8px;
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -288,9 +291,9 @@
 }
 
 .filterToggleButton.activeFilter {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: transparent;
   color: #3b82f6;
-  border-color: #3b82f6;
+  border-color: transparent;
 }
 
 .filterDot {
@@ -315,41 +318,42 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  background-color: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  padding: 0 16px;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0;
   color: var(--color-text-secondary);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  height: 100%;
 }
 
 .tabButton:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-primary);
+  background-color: transparent;
+  color: var(--color-accent-cyan);
 }
 
 .tabButton.activeTab {
-  background-color: rgba(59, 130, 246, 0.1);
-  border-color: #3b82f6;
-  color: #3b82f6;
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-accent-cyan);
 }
 
 .tabBadge {
-  background-color: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
   transition: all 0.2s ease;
 }
 
 .tabButton.activeTab .tabBadge {
-  background-color: #3b82f6;
-  color: #fff;
+  background-color: transparent;
+  color: var(--color-accent-cyan);
 }
 
 /* Sub Tabs Styles */

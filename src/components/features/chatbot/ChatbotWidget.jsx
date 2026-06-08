@@ -1,17 +1,13 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Icon } from '@iconify/react';
 import { useChatbot } from '@/hooks/chatbot/useChatbot';
 import { useAuthContext } from '@/hooks/useauth';
-import { Icon } from '@iconify/react';
-import { useEffect, useRef, useState } from 'react';
 import styles from './chatbot.module.css';
 
 export const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const messagesEndRef = useRef(null);
-  const windowRef = useRef(null);
 
   const { user } = useAuthContext();
   const userId = user?.id || 1;
@@ -23,7 +19,7 @@ export const ChatbotWidget = () => {
     isAsking,
     fetchSuggestedQueries,
     fetchChatHistory,
-    sendQuestion,
+    sendQuestion
   } = useChatbot();
 
   useEffect(() => {
@@ -31,13 +27,7 @@ export const ChatbotWidget = () => {
       if (suggestedQueries.length === 0) fetchSuggestedQueries();
       fetchChatHistory(userId);
     }
-  }, [
-    isOpen,
-    userId,
-    suggestedQueries.length,
-    fetchSuggestedQueries,
-    fetchChatHistory,
-  ]);
+  }, [isOpen, userId, suggestedQueries.length, fetchSuggestedQueries, fetchChatHistory]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -67,38 +57,6 @@ export const ChatbotWidget = () => {
     sendQuestion(userId, queryText);
   };
 
-  const handleMouseDownOnHeader = (e) => {
-    setIsDragging(true);
-    const rect = windowRef.current?.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - (rect?.left || 0),
-      y: e.clientY - (rect?.top || 0),
-    });
-  };
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e) => {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, dragOffset]);
-
 
   return (
     <>
@@ -110,21 +68,8 @@ export const ChatbotWidget = () => {
         />
       </div>
 
-      <div 
-        ref={windowRef}
-        className={`${styles.chatbotWindow} ${isOpen ? styles.open : ''}`}
-        style={{
-          transform: isOpen 
-            ? `translate(${position.x}px, ${position.y}px)` 
-            : undefined,
-          cursor: isDragging ? 'grabbing' : 'auto'
-        }}
-      >
-        <div 
-          className={styles.header}
-          onMouseDown={handleMouseDownOnHeader}
-          style={{ cursor: isDragging ? 'grabbing' : 'grab', userSelect: 'none' }}
-        >
+      <div className={`${styles.chatbotWindow} ${isOpen ? styles.open : ''}`}>
+        <div className={styles.header}>
           <div className={styles.headerInfo}>
             <div className={styles.headerIcon}>
               <Icon icon="mdi:robot-outline" width={24} height={24} />

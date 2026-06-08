@@ -67,7 +67,6 @@ export default function DeveloperDocsHeader() {
           </div>
           <Link href="/" className={styles.backBtn}>
             <ArrowLeft width={16} />
-            Back to Login
           </Link>
         </div>
       </div>

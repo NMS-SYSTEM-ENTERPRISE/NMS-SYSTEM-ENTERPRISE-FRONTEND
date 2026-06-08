@@ -55,7 +55,6 @@ export const ManualHeader = () => {
           </div>
           <Link href="/" className={styles.backBtn}>
             <Icon icon="mdi:arrow-left" width={16} />
-            Back to Login
           </Link>
         </div>
       </div>

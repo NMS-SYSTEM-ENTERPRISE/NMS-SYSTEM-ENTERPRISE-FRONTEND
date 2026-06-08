@@ -68,20 +68,20 @@ const LatencyBar = ({ ping }) => {
   let color = '#059669'; // Muted Green
   if (ms > 200) {
     blocks = 1;
-    color = '#dc2626';
-  } // Muted Red
+    color = '#b91c1c';
+  } // Softer Red
   else if (ms > 100) {
     blocks = 2;
-    color = '#ea580c';
-  } // Muted Orange
+    color = '#c2410c';
+  } // Softer Orange
   else if (ms > 50) {
     blocks = 3;
-    color = '#d97706';
-  } // Muted Yellow
+    color = '#ca8a04';
+  } // Softer Yellow
   else if (ms > 20) {
     blocks = 4;
-    color = '#10b981';
-  } // Emerald
+    color = '#059669';
+  } // Muted Green
 
   return (
     <div className={styles.latencyViz}>
@@ -116,10 +116,10 @@ const UptimeVisual = ({ uptime }) => {
     return <span style={{ color: 'var(--color-text-muted)' }}>—</span>;
   const days = parseFloat(uptime) || 0;
 
-  let color = '#dc2626'; // Muted Red
+  let color = '#b91c1c'; // Softer Red
   if (days >= 20)
     color = '#059669'; // Muted Green
-  else if (days >= 5) color = '#d97706'; // Muted Yellow
+  else if (days >= 5) color = '#ca8a04'; // Softer Yellow
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -172,20 +172,28 @@ const getTypeVisuals = (type) => {
   if (t.includes('ups') || t.includes('battery'))
     return {
       icon: <Battery size={16} />,
-      color: '#10b981',
-      bg: 'rgba(16, 185, 129, 0.1)',
+      color: '#059669',
+      bg: 'rgba(5, 150, 105, 0.08)',
     };
   if (t.includes('switch') || t.includes('router') || t.includes('network'))
     return {
       icon: <Network size={16} />,
-      color: '#3b82f6',
-      bg: 'rgba(59, 130, 246, 0.1)',
+      color: '#0284c7',
+      bg: 'rgba(2, 132, 199, 0.08)',
     };
   return {
     icon: <ServerIcon size={16} />,
-    color: '#8b5cf6',
-    bg: 'rgba(139, 92, 246, 0.1)',
+    color: '#7c3aed',
+    bg: 'rgba(124, 58, 237, 0.08)',
   };
+};
+
+// Map device type to route category
+const getRouteCategoryFromType = (type) => {
+  const t = (type || '').toLowerCase();
+  if (t.includes('ups') || t.includes('battery')) return 'UPS';
+  if (t.includes('switch') || t.includes('router') || t.includes('network')) return 'Network';
+  return 'Server';
 };
 
 const DeviceTable = ({ devices, category, onRowClick }) => {
@@ -227,7 +235,7 @@ const DeviceTable = ({ devices, category, onRowClick }) => {
               return (
                 <tr
                   key={index}
-                  onClick={() => onRowClick(category, device.ip)}
+                  onClick={() => onRowClick(device)}
                   style={{ cursor: 'pointer', transition: 'background-color 0.2s ease' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(34, 211, 238, 0.05)';
@@ -320,9 +328,10 @@ export const InfrastructureAccordion = ({ statistics }) => {
 
   if (!statistics) return null;
 
-  const handleNavigateToDevice = (category, ip) => {
+  const handleNavigateToDevice = (device) => {
     try {
-      const path = `/network-monitoring/${encodeURIComponent(category)}/${encodeURIComponent(ip)}`;
+      const routeCategory = getRouteCategoryFromType(device.type);
+      const path = `/network-monitoring/${encodeURIComponent(routeCategory)}/${encodeURIComponent(device.ip)}`;
       router.push(path);
     } catch (error) {
       console.error('Navigation error:', error);

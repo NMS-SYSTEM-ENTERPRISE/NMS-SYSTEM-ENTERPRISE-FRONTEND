@@ -1,16 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Icon } from '@iconify/react';
 import { useChatbot } from '@/hooks/chatbot/useChatbot';
 import { useAuthContext } from '@/hooks/useauth';
+import { Icon } from '@iconify/react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './chatbot.module.css';
 
 export const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const messagesEndRef = useRef(null);
-  
+  const windowRef = useRef(null);
+
   const { user } = useAuthContext();
-  const userId = user?.id || 1; // Fallback to 1 if user object not loaded
+  const userId = user?.id || 1;
 
   const {
     suggestedQueries,
@@ -19,7 +23,7 @@ export const ChatbotWidget = () => {
     isAsking,
     fetchSuggestedQueries,
     fetchChatHistory,
-    sendQuestion
+    sendQuestion,
   } = useChatbot();
 
   useEffect(() => {
@@ -27,7 +31,13 @@ export const ChatbotWidget = () => {
       if (suggestedQueries.length === 0) fetchSuggestedQueries();
       fetchChatHistory(userId);
     }
-  }, [isOpen, userId, suggestedQueries.length, fetchSuggestedQueries, fetchChatHistory]);
+  }, [
+    isOpen,
+    userId,
+    suggestedQueries.length,
+    fetchSuggestedQueries,
+    fetchChatHistory,
+  ]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -57,14 +67,64 @@ export const ChatbotWidget = () => {
     sendQuestion(userId, queryText);
   };
 
+  const handleMouseDownOnHeader = (e) => {
+    setIsDragging(true);
+    const rect = windowRef.current?.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - (rect?.left || 0),
+      y: e.clientY - (rect?.top || 0),
+    });
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e) => {
+      setPosition({
+        x: e.clientX - dragOffset.x,
+        y: e.clientY - dragOffset.y,
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
+
   return (
     <>
       <div className={styles.chatbotFab} onClick={toggleChat}>
-        <Icon icon={isOpen ? "mdi:close" : "mdi:robot-outline"} width={32} height={32} />
+        <Icon
+          icon={isOpen ? 'mdi:close' : 'mdi:robot-outline'}
+          width={32}
+          height={32}
+        />
       </div>
 
-      <div className={`${styles.chatbotWindow} ${isOpen ? styles.open : ''}`}>
-        <div className={styles.header}>
+      <div 
+        ref={windowRef}
+        className={`${styles.chatbotWindow} ${isOpen ? styles.open : ''}`}
+        style={{
+          transform: isOpen 
+            ? `translate(${position.x}px, ${position.y}px)` 
+            : undefined,
+          cursor: isDragging ? 'grabbing' : 'auto'
+        }}
+      >
+        <div 
+          className={styles.header}
+          onMouseDown={handleMouseDownOnHeader}
+          style={{ cursor: isDragging ? 'grabbing' : 'grab', userSelect: 'none' }}
+        >
           <div className={styles.headerInfo}>
             <div className={styles.headerIcon}>
               <Icon icon="mdi:robot-outline" width={24} height={24} />
@@ -82,7 +142,12 @@ export const ChatbotWidget = () => {
         <div className={styles.body}>
           {isLoading && chatHistory.length === 0 ? (
             <div className={styles.loadingState}>
-              <Icon icon="mdi:loading" width={40} height={40} className={styles.loadingSpinner} />
+              <Icon
+                icon="mdi:loading"
+                width={40}
+                height={40}
+                className={styles.loadingSpinner}
+              />
               <p>Initializing assistant...</p>
             </div>
           ) : (
@@ -91,7 +156,7 @@ export const ChatbotWidget = () => {
                 <h2>How can I help you?</h2>
                 <p>Select a common query or ask your own question below.</p>
               </div>
-              
+
               <div className={styles.suggestionsContainer}>
                 {suggestedQueries.map((category, idx) => (
                   <div key={idx} className={styles.suggestionCategory}>
@@ -100,9 +165,9 @@ export const ChatbotWidget = () => {
                       {category.category}
                     </div>
                     <div className={styles.queryGrid}>
-                      {category.queries.map(q => (
-                        <button 
-                          key={q.id} 
+                      {category.queries.map((q) => (
+                        <button
+                          key={q.id}
                           className={styles.queryPill}
                           onClick={() => handleSuggestedClick(q.text)}
                         >
@@ -120,11 +185,15 @@ export const ChatbotWidget = () => {
                   {chatHistory.map((msg, index) => (
                     <div key={msg.id || index} className={styles.messageGroup}>
                       <div className={`${styles.messageRow} ${styles.user}`}>
-                        <div className={styles.messageBubble}>{msg.question}</div>
+                        <div className={styles.messageBubble}>
+                          {msg.question}
+                        </div>
                       </div>
                       {msg.answer && (
                         <div className={`${styles.messageRow} ${styles.bot}`}>
-                          <div className={styles.messageBubble}>{msg.answer}</div>
+                          <div className={styles.messageBubble}>
+                            {msg.answer}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -157,9 +226,9 @@ export const ChatbotWidget = () => {
               onKeyDown={handleKeyDown}
               rows={1}
             />
-            <button 
-              type="submit" 
-              className={styles.sendButton} 
+            <button
+              type="submit"
+              className={styles.sendButton}
               disabled={!inputValue.trim() || isAsking}
             >
               <Icon icon="mdi:send" width={18} height={18} />

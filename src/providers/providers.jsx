@@ -17,14 +17,16 @@ import { SsoProvider } from '@/contexts/settings/user/single-sign-on/sso-context
 import { UserProfileProvider } from '@/contexts/settings/user/user-profiles/user-profile-context';
 import { UserProvider } from '@/contexts/settings/user/users/user-context';
 import { ToastProvider } from '@/contexts/toast-context';
+import { ExportProvider } from '@/contexts/export';
 
 export function Providers({ children }) {
   return (
     <ToastProvider>
       <AuthProvider>
         <AppDataProvider>
-          <UserProvider>
-            <RoleProvider>
+          <ExportProvider>
+            <UserProvider>
+              <RoleProvider>
               <GroupProvider>
                 <UserProfileProvider>
                   <PatProvider>
@@ -52,8 +54,9 @@ export function Providers({ children }) {
               </GroupProvider>
             </RoleProvider>
           </UserProvider>
-        </AppDataProvider>
-      </AuthProvider>
-    </ToastProvider>
+        </ExportProvider>
+      </AppDataProvider>
+    </AuthProvider>
+  </ToastProvider>
   );
 }

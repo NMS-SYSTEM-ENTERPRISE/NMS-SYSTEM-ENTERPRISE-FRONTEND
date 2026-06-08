@@ -9,7 +9,10 @@ import styles from './styles.module.css';
 
 import { useAppData } from '@/contexts/AppDataContext';
 import { useAuthContext } from '@/hooks/useauth';
+import { useExport } from '@/contexts/export';
+import { ExportWidgetPanel } from '@/components/common/export-widget-panel';
 import { getInfrastructureSummary } from '@/networking/dashboard/infrastructure-summary-apis';
+import { DEFAULT_WIDGET_LIST } from '@/utils/data-export/constants';
 
 // Page mapping for current route to display name and icon
 const pageMap = {
@@ -37,6 +40,7 @@ export const Header = () => {
   const { logOut } = useAuthContext();
   const { showUserProfile, closeUserProfile, setShowUserProfile } =
     useAppData();
+  const { openExportPanel } = useExport();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState(null);
@@ -44,6 +48,7 @@ export const Header = () => {
   const [infrastructureSummary, setInfrastructureSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState({ label: '', icon: '' });
+  const [dashboardElement, setDashboardElement] = useState(null);
 
   useEffect(() => {
     // Get current page info from pathname
@@ -52,6 +57,18 @@ export const Header = () => {
       icon: 'lucide:layout-dashboard',
     };
     setCurrentPage(pageInfo);
+    
+    // Try to find and set the main content area (dashboard or page content)
+    // Look for common content area selectors
+    const contentElement = 
+      document.querySelector('main') || 
+      document.querySelector('[role="main"]') ||
+      document.querySelector('.dashboardContent') ||
+      document.querySelector('[class*="content"]');
+    
+    if (contentElement) {
+      setDashboardElement(contentElement);
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -295,8 +312,9 @@ export const Header = () => {
   );
 
   return (
-    <header className={styles.header}>
-      <div className={styles.headerLeft}>
+    <>
+      <header className={styles.header}>
+        <div className={styles.headerLeft}>
         <div className={styles.breadcrumb}>
           <Icon icon={currentPage.icon} width={16} height={16} />
           <span className={styles.breadcrumbSeparator}>/</span>
@@ -316,7 +334,17 @@ export const Header = () => {
           <Icon icon="mdi:chevron-down" width={14} height={14} />
         </Button> */}
 
-        {/* User Profile Button */}
+        {/* More actions button */}
+        <button
+          type="button"
+          className={styles.headerActionButton}
+          onClick={openExportPanel}
+          title="More actions"
+          aria-label="Open export panel"
+        >
+          <Icon icon="mdi:dots-vertical" width={20} height={20} />
+        </button>
+
         <Button
           variant="icon"
           className={styles.userButton}
@@ -398,5 +426,12 @@ export const Header = () => {
         </div>
       </Modal>
     </header>
+
+    <ExportWidgetPanel 
+      screenTitle={currentPage.label} 
+      availableWidgets={DEFAULT_WIDGET_LIST}
+      dashboardElement={dashboardElement}
+    />
+  </>
   );
 };

@@ -1,0 +1,269 @@
+.exportWidgetPanelContainer {
+  width: 100%;
+  position: relative;
+}
+
+.exportActionBar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0;
+}
+
+.exportActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.exportActionBtn:hover {
+  background-color: var(--color-bg-card);
+  transform: translateY(-1px);
+}
+
+.exportOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 10000;
+}
+
+.exportPanel {
+  position: fixed;
+  top: 0;
+  right: -460px;
+  width: min(420px, 100%);
+  height: 100vh;
+  background-color: var(--color-bg-primary);
+  z-index: 10001;
+  box-shadow: -2px 0 42px rgba(15, 23, 42, 0.14);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  transition: right 0.3s ease;
+}
+
+.exportPanelOpen {
+  right: 0;
+}
+
+.exportPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.exportPanelTitle {
+  margin: 0;
+  font-size: 1.03rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.exportPanelSubtitle {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.closeButton {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.4rem;
+}
+
+.exportSection {
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.formatGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.formatOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 0.9rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.formatOption input {
+  accent-color: var(--color-brand);
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.selectionActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.linkButton {
+  border: none;
+  background: transparent;
+  color: var(--color-brand);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+}
+
+.widgetList {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.widgetCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.widgetCheckboxLabel input {
+  accent-color: var(--color-brand);
+}
+
+.exportFooter {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exportStatus {
+  color: var(--color-text-secondary);
+  font-size: 0.92rem;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-lg);
+  border: none;
+  background-color: var(--color-brand);
+  color: var(--color-bg-primary);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.downloadButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.exportPreviewWrapper {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1200px;
+  height: auto;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.exportPreviewContent {
+  width: 1200px;
+  padding: 28px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.15);
+  color: #1f2937;
+  font-family: 'Inter', sans-serif;
+}
+
+.exportPreviewHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.exportLogo {
+  width: 110px;
+  height: auto;
+}
+
+.exportPreviewSummary {
+  margin-top: 1.25rem;
+}
+
+.previewLabel {
+  margin: 0 0 0.65rem;
+  font-weight: 700;
+}
+
+.exportPreviewSummary ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #374151;
+}
+
+.exportPreviewSummary li {
+  margin-bottom: 0.45rem;
+  line-height: 1.6;
+}
+
+.exportWatermark {
+  position: relative;
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.exportWatermark img {
+  width: 40px;
+  height: 40px;
+  opacity: 0.55;
+}
+
+.exportWatermark span {
+  color: #6b7280;
+  font-weight: 600;
+}

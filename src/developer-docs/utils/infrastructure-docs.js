@@ -5,7 +5,7 @@
 
 export const infrastructureDocumentation = {
   'infra-overview': {
-    title: 'System Overview',
+    title: 'Overview',
     category: 'Infrastructure',
     description: 'Complete end-to-end system architecture',
     content: `
@@ -136,7 +136,7 @@ graph TB
   },
 
   'infra-dataflow': {
-    title: 'Data Flow Diagrams',
+    title: 'Data Flow',
     category: 'Infrastructure',
     description: 'Complete pipeline from collection to visualization',
     content: `
@@ -238,7 +238,7 @@ Chart animated update
   },
 
   'infra-protocols': {
-    title: 'Communication Protocols',
+    title: 'Protocols',
     category: 'Infrastructure',
     description: 'SNMP, Syslog, NetFlow, APM protocols',
     content: `
@@ -330,7 +330,7 @@ Severity: 0=Emergency, 7=Debug
   },
 
   'infra-deployment': {
-    title: 'Deployment Architecture',
+    title: 'Deployment',
     category: 'Infrastructure',
     description: 'Single-server and multi-server deployments',
     content: `
@@ -470,7 +470,7 @@ spec:
   },
 
   'infra-monitoring': {
-    title: 'Monitoring & Observability',
+    title: 'Monitoring',
     category: 'Infrastructure',
     description: 'Prometheus, Grafana, ELK stack, and logging',
     content: `
@@ -603,7 +603,7 @@ groups:
   },
 
   'infra-scaling': {
-    title: 'Scaling & Performance',
+    title: 'Scaling',
     category: 'Infrastructure',
     description: 'Optimization strategies and capacity planning',
     content: `

@@ -1,10 +1,9 @@
 'use client';
 
-import { DeveloperDocsProvider } from './contexts/DeveloperDocsContext';
+import DeveloperDocsContent from './components/DeveloperDocsContent';
 import DeveloperDocsHeader from './components/DeveloperDocsHeader';
 import DeveloperDocsSidebar from './components/DeveloperDocsSidebar';
-import DeveloperDocsContent from './components/DeveloperDocsContent';
-import DeveloperDocsFooter from './components/DeveloperDocsFooter';
+import { DeveloperDocsProvider } from './contexts/DeveloperDocsContext';
 import styles from './styles/DeveloperDocsLayout.module.css';
 
 export default function DeveloperDocs() {
@@ -16,7 +15,6 @@ export default function DeveloperDocs() {
           <DeveloperDocsSidebar />
           <DeveloperDocsContent />
         </div>
-        <DeveloperDocsFooter />
       </div>
     </DeveloperDocsProvider>
   );

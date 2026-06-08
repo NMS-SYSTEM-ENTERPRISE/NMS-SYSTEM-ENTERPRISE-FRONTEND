@@ -14,8 +14,11 @@ export default function ClientLayout({ children }) {
     pathname?.includes('/dashboard-custom');
   const isLogin = pathname === '/' || pathname === '/login';
   const isManual = pathname === '/manual';
+  const isDeveloperDocumentation =
+    pathname === '/developer-documentation' ||
+    pathname?.startsWith('/developer-documentation/');
 
-  if (isLogin || isManual) {
+  if (isLogin || isManual || isDeveloperDocumentation) {
     return (
       <main style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
         {children}

@@ -9,7 +9,7 @@ export const documentationData = {
   // ============================================================================
 
   'backend-architecture': {
-    title: 'Backend Project Architecture & Setup',
+    title: 'Architecture & Setup',
     category: 'Backend',
     description: 'Complete overview of FastAPI backend architecture',
     content: `
@@ -129,7 +129,7 @@ graph TD
   },
 
   'backend-database': {
-    title: 'Database Layer & Models',
+    title: 'Database Layer',
     category: 'Backend',
     description: 'PostgreSQL schema design and SQLAlchemy ORM models',
     content: `
@@ -253,7 +253,7 @@ graph TD
   },
 
   'backend-services': {
-    title: 'Core Services & Data Ingestion',
+    title: 'Core Services',
     category: 'Backend',
     description: 'Business logic, service layer, and data collection methods',
     content: `
@@ -445,7 +445,7 @@ graph TD
   },
 
   'backend-api': {
-    title: 'API Layer & Routing',
+    title: 'API Layer',
     category: 'Backend',
     description: '200+ REST endpoints, versioning, and request handling',
     content: `
@@ -864,9 +864,10 @@ graph TD
   },
 
   'backend-performance': {
-    title: 'Performance & Scaling Optimization',
+    title: 'Performance & Scaling',
     category: 'Backend',
-    description: 'Async patterns, caching, indexing, and scalability strategies',
+    description:
+      'Async patterns, caching, indexing, and scalability strategies',
     content: `
 ## Performance & Scaling
 
@@ -1046,7 +1047,7 @@ graph TD
   },
 
   'backend-folder': {
-    title: 'Backend Folder Structure',
+    title: 'Folder Structure',
     category: 'Backend',
     description: 'Complete directory organization and file layout',
     content: `
@@ -1279,7 +1280,7 @@ graph TD
   },
 
   'backend-codebase': {
-    title: 'Backend Codebase Explanation',
+    title: 'Codebase Overview',
     category: 'Backend',
     description: 'Key files and how they work together',
     content: `
@@ -1714,7 +1715,7 @@ graph TD
   },
 
   'backend-git': {
-    title: 'Git & Version Control',
+    title: 'Git Workflow',
     category: 'Backend',
     description: 'Git workflow and commit conventions',
     content: `
@@ -1823,7 +1824,7 @@ git log --since="1 week ago"
   },
 
   'backend-run': {
-    title: 'How to Run the Backend',
+    title: 'Getting Started',
     category: 'Backend',
     description: 'Setup, installation, and running instructions',
     content: `

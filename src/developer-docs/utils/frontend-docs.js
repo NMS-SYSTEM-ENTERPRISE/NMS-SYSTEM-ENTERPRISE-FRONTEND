@@ -5,7 +5,7 @@
 
 export const frontendDocumentation = {
   'frontend-architecture': {
-    title: 'Frontend Architecture & Framework',
+    title: 'Architecture',
     category: 'Frontend',
     description: 'Next.js 16, React 19, and component architecture',
     content: `
@@ -94,7 +94,7 @@ graph TD
   },
 
   'frontend-state': {
-    title: 'State Management & Real-Time Ingestion',
+    title: 'State Management',
     category: 'Frontend',
     description: 'React Context API, hooks, and real-time data updates',
     content: `
@@ -269,7 +269,7 @@ export const useRealTimeMetrics = (deviceId) => {
   },
 
   'frontend-components': {
-    title: 'UI Component Library & Visual Elements',
+    title: 'Components',
     category: 'Frontend',
     description: '50+ reusable components and design system',
     content: `
@@ -431,7 +431,7 @@ export const Button = ({
   },
 
   'frontend-charts': {
-    title: 'Interactive Data Visualization',
+    title: 'Data Visualization',
     category: 'Frontend',
     description: 'ECharts and Recharts for real-time visualization',
     content: `
@@ -583,7 +583,7 @@ export const exportChartAsImage = async (elementRef, filename) => {
   },
 
   'frontend-auth': {
-    title: 'Authentication & Access Enforcement',
+    title: 'Authentication & Access',
     category: 'Frontend',
     description: 'Auth guards, permission checks, and secure routes',
     content: `
@@ -755,7 +755,7 @@ export default function LoginScreen() {
   },
 
   'frontend-deployment': {
-    title: 'Deployment & Build Pipelines',
+    title: 'Deployment',
     category: 'Frontend',
     description: 'Next.js build, deployment, and CI/CD',
     content: `

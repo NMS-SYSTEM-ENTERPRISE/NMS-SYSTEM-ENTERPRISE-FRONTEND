@@ -140,12 +140,12 @@ const menuGroups = [
         path: '/manual',
         badge: null,
       },
-      // {
-      //   icon: 'lucide:book-open',
-      //   label: 'Developer Documentation',
-      //   path: '/developer-documentation',
-      //   badge: null,
-      // },
+      {
+        icon: 'lucide:book-open',
+        label: 'Dev Docs',
+        path: '/developer-documentation',
+        badge: null,
+      },
     ],
   },
 ];

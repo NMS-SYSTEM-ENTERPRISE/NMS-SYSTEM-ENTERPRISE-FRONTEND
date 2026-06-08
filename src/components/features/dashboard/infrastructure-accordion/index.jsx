@@ -192,7 +192,8 @@ const getTypeVisuals = (type) => {
 const getRouteCategoryFromType = (type) => {
   const t = (type || '').toLowerCase();
   if (t.includes('ups') || t.includes('battery')) return 'UPS';
-  if (t.includes('switch') || t.includes('router') || t.includes('network')) return 'Network';
+  if (t.includes('switch') || t.includes('router') || t.includes('network'))
+    return 'Network';
   return 'Server';
 };
 
@@ -236,9 +237,13 @@ const DeviceTable = ({ devices, category, onRowClick }) => {
                 <tr
                   key={index}
                   onClick={() => onRowClick(device)}
-                  style={{ cursor: 'pointer', transition: 'background-color 0.2s ease' }}
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease',
+                  }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(34, 211, 238, 0.05)';
+                    e.currentTarget.style.backgroundColor =
+                      'rgba(34, 211, 238, 0.05)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'transparent';
@@ -486,7 +491,11 @@ export const InfrastructureAccordion = ({ statistics }) => {
             </div>
 
             {/* Table Content */}
-            <DeviceTable devices={filteredData} category={activeType} onRowClick={handleNavigateToDevice} />
+            <DeviceTable
+              devices={filteredData}
+              category={activeType}
+              onRowClick={handleNavigateToDevice}
+            />
           </div>
         )}
       </div>

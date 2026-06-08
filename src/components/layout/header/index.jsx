@@ -3,7 +3,7 @@ import { Modal } from '@/components/ui/modal';
 import { MultiDateTimePicker } from '@/components/ui/multi-date-time-picker';
 import { Icon } from '@iconify/react';
 import { format } from 'date-fns';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 
@@ -47,9 +47,9 @@ export const Header = () => {
 
   useEffect(() => {
     // Get current page info from pathname
-    const pageInfo = pageMap[pathname] || { 
-      label: 'Dashboard', 
-      icon: 'lucide:layout-dashboard' 
+    const pageInfo = pageMap[pathname] || {
+      label: 'Dashboard',
+      icon: 'lucide:layout-dashboard',
     };
     setCurrentPage(pageInfo);
   }, [pathname]);

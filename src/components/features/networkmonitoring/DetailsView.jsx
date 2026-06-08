@@ -201,7 +201,11 @@ const AccordionRow = ({
          Table Grid Row 
          Columns: Identity | Type | IP | Status | Metric1 | Metric2 | Metric3 | Action 
       */}
-      <div className={styles.rowMain} onClick={handleDetailClick} style={{ cursor: 'pointer' }}>
+      <div
+        className={styles.rowMain}
+        onClick={handleDetailClick}
+        style={{ cursor: 'pointer' }}
+      >
         {/* Col 1: Identity */}
         <div
           className={styles.rowIdentity}

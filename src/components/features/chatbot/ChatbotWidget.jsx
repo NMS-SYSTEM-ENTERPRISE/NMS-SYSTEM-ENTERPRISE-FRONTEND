@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Icon } from '@iconify/react';
 import { useChatbot } from '@/hooks/chatbot/useChatbot';
 import { useAuthContext } from '@/hooks/useauth';
+import { Icon } from '@iconify/react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './chatbot.module.css';
 
 export const ChatbotWidget = () => {
@@ -19,7 +19,7 @@ export const ChatbotWidget = () => {
     isAsking,
     fetchSuggestedQueries,
     fetchChatHistory,
-    sendQuestion
+    sendQuestion,
   } = useChatbot();
 
   useEffect(() => {
@@ -27,7 +27,13 @@ export const ChatbotWidget = () => {
       if (suggestedQueries.length === 0) fetchSuggestedQueries();
       fetchChatHistory(userId);
     }
-  }, [isOpen, userId, suggestedQueries.length, fetchSuggestedQueries, fetchChatHistory]);
+  }, [
+    isOpen,
+    userId,
+    suggestedQueries.length,
+    fetchSuggestedQueries,
+    fetchChatHistory,
+  ]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,7 +62,6 @@ export const ChatbotWidget = () => {
   const handleSuggestedClick = (queryText) => {
     sendQuestion(userId, queryText);
   };
-
 
   return (
     <>

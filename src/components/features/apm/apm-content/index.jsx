@@ -245,9 +245,12 @@ export const ApmContent = () => {
                     analyticsData?.performanceData || ANALYTICS_PERFORMANCE_DATA
                   }
                   distributionData={
-                    analyticsData?.distributionData || ANALYTICS_DISTRIBUTION_DATA
+                    analyticsData?.distributionData ||
+                    ANALYTICS_DISTRIBUTION_DATA
                   }
-                  topServices={analyticsData?.topServices || ANALYTICS_TOP_SERVICES}
+                  topServices={
+                    analyticsData?.topServices || ANALYTICS_TOP_SERVICES
+                  }
                 />
               )}
             </>

@@ -952,16 +952,23 @@
   justify-content: center;
   margin-bottom: 16px;
   border: 2px solid rgba(244, 67, 54, 0.3);
-  box-shadow: 0 8px 24px rgba(244, 67, 54, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 24px rgba(244, 67, 54, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: modalIconPulse 2s ease-in-out infinite;
 }
 
 @keyframes modalIconPulse {
-  0%, 100% {
-    box-shadow: 0 8px 24px rgba(244, 67, 54, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  0%,
+  100% {
+    box-shadow:
+      0 8px 24px rgba(244, 67, 54, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   50% {
-    box-shadow: 0 8px 32px rgba(244, 67, 54, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow:
+      0 8px 32px rgba(244, 67, 54, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 }
 

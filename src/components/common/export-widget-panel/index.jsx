@@ -1,26 +1,44 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
-import { Icon } from '@iconify/react';
-import { useExport } from '@/contexts/export';
-import { DEFAULT_EXPORT_FORMAT, DEFAULT_WIDGET_LIST, EXPORT_FORMATS } from '@/utils/data-export/constants';
-import { downloadCsvExport, downloadPngExport, downloadPdfExport, downloadXlsxExport } from '@/utils/data-export';
-import styles from './styles.module.css';
-import logoPath from '@/assets/images/snr-logo-xl.svg';
 import faviconPath from '@/assets/images/snr-edatas-favicon.png';
+import logoPath from '@/assets/images/snr-logo-xl.svg';
+import { useExport } from '@/contexts/export';
+import {
+  downloadCsvExport,
+  downloadPdfExport,
+  downloadPngExport,
+  downloadXlsxExport,
+} from '@/utils/data-export';
+import {
+  DEFAULT_EXPORT_FORMAT,
+  DEFAULT_WIDGET_LIST,
+  EXPORT_FORMATS,
+} from '@/utils/data-export/constants';
+import { Icon } from '@iconify/react';
+import { useMemo, useRef, useState } from 'react';
+import styles from './styles.module.css';
 
-export const ExportWidgetPanel = ({ screenTitle = 'Dashboard', availableWidgets = DEFAULT_WIDGET_LIST, dashboardElement = null }) => {
+export const ExportWidgetPanel = ({
+  screenTitle = 'Dashboard',
+  availableWidgets = DEFAULT_WIDGET_LIST,
+  dashboardElement = null,
+}) => {
   const { isExportPanelOpen, closeExportPanel } = useExport();
   const [selectedWidgetIds, setSelectedWidgetIds] = useState(
     availableWidgets.map((widget) => widget.id)
   );
   const [exportFormat, setExportFormat] = useState(DEFAULT_EXPORT_FORMAT);
   const [isBusy, setIsBusy] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('Select the widgets and format, then click Download.');
+  const [statusMessage, setStatusMessage] = useState(
+    'Select the widgets and format, then click Download.'
+  );
   const previewRef = useRef(null);
 
   const selectedWidgets = useMemo(
-    () => availableWidgets.filter((widget) => selectedWidgetIds.includes(widget.id)),
+    () =>
+      availableWidgets.filter((widget) =>
+        selectedWidgetIds.includes(widget.id)
+      ),
     [availableWidgets, selectedWidgetIds]
   );
 
@@ -78,7 +96,9 @@ export const ExportWidgetPanel = ({ screenTitle = 'Dashboard', availableWidgets 
       setStatusMessage('Export completed successfully.');
     } catch (error) {
       console.error('Export Error:', error);
-      setStatusMessage(`Export failed: ${error.message || 'Please try again.'}`);
+      setStatusMessage(
+        `Export failed: ${error.message || 'Please try again.'}`
+      );
     } finally {
       setIsBusy(false);
       // Auto-close after success and reset state for next export
@@ -93,9 +113,13 @@ export const ExportWidgetPanel = ({ screenTitle = 'Dashboard', availableWidgets 
 
   return (
     <div className={styles.exportWidgetPanelContainer}>
-      {isExportPanelOpen && <div className={styles.exportOverlay} onClick={closeExportPanel} />}
+      {isExportPanelOpen && (
+        <div className={styles.exportOverlay} onClick={closeExportPanel} />
+      )}
 
-      <aside className={`${styles.exportPanel} ${isExportPanelOpen ? styles.exportPanelOpen : ''}`}>
+      <aside
+        className={`${styles.exportPanel} ${isExportPanelOpen ? styles.exportPanelOpen : ''}`}
+      >
         <div className={styles.exportPanelHeader}>
           <div>
             <p className={styles.exportPanelTitle}>Export dashboard content</p>
@@ -103,7 +127,11 @@ export const ExportWidgetPanel = ({ screenTitle = 'Dashboard', availableWidgets 
               Choose widgets and format to generate a clean export package.
             </p>
           </div>
-          <button className={styles.closeButton} type="button" onClick={closeExportPanel}>
+          <button
+            className={styles.closeButton}
+            type="button"
+            onClick={closeExportPanel}
+          >
             <Icon icon="mdi:close" width={20} height={20} />
           </button>
         </div>
@@ -130,10 +158,18 @@ export const ExportWidgetPanel = ({ screenTitle = 'Dashboard', availableWidgets 
           <div className={styles.sectionHeaderRow}>
             <h3 className={styles.sectionTitle}>Widgets to export</h3>
             <div className={styles.selectionActions}>
-              <button className={styles.linkButton} type="button" onClick={handleSelectAll}>
+              <button
+                className={styles.linkButton}
+                type="button"
+                onClick={handleSelectAll}
+              >
                 Select all
               </button>
-              <button className={styles.linkButton} type="button" onClick={handleClearAll}>
+              <button
+                className={styles.linkButton}
+                type="button"
+                onClick={handleClearAll}
+              >
                 Clear
               </button>
             </div>
@@ -170,7 +206,11 @@ export const ExportWidgetPanel = ({ screenTitle = 'Dashboard', availableWidgets 
         <div className={styles.exportPreviewWrapper} ref={previewRef}>
           <div className={styles.exportPreviewContent}>
             <div className={styles.exportPreviewHeader}>
-              <img src={logoPath} alt="SNR Edatas" className={styles.exportLogo} />
+              <img
+                src={logoPath}
+                alt="SNR Edatas"
+                className={styles.exportLogo}
+              />
               <div>
                 <h4>{screenTitle} export</h4>
                 <p>{selectedWidgets.length} widget(s) selected</p>

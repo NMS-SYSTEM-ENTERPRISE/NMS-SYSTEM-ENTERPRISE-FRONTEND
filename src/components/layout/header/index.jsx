@@ -7,10 +7,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 
-import { useAppData } from '@/contexts/AppDataContext';
-import { useAuthContext } from '@/hooks/useauth';
-import { useExport } from '@/contexts/export';
 import { ExportWidgetPanel } from '@/components/common/export-widget-panel';
+import { useAppData } from '@/contexts/AppDataContext';
+import { useExport } from '@/contexts/export';
+import { useAuthContext } from '@/hooks/useauth';
 import { getInfrastructureSummary } from '@/networking/dashboard/infrastructure-summary-apis';
 import { DEFAULT_WIDGET_LIST } from '@/utils/data-export/constants';
 
@@ -57,15 +57,15 @@ export const Header = () => {
       icon: 'lucide:layout-dashboard',
     };
     setCurrentPage(pageInfo);
-    
+
     // Try to find and set the main content area (dashboard or page content)
     // Look for common content area selectors
-    const contentElement = 
-      document.querySelector('main') || 
+    const contentElement =
+      document.querySelector('main') ||
       document.querySelector('[role="main"]') ||
       document.querySelector('.dashboardContent') ||
       document.querySelector('[class*="content"]');
-    
+
     if (contentElement) {
       setDashboardElement(contentElement);
     }
@@ -315,16 +315,16 @@ export const Header = () => {
     <>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-        <div className={styles.breadcrumb}>
-          <Icon icon={currentPage.icon} width={16} height={16} />
-          <span className={styles.breadcrumbSeparator}>/</span>
-          <span className={styles.breadcrumbText}>{currentPage.label}</span>
+          <div className={styles.breadcrumb}>
+            <Icon icon={currentPage.icon} width={16} height={16} />
+            <span className={styles.breadcrumbSeparator}>/</span>
+            <span className={styles.breadcrumbText}>{currentPage.label}</span>
+          </div>
         </div>
-      </div>
 
-      <div className={styles.headerRight}>
-        {/* Date Time Picker Button */}
-        {/* <Button
+        <div className={styles.headerRight}>
+          {/* Date Time Picker Button */}
+          {/* <Button
           variant="icon"
           className={styles.dateTimeButton}
           onClick={() => setShowDatePicker(!showDatePicker)}
@@ -334,104 +334,104 @@ export const Header = () => {
           <Icon icon="mdi:chevron-down" width={14} height={14} />
         </Button> */}
 
-        {/* More actions button */}
-        <button
-          type="button"
-          className={styles.headerActionButton}
-          onClick={openExportPanel}
-          title="More actions"
-          aria-label="Open export panel"
-        >
-          <Icon icon="mdi:dots-vertical" width={20} height={20} />
-        </button>
+          {/* More actions button */}
+          <button
+            type="button"
+            className={styles.headerActionButton}
+            onClick={openExportPanel}
+            title="More actions"
+            aria-label="Open export panel"
+          >
+            <Icon icon="mdi:dots-vertical" width={20} height={20} />
+          </button>
 
-        <Button
-          variant="icon"
-          className={styles.userButton}
-          onClick={() => setShowUserProfile(!showUserProfile)}
-        >
-          <div className={styles.userButtonContent}>
-            <div className={styles.userAvatar}>
-              <span className={styles.userAvatarInitials}>
-                {userData.initials}
-              </span>
-              <div
-                className={`${styles.userStatusDot} ${styles[`status-${userData.status}`]}`}
+          <Button
+            variant="icon"
+            className={styles.userButton}
+            onClick={() => setShowUserProfile(!showUserProfile)}
+          >
+            <div className={styles.userButtonContent}>
+              <div className={styles.userAvatar}>
+                <span className={styles.userAvatarInitials}>
+                  {userData.initials}
+                </span>
+                <div
+                  className={`${styles.userStatusDot} ${styles[`status-${userData.status}`]}`}
+                />
+              </div>
+              <Icon icon="mdi:chevron-down" width={14} height={14} />
+            </div>
+          </Button>
+        </div>
+
+        {/* Date Time Picker Sidebar */}
+        {showDatePicker && (
+          <div
+            className={styles.datePickerOverlay}
+            onClick={() => setShowDatePicker(false)}
+          >
+            <div
+              className={styles.datePickerWrapper}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MultiDateTimePicker
+                onClose={() => setShowDatePicker(false)}
+                onApply={handleDateTimeApply}
               />
             </div>
-            <Icon icon="mdi:chevron-down" width={14} height={14} />
           </div>
-        </Button>
-      </div>
+        )}
 
-      {/* Date Time Picker Sidebar */}
-      {showDatePicker && (
-        <div
-          className={styles.datePickerOverlay}
-          onClick={() => setShowDatePicker(false)}
-        >
+        {/* User Profile Sidebar */}
+        {showUserProfile && (
           <div
-            className={styles.datePickerWrapper}
-            onClick={(e) => e.stopPropagation()}
+            className={styles.userProfileOverlay}
+            onClick={() => setShowUserProfile(false)}
           >
-            <MultiDateTimePicker
-              onClose={() => setShowDatePicker(false)}
-              onApply={handleDateTimeApply}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* User Profile Sidebar */}
-      {showUserProfile && (
-        <div
-          className={styles.userProfileOverlay}
-          onClick={() => setShowUserProfile(false)}
-        >
-          <div
-            className={styles.userProfileWrapper}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <UserProfilePopover onClose={() => closeUserProfile()} />
-          </div>
-        </div>
-      )}
-
-      {/* Logout Confirmation Modal */}
-      <Modal
-        isOpen={showLogoutConfirm}
-        onClose={() => setShowLogoutConfirm(false)}
-      >
-        <div className={styles.logoutModalContent}>
-          <div className={styles.geometricProjection}></div>
-          <div className={styles.logoutModalHeader}>
-            <div className={styles.logoutModalIconWrapper}>
-              <Icon icon="mdi:logout-variant" width={28} />
-            </div>
-            <h3>Sign Out</h3>
-            <p>Are you sure you want to sign out of the NetMonitor System?</p>
-          </div>
-          <div className={styles.logoutModalDivider}></div>
-          <div className={styles.logoutModalActions}>
-            <Button
-              variant="secondary"
-              onClick={() => setShowLogoutConfirm(false)}
+            <div
+              className={styles.userProfileWrapper}
+              onClick={(e) => e.stopPropagation()}
             >
-              Cancel
-            </Button>
-            <Button variant="danger" onClick={confirmSignOut}>
-              Sign Out
-            </Button>
+              <UserProfilePopover onClose={() => closeUserProfile()} />
+            </div>
           </div>
-        </div>
-      </Modal>
-    </header>
+        )}
 
-    <ExportWidgetPanel 
-      screenTitle={currentPage.label} 
-      availableWidgets={DEFAULT_WIDGET_LIST}
-      dashboardElement={dashboardElement}
-    />
-  </>
+        {/* Logout Confirmation Modal */}
+        <Modal
+          isOpen={showLogoutConfirm}
+          onClose={() => setShowLogoutConfirm(false)}
+        >
+          <div className={styles.logoutModalContent}>
+            <div className={styles.geometricProjection}></div>
+            <div className={styles.logoutModalHeader}>
+              <div className={styles.logoutModalIconWrapper}>
+                <Icon icon="mdi:logout-variant" width={28} />
+              </div>
+              <h3>Sign Out</h3>
+              <p>Are you sure you want to sign out of the NetMonitor System?</p>
+            </div>
+            <div className={styles.logoutModalDivider}></div>
+            <div className={styles.logoutModalActions}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowLogoutConfirm(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={confirmSignOut}>
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      </header>
+
+      <ExportWidgetPanel
+        screenTitle={currentPage.label}
+        availableWidgets={DEFAULT_WIDGET_LIST}
+        dashboardElement={dashboardElement}
+      />
+    </>
   );
 };

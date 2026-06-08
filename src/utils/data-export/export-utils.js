@@ -50,13 +50,16 @@ export const createExportHeaderRows = (screenTitle, selectedWidgets) => {
 };
 
 // Extract dashboard data from actual dashboard content with widget awareness
-export const extractDashboardData = (dashboardElement, selectedWidgets = null) => {
+export const extractDashboardData = (
+  dashboardElement,
+  selectedWidgets = null
+) => {
   if (!dashboardElement) {
     return [];
   }
 
   const dataRows = [];
-  
+
   try {
     // If specific widgets are selected, extract data for those widgets
     if (selectedWidgets && selectedWidgets.length > 0) {
@@ -64,12 +67,12 @@ export const extractDashboardData = (dashboardElement, selectedWidgets = null) =
         // Add widget header
         dataRows.push([`[${widget.label}]`]);
         dataRows.push([]); // Spacing
-        
+
         // Try to find widget-specific content
         // Look for elements with widget ID or widget label in their attributes
         const widgetSelector = `[data-widget-id="${widget.id}"], [id*="${widget.id}"], [class*="${widget.id}"], [aria-label*="${widget.label}"]`;
         let widgetElements = dashboardElement.querySelectorAll(widgetSelector);
-        
+
         if (widgetElements.length > 0) {
           // Extract all text from widget elements (even hidden ones)
           widgetElements.forEach((element) => {
@@ -79,19 +82,22 @@ export const extractDashboardData = (dashboardElement, selectedWidgets = null) =
           // Fallback: Search all elements for widget label text
           const allElements = dashboardElement.querySelectorAll('*');
           let foundWidget = false;
-          
+
           allElements.forEach((element) => {
             const text = element.textContent || element.innerText || '';
             // Look for widget label in element or its direct children
             if (text.includes(widget.label) && !foundWidget) {
               // Extract text from this element and siblings
-              const parentElement = element.closest('[class*="widget"], [class*="card"], [class*="section"], [role="region"]') || element;
+              const parentElement =
+                element.closest(
+                  '[class*="widget"], [class*="card"], [class*="section"], [role="region"]'
+                ) || element;
               extractTextFromElement(parentElement, dataRows);
               foundWidget = true;
             }
           });
         }
-        
+
         // Add separator
         dataRows.push([]);
       });
@@ -105,17 +111,19 @@ export const extractDashboardData = (dashboardElement, selectedWidgets = null) =
     if (tables.length > 0) {
       dataRows.push(['[Table Data]']);
       dataRows.push([]);
-      
+
       tables.forEach((table, tableIndex) => {
         const rows = table.querySelectorAll('tr');
         rows.forEach((row) => {
           const cells = row.querySelectorAll('td, th');
-          const rowData = Array.from(cells).map(cell => cell.innerText || cell.textContent || '');
-          if (rowData.some(cell => cell.trim())) {
+          const rowData = Array.from(cells).map(
+            (cell) => cell.innerText || cell.textContent || ''
+          );
+          if (rowData.some((cell) => cell.trim())) {
             dataRows.push(rowData);
           }
         });
-        
+
         if (tableIndex < tables.length - 1) {
           dataRows.push([]); // Spacing between tables
         }
@@ -143,7 +151,7 @@ const extractTextFromElement = (element, dataRows) => {
 
     const textContent = [];
     let node;
-    
+
     while ((node = walker.nextNode())) {
       const text = node.textContent.trim();
       if (text && text.length > 0 && !textContent.includes(text)) {
@@ -174,11 +182,11 @@ export const getDashboardSnapshot = (dashboardElement) => {
   if (!dashboardElement) {
     return null;
   }
-  
+
   try {
     // Create a clone of the dashboard element for clean capture
     const clone = dashboardElement.cloneNode(true);
-    
+
     // Create a temporary container
     const tempContainer = document.createElement('div');
     tempContainer.style.position = 'absolute';
@@ -187,11 +195,14 @@ export const getDashboardSnapshot = (dashboardElement) => {
     tempContainer.style.width = dashboardElement.offsetWidth + 'px';
     tempContainer.style.backgroundColor = '#ffffff';
     tempContainer.style.padding = '20px';
-    
+
     tempContainer.appendChild(clone);
     document.body.appendChild(tempContainer);
-    
-    return { element: tempContainer, cleanup: () => document.body.removeChild(tempContainer) };
+
+    return {
+      element: tempContainer,
+      cleanup: () => document.body.removeChild(tempContainer),
+    };
   } catch (error) {
     console.error('Error creating dashboard snapshot:', error);
     return null;

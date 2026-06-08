@@ -8,6 +8,7 @@ import { CredentialTagsProvider } from '@/contexts/discovery-settings/credential
 import { DiscoveryGroupsProvider } from '@/contexts/discovery-settings/discovery-profile/groups-context';
 import { DiscoveryProfileProvider } from '@/contexts/discovery-settings/discovery-profile/profile-context';
 import { DiscoveryTagsProvider } from '@/contexts/discovery-settings/discovery-profile/tags-context';
+import { ExportProvider } from '@/contexts/export';
 import { GroupProvider } from '@/contexts/settings/user/groups/group-context';
 import { LdapProvider } from '@/contexts/settings/user/ldap-server/ldap-context';
 import { PasswordPolicyProvider } from '@/contexts/settings/user/password-settings/password-policy-context';
@@ -17,7 +18,6 @@ import { SsoProvider } from '@/contexts/settings/user/single-sign-on/sso-context
 import { UserProfileProvider } from '@/contexts/settings/user/user-profiles/user-profile-context';
 import { UserProvider } from '@/contexts/settings/user/users/user-context';
 import { ToastProvider } from '@/contexts/toast-context';
-import { ExportProvider } from '@/contexts/export';
 
 export function Providers({ children }) {
   return (
@@ -27,36 +27,36 @@ export function Providers({ children }) {
           <ExportProvider>
             <UserProvider>
               <RoleProvider>
-              <GroupProvider>
-                <UserProfileProvider>
-                  <PatProvider>
-                    <PasswordPolicyProvider>
-                      <LdapProvider>
-                        <SsoProvider>
-                          <CredentialTagsProvider>
-                            <CredentialGroupsProvider>
-                              <CredentialProfileProvider>
-                                <DiscoveryTagsProvider>
-                                  <DiscoveryGroupsProvider>
-                                    <DiscoveryProfileProvider>
-                                      {children}
-                                    </DiscoveryProfileProvider>
-                                  </DiscoveryGroupsProvider>
-                                </DiscoveryTagsProvider>
-                              </CredentialProfileProvider>
-                            </CredentialGroupsProvider>
-                          </CredentialTagsProvider>
-                        </SsoProvider>
-                      </LdapProvider>
-                    </PasswordPolicyProvider>
-                  </PatProvider>
-                </UserProfileProvider>
-              </GroupProvider>
-            </RoleProvider>
-          </UserProvider>
-        </ExportProvider>
-      </AppDataProvider>
-    </AuthProvider>
-  </ToastProvider>
+                <GroupProvider>
+                  <UserProfileProvider>
+                    <PatProvider>
+                      <PasswordPolicyProvider>
+                        <LdapProvider>
+                          <SsoProvider>
+                            <CredentialTagsProvider>
+                              <CredentialGroupsProvider>
+                                <CredentialProfileProvider>
+                                  <DiscoveryTagsProvider>
+                                    <DiscoveryGroupsProvider>
+                                      <DiscoveryProfileProvider>
+                                        {children}
+                                      </DiscoveryProfileProvider>
+                                    </DiscoveryGroupsProvider>
+                                  </DiscoveryTagsProvider>
+                                </CredentialProfileProvider>
+                              </CredentialGroupsProvider>
+                            </CredentialTagsProvider>
+                          </SsoProvider>
+                        </LdapProvider>
+                      </PasswordPolicyProvider>
+                    </PatProvider>
+                  </UserProfileProvider>
+                </GroupProvider>
+              </RoleProvider>
+            </UserProvider>
+          </ExportProvider>
+        </AppDataProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 }

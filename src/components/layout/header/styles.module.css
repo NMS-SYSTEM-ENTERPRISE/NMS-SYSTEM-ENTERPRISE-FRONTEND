@@ -83,7 +83,9 @@
   background: var(--color-bg-secondary);
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .headerActionButton:hover {

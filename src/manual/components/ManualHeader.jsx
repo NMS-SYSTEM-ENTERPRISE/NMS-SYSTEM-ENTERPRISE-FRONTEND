@@ -4,9 +4,27 @@ import { snrLogo } from '@/resources/images/logo';
 import { Icon } from '@iconify/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import styles from '../styles/ManualHeader.module.css';
+import { exportManualToPdf } from '../utils/export-manual-pdf';
 
 export const ManualHeader = () => {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleDownload = async () => {
+    if (isExporting) return;
+
+    setIsExporting(true);
+    try {
+      await exportManualToPdf();
+    } catch (error) {
+      console.error('Manual PDF export failed:', error);
+      window.alert('Unable to export the user manual. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
@@ -49,6 +67,21 @@ export const ManualHeader = () => {
 
         {/* Right: Back to Login */}
         <div className={styles.headerActions}>
+          <button
+            type="button"
+            className={styles.downloadBtn}
+            onClick={handleDownload}
+            disabled={isExporting}
+            title="Download complete user manual (PDF)"
+            aria-label="Download complete user manual as PDF"
+          >
+            <Icon
+              icon={isExporting ? 'mdi:loading' : 'mdi:download-outline'}
+              width={16}
+              className={isExporting ? styles.downloadSpinner : undefined}
+            />
+            {isExporting ? 'Exporting...' : 'Download'}
+          </button>
           <div className={styles.versionBadge}>
             <Icon icon="mdi:tag-outline" width={13} />
             v1.0 Enterprise

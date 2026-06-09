@@ -203,7 +203,7 @@ const AccordionRow = ({
       */}
       <div
         className={styles.rowMain}
-        onClick={handleDetailClick}
+        onClick={onToggle}
         style={{ cursor: 'pointer' }}
       >
         {/* Col 1: Identity */}
@@ -387,9 +387,18 @@ const AccordionRow = ({
           >
             <Icon icon="mdi:monitor-dashboard" width={16} height={16} />
           </div>
-          <div className={styles.chevron}>
+          <button
+            type="button"
+            className={styles.chevron}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            aria-label={isExpanded ? 'Collapse row' : 'Expand row'}
+            aria-expanded={isExpanded}
+          >
             <Icon icon="mdi:chevron-down" width={18} height={18} />
-          </div>
+          </button>
         </div>
       </div>
 

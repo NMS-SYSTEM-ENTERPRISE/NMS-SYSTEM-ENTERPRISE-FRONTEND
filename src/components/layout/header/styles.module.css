@@ -70,28 +70,6 @@
   width: 200px;
 }
 
-.headerActionButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--gap-xs) !important;
-  padding: 6px 10px !important;
-  height: 36px !important;
-  min-width: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.headerActionButton:hover {
-  background: var(--color-bg-hover);
-}
-
 .userButton {
   gap: var(--gap-xs) !important;
   padding: 4px 8px !important;

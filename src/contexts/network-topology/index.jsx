@@ -1,6 +1,6 @@
 "use client";
 import { getNetworkTopology } from '@/networking/network-monitoring/network-monitoring-apis';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 const NetworkTopologyContext = createContext();
 
@@ -14,39 +14,32 @@ export const NetworkTopologyProvider = ({ children }) => {
   const [focusedNode, setFocusedNode] = useState(null);
   const [topologyData, setTopologyData] = useState(null);
   const [isLoadingTopology, setIsLoadingTopology] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [topologyError, setTopologyError] = useState(null);
 
+  const refreshTopology = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      setTopologyError(null);
+      const data = await getNetworkTopology();
+      setTopologyData(data);
+    } catch (error) {
+      console.error('Failed to fetch network topology:', error);
+      setTopologyError(error?.detail || error?.message || 'Unable to load network topology.');
+    } finally {
+      setIsLoadingTopology(false);
+      setIsRefreshing(false);
+    }
+  }, []);
+
   useEffect(() => {
-    let isMounted = true;
+    refreshTopology();
+    const interval = setInterval(refreshTopology, 60000);
+    return () => clearInterval(interval);
+  }, [refreshTopology]);
 
-    const fetchTopology = async () => {
-      try {
-        if (isMounted) {
-          setTopologyError(null);
-        }
-        const data = await getNetworkTopology();
-        if (isMounted) {
-          setTopologyData(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch network topology:', error);
-        if (isMounted) {
-          setTopologyError(error?.detail || error?.message || 'Unable to load network topology.');
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingTopology(false);
-        }
-      }
-    };
-
-    fetchTopology();
-    const interval = setInterval(fetchTopology, 60000);
-
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
+  const handleResetSearch = useCallback(() => {
+    setSearchQuery('');
   }, []);
 
   const value = {
@@ -58,6 +51,7 @@ export const NetworkTopologyProvider = ({ children }) => {
     setShowDeviceModal,
     searchQuery,
     setSearchQuery,
+    handleResetSearch,
     layoutType,
     setLayoutType,
     expandedNodes,
@@ -67,7 +61,9 @@ export const NetworkTopologyProvider = ({ children }) => {
     topologyData,
     setTopologyData,
     isLoadingTopology,
+    isRefreshing,
     topologyError,
+    refreshTopology,
   };
 
   return (

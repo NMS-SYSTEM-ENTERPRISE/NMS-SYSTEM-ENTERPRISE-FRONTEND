@@ -26,8 +26,6 @@ export const NetworkMonitoringContent = () => {
     getProgressBarColor,
     filters,
     setFilters,
-    searchQuery,
-    setSearchQuery,
     handleCloseFilterSidebar,
   } = useNetworkMonitoring();
 
@@ -61,10 +59,6 @@ export const NetworkMonitoringContent = () => {
               config={currentConfig}
               data={filteredData}
               getProgressBarColor={getProgressBarColor}
-              filters={filters}
-              setFilters={setFilters}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
             />
           ) : (
             <DashboardView

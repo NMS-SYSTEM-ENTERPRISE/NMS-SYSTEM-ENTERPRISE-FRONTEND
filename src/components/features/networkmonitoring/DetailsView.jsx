@@ -547,10 +547,6 @@ export const DetailsView = ({
   config,
   data,
   getProgressBarColor,
-  filters = {},
-  setFilters,
-  searchQuery,
-  setSearchQuery,
 }) => {
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -582,19 +578,6 @@ export const DetailsView = ({
     });
   };
 
-  const removeFilter = (key) => {
-    const newFilters = { ...filters };
-    delete newFilters[key];
-    setFilters(newFilters);
-  };
-
-  const clearAllFilters = () => {
-    setFilters({});
-    if (setSearchQuery) setSearchQuery('');
-  };
-
-  const hasActiveFilters = Object.keys(filters).length > 0 || !!searchQuery;
-
   return (
     <div className={styles.detailsView}>
       <div className={styles.detailsHeader}>
@@ -623,49 +606,6 @@ export const DetailsView = ({
           </span>
         </div>
       </div>
-
-      {/* Active Filters Row */}
-      {hasActiveFilters && (
-        <div className={styles.activeFiltersRow}>
-          <span className={styles.activeFiltersLabel}>Active Filters:</span>
-          <div className={styles.filterTagsList}>
-            {searchQuery && (
-              <div className={styles.filterTag}>
-                <span>Search: {searchQuery}</span>
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className={styles.filterTagClose}
-                >
-                  <Icon icon="mdi:close" width={14} />
-                </button>
-              </div>
-            )}
-            {Object.entries(filters).map(([key, value]) => {
-              if (value === undefined || value === '') return null;
-              // format label, e.g., if array for range
-              let displayValue = Array.isArray(value)
-                ? `${value[0]} - ${value[1]}`
-                : value;
-              return (
-                <div key={key} className={styles.filterTag}>
-                  <span style={{ textTransform: 'capitalize' }}>
-                    {key}: {displayValue}
-                  </span>
-                  <button
-                    onClick={() => removeFilter(key)}
-                    className={styles.filterTagClose}
-                  >
-                    <Icon icon="mdi:close" width={14} />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-          <button onClick={clearAllFilters} className={styles.clearFiltersBtn}>
-            Clear All
-          </button>
-        </div>
-      )}
 
       {/* Unified Table Container */}
       <div className={styles.listContainer}>

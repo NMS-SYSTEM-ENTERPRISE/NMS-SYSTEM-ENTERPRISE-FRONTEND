@@ -3,7 +3,6 @@
 import sharedStyles from '@/components/features/network-topology/shared/styles.module.css';
 import { DeviceDetailSidebar } from '@/components/features/topology/device-detail-sidebar';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { NoDataFound } from '@/components/ui/no-data-found';
 import { SelectComponent as Select } from '@/components/ui/select';
 import {
@@ -13,7 +12,71 @@ import {
 import { useNetworkTopology } from '@/hooks/network-topology';
 import { useCytoscape } from '@/hooks/network-topology/useCytoscape';
 import { Icon } from '@iconify/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import clsx from 'clsx';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+const LAYOUT_OPTIONS = [
+  { value: 'cose', label: 'Force-Directed' },
+  { value: 'circle', label: 'Circle' },
+  { value: 'concentric', label: 'Concentric' },
+  { value: 'grid', label: 'Grid' },
+  { value: 'breadthfirst', label: 'Hierarchical' },
+];
+
+const TopologySearchInput = ({
+  value,
+  onChange,
+  onSubmit,
+  onClearInput,
+  placeholder,
+  className,
+  canSubmit,
+}) => {
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onSubmit();
+    }
+  };
+
+  return (
+    <div className={clsx(sharedStyles.searchWrapper, className)}>
+      <Icon icon="mdi:magnify" width={16} className={sharedStyles.searchLeadIcon} />
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onKeyDown={handleKeyDown}
+        className={sharedStyles.searchInput}
+        aria-label={placeholder}
+      />
+      {value && (
+        <button
+          type="button"
+          className={sharedStyles.searchClear}
+          onClick={onClearInput}
+          aria-label="Clear search input"
+        >
+          <Icon icon="mdi:close-circle" width={14} />
+        </button>
+      )}
+      <button
+        type="button"
+        className={clsx(
+          sharedStyles.searchBtn,
+          !canSubmit && sharedStyles.searchBtnDisabled
+        )}
+        onClick={onSubmit}
+        disabled={!canSubmit}
+        aria-label="Apply search filter"
+        title={canSubmit ? 'Apply search' : 'Enter text to search'}
+      >
+        <Icon icon="mdi:arrow-right" width={16} />
+      </button>
+    </div>
+  );
+};
 
 export const NetworkTopologyContent = () => {
   const cyRef = useRef(null);
@@ -29,6 +92,7 @@ export const NetworkTopologyContent = () => {
     setShowDeviceModal,
     searchQuery,
     setSearchQuery,
+    handleResetSearch,
     layoutType,
     setLayoutType,
     expandedNodes,
@@ -37,28 +101,79 @@ export const NetworkTopologyContent = () => {
     setFocusedNode,
     topologyData,
     isLoadingTopology,
+    isRefreshing,
     topologyError,
+    refreshTopology,
   } = useNetworkTopology();
 
-  const styles = sharedStyles;
+  const [localSearch, setLocalSearch] = useState(searchQuery || '');
 
   useEffect(() => {
-    const onFullscreenChange = () => {
-      const isFull = !!document.fullscreenElement;
-      setIsFullscreen(isFull);
-      if (cyRef.current) {
-        setTimeout(() => {
-          cyRef.current.resize();
-          cyRef.current.fit(null, 60);
-        }, 150);
+    setLocalSearch(searchQuery || '');
+  }, [searchQuery]);
+
+  const trimmedSearch = localSearch.trim();
+  const canSubmitSearch = trimmedSearch.length > 0;
+
+  const handleSearchSubmit = () => {
+    if (!canSubmitSearch) return;
+    setSearchQuery(trimmedSearch);
+  };
+
+  const handleClearSearchInput = () => {
+    setLocalSearch('');
+    if (searchQuery) setSearchQuery('');
+  };
+
+  const handleRemoveSearchFilter = () => {
+    setSearchQuery('');
+    setLocalSearch('');
+  };
+
+  const styles = sharedStyles;
+  const showTopologySkeleton = isLoadingTopology && !topologyData;
+
+  const syncCanvasLayout = useCallback(() => {
+    const resizeCanvas = () => {
+      if (cyRef.current && !cyRef.current.destroyed()) {
+        cyRef.current.resize();
+        cyRef.current.fit(null, 60);
       }
     };
-    document.addEventListener('fullscreenchange', onFullscreenChange);
-    return () =>
-      document.removeEventListener('fullscreenchange', onFullscreenChange);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resizeCanvas);
+    });
+    setTimeout(resizeCanvas, 50);
+    setTimeout(resizeCanvas, 200);
   }, []);
 
-  const { getLayoutConfig, resetFocus, focusOnNode } = useCytoscape({
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    syncCanvasLayout();
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isFullscreen, syncCanvasLayout]);
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isFullscreen]);
+
+  const { resetFocus, focusOnNode } = useCytoscape({
     containerRef,
     cyRef,
     viewMode,
@@ -100,13 +215,7 @@ export const NetworkTopologyContent = () => {
   };
 
   const handleFullscreen = () => {
-    if (containerRef.current) {
-      if (!document.fullscreenElement) {
-        containerRef.current.parentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    }
+    setIsFullscreen((prev) => !prev);
   };
 
   const handleResetView = () => {
@@ -117,11 +226,18 @@ export const NetworkTopologyContent = () => {
     }
   };
 
-  const handleRelayout = () => {
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+
+    setFocusedNode(null);
+    setSelectedDevice(null);
+    setShowDeviceModal(false);
+
     if (cyRef.current && !cyRef.current.destroyed()) {
-      const layout = cyRef.current.layout(getLayoutConfig(layoutType));
-      layout.run();
+      resetFocus(cyRef.current);
     }
+
+    await refreshTopology();
   };
 
   const handleExportPNG = () => {
@@ -293,38 +409,70 @@ export const NetworkTopologyContent = () => {
   return (
     <div className={styles.networkTopology}>
       {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <Icon
-            icon="mdi:sitemap"
-            width={24}
-            height={24}
-            className={styles.headerIcon}
-          />
-          <h1 className={styles.title}>Network Topology</h1>
-          <div className={styles.headerStats}>
-            <span className={styles.statBadge}>
-              <Icon icon="mdi:server-network" width={16} height={16} />
-              {summary.devices || 0} Devices
-            </span>
-            <span className={styles.statBadge}>
-              <Icon icon="mdi:connection" width={16} height={16} />
-              {summary.connections || 0} Connections
-            </span>
-          </div>
-        </div>
-        <div className={styles.headerRight}>
-          <div className={styles.searchBar}>
-            <Input
-              icon={<Icon icon="mdi:magnify" width={18} height={18} />}
-              type="text"
-              placeholder="Search devices..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              containerClassName={styles.searchInputContainer}
+      <div className={styles.headerContainer}>
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <Icon
+              icon="mdi:sitemap"
+              width={24}
+              height={24}
+              className={styles.headerIcon}
             />
+            <h1 className={styles.title}>Network Topology</h1>
+            <div className={styles.headerStats}>
+              <span className={styles.statBadge}>
+                <Icon icon="mdi:server-network" width={16} height={16} />
+                {summary.devices || 0} Devices
+              </span>
+              <span className={styles.statBadge}>
+                <Icon icon="mdi:connection" width={16} height={16} />
+                {summary.connections || 0} Connections
+              </span>
+            </div>
+          </div>
+          <div className={styles.headerRight}>
+            <div className={styles.searchBar}>
+              <TopologySearchInput
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                onSubmit={handleSearchSubmit}
+                onClearInput={handleClearSearchInput}
+                placeholder="Search devices..."
+                canSubmit={canSubmitSearch}
+              />
+            </div>
           </div>
         </div>
+
+        {searchQuery && (
+          <div className={styles.filterTagsRow}>
+            <Icon icon="mdi:filter-check" width={14} className={styles.filterTagsIcon} />
+            <span className={styles.filterTagsLabel}>Active Filters:</span>
+            <span className={styles.filterTag}>
+              <span className={styles.filterTagKey}>Search</span>
+              <span className={styles.filterTagValue}>{searchQuery}</span>
+              <button
+                type="button"
+                className={styles.filterTagClose}
+                onClick={handleRemoveSearchFilter}
+                aria-label="Remove search filter"
+              >
+                <Icon icon="mdi:close" width={12} />
+              </button>
+            </span>
+            <button
+              type="button"
+              className={styles.resetAllBtn}
+              onClick={() => {
+                handleResetSearch();
+                setLocalSearch('');
+              }}
+            >
+              <Icon icon="mdi:close-circle-outline" width={13} />
+              Reset All
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -367,18 +515,20 @@ export const NetworkTopologyContent = () => {
 
           {/* Device Tree Search */}
           <div className={styles.treeSearch}>
-            <Input
-              icon={<Icon icon="mdi:magnify" width={16} height={16} />}
-              type="text"
+            <TopologySearchInput
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              onSubmit={handleSearchSubmit}
+              onClearInput={handleClearSearchInput}
               placeholder="Filter devices..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              canSubmit={canSubmitSearch}
+              className={styles.searchWrapperCompact}
             />
           </div>
 
           {/* Device Tree */}
           <div className={styles.deviceTree}>
-            {isLoadingTopology && <TopologySidebarSkeleton />}
+            {showTopologySkeleton && <TopologySidebarSkeleton />}
             {!isLoadingTopology && topologyError && (
               <div className={styles.statePanel}>
                 <Icon icon="mdi:alert-circle-outline" width={24} height={24} />
@@ -427,30 +577,35 @@ export const NetworkTopologyContent = () => {
         </div>
 
         {/* Center - Topology Canvas */}
-        <div className={styles.topologyCanvas}>
+        <div
+          className={clsx(
+            styles.topologyCanvas,
+            isFullscreen && styles.topologyCanvasExpanded
+          )}
+        >
           {/* Top Toolbar */}
           <div className={styles.canvasToolbar}>
             <div className={styles.canvasToolbarLeft}>
               <div className={styles.layoutSelector}>
                 <Select
-                  value={{ value: layoutType, label: layoutType }}
-                  options={[
-                    { value: 'cose', label: 'Force-Directed' },
-                    { value: 'circle', label: 'Circle' },
-                    { value: 'concentric', label: 'Concentric' },
-                    { value: 'grid', label: 'Grid' },
-                    { value: 'breadthfirst', label: 'Hierarchical' },
-                  ]}
-                  onChange={(selected) => setLayoutType(selected.value)}
+                  value={layoutType}
+                  options={LAYOUT_OPTIONS}
+                  onChange={(e) => setLayoutType(e.target.value)}
                   isSearchable={false}
+                  isClearable={false}
                   placeholder="Select Layout"
                 />
               </div>
               <Button
                 variant="outline"
-                className={styles.toolbarBtn}
-                onClick={handleRelayout}
-                title="Re-apply Layout"
+                className={clsx(
+                  styles.toolbarBtn,
+                  isRefreshing && styles.toolbarBtnSpin
+                )}
+                onClick={handleRefresh}
+                title="Refresh topology"
+                aria-label="Refresh topology"
+                disabled={isRefreshing}
               >
                 <Icon icon="mdi:refresh" width={18} height={18} />
               </Button>
@@ -477,7 +632,7 @@ export const NetworkTopologyContent = () => {
 
           {/* Cytoscape Container */}
           <div ref={containerRef} className={styles.cytoscape}>
-            {isLoadingTopology && <TopologyCanvasSkeleton />}
+            {showTopologySkeleton && <TopologyCanvasSkeleton />}
             {!isLoadingTopology && topologyError && (
               <div className={styles.canvasState}>
                 <Icon icon="mdi:alert-circle-outline" width={32} height={32} />

@@ -258,13 +258,17 @@
 }
 
 /* Header */
+.headerContainer {
+  flex-shrink: 0;
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--padding-lg);
-  background-color: var(--color-bg-secondary);
-  border-bottom: 1px solid var(--color-border);
   height: 65px;
 }
 
@@ -324,6 +328,169 @@
   outline: none;
   border-color: var(--color-accent-cyan);
   background-color: var(--color-bg-primary);
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 280px;
+  height: 36px;
+  padding: 0 6px 0 10px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.searchWrapper:focus-within {
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 0 3px rgba(var(--color-accent-cyan-rgb), 0.08);
+}
+
+.searchLeadIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchClear {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.searchClear:hover {
+  color: var(--color-danger);
+}
+
+.searchBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: 4px;
+  background: var(--color-accent-cyan);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #000;
+  cursor: pointer;
+  transition: opacity var(--transition-fast), background var(--transition-fast);
+}
+
+.searchBtn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.searchBtnDisabled {
+  background: var(--color-bg-primary);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.filterTagsRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px var(--padding-lg);
+  background: rgba(var(--color-accent-cyan-rgb), 0.03);
+  border-top: 1px solid var(--color-border);
+}
+
+.filterTagsIcon {
+  color: var(--color-accent-cyan);
+  flex-shrink: 0;
+}
+
+.filterTagsLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.filterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 10px;
+  background: rgba(var(--color-accent-cyan-rgb), 0.08);
+  border: 1px solid rgba(var(--color-accent-cyan-rgb), 0.2);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+}
+
+.filterTagKey {
+  color: var(--color-accent-cyan);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.filterTagValue {
+  color: var(--color-text-primary);
+}
+
+.filterTagClose {
+  display: flex;
+  align-items: center;
+  padding: 1px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.filterTagClose:hover {
+  color: var(--color-danger);
+}
+
+.resetAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding: 2px 10px;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-full);
+  color: #ef4444;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.resetAllBtn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 /* View Mode Toggle */
@@ -1383,7 +1550,8 @@
     padding: var(--padding-lg) var(--padding-md);
   }
 
-  .headerSearch {
+  .headerSearch,
+  .searchWrapper {
     width: 200px;
   }
 
@@ -1432,12 +1600,17 @@
     align-items: stretch;
   }
 
-  .headerSearch {
+  .headerSearch,
+  .searchWrapper {
     width: 100%;
   }
 
   .viewToggle {
     justify-content: center;
+  }
+
+  .resetAllBtn {
+    margin-left: 0;
   }
 
   .headerActions {

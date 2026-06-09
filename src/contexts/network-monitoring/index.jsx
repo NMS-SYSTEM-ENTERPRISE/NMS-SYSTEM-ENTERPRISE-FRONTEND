@@ -121,6 +121,11 @@ export const NetworkMonitoringProvider = ({ children }) => {
     setShowFilterSidebar(false);
   }, []);
 
+  const handleResetFilters = useCallback(() => {
+    setFilters({});
+    setSearchQuery('');
+  }, []);
+
   const value = {
     activeCategory,
     setActiveCategory,
@@ -141,6 +146,7 @@ export const NetworkMonitoringProvider = ({ children }) => {
     dashboardData,
     getProgressBarColor,
     handleCloseFilterSidebar,
+    handleResetFilters,
   };
 
   return (

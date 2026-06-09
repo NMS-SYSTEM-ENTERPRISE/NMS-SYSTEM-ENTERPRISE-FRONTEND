@@ -7,26 +7,31 @@ import { MdDragIndicator } from 'react-icons/md';
 import 'react-resizable/css/styles.css';
 
 import { getDeviceHistory } from '@/networking/network-monitoring/network-monitoring-apis';
+import {
+  buildResponsiveLayouts,
+  GRID_BREAKPOINTS,
+  GRID_COLS,
+} from '@/utils/network-monitoring/build-responsive-layouts';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 // --- Dynamic Chart Rendering Engine ---
 // We initialize state inside the component using the `data` prop.
 
-const initialLayouts = {
-  lg: [
-    { i: 'avail', x: 0, y: 0, w: 4, h: 3 },
-    { i: 'ifAvail', x: 4, y: 0, w: 4, h: 3 },
-    { i: 'alert', x: 8, y: 0, w: 4, h: 3 },
-    { i: 'heatmap', x: 0, y: 3, w: 12, h: 3 },
-    { i: 'latency', x: 0, y: 6, w: 4, h: 3 },
-    { i: 'cpu', x: 4, y: 6, w: 4, h: 3 },
-    { i: 'memory', x: 8, y: 6, w: 4, h: 3 },
-    { i: 'downtime', x: 0, y: 9, w: 4, h: 3 },
-    { i: 'traffic', x: 4, y: 9, w: 4, h: 3 },
-    { i: 'packets', x: 8, y: 9, w: 4, h: 3 },
-  ],
-};
+const LG_LAYOUT = [
+  { i: 'avail', x: 0, y: 0, w: 4, h: 3 },
+  { i: 'ifAvail', x: 4, y: 0, w: 4, h: 3 },
+  { i: 'alert', x: 8, y: 0, w: 4, h: 3 },
+  { i: 'heatmap', x: 0, y: 3, w: 12, h: 3 },
+  { i: 'latency', x: 0, y: 6, w: 4, h: 3 },
+  { i: 'cpu', x: 4, y: 6, w: 4, h: 3 },
+  { i: 'memory', x: 8, y: 6, w: 4, h: 3 },
+  { i: 'downtime', x: 0, y: 9, w: 4, h: 3 },
+  { i: 'traffic', x: 4, y: 9, w: 4, h: 3 },
+  { i: 'packets', x: 8, y: 9, w: 4, h: 3 },
+];
+
+const initialLayouts = buildResponsiveLayouts(LG_LAYOUT);
 
 const NetworkDetail = ({ data }) => {
   // Chart Refs
@@ -395,9 +400,12 @@ const NetworkDetail = ({ data }) => {
     <ResponsiveGridLayout
       className="layout"
       layouts={layouts}
-      breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-      cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+      breakpoints={GRID_BREAKPOINTS}
+      cols={GRID_COLS}
       rowHeight={100}
+      margin={[16, 16]}
+      containerPadding={[0, 0]}
+      compactType="vertical"
       onLayoutChange={onLayoutChange}
       draggableHandle=".drag-handle"
     >

@@ -7,20 +7,25 @@ import { MdDragIndicator } from 'react-icons/md';
 import 'react-resizable/css/styles.css';
 
 import { getDeviceHistory } from '@/networking/network-monitoring/network-monitoring-apis';
+import {
+  buildResponsiveLayouts,
+  GRID_BREAKPOINTS,
+  GRID_COLS,
+} from '@/utils/network-monitoring/build-responsive-layouts';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const initialLayouts = {
-  lg: [
-    { i: 'battery_charge', x: 0, y: 0, w: 4, h: 3 },
-    { i: 'load_capacity', x: 4, y: 0, w: 4, h: 3 },
-    { i: 'alarms', x: 8, y: 0, w: 4, h: 3 },
-    { i: 'voltage_trend', x: 0, y: 3, w: 8, h: 3 },
-    { i: 'runtime', x: 8, y: 3, w: 4, h: 3 },
-    { i: 'frequency', x: 0, y: 6, w: 6, h: 3 },
-    { i: 'temperature', x: 6, y: 6, w: 6, h: 3 },
-  ],
-};
+const LG_LAYOUT = [
+  { i: 'battery_charge', x: 0, y: 0, w: 4, h: 3 },
+  { i: 'load_capacity', x: 4, y: 0, w: 4, h: 3 },
+  { i: 'alarms', x: 8, y: 0, w: 4, h: 3 },
+  { i: 'voltage_trend', x: 0, y: 3, w: 8, h: 3 },
+  { i: 'runtime', x: 8, y: 3, w: 4, h: 3 },
+  { i: 'frequency', x: 0, y: 6, w: 6, h: 3 },
+  { i: 'temperature', x: 6, y: 6, w: 6, h: 3 },
+];
+
+const initialLayouts = buildResponsiveLayouts(LG_LAYOUT);
 
 const UPSDetail = ({ data }) => {
   const batteryRef = useRef(null);
@@ -203,11 +208,12 @@ const UPSDetail = ({ data }) => {
       <ResponsiveGridLayout
         className="layout"
         layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        breakpoints={GRID_BREAKPOINTS}
+        cols={GRID_COLS}
         rowHeight={100}
         margin={[16, 16]}
         containerPadding={[0, 0]}
+        compactType="vertical"
         onLayoutChange={onLayoutChange}
         draggableHandle=".drag-handle"
         isResizable={true}

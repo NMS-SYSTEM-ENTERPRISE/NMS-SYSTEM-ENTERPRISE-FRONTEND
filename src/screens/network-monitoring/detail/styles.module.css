@@ -134,6 +134,15 @@
   flex-direction: column;
   height: 100%; /* Fill the grid item */
   overflow: hidden; /* Prevent overflow */
+  min-width: 0;
+}
+
+:global(.react-grid-layout) {
+  width: 100% !important;
+}
+
+:global(.react-grid-item) {
+  min-width: 0;
 }
 
 /* React Grid Layout Placeholder */

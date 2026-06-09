@@ -6,6 +6,11 @@ import { Responsive, WidthProvider } from 'react-grid-layout/legacy';
 import { FiActivity, FiCpu, FiDatabase, FiHardDrive, FiLayers, FiServer, FiShare2 } from 'react-icons/fi';
 import { MdDragIndicator } from 'react-icons/md';
 import 'react-resizable/css/styles.css';
+import {
+  buildResponsiveLayouts,
+  GRID_BREAKPOINTS,
+  GRID_COLS,
+} from '@/utils/network-monitoring/build-responsive-layouts';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -60,21 +65,21 @@ const topEC2Data = [
   { name: 'i-5a6b7c8d9e0f1g2h3', value: '18.45MB' },
 ];
 
-const initialLayouts = {
-  lg: [
-    { i: 'stat1', x: 0, y: 0, w: 2, h: 1 },
-    { i: 'stat2', x: 2, y: 0, w: 2, h: 1 },
-    { i: 'stat3', x: 4, y: 0, w: 2, h: 1 },
-    { i: 'stat4', x: 6, y: 0, w: 2, h: 1 },
-    { i: 'stat5', x: 8, y: 0, w: 2, h: 1 },
-    { i: 'stat6', x: 10, y: 0, w: 2, h: 1 },
-    { i: 'heatmap', x: 0, y: 1, w: 8, h: 3 },
-    { i: 'cloudWatch', x: 8, y: 1, w: 4, h: 3 },
-    { i: 'cpu', x: 0, y: 4, w: 4, h: 3 },
-    { i: 'topEC2', x: 4, y: 4, w: 4, h: 3 },
-    { i: 'network', x: 8, y: 4, w: 4, h: 3 },
-  ],
-};
+const LG_LAYOUT = [
+  { i: 'stat1', x: 0, y: 0, w: 2, h: 1 },
+  { i: 'stat2', x: 2, y: 0, w: 2, h: 1 },
+  { i: 'stat3', x: 4, y: 0, w: 2, h: 1 },
+  { i: 'stat4', x: 6, y: 0, w: 2, h: 1 },
+  { i: 'stat5', x: 8, y: 0, w: 2, h: 1 },
+  { i: 'stat6', x: 10, y: 0, w: 2, h: 1 },
+  { i: 'heatmap', x: 0, y: 1, w: 8, h: 3 },
+  { i: 'cloudWatch', x: 8, y: 1, w: 4, h: 3 },
+  { i: 'cpu', x: 0, y: 4, w: 4, h: 3 },
+  { i: 'topEC2', x: 4, y: 4, w: 4, h: 3 },
+  { i: 'network', x: 8, y: 4, w: 4, h: 3 },
+];
+
+const initialLayouts = buildResponsiveLayouts(LG_LAYOUT);
 
 const CloudDetail = () => {
   // Chart Refs
@@ -390,10 +395,12 @@ const CloudDetail = () => {
     <ResponsiveGridLayout
       className="layout"
       layouts={layouts}
-      breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-      cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+      breakpoints={GRID_BREAKPOINTS}
+      cols={GRID_COLS}
       rowHeight={120}
       margin={[16, 16]}
+      containerPadding={[0, 0]}
+      compactType="vertical"
       onLayoutChange={onLayoutChange}
       draggableHandle=".drag-handle"
     >

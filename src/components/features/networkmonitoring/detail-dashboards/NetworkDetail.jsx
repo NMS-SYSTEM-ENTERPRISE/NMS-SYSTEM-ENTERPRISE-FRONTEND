@@ -52,9 +52,11 @@ const NetworkDetail = ({ data }) => {
   // Fetch History Data
   useEffect(() => {
     if (data?.device_ip) {
-      getDeviceHistory(data.device_ip).then(history => {
-        setHistoryData(history || []);
-      }).catch(console.error);
+      getDeviceHistory(data.device_ip)
+        .then((history) => {
+          setHistoryData(history || []);
+        })
+        .catch(console.error);
     }
   }, [data?.device_ip]);
 
@@ -84,8 +86,12 @@ const NetworkDetail = ({ data }) => {
 
     // Process Dynamic Data
     const interfaces = data?.frontend_data?.interfaces || [];
-    const upIfaces = interfaces.filter(i => i.status?.toLowerCase() === 'up').length;
-    const downIfaces = interfaces.filter(i => i.status?.toLowerCase() === 'down').length;
+    const upIfaces = interfaces.filter(
+      (i) => i.status?.toLowerCase() === 'up'
+    ).length;
+    const downIfaces = interfaces.filter(
+      (i) => i.status?.toLowerCase() === 'down'
+    ).length;
     const totalIfaces = interfaces.length || 1;
 
     const availabilityData = [
@@ -117,25 +123,53 @@ const NetworkDetail = ({ data }) => {
       { label: 'Clear', value: totalIfaces, color: '#22c55e' },
     ];
 
-    const historyTimes = historyData.map(h => new Date(h.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    const latencyData = historyData.map(h => h.latency_ms || 0);
-    const cpuData = historyData.map(h => parseFloat(h.cpu_load_percent) || 0);
-    const memoryData = historyData.map(h => parseFloat(h.memory_consumption_percent) || 0);
+    const historyTimes = historyData.map((h) =>
+      new Date(h.time).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    );
+    const latencyData = historyData.map((h) => h.latency_ms || 0);
+    const cpuData = historyData.map((h) => parseFloat(h.cpu_load_percent) || 0);
+    const memoryData = historyData.map(
+      (h) => parseFloat(h.memory_consumption_percent) || 0
+    );
 
     // CPU & Memory usage maps latest data to single device over time
-    const topDevicesCPUData = cpuData.map((val, idx) => ({ name: historyTimes[idx] || `T-${idx}`, value: val }));
-    const memoryUsageData = memoryData.map((val, idx) => ({ name: historyTimes[idx] || `T-${idx}`, value: val }));
+    const topDevicesCPUData = cpuData.map((val, idx) => ({
+      name: historyTimes[idx] || `T-${idx}`,
+      value: val,
+    }));
+    const memoryUsageData = memoryData.map((val, idx) => ({
+      name: historyTimes[idx] || `T-${idx}`,
+      value: val,
+    }));
 
     const interfaceTrafficData = {
       categories: historyTimes.slice(-6),
       series: [
-        { name: 'In (GB)', data: historyData.slice(-6).map(h => parseFloat(h.total_bandwidth_in) || 0), color: '#3b82f6' },
-        { name: 'Out (GB)', data: historyData.slice(-6).map(h => parseFloat(h.total_bandwidth_out) || 0), color: '#22c55e' },
-      ]
+        {
+          name: 'In (GB)',
+          data: historyData
+            .slice(-6)
+            .map((h) => parseFloat(h.total_bandwidth_in) || 0),
+          color: '#3b82f6',
+        },
+        {
+          name: 'Out (GB)',
+          data: historyData
+            .slice(-6)
+            .map((h) => parseFloat(h.total_bandwidth_out) || 0),
+          color: '#22c55e',
+        },
+      ],
     };
 
     const downtimeData = [
-      { device: data?.device_ip || 'Device', time: downIfaces > 0 ? `${downIfaces * 5} m` : '0 m' }
+      {
+        device: data?.device_ip || 'Device',
+        time: downIfaces > 0 ? `${downIfaces * 5} m` : '0 m',
+      },
     ];
 
     // 1. Network Device Availability (Donut)
@@ -155,7 +189,7 @@ const NetworkDetail = ({ data }) => {
             fontSize: 20,
             fontWeight: 'bold',
             color: '#fff',
-            lineHeight: 30
+            lineHeight: 30,
           },
           labelLine: { show: false },
           data: availabilityData,
@@ -176,21 +210,21 @@ const NetworkDetail = ({ data }) => {
         point[0] = point[0] + width / 2;
       }
 
-      var r = Math.min(width, height) / 2 * 0.95;
+      var r = (Math.min(width, height) / 2) * 0.95;
 
       var points = [];
       for (var i = 0; i < 6; i++) {
         var angle = (Math.PI / 3) * i;
         points.push([
           point[0] + r * Math.cos(angle),
-          point[1] + r * Math.sin(angle)
+          point[1] + r * Math.sin(angle),
         ]);
       }
 
       return {
         type: 'polygon',
         shape: { points: points },
-        style: api.style({ stroke: '#1f2937', lineWidth: 1 })
+        style: api.style({ stroke: '#1f2937', lineWidth: 1 }),
       };
     };
 
@@ -200,31 +234,31 @@ const NetworkDetail = ({ data }) => {
           // Smart positioning to avoid viewport cutoff
           let x = point[0] + 10;
           let y = point[1] - size.contentSize[1] - 10;
-          
+
           // Check if tooltip goes off-screen and adjust
           const viewportWidth = window.innerWidth;
           const viewportHeight = window.innerHeight;
-          
+
           // Right edge check
           if (x + size.contentSize[0] > viewportWidth - 20) {
             x = viewportWidth - size.contentSize[0] - 20;
           }
-          
+
           // Left edge check
           if (x < 20) {
             x = 20;
           }
-          
+
           // Top edge check - if goes above, put below cursor
           if (y < 20) {
             y = point[1] + 10;
           }
-          
+
           // Bottom edge check
           if (y + size.contentSize[1] > viewportHeight - 20) {
             y = viewportHeight - size.contentSize[1] - 20;
           }
-          
+
           return [x, y];
         },
         backgroundColor: 'rgba(0, 0, 0, 0.95)',
@@ -239,20 +273,20 @@ const NetworkDetail = ({ data }) => {
           const statusCode = params.value[2];
           const statusMap = ['Up', 'Warning', 'Major', 'Down'];
           const statusColors = ['#22c55e', '#eab308', '#f97316', '#ef4444'];
-          
+
           // Calculate port index
           const portIdx = row * numCols + col;
           const iface = interfaces[portIdx];
-          
+
           if (!iface) {
             return `<div style="padding: 4px 0;">Port ${portIdx + 1}: No Data</div>`;
           }
-          
+
           const status = statusMap[statusCode] || 'Unknown';
           const statusColor = statusColors[statusCode] || '#9ca3af';
           const inPercent = parseFloat(iface.in_percent) || 0;
           const outPercent = parseFloat(iface.out_percent) || 0;
-          
+
           return `
             <div style="min-width: 200px;">
               <div style="font-weight: bold; margin-bottom: 8px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">
@@ -266,18 +300,30 @@ const NetworkDetail = ({ data }) => {
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Status:</span>
                 <span style="color: ${statusColor}; font-weight: 600;">${status.toUpperCase()}</span>
               </div>
-              ${iface.ip_address ? `<div style="margin: 6px 0;">
+              ${
+                iface.ip_address
+                  ? `<div style="margin: 6px 0;">
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IP:</span>
                 <span style="color: #3b82f6;">${iface.ip_address}</span>
-              </div>` : ''}
-              ${iface.mac_address ? `<div style="margin: 6px 0;">
+              </div>`
+                  : ''
+              }
+              ${
+                iface.mac_address
+                  ? `<div style="margin: 6px 0;">
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">MAC:</span>
                 <span style="color: #fff; font-size: 11px; font-family: monospace;">${iface.mac_address}</span>
-              </div>` : ''}
-              ${iface.port_type ? `<div style="margin: 6px 0;">
+              </div>`
+                  : ''
+              }
+              ${
+                iface.port_type
+                  ? `<div style="margin: 6px 0;">
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Type:</span>
                 <span style="color: #fff;">${iface.port_type}</span>
-              </div>` : ''}
+              </div>`
+                  : ''
+              }
               <div style="margin: 6px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
                 <div style="margin: 4px 0;">
                   <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IN:</span>
@@ -290,16 +336,37 @@ const NetworkDetail = ({ data }) => {
               </div>
             </div>
           `;
-        }
+        },
       },
       grid: { top: 20, bottom: 20, left: 20, right: 20 },
-      xAxis: { show: false, type: 'category', data: Array.from({ length: numCols }, (_, i) => i), boundaryGap: false },
-      yAxis: { show: false, type: 'category', data: Array.from({ length: numRows }, (_, i) => i), boundaryGap: false, inverse: true },
-      visualMap: {
-        min: 0, max: 3, calculable: false, show: false,
-        inRange: { color: ['#22c55e', '#eab308', '#f97316', '#ef4444'] }
+      xAxis: {
+        show: false,
+        type: 'category',
+        data: Array.from({ length: numCols }, (_, i) => i),
+        boundaryGap: false,
       },
-      series: [{ type: 'custom', renderItem: renderHexagon, data: heatmapData, animation: false }]
+      yAxis: {
+        show: false,
+        type: 'category',
+        data: Array.from({ length: numRows }, (_, i) => i),
+        boundaryGap: false,
+        inverse: true,
+      },
+      visualMap: {
+        min: 0,
+        max: 3,
+        calculable: false,
+        show: false,
+        inRange: { color: ['#22c55e', '#eab308', '#f97316', '#ef4444'] },
+      },
+      series: [
+        {
+          type: 'custom',
+          renderItem: renderHexagon,
+          data: heatmapData,
+          animation: false,
+        },
+      ],
     });
 
     // 3. Network Device Latency (Bar)
@@ -308,7 +375,9 @@ const NetworkDetail = ({ data }) => {
       grid: commonGrid,
       xAxis: {
         type: 'category',
-        data: historyTimes.length ? historyTimes : Array.from({ length: 50 }, (_, i) => i),
+        data: historyTimes.length
+          ? historyTimes
+          : Array.from({ length: 50 }, (_, i) => i),
         axisLabel: { color: '#9ca3af' },
         axisLine: { lineStyle: { color: '#374151' } },
       },
@@ -317,76 +386,114 @@ const NetworkDetail = ({ data }) => {
         axisLabel: { color: '#9ca3af', formatter: '{value} ms' },
         splitLine: { show: false },
       },
-      series: [{
-        type: 'bar',
-        data: latencyData,
-        itemStyle: {
-          color: (params) => {
-            if (params.value > 80) return '#ef4444';
-            if (params.value > 50) return '#f97316';
-            if (params.value > 30) return '#eab308';
-            return '#22c55e';
-          }
+      series: [
+        {
+          type: 'bar',
+          data: latencyData,
+          itemStyle: {
+            color: (params) => {
+              if (params.value > 80) return '#ef4444';
+              if (params.value > 50) return '#f97316';
+              if (params.value > 30) return '#eab308';
+              return '#22c55e';
+            },
+          },
+          barCategoryGap: '10%',
         },
-        barCategoryGap: '10%'
-      }]
+      ],
     });
 
     // 4. CPU Usage Over Time (Line instead of Pie to show history correctly)
     chartsRef.current.cpu = initChart(cpuRef, {
       tooltip: { ...commonTooltip, formatter: '{b}<br/>{a}: {c}%' },
       grid: commonGrid,
-      xAxis: { type: 'category', data: historyTimes, axisLabel: { color: '#9ca3af' }, boundaryGap: false },
-      yAxis: { type: 'value', max: 100, axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
-      series: [{
-        name: 'CPU Usage',
-        type: 'line',
-        data: cpuData,
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(249, 115, 22, 0.8)' },
-            { offset: 1, color: 'rgba(249, 115, 22, 0.05)' }
-          ])
+      xAxis: {
+        type: 'category',
+        data: historyTimes,
+        axisLabel: { color: '#9ca3af' },
+        boundaryGap: false,
+      },
+      yAxis: {
+        type: 'value',
+        max: 100,
+        axisLabel: { color: '#9ca3af' },
+        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
+      },
+      series: [
+        {
+          name: 'CPU Usage',
+          type: 'line',
+          data: cpuData,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(249, 115, 22, 0.8)' },
+              { offset: 1, color: 'rgba(249, 115, 22, 0.05)' },
+            ]),
+          },
+          itemStyle: { color: '#f97316' },
+          lineStyle: { width: 2 },
+          showSymbol: false,
+          smooth: true,
         },
-        itemStyle: { color: '#f97316' },
-        lineStyle: { width: 2 },
-        showSymbol: false,
-        smooth: true
-      }],
+      ],
     });
 
     // 5. Memory Usage Over Time (Line instead of Bar to show history)
     chartsRef.current.memory = initChart(memoryRef, {
       tooltip: { ...commonTooltip, formatter: '{b}<br/>{a}: {c}%' },
       grid: commonGrid,
-      xAxis: { type: 'category', data: historyTimes, axisLabel: { color: '#9ca3af' }, boundaryGap: false },
-      yAxis: { type: 'value', max: 100, axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
-      series: [{
-        name: 'Memory Usage',
-        type: 'line',
-        data: memoryData,
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(249, 115, 22, 0.8)' },
-            { offset: 1, color: 'rgba(249, 115, 22, 0.05)' }
-          ])
+      xAxis: {
+        type: 'category',
+        data: historyTimes,
+        axisLabel: { color: '#9ca3af' },
+        boundaryGap: false,
+      },
+      yAxis: {
+        type: 'value',
+        max: 100,
+        axisLabel: { color: '#9ca3af' },
+        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
+      },
+      series: [
+        {
+          name: 'Memory Usage',
+          type: 'line',
+          data: memoryData,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(249, 115, 22, 0.8)' },
+              { offset: 1, color: 'rgba(249, 115, 22, 0.05)' },
+            ]),
+          },
+          itemStyle: { color: '#f97316' },
+          lineStyle: { width: 2 },
+          showSymbol: false,
+          smooth: true,
         },
-        itemStyle: { color: '#f97316' },
-        lineStyle: { width: 2 },
-        showSymbol: false,
-        smooth: true
-      }]
+      ],
     });
 
     // 6. Interface Traffic Utilization (Stacked Bar)
     chartsRef.current.traffic = initChart(trafficRef, {
       tooltip: commonTooltip,
       grid: commonGrid,
-      xAxis: { type: 'category', data: interfaceTrafficData.categories, axisLabel: { color: '#9ca3af' } },
-      yAxis: { type: 'value', axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
-      series: interfaceTrafficData.series.map(s => ({
-        name: s.name, type: 'bar', stack: 'total', data: s.data,
-        itemStyle: { color: s.color }, barWidth: '40%'
+      xAxis: {
+        type: 'category',
+        data: interfaceTrafficData.categories,
+        axisLabel: { color: '#9ca3af' },
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { color: '#9ca3af' },
+        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
+      },
+      series: interfaceTrafficData.series.map((s) => ({
+        name: s.name,
+        type: 'bar',
+        stack: 'total',
+        data: s.data,
+        itemStyle: { color: s.color },
+        barWidth: '40%',
       })),
     });
 
@@ -394,22 +501,43 @@ const NetworkDetail = ({ data }) => {
     chartsRef.current.packets = initChart(packetsRef, {
       tooltip: commonTooltip,
       grid: commonGrid,
-      xAxis: { type: 'category', data: interfaceTrafficData.categories, axisLabel: { color: '#9ca3af' }, boundaryGap: false },
-      yAxis: { type: 'value', axisLabel: { color: '#9ca3af' }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } } },
+      xAxis: {
+        type: 'category',
+        data: interfaceTrafficData.categories,
+        axisLabel: { color: '#9ca3af' },
+        boundaryGap: false,
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { color: '#9ca3af' },
+        splitLine: { lineStyle: { color: '#374151', type: 'dashed' } },
+      },
       series: interfaceTrafficData.series.map((s, idx) => ({
         name: s.name,
         type: 'line',
         data: s.data,
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: idx === 0 ? 'rgba(59, 130, 246, 0.8)' : 'rgba(34, 197, 94, 0.8)' },
-            { offset: 1, color: idx === 0 ? 'rgba(59, 130, 246, 0.05)' : 'rgba(34, 197, 94, 0.05)' }
-          ])
+            {
+              offset: 0,
+              color:
+                idx === 0
+                  ? 'rgba(59, 130, 246, 0.8)'
+                  : 'rgba(34, 197, 94, 0.8)',
+            },
+            {
+              offset: 1,
+              color:
+                idx === 0
+                  ? 'rgba(59, 130, 246, 0.05)'
+                  : 'rgba(34, 197, 94, 0.05)',
+            },
+          ]),
         },
         itemStyle: { color: idx === 0 ? '#3b82f6' : '#22c55e' },
         lineStyle: { width: 2 },
         showSymbol: false,
-        smooth: true
+        smooth: true,
       })),
     });
 
@@ -420,13 +548,15 @@ const NetworkDetail = ({ data }) => {
     chartsRef.current.heatmapStats = { up: upIfaces, down: downIfaces };
 
     const handleResize = () => {
-      Object.values(chartsRef.current).forEach(chart => chart && chart.resize());
+      Object.values(chartsRef.current).forEach(
+        (chart) => chart && chart.resize()
+      );
     };
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      Object.values(chartsRef.current).forEach(chart => {
+      Object.values(chartsRef.current).forEach((chart) => {
         if (chart && typeof chart.dispose === 'function') chart.dispose();
       });
     };
@@ -439,7 +569,14 @@ const NetworkDetail = ({ data }) => {
     const offset = circumference - (100 / 100) * circumference; // Full circle for now
 
     return (
-      <div className={styles.smallGaugeItem} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div
+        className={styles.smallGaugeItem}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <div style={{ position: 'relative', width: size, height: size }}>
           <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
             <circle
@@ -462,19 +599,23 @@ const NetworkDetail = ({ data }) => {
               transform={`rotate(-90 ${size / 2} ${size / 2})`}
             />
           </svg>
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            color: item.color
-          }}>
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              color: item.color,
+            }}
+          >
             {item.value}
           </div>
         </div>
-        <span style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>{item.label}</span>
+        <span style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>
+          {item.label}
+        </span>
       </div>
     );
   };
@@ -482,7 +623,9 @@ const NetworkDetail = ({ data }) => {
   const onLayoutChange = (currentLayout, allLayouts) => {
     setLayouts(allLayouts);
     setTimeout(() => {
-      Object.values(chartsRef.current).forEach(chart => chart && chart.resize());
+      Object.values(chartsRef.current).forEach(
+        (chart) => chart && chart.resize()
+      );
     }, 300);
   };
 
@@ -520,8 +663,12 @@ const NetworkDetail = ({ data }) => {
             <h3 className={styles.widgetTitle}>Network Heatmap</h3>
           </div>
           <div style={{ display: 'flex', gap: '8px', fontSize: '10px' }}>
-            <span style={{ color: '#ef4444' }}>{chartsRef.current?.heatmapStats?.down || 0} Down</span>
-            <span style={{ color: '#22c55e' }}>{chartsRef.current?.heatmapStats?.up || 0} Up</span>
+            <span style={{ color: '#ef4444' }}>
+              {chartsRef.current?.heatmapStats?.down || 0} Down
+            </span>
+            <span style={{ color: '#22c55e' }}>
+              {chartsRef.current?.heatmapStats?.up || 0} Up
+            </span>
           </div>
         </div>
         <div ref={heatmapRef} className={styles.chartContainer}></div>
@@ -536,10 +683,19 @@ const NetworkDetail = ({ data }) => {
             <h3 className={styles.widgetTitle}>Interface Availability</h3>
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '100%' }}>
-          {(chartsRef.current?.interfaceAvailabilityData || []).map((item, idx) => (
-            <div key={idx}>{renderSmallGauge(item)}</div>
-          ))}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            height: '100%',
+          }}
+        >
+          {(chartsRef.current?.interfaceAvailabilityData || []).map(
+            (item, idx) => (
+              <div key={idx}>{renderSmallGauge(item)}</div>
+            )
+          )}
         </div>
       </div>
 
@@ -552,7 +708,14 @@ const NetworkDetail = ({ data }) => {
             <h3 className={styles.widgetTitle}>Alert Summary</h3>
           </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '100%' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            height: '100%',
+          }}
+        >
           {(chartsRef.current?.alertSummaryData || []).map((item, idx) => (
             <div key={idx}>{renderSmallGauge(item, 60)}</div>
           ))}
@@ -630,7 +793,9 @@ const NetworkDetail = ({ data }) => {
             <div className={`${styles.dragController} drag-handle`}>
               <MdDragIndicator />
             </div>
-            <h3 className={styles.widgetTitle}>Interface Traffic Utilization</h3>
+            <h3 className={styles.widgetTitle}>
+              Interface Traffic Utilization
+            </h3>
           </div>
         </div>
         <div ref={trafficRef} className={styles.chartContainer}></div>
@@ -642,7 +807,9 @@ const NetworkDetail = ({ data }) => {
             <div className={`${styles.dragController} drag-handle`}>
               <MdDragIndicator />
             </div>
-            <h3 className={styles.widgetTitle}>Network Interface In/Out Packets</h3>
+            <h3 className={styles.widgetTitle}>
+              Network Interface In/Out Packets
+            </h3>
           </div>
         </div>
         <div ref={packetsRef} className={styles.chartContainer}></div>

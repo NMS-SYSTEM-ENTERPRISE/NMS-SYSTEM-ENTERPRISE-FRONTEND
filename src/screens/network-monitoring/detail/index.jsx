@@ -9,8 +9,9 @@ import { NetworkMonitoringSkeleton } from '@/components/ui/skeleton-loaders/netw
 import { getDeviceById } from '@/networking/network-monitoring/network-monitoring-apis';
 import { NETWORK_DETAIL_TABS } from '@/utils/constants/network-monitoring';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
-import { FiArrowLeft, FiMaximize, FiRefreshCw } from 'react-icons/fi';
+import { useCallback, useEffect, useState } from 'react';
+import { FiArrowLeft, FiDownload, FiMaximize, FiRefreshCw } from 'react-icons/fi';
+import * as XLSX from 'xlsx';
 import styles from './styles.module.css';
 
 const NetworkMonitoringDetail = () => {
@@ -20,6 +21,8 @@ const NetworkMonitoringDetail = () => {
   const [activeTab, setActiveTab] = useState('Overview');
   const [deviceData, setDeviceData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const decodedCategory = decodeURIComponent(category);
   const decodedDeviceId = decodeURIComponent(deviceId); // Now the IP address
@@ -56,28 +59,157 @@ const NetworkMonitoringDetail = () => {
   }, [decodedCategory, searchParams, getTabStorageKey]);
 
   // Persist tab change to sessionStorage
-  const handleTabChange = useCallback((tabName) => {
-    setActiveTab(tabName);
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem(getTabStorageKey(), tabName);
-    }
-  }, [getTabStorageKey]);
+  const handleTabChange = useCallback(
+    (tabName) => {
+      setActiveTab(tabName);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(getTabStorageKey(), tabName);
+      }
+    },
+    [getTabStorageKey]
+  );
 
   const fetchDeviceData = async () => {
     try {
-      setIsLoading(true);
+      setIsRefreshing(true);
       const data = await getDeviceById(decodedDeviceId);
       setDeviceData(data);
     } catch (err) {
       console.error('Error fetching device details:', err);
     } finally {
-      setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
-    fetchDeviceData();
+    const loadInitialData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getDeviceById(decodedDeviceId);
+        setDeviceData(data);
+      } catch (err) {
+        console.error('Error fetching device details:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadInitialData();
   }, [decodedDeviceId]);
+
+  // Export device data to XLSX
+  const exportToXLSX = useCallback(async () => {
+    if (!deviceData) return;
+
+    try {
+      setIsExporting(true);
+      const workbook = XLSX.utils.book_new();
+
+      // Sheet 1: Device Summary
+      const summaryData = [
+        ['Device Information'],
+        ['Property', 'Value'],
+        [
+          'Device Name',
+          deviceData?.frontend_data?.identity?.description ||
+            deviceData?.device_name ||
+            'N/A',
+        ],
+        ['Device IP', decodedDeviceId],
+        [
+          'Device Type',
+          deviceData?.frontend_data?.system_information?.device_type || 'N/A',
+        ],
+        [
+          'Last Polled',
+          formatPollTime(
+            deviceData?.last_polled_at ||
+              deviceData?.last_updated ||
+              deviceData?.timestamp
+          ),
+        ],
+        ['Export Date', new Date().toLocaleString('en-GB')],
+        ['Category', decodedCategory],
+      ];
+
+      const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+      summarySheet['!cols'] = [{ wch: 25 }, { wch: 40 }];
+      XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
+
+      // Sheet 2: Interfaces (if available)
+      const interfaces = deviceData?.frontend_data?.interfaces || [];
+      if (interfaces.length > 0) {
+        const interfaceData = [
+          [
+            'Interface',
+            'Description',
+            'Status',
+            'IN (%)',
+            'OUT (%)',
+            'Port Type',
+            'Error',
+            'Discarded',
+            'MAC Address',
+            'IP Address',
+            'VLAN',
+          ],
+          ...interfaces.map((iface, idx) => [
+            iface.description || `Port ${idx + 1}`,
+            iface.description || `Interface ${idx + 1}`,
+            iface.status || 'Down',
+            parseFloat(iface.in_percent || 0).toFixed(2),
+            parseFloat(iface.out_percent || 0).toFixed(2),
+            iface.port_type || 'Unknown',
+            iface.error || 0,
+            iface.discarded || 0,
+            iface.mac_address || 'N/A',
+            iface.ip_address || 'N/A',
+            iface.assigned_vlan || 'Default',
+          ]),
+        ];
+
+        const interfaceSheet = XLSX.utils.aoa_to_sheet(interfaceData);
+        interfaceSheet['!cols'] = [
+          { wch: 20 },
+          { wch: 25 },
+          { wch: 12 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 15 },
+          { wch: 10 },
+          { wch: 12 },
+          { wch: 18 },
+          { wch: 15 },
+          { wch: 12 },
+        ];
+        XLSX.utils.book_append_sheet(workbook, interfaceSheet, 'Interfaces');
+      }
+
+      // Sheet 3: Raw JSON Data
+      const jsonData = [
+        [
+          'Complete Device Data (JSON)',
+          JSON.stringify(deviceData, null, 2),
+        ],
+      ];
+      const jsonSheet = XLSX.utils.aoa_to_sheet(jsonData);
+      jsonSheet['!cols'] = [{ wch: 30 }, { wch: 80 }];
+      XLSX.utils.book_append_sheet(workbook, jsonSheet, 'Raw Data');
+
+      // Generate filename with timestamp
+      const timestamp = new Date()
+        .toISOString()
+        .replace(/[:.]/g, '-')
+        .split('T')[0];
+      const filename = `Device_Report_${decodedDeviceId}_${timestamp}.xlsx`;
+
+      // Download the file
+      XLSX.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Error exporting to XLSX:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [deviceData, decodedDeviceId, decodedCategory]);
 
   const renderDashboard = () => {
     if (isLoading) {
@@ -169,32 +301,31 @@ const NetworkMonitoringDetail = () => {
             <button
               className={styles.iconBtn}
               onClick={fetchDeviceData}
-              title="Refresh"
-            >
-              <FiRefreshCw />
-            </button>
-            {/* <button
-              className={styles.iconBtn}
-              onClick={async () => {
-                try {
-                  const { default: html2canvas } = await import('html2canvas');
-                  const element = document.getElementById('rack-view-export');
-                  if (!element) return;
-                  const canvas = await html2canvas(element, {
-                    backgroundColor: '#111827',
-                  });
-                  const link = document.createElement('a');
-                  link.download = `rack-ports-${decodedDeviceId}.png`;
-                  link.href = canvas.toDataURL();
-                  link.click();
-                } catch (e) {
-                  console.error(e);
-                }
+              disabled={isRefreshing}
+              title="Refresh Data"
+              style={{
+                opacity: isRefreshing ? 0.6 : 1,
               }}
-              title="Export Diagram"
             >
-              <FiImage />
-            </button> */}
+              <FiRefreshCw
+                size={20}
+                style={{
+                  animation: isRefreshing ? 'spin 1s linear infinite' : 'none',
+                  transition: 'transform 0.3s ease',
+                }}
+              />
+            </button>
+            <button
+              className={styles.iconBtn}
+              onClick={exportToXLSX}
+              disabled={isExporting || !deviceData}
+              title="Download Report (XLSX)"
+              style={{
+                opacity: isExporting || !deviceData ? 0.6 : 1,
+              }}
+            >
+              <FiDownload size={20} />
+            </button>
             <button
               className={styles.iconBtn}
               onClick={() => {

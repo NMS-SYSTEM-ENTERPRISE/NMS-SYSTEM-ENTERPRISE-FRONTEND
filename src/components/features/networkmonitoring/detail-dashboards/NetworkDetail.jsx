@@ -196,10 +196,100 @@ const NetworkDetail = ({ data }) => {
 
     chartsRef.current.heatmap = initChart(heatmapRef, {
       tooltip: {
-        position: 'top',
+        position: (point, params, dom, rect, size) => {
+          // Smart positioning to avoid viewport cutoff
+          let x = point[0] + 10;
+          let y = point[1] - size.contentSize[1] - 10;
+          
+          // Check if tooltip goes off-screen and adjust
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          
+          // Right edge check
+          if (x + size.contentSize[0] > viewportWidth - 20) {
+            x = viewportWidth - size.contentSize[0] - 20;
+          }
+          
+          // Left edge check
+          if (x < 20) {
+            x = 20;
+          }
+          
+          // Top edge check - if goes above, put below cursor
+          if (y < 20) {
+            y = point[1] + 10;
+          }
+          
+          // Bottom edge check
+          if (y + size.contentSize[1] > viewportHeight - 20) {
+            y = viewportHeight - size.contentSize[1] - 20;
+          }
+          
+          return [x, y];
+        },
+        backgroundColor: 'rgba(0, 0, 0, 0.95)',
+        borderColor: 'rgba(255, 255, 255, 0.15)',
+        borderWidth: 1,
+        textStyle: { color: '#fff', fontSize: 12 },
+        padding: [10, 14],
         formatter: (params) => {
+          if (!params.value) return '';
+          const col = params.value[0];
+          const row = params.value[1];
+          const statusCode = params.value[2];
           const statusMap = ['Up', 'Warning', 'Major', 'Down'];
-          return `Port ID: ${params.value[0] * 4 + params.value[1] + 1}<br/>Status: ${statusMap[params.value[2]] || 'Unknown'}`;
+          const statusColors = ['#22c55e', '#eab308', '#f97316', '#ef4444'];
+          
+          // Calculate port index
+          const portIdx = row * numCols + col;
+          const iface = interfaces[portIdx];
+          
+          if (!iface) {
+            return `<div style="padding: 4px 0;">Port ${portIdx + 1}: No Data</div>`;
+          }
+          
+          const status = statusMap[statusCode] || 'Unknown';
+          const statusColor = statusColors[statusCode] || '#9ca3af';
+          const inPercent = parseFloat(iface.in_percent) || 0;
+          const outPercent = parseFloat(iface.out_percent) || 0;
+          
+          return `
+            <div style="min-width: 200px;">
+              <div style="font-weight: bold; margin-bottom: 8px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">
+                Port Information
+              </div>
+              <div style="margin: 6px 0;">
+                <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Port:</span>
+                <span style="color: #fff; font-weight: 500;">${iface.description || `Port ${portIdx + 1}`}</span>
+              </div>
+              <div style="margin: 6px 0;">
+                <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Status:</span>
+                <span style="color: ${statusColor}; font-weight: 600;">${status.toUpperCase()}</span>
+              </div>
+              ${iface.ip_address ? `<div style="margin: 6px 0;">
+                <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IP:</span>
+                <span style="color: #3b82f6;">${iface.ip_address}</span>
+              </div>` : ''}
+              ${iface.mac_address ? `<div style="margin: 6px 0;">
+                <span style="color: #9ca3af; min-width: 50px; display: inline-block;">MAC:</span>
+                <span style="color: #fff; font-size: 11px; font-family: monospace;">${iface.mac_address}</span>
+              </div>` : ''}
+              ${iface.port_type ? `<div style="margin: 6px 0;">
+                <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Type:</span>
+                <span style="color: #fff;">${iface.port_type}</span>
+              </div>` : ''}
+              <div style="margin: 6px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
+                <div style="margin: 4px 0;">
+                  <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IN:</span>
+                  <span style="color: #3b82f6; font-weight: 500;">${inPercent.toFixed(2)}%</span>
+                </div>
+                <div style="margin: 4px 0;">
+                  <span style="color: #9ca3af; min-width: 50px; display: inline-block;">OUT:</span>
+                  <span style="color: #22c55e; font-weight: 500;">${outPercent.toFixed(2)}%</span>
+                </div>
+              </div>
+            </div>
+          `;
         }
       },
       grid: { top: 20, bottom: 20, left: 20, right: 20 },

@@ -306,15 +306,17 @@ export const Header = () => {
 
         <div className={styles.headerRight}>
           {/* Date Time Picker Button */}
-          {/* <Button
-          variant="icon"
-          className={styles.dateTimeButton}
-          onClick={() => setShowDatePicker(!showDatePicker)}
-        >
-          <Icon icon="mdi:calendar-clock" width={18} height={18} />
-          <span className={styles.dateTimeText}>{formatDateRangeDisplay()}</span>
-          <Icon icon="mdi:chevron-down" width={14} height={14} />
-        </Button> */}
+          <Button
+            variant="icon"
+            className={styles.dateTimeButton}
+            onClick={() => setShowDatePicker(!showDatePicker)}
+          >
+            <Icon icon="mdi:calendar-clock" width={18} height={18} />
+            <span className={styles.dateTimeText}>
+              {formatDateRangeDisplay()}
+            </span>
+            <Icon icon="mdi:chevron-down" width={14} height={14} />
+          </Button>
 
           <Button
             variant="icon"

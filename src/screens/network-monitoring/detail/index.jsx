@@ -8,13 +8,14 @@ import { NoDataFound } from '@/components/ui/no-data-found';
 import { NetworkMonitoringSkeleton } from '@/components/ui/skeleton-loaders/network-monitoring-skeleton';
 import { getDeviceById } from '@/networking/network-monitoring/network-monitoring-apis';
 import { NETWORK_DETAIL_TABS } from '@/utils/constants/network-monitoring';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, useCallback } from 'react';
 import { FiArrowLeft, FiMaximize, FiRefreshCw } from 'react-icons/fi';
 import styles from './styles.module.css';
 
 const NetworkMonitoringDetail = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { category, deviceId } = useParams();
   const [activeTab, setActiveTab] = useState('Overview');
   const [deviceData, setDeviceData] = useState(null);
@@ -22,6 +23,45 @@ const NetworkMonitoringDetail = () => {
 
   const decodedCategory = decodeURIComponent(category);
   const decodedDeviceId = decodeURIComponent(deviceId); // Now the IP address
+
+  // Generate storage key for tab persistence
+  const getTabStorageKey = useCallback(() => {
+    return `nms-active-tab-${decodedCategory}`;
+  }, [decodedCategory]);
+
+  // Initialize activeTab from sessionStorage or URL params
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Check if there's a tab in URL params
+      const tabFromUrl = searchParams.get('tab');
+      if (tabFromUrl) {
+        setActiveTab(tabFromUrl);
+        // Store to sessionStorage
+        sessionStorage.setItem(getTabStorageKey(), tabFromUrl);
+      } else {
+        // Check sessionStorage for previously selected tab
+        const savedTab = sessionStorage.getItem(getTabStorageKey());
+        if (savedTab) {
+          setActiveTab(savedTab);
+        } else {
+          // Default tab based on category
+          if (decodedCategory === 'Network') {
+            setActiveTab('Overview');
+          } else {
+            setActiveTab('Overview');
+          }
+        }
+      }
+    }
+  }, [decodedCategory, searchParams, getTabStorageKey]);
+
+  // Persist tab change to sessionStorage
+  const handleTabChange = useCallback((tabName) => {
+    setActiveTab(tabName);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(getTabStorageKey(), tabName);
+    }
+  }, [getTabStorageKey]);
 
   const fetchDeviceData = async () => {
     try {
@@ -180,8 +220,9 @@ const NetworkMonitoringDetail = () => {
           {tabs.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               className={`${styles.tabButton} ${activeTab === tab ? styles.tabButtonActive : ''}`}
+              title={`View ${tab} details`}
             >
               {tab}
             </button>

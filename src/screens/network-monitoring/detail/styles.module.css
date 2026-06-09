@@ -830,3 +830,74 @@
   margin-top: 8px;
   font-size: 13px;
 }
+
+/* Tooltip Styles for Port Information - Viewport Aware */
+.tooltip {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+  z-index: 9999;
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+  pointer-events: none;
+  line-height: 1.6;
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ensure tooltip doesn't overflow viewport */
+.tooltip[data-tooltip-place='top'],
+.tooltip[data-tooltip-place='bottom'],
+.tooltip[data-tooltip-place='left'],
+.tooltip[data-tooltip-place='right'],
+.tooltip[data-tooltip-place='auto'] {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Tooltip content text styling */
+.tooltip div {
+  word-break: break-word;
+}
+
+/* Port wrapper for better tooltip display */
+.portWrapper {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure tooltip is above all other elements */
+.tooltip::after,
+.tooltip::before {
+  background: inherit;
+  border: inherit;
+}
+
+/* React Tooltip custom styling */
+:global(.react-tooltip) {
+  padding: 10px 14px !important;
+  border-radius: 6px !important;
+  background-color: rgba(0, 0, 0, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  z-index: 9999 !important;
+}

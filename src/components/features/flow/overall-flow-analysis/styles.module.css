@@ -140,7 +140,8 @@
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  min-height: 400px;
+  min-height: 500px;
+  height: 100%;
   gap: 0;
   position: relative;
 }
@@ -150,10 +151,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  justify-content: space-around;
   position: relative;
   z-index: 2;
-  padding: 20px 0;
+  height: 100%;
 }
 
 .centerColumn {
@@ -162,13 +163,24 @@
   justify-content: center;
 }
 
-.columnLabel {
+.headersRow {
+  display: flex;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.colHeader {
+  width: 250px;
   font-size: 11px;
   font-weight: 800;
   color: var(--color-text-muted);
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 16px;
+}
+
+.colHeaderSpacer {
+  flex: 1;
+  min-width: 200px;
 }
 
 .nodeItem {
@@ -239,13 +251,14 @@
 }
 
 .animatedPath {
-  stroke-dasharray: 5, 5;
-  animation: flowLine 20s linear infinite;
+  stroke-dasharray: 8, 8;
+  animation: flowLine 1.5s linear infinite;
+  opacity: 0.5;
 }
 
 @keyframes flowLine {
   from {
-    stroke-dashoffset: 200;
+    stroke-dashoffset: 16;
   }
   to {
     stroke-dashoffset: 0;
@@ -257,6 +270,8 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  padding: 12px 0;
+  z-index: 5;
 }
 
 .serviceDisc {
@@ -294,6 +309,10 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  background: rgba(11, 15, 25, 0.9);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .serviceStat {

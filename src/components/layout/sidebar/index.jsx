@@ -168,12 +168,14 @@ export const Sidebar = () => {
 
         if (!isMounted) return;
 
-        const activeAlerts = (alertsRes.data || alertsRes || []).filter(
+        const alertsArray = Array.isArray(alertsRes?.alerts) ? alertsRes.alerts : Array.isArray(alertsRes?.data?.items) ? alertsRes.data.items : Array.isArray(alertsRes?.data) ? alertsRes.data : Array.isArray(alertsRes?.items) ? alertsRes.items : (Array.isArray(alertsRes) ? alertsRes : []);
+        const activeAlerts = alertsArray.filter(
           (a) => a.is_active
         ).length;
         setAlertCount(activeAlerts);
 
-        const activeTickets = (ticketsRes.data || ticketsRes || []).filter(
+        const ticketsArray = Array.isArray(ticketsRes?.tickets) ? ticketsRes.tickets : Array.isArray(ticketsRes?.data?.items) ? ticketsRes.data.items : Array.isArray(ticketsRes?.data) ? ticketsRes.data : Array.isArray(ticketsRes?.items) ? ticketsRes.items : (Array.isArray(ticketsRes) ? ticketsRes : []);
+        const activeTickets = ticketsArray.filter(
           (t) => t.status === 'Open' || t.status === 'In Progress'
         ).length;
         setTicketCount(activeTickets);

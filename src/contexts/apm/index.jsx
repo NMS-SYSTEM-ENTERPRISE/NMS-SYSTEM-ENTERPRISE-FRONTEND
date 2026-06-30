@@ -12,7 +12,7 @@ export const ApmProvider = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Real Data State
-  const [servicesData, setServicesData] = useState([]);
+  const [servicesData, setServicesData] = useState([] || null);
   const [tracesData, setTracesData] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,21 +56,23 @@ export const ApmProvider = ({ children }) => {
   }, []);
 
   const filteredServices = useMemo(() => {
-    return servicesData.filter((service) => {
-      const matchesSearch = service.name
+    const servicesArray = Array.isArray(servicesData?.services) ? servicesData.services : Array.isArray(servicesData?.data) ? servicesData.data : (Array.isArray(servicesData) ? servicesData : []);
+    return servicesArray.filter((service) => {
+      const matchesSearch = (service.name || '')
         .toLowerCase()
         .includes((filters.search || searchQuery).toLowerCase());
       const matchesStatus =
         !filters.status || service.status === filters.status;
       const matchesLanguage =
         !filters.language || service.language === filters.language;
-      const matchesType = !filters.type || service.type === filters.type;
+      const matchesType = !filters.type || (service.type || service.framework) === filters.type;
       return matchesSearch && matchesStatus && matchesLanguage && matchesType;
     });
   }, [servicesData, filters, searchQuery]);
 
   const filteredTraces = useMemo(() => {
-    return tracesData.filter(
+    const tracesArray = Array.isArray(tracesData?.traces) ? tracesData.traces : Array.isArray(tracesData?.data) ? tracesData.data : (Array.isArray(tracesData) ? tracesData : []);
+    return tracesArray.filter(
       (trace) =>
         (trace.serviceName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (trace.resource || '').toLowerCase().includes(searchQuery.toLowerCase())

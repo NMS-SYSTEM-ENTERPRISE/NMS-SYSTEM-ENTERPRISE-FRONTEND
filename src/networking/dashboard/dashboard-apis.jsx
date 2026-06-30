@@ -17,8 +17,8 @@ import {
 
 const BASE_URL = '/dashboard';
 
-export const getMainDashboard = async (hours = 24) => {
-  const response = await authApi.get(BASE_URL, { params: { hours } });
+export const getMainDashboard = async (params = { hours: 24 }) => {
+  const response = await authApi.get(BASE_URL, { params });
   return response.data;
 };
 

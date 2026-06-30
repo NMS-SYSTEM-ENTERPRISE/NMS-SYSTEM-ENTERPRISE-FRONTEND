@@ -126,7 +126,7 @@ const NetworkDashboard = ({ data, dashboardData }) => {
           </div>
           <div className={styles.cardContent}>
             <div className={styles.hexagonGrid}>
-              {(dashboardData?.heatmap || data).slice(0, 50).map((item) => {
+              {(dashboardData?.heatmap || data).map((item) => {
                 let hexColor = item.status === 'Up' || item.status === 'UP' ? '#10b981' : '#ef4444';
                 // Randomize colors slightly for heatmap effect
                 if (item.status === 'Up' || item.status === 'UP') {

@@ -5,13 +5,14 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 const NetworkTopologyContext = createContext();
 
 export const NetworkTopologyProvider = ({ children }) => {
-  const [viewMode, setViewMode] = useState('network');
+  const [viewMode, setViewMode] = useState('network_switch');
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [showDeviceModal, setShowDeviceModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [layoutType, setLayoutType] = useState('cose');
   const [expandedNodes, setExpandedNodes] = useState({});
   const [focusedNode, setFocusedNode] = useState(null);
+  const [timeRange, setTimeRange] = useState(24);
   const [topologyData, setTopologyData] = useState(null);
   const [isLoadingTopology, setIsLoadingTopology] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -21,7 +22,7 @@ export const NetworkTopologyProvider = ({ children }) => {
     try {
       setIsRefreshing(true);
       setTopologyError(null);
-      const data = await getNetworkTopology();
+      const data = await getNetworkTopology(timeRange);
       setTopologyData(data);
     } catch (error) {
       console.error('Failed to fetch network topology:', error);
@@ -30,7 +31,7 @@ export const NetworkTopologyProvider = ({ children }) => {
       setIsLoadingTopology(false);
       setIsRefreshing(false);
     }
-  }, []);
+  }, [timeRange]);
 
   useEffect(() => {
     refreshTopology();
@@ -64,6 +65,8 @@ export const NetworkTopologyProvider = ({ children }) => {
     isRefreshing,
     topologyError,
     refreshTopology,
+    timeRange,
+    setTimeRange,
   };
 
   return (

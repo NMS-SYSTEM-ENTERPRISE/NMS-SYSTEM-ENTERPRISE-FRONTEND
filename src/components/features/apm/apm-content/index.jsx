@@ -179,40 +179,40 @@ export const ApmContent = () => {
               {activeView === 'services' && (
                 <ServiceAccordion
                   servicesData={filteredServices.map((service) => ({
-                    name: service.name,
-                    type: service.type,
-                    latency: service.responseTime,
-                    throughput: service.throughput,
-                    errors: service.errorCount,
-                    trend: service.responseTimeTrend,
+                    name: service.name || 'Unknown',
+                    type: service.framework || service.type || 'Unknown',
+                    latency: service.latency_ms || service.responseTime || 0,
+                    throughput: service.throughput_tpm || service.throughput || 0,
+                    errors: service.error_rate || service.errorCount || 0,
+                    trend: service.responseTimeTrend || [],
                     color: getServiceStatusColor(service.status),
                   }))}
                   topLatencyData={[...filteredServices]
-                    .sort((a, b) => b.responseTime - a.responseTime)
+                    .sort((a, b) => (b.latency_ms || b.responseTime || 0) - (a.latency_ms || a.responseTime || 0))
                     .slice(0, 5)
                     .map((service) => ({
-                      name: service.name,
-                      endpoint: service.type,
-                      value: `${service.responseTime.toFixed(2)} ms`,
-                      sparkline: service.responseTimeTrend,
+                      name: service.name || 'Unknown',
+                      endpoint: service.framework || service.type || 'Unknown',
+                      value: `${(service.latency_ms || service.responseTime || 0).toFixed(2)} ms`,
+                      sparkline: service.responseTimeTrend || [],
                     }))}
                   topThroughputData={[...filteredServices]
-                    .sort((a, b) => b.throughput - a.throughput)
+                    .sort((a, b) => (b.throughput_tpm || b.throughput || 0) - (a.throughput_tpm || a.throughput || 0))
                     .slice(0, 5)
                     .map((service) => ({
-                      name: service.name,
-                      endpoint: service.type,
-                      value: `${service.throughput} tpm`,
-                      sparkline: service.throughputTrend,
+                      name: service.name || 'Unknown',
+                      endpoint: service.framework || service.type || 'Unknown',
+                      value: `${service.throughput_tpm || service.throughput || 0} tpm`,
+                      sparkline: service.throughputTrend || [],
                     }))}
                   topErrorsData={[...filteredServices]
-                    .sort((a, b) => b.errorCount - a.errorCount)
+                    .sort((a, b) => (b.error_rate || b.errorCount || 0) - (a.error_rate || a.errorCount || 0))
                     .slice(0, 5)
                     .map((service) => ({
-                      name: service.name,
-                      endpoint: service.type,
-                      value: service.errorCount.toString(),
-                      sparkline: service.errorTrend,
+                      name: service.name || 'Unknown',
+                      endpoint: service.framework || service.type || 'Unknown',
+                      value: (service.error_rate || service.errorCount || 0).toString(),
+                      sparkline: service.errorTrend || [],
                     }))}
                 />
               )}

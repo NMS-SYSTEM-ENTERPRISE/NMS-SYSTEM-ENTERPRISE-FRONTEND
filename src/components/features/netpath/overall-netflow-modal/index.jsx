@@ -36,7 +36,7 @@ export const OverallNetFlowModal = ({ onClose }) => {
             source: l.source,
             target: l.target,
             latency: l.latency,
-            animated: l.animated,
+            animated: true, // Force animate
             link_type: l.link_type
           }
         }));
@@ -135,10 +135,11 @@ export const OverallNetFlowModal = ({ onClose }) => {
               }
             ],
             layout: {
-              name: 'breadthfirst',
-              directed: true,
-              padding: 100,
-              spacingFactor: 1.1,
+              name: 'concentric',
+              concentric: (node) => (node.data('type') === 'source' ? 10 : 1),
+              levelWidth: () => 1,
+              padding: 50,
+              minNodeSpacing: 60,
               animate: true,
               animationDuration: 1200,
               fit: true
@@ -150,12 +151,11 @@ export const OverallNetFlowModal = ({ onClose }) => {
 
           // Animation for dashed lines
           let offset = 0;
-          let animationRef;
           const animateEdges = () => {
             if (cy && !cy.destroyed()) {
-              offset -= 1.5;
-              cy.edges('[?animated]').style('line-dash-offset', offset);
-              animationRef = requestAnimationFrame(animateEdges);
+              offset -= 1.0;
+              cy.edges().style('line-dash-offset', offset);
+              requestAnimationFrame(animateEdges);
             }
           };
           animateEdges();

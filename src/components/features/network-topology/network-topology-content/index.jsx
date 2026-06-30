@@ -23,6 +23,14 @@ const LAYOUT_OPTIONS = [
   { value: 'breadthfirst', label: 'Hierarchical' },
 ];
 
+const TIME_OPTIONS = [
+  { value: 1, label: 'Last 1 Hour' },
+  { value: 6, label: 'Last 6 Hours' },
+  { value: 12, label: 'Last 12 Hours' },
+  { value: 24, label: 'Last 24 Hours' },
+  { value: 168, label: 'Last 7 Days' },
+];
+
 const TopologySearchInput = ({
   value,
   onChange,
@@ -104,6 +112,8 @@ export const NetworkTopologyContent = () => {
     isRefreshing,
     topologyError,
     refreshTopology,
+    timeRange,
+    setTimeRange,
   } = useNetworkTopology();
 
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
@@ -484,32 +494,32 @@ export const NetworkTopologyContent = () => {
             <Button
               variant="outline"
               className={`${styles.viewTab} ${
-                viewMode === 'network' ? styles.viewTabActive : ''
+                viewMode === 'network_switch' ? styles.viewTabActive : ''
               }`}
-              onClick={() => setViewMode('network')}
-              title="Network View"
+              onClick={() => setViewMode('network_switch')}
+              title="Network Switches View"
             >
               <Icon icon="mdi:lan" width={20} height={20} />
             </Button>
             <Button
               variant="outline"
               className={`${styles.viewTab} ${
-                viewMode === 'sdn' ? styles.viewTabActive : ''
+                viewMode === 'server' ? styles.viewTabActive : ''
               }`}
-              onClick={() => setViewMode('sdn')}
-              title="SDN View"
+              onClick={() => setViewMode('server')}
+              title="Servers View"
             >
-              <Icon icon="mdi:network-outline" width={20} height={20} />
+              <Icon icon="mdi:server-network" width={20} height={20} />
             </Button>
             <Button
               variant="outline"
               className={`${styles.viewTab} ${
-                viewMode === 'cloud' ? styles.viewTabActive : ''
+                viewMode === 'ups' ? styles.viewTabActive : ''
               }`}
-              onClick={() => setViewMode('cloud')}
-              title="Cloud View"
+              onClick={() => setViewMode('ups')}
+              title="UPS View"
             >
-              <Icon icon="mdi:cloud" width={20} height={20} />
+              <Icon icon="mdi:battery-charging" width={20} height={20} />
             </Button>
           </div>
 
@@ -594,6 +604,16 @@ export const NetworkTopologyContent = () => {
                   isSearchable={false}
                   isClearable={false}
                   placeholder="Select Layout"
+                />
+              </div>
+              <div className={styles.layoutSelector} style={{ marginLeft: '12px' }}>
+                <Select
+                  value={timeRange}
+                  options={TIME_OPTIONS}
+                  onChange={(e) => setTimeRange(e.target.value)}
+                  isSearchable={false}
+                  isClearable={false}
+                  placeholder="Time Range"
                 />
               </div>
               <Button

@@ -125,7 +125,7 @@ export const acknowledgeAlert = async (alertId, { acknowledged, incidentRef = nu
 
 export const ALERTS_WEBSOCKET_URL =
   typeof window !== 'undefined'
-    ? `ws://${window.location.hostname}:8000/api/v1/network-monitoring/alerts/stream`
+    ? `ws://${window.location.hostname}:8005/api/v1/network-monitoring/alerts/stream`
     : '';
 
 // ==========================================
@@ -158,7 +158,7 @@ export const acknowledgeTrap = async (trapId, acknowledged) => {
 
 export const TRAPS_WEBSOCKET_URL =
   typeof window !== 'undefined'
-    ? `ws://${window.location.hostname}:8000/api/v1/network-monitoring/traps/stream`
+    ? `ws://${window.location.hostname}:8005/api/v1/network-monitoring/traps/stream`
     : '';
 
 // ==========================================

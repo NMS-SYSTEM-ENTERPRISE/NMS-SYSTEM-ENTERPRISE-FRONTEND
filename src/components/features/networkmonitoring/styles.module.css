@@ -71,121 +71,201 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 24px 0;
-  /* More top/bottom padding for "disbursal" */
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* Balanced spacing */
   position: relative;
 }
 
 /* Vertical Tree Line (Per Item Implementation) */
-/* Old global .treeLine removed from here */
-
-.categoryItem {
-  display: flex;
-  align-items: center;
+.categoryGroupWrapper {
   position: relative;
-  min-height: 44px;
-  /* Taller for decent "disbursal" */
-  cursor: pointer;
-  padding-right: 12px;
-  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-/* The Vertical Spine per Item */
-.categoryItem::before {
+.categoryGroupWrapper:not(:last-child)::after {
   content: '';
   position: absolute;
   left: 20px;
-  top: -8px;
-  /* Connect to item above (gap is 8px) */
-  bottom: -8px;
-  /* Connect to item below */
+  top: 22px;
+  bottom: -22px;
   width: 1px;
   background: var(--color-border-accent);
   opacity: 0.5;
   z-index: 0;
 }
 
-/* First item: start line from its own top or slightly above? 
-   Let's just start from top:0 to avoid sticking out too much above.
-*/
-.categoryItem:first-child::before {
-  top: 0;
+.categoryItem {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 44px;
+  cursor: pointer;
+  padding-right: 12px;
+  transition: all 0.2s ease;
+  z-index: 1;
 }
 
-/* Last item: Stop at the branch (center) */
-.categoryItem:last-child::before {
-  bottom: 50%;
-  height: auto;
-}
-
-.leftSidebar.collapsed .categoryItem::before {
+/* Base category items don't have the L-branch */
+.categoryItem:not(.subGroupItem) .treeBranch {
   display: none;
+}
+
+.subGroupsList {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+/* Vertical line for children */
+.subGroupsList::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: -10px;
+  bottom: 19px;
+  width: 1px;
+  background: var(--color-border-accent);
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.subGroupItem {
+  min-height: 38px;
 }
 
 /* Curved Branch: ╰--- */
-.treeBranch {
+.subGroupItem .treeBranch {
   position: absolute;
   left: 20px;
-  /* Attach to Vertical Line */
-  top: -8px;
-  /* Start from above to curve down */
-  width: 16px;
-  height: calc(50% + 8px);
-  /* Height to reach center */
+  top: 0;
+  height: 19px;
+  width: 14px;
   border-left: 1px solid var(--color-border-accent);
-  /* Vertical part of potential curve overlay or just spacing */
   border-bottom: 1px solid var(--color-border-accent);
-  /* Horizontal part */
-  border-bottom-left-radius: 12px;
-  /* The Curve */
+  border-bottom-left-radius: 8px;
   opacity: 0.5;
   z-index: 0;
-  transform: none;
-  /* Remove centering transform, we use height calc */
-  background: transparent;
-  /* No bg fill */
-}
-
-/* Masking the vertical line overlap if needed, or just let it blend. 
-   With separate treeLine, this adds a double thickness if we aren't careful. 
-   Actually, cleaner way: treeLine is the spine. Branch is just the curve out.
-   If treeLine is continuous, we can't "curve out" easily without overlapping or using SVG.
-   CSS Trick: The branch is a box.
-   Let's remove border-left from branch and use transparent. 
-   No, to make L curve, we need border-left.
-   If we align it exactly on top of treeLine, it's fine.
-*/
-.treeBranch {
-  left: 20px;
-  top: 0;
-  height: 50%;
-  /* Go to center */
-  width: 16px;
-  border-left: 1px solid var(--color-border-accent);
-  border-bottom: 1px solid var(--color-border-accent);
-  border-bottom-left-radius: 10px;
   background: transparent;
 }
 
-/* Remove Arrow Tip */
-.treeBranch::after {
-  content: none;
-}
-
+.leftSidebar.collapsed .categoryGroupWrapper::after,
+.leftSidebar.collapsed .subGroupsList::before,
 .leftSidebar.collapsed .treeBranch {
   display: none;
+}
+
+/* --- Device Level Rendering --- */
+.deviceListWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.deviceListSpine {
+  position: absolute;
+  left: 52px;
+  /* Center of subgroup icon: 34px margin + 10px padding + 8px half-icon */
+  top: -19px;
+  bottom: 15px;
+  width: 1px;
+  background: var(--color-border-accent);
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.deviceList {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 4px;
+  max-height: 40vh;
+  /* Independent flexible scrolling */
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1;
+}
+
+/* Custom scrollbar for deviceList */
+.deviceList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.deviceList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.deviceList::-webkit-scrollbar-thumb {
+  background: var(--color-border-accent);
+  border-radius: 4px;
+}
+
+.deviceItem {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 30px;
+  cursor: pointer;
+}
+
+.deviceTreeBranch {
+  position: absolute;
+  left: 52px;
+  top: 0;
+  height: 15px;
+  width: 14px;
+  border-left: 1px solid var(--color-border-accent);
+  border-bottom: 1px solid var(--color-border-accent);
+  border-bottom-left-radius: 6px;
+  opacity: 0.3;
+  z-index: 0;
+  background: transparent;
+}
+
+.deviceItemContent {
+  margin-left: 66px;
+  /* 52px + 14px branch */
+  padding: 2px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+}
+
+.deviceIcon {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.deviceItemText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+  transition: color 0.2s ease;
+}
+
+.deviceItem:hover .deviceItemText {
+  color: var(--color-accent-cyan);
+}
+
+.deviceItem:hover .deviceIcon {
+  color: var(--color-accent-cyan);
+  opacity: 1;
 }
 
 .itemContent {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-left: 40px;
-  /* 20px line + 16px branch + gap */
+  gap: 8px;
+  margin-left: 0;
   width: 100%;
   padding: 6px 10px;
   border-radius: 6px;
@@ -193,7 +273,29 @@
   z-index: 1;
 }
 
-.leftSidebar.collapsed .itemContent {
+.subGroupItem .itemContent {
+  margin-left: 34px;
+  padding: 4px 10px;
+}
+
+.subGroupIcon {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.categoryItem:hover .subGroupIcon {
+  color: var(--color-text-primary);
+  opacity: 1;
+}
+
+.categoryItemActive .subGroupIcon {
+  color: var(--color-accent-cyan);
+  opacity: 1;
+}
+
+.leftSidebar.collapsed .itemContent,
+.leftSidebar.collapsed .subGroupItem .itemContent {
   margin-left: 0;
   width: 100%;
   justify-content: center;
@@ -216,6 +318,24 @@
   font-weight: 500;
   color: var(--color-text-secondary);
   transition: color 0.2s ease;
+  flex: 1;
+  /* allow text to take available space */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.groupCount {
+  font-size: 11px;
+  font-weight: 600;
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-muted);
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: auto;
+  /* push to the far right */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border);
 }
 
 /* Active State Text */
@@ -628,11 +748,23 @@
   padding: 0 var(--gap-md);
   background-color: transparent !important;
   border: none !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 0;
   color: var(--color-text-secondary);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.statBadge:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  color: var(--color-text-primary);
+}
+
+.statBadgeActive {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 0 -2px 0 0 var(--color-accent-cyan);
 }
 
 .statBadge:last-child {
@@ -1331,11 +1463,9 @@
 .cardHeader {
   padding: var(--padding-lg);
   border-bottom: 1px solid var(--color-border);
-  background: linear-gradient(
-    135deg,
-    rgba(var(--color-accent-cyan-rgb), 0.05),
-    rgba(var(--color-accent-blue-rgb), 0.05)
-  );
+  background: linear-gradient(135deg,
+      rgba(var(--color-accent-cyan-rgb), 0.05),
+      rgba(var(--color-accent-blue-rgb), 0.05));
 }
 
 .cardTitle {
@@ -1464,11 +1594,9 @@
   justify-content: center;
   gap: var(--gap-md);
   padding: var(--padding-2xl);
-  background: linear-gradient(
-    135deg,
-    rgba(var(--color-accent-cyan-rgb), 0.05),
-    rgba(var(--color-accent-blue-rgb), 0.05)
-  );
+  background: linear-gradient(135deg,
+      rgba(var(--color-accent-cyan-rgb), 0.05),
+      rgba(var(--color-accent-blue-rgb), 0.05));
   border-radius: var(--radius-md);
   border: 1px dashed var(--color-border);
   min-height: 200px;

@@ -15,6 +15,9 @@ export const NetworkMonitoringContent = () => {
   const {
     activeCategory,
     setActiveCategory,
+    activeGroup,
+    setActiveGroup,
+    availableGroups,
     viewMode,
     isCollapsed,
     setIsCollapsed,
@@ -26,7 +29,9 @@ export const NetworkMonitoringContent = () => {
     getProgressBarColor,
     filters,
     setFilters,
+    metadata,
     handleCloseFilterSidebar,
+    groupCounts,
   } = useNetworkMonitoring();
 
   const hasData = filteredData && filteredData.length > 0;
@@ -36,9 +41,15 @@ export const NetworkMonitoringContent = () => {
       <LeftSidebar
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
+        activeGroup={activeGroup}
+        setActiveGroup={setActiveGroup}
+        availableGroups={availableGroups}
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}
         showFilterSidebar={showFilterSidebar}
+        filteredData={filteredData}
+        setFilters={setFilters}
+        groupCounts={groupCounts}
       />
 
       <div className={sharedStyles.mainContentWrapper}>
@@ -59,6 +70,9 @@ export const NetworkMonitoringContent = () => {
               config={currentConfig}
               data={filteredData}
               getProgressBarColor={getProgressBarColor}
+              metadata={metadata}
+              filters={filters}
+              setFilters={setFilters}
             />
           ) : (
             <DashboardView

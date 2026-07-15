@@ -9,6 +9,11 @@ export const NetworkMonitoringContext = createContext(null);
 
 export const NetworkMonitoringProvider = ({ children }) => {
   const [activeCategory, setActiveCategory] = useState('Network');
+  const [activeGroup, setActiveGroup] = useState(null);
+  const [availableGroups, setAvailableGroups] = useState({
+    Network: ['Network Switch', 'core switch'],
+    UPS: ['UPS-Group']
+  });
   const [viewMode, setViewMode] = useState('details');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
@@ -18,7 +23,9 @@ export const NetworkMonitoringProvider = ({ children }) => {
   // Real Data State
   const [devicesData, setDevicesData] = useState([]);
   const [dashboardData, setDashboardData] = useState(null);
+  const [groupCounts, setGroupCounts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [metadata, setMetadata] = useState(null);
 
   const categories = useMemo(() => Object.keys(CATEGORY_CONFIGS), []);
   const currentConfig = CATEGORY_CONFIGS[activeCategory];
@@ -27,13 +34,38 @@ export const NetworkMonitoringProvider = ({ children }) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        const params = {
+          category: activeCategory,
+          device_group: activeGroup || undefined,
+          search: searchQuery || filters?.search || undefined,
+          status: filters?.status || undefined,
+          paginated: true,
+          limit: filters?.limit || 100,
+          skip: filters?.skip || 0,
+          start_date: filters?.start_date || undefined,
+          end_date: filters?.end_date || undefined,
+          multiple_dates: filters?.multiple_dates || undefined,
+          quick_select: filters?.quick_select || undefined,
+          start_time: filters?.start_time || undefined,
+          end_time: filters?.end_time || undefined,
+        };
+
         const [devicesRes, dashboardRes] = await Promise.all([
-          getAllDevices(),
+          getAllDevices(params),
           getNetworkDashboard()
         ]);
 
+        const rawDevices = Array.isArray(devicesRes) ? devicesRes : (devicesRes.items || devicesRes.data || []);
+        if (devicesRes && !Array.isArray(devicesRes)) {
+          setMetadata({
+            total: devicesRes.total,
+            pages: devicesRes.pages,
+            current_page: devicesRes.current_page
+          });
+        }
+
         // Map backend API data to match frontend component expected props
-        const mappedDevices = devicesRes.map(device => {
+        const mappedDevices = rawDevices.map(device => {
           const m = device.frontend_data.performance_metrics || {};
           const i = device.frontend_data.identity || {};
           const s = device.frontend_data.system_information || {};
@@ -48,7 +80,7 @@ export const NetworkMonitoringProvider = ({ children }) => {
             category: s.device_category || 'Network',
             uptime: s.uptime_days,
             tags: i.tags || [],
-            group: i.group || [],
+            group: i.group || (s.device_group ? [s.device_group] : [s.device_type].filter(Boolean)),
             cpu: parseFloat(m.cpu_load_percent) || 0,
             memory: parseFloat(m.memory_consumption_percent) || 0,
             bandwidthIn: m.total_bandwidth_in,
@@ -58,6 +90,47 @@ export const NetworkMonitoringProvider = ({ children }) => {
             raw: device
           };
         });
+
+        // Extract available groups if activeGroup is not set (so we have all groups for the category)
+        if (!activeGroup) {
+          if (devicesRes.stats && devicesRes.stats.by_device_group) {
+            const uniqueGroups = new Set();
+            const counts = {};
+            devicesRes.stats.by_device_group.forEach(g => {
+              if (g.device_group) {
+                uniqueGroups.add(g.device_group);
+                counts[g.device_group] = g.total;
+              }
+            });
+            setAvailableGroups(prev => ({
+              ...prev,
+              [activeCategory]: Array.from(uniqueGroups).filter(Boolean)
+            }));
+            setGroupCounts(counts);
+          } else {
+            // Fallback to manual extraction from current page if stats are missing
+            const uniqueGroups = new Set();
+            const counts = {};
+            mappedDevices.forEach(d => {
+              if (d.group && Array.isArray(d.group)) {
+                d.group.forEach(g => {
+                  if (g) {
+                    uniqueGroups.add(g);
+                    counts[g] = (counts[g] || 0) + 1;
+                  }
+                });
+              } else if (d.type) {
+                uniqueGroups.add(d.type);
+                counts[d.type] = (counts[d.type] || 0) + 1;
+              }
+            });
+            setAvailableGroups(prev => ({
+              ...prev,
+              [activeCategory]: Array.from(uniqueGroups).filter(Boolean)
+            }));
+            setGroupCounts(counts);
+          }
+        }
 
         setDevicesData(mappedDevices);
         setDashboardData(dashboardRes);
@@ -72,50 +145,11 @@ export const NetworkMonitoringProvider = ({ children }) => {
     // In a real app, you might want to set up an interval to refresh this data
     const interval = setInterval(fetchData, 60000); // refresh every 60s
     return () => clearInterval(interval);
-  }, []);
+  }, [activeCategory, activeGroup, searchQuery, filters]);
 
   const filteredData = useMemo(() => {
-    return devicesData.filter((item) => {
-      // 1. Category Filter
-      if (item.category !== activeCategory) return false;
-
-      // 2. Search Query
-      if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.ip.includes(searchQuery)) {
-        return false;
-      }
-
-      // 3. Dynamic Filters
-      if (filters) {
-        if (filters.status && item.status !== filters.status) return false;
-
-        if (filters.type && item.type !== filters.type) return false;
-        if (filters.deviceType && item.type !== filters.deviceType) return false;
-        if (filters.provider && item.type !== filters.provider) return false;
-        if (filters.region && (!item.tags || !item.tags.includes(filters.region))) return false;
-
-        // Ranges
-        if (filters.cpu && Array.isArray(filters.cpu)) {
-          const [min, max] = filters.cpu;
-          if (item.cpu < min || item.cpu > max) return false;
-        }
-        if (filters.memory && Array.isArray(filters.memory)) {
-          const [min, max] = filters.memory;
-          if (item.memory < min || item.memory > max) return false;
-        }
-        if (filters.disk && Array.isArray(filters.disk)) {
-          const [min, max] = filters.disk;
-          if (item.disk !== undefined && (item.disk < min || item.disk > max)) return false;
-        }
-        if (filters.latency && Array.isArray(filters.latency)) {
-          const [min, max] = filters.latency;
-          // assuming ping is somewhere, if not just skip
-          if (item.ping !== undefined && (item.ping < min || item.ping > max)) return false;
-        }
-      }
-
-      return true;
-    });
-  }, [devicesData, activeCategory, searchQuery, filters]);
+    return devicesData;
+  }, [devicesData]);
 
   const handleCloseFilterSidebar = useCallback(() => {
     setShowFilterSidebar(false);
@@ -124,11 +158,32 @@ export const NetworkMonitoringProvider = ({ children }) => {
   const handleResetFilters = useCallback(() => {
     setFilters({});
     setSearchQuery('');
+    setActiveGroup(null);
   }, []);
+
+  const handleCategoryChange = useCallback((newCategory) => {
+    setActiveCategory(newCategory);
+    setActiveGroup(null);
+  }, []);
+
+  const dynamicMetadata = useMemo(() => {
+    if (!metadata) return null;
+    if (activeGroup && filteredData.length !== devicesData.length) {
+      return {
+        ...metadata,
+        total: filteredData.length,
+        pages: 1
+      };
+    }
+    return metadata;
+  }, [metadata, activeGroup, filteredData, devicesData]);
 
   const value = {
     activeCategory,
-    setActiveCategory,
+    setActiveCategory: handleCategoryChange,
+    activeGroup,
+    setActiveGroup,
+    availableGroups,
     viewMode,
     setViewMode,
     searchQuery,
@@ -142,8 +197,10 @@ export const NetworkMonitoringProvider = ({ children }) => {
     categories,
     currentConfig,
     filteredData,
+    metadata: dynamicMetadata,
     isLoading,
     dashboardData,
+    groupCounts,
     getProgressBarColor,
     handleCloseFilterSidebar,
     handleResetFilters,

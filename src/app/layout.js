@@ -1,5 +1,4 @@
 import ClientLayout from '@/components/layout/client-layout';
-import { AuthGuard } from '@/guards/auth-guard';
 import { Providers } from '@/providers/providers';
 import '@/styles/standard-layout.css';
 import { Geist, Geist_Mono, Manrope } from 'next/font/google';
@@ -46,9 +45,9 @@ export default function RootLayout({ children }) {
           zIndex={9999}
         />
         <Providers>
-          <AuthGuard>
-            <ClientLayout>{children}</ClientLayout>
-          </AuthGuard>
+          {/* <AuthGuard> */}
+          <ClientLayout>{children}</ClientLayout>
+          {/* </AuthGuard> */}
         </Providers>
         <Toaster position="top-right" richColors />
       </body>

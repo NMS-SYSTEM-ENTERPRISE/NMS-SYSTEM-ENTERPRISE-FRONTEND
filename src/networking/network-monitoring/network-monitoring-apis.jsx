@@ -7,8 +7,8 @@ export const getNetworkDashboard = async () => {
   return response.data;
 };
 
-export const getAllDevices = async () => {
-  const response = await authApi.get(`${BASE_URL}/devices`);
+export const getAllDevices = async (params = {}) => {
+  const response = await authApi.get(`${BASE_URL}/devices`, { params });
   return response.data;
 };
 

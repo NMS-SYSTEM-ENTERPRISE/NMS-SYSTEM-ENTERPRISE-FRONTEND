@@ -1,11 +1,11 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import clsx from 'clsx';
-import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
 import sharedStyles from '@/components/features/networkmonitoring/styles.module.css';
+import { Button } from '@/components/ui/button';
 import { useNetworkMonitoring } from '@/hooks/network-monitoring';
+import { Icon } from '@iconify/react';
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 
 const FILTER_LABELS = {
   status: 'Status',
@@ -92,7 +92,11 @@ export const NetworkMonitoringHeader = () => {
 
         <div className={sharedStyles.headerRight}>
           <div className={sharedStyles.searchWrapper}>
-            <Icon icon="mdi:magnify" width={16} className={sharedStyles.searchLeadIcon} />
+            <Icon
+              icon="mdi:magnify"
+              width={16}
+              className={sharedStyles.searchLeadIcon}
+            />
             <input
               type="text"
               placeholder="Search devices..."
@@ -140,7 +144,7 @@ export const NetworkMonitoringHeader = () => {
               <Icon icon="mdi:format-list-bulleted" width={16} height={16} />
               Details
             </Button>
-            <Button
+            {/* <Button
               type="button"
               variant="ghost"
               className={clsx(
@@ -151,14 +155,18 @@ export const NetworkMonitoringHeader = () => {
             >
               <Icon icon="mdi:view-dashboard" width={16} height={16} />
               Dashboard
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
 
       {hasActiveFilters && (
         <div className={sharedStyles.filterTagsRow}>
-          <Icon icon="mdi:filter-check" width={14} className={sharedStyles.filterTagsIcon} />
+          <Icon
+            icon="mdi:filter-check"
+            width={14}
+            className={sharedStyles.filterTagsIcon}
+          />
           <span className={sharedStyles.filterTagsLabel}>Active Filters:</span>
 
           {searchQuery && (
@@ -178,8 +186,12 @@ export const NetworkMonitoringHeader = () => {
 
           {activeSidebarFilters.map(([key, value]) => (
             <span key={key} className={sharedStyles.filterTag}>
-              <span className={sharedStyles.filterTagKey}>{FILTER_LABELS[key] || key}</span>
-              <span className={sharedStyles.filterTagValue}>{formatFilterValue(value)}</span>
+              <span className={sharedStyles.filterTagKey}>
+                {FILTER_LABELS[key] || key}
+              </span>
+              <span className={sharedStyles.filterTagValue}>
+                {formatFilterValue(value)}
+              </span>
               <button
                 type="button"
                 className={sharedStyles.filterTagClose}

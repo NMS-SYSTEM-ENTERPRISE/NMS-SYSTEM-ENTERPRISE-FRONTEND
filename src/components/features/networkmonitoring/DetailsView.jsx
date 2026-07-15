@@ -299,7 +299,7 @@ const AccordionRow = ({
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
             item.upsMetrics &&
-            item.upsMetrics.battery_charge_percent !== undefined ? (
+              item.upsMetrics.battery_charge_percent !== undefined ? (
               renderGauge('BATT', item.upsMetrics.battery_charge_percent)
             ) : item.battery !== undefined ? (
               renderGauge('BATT', item.battery)
@@ -317,7 +317,7 @@ const AccordionRow = ({
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
             item.upsMetrics &&
-            item.upsMetrics.output_load_percent !== undefined ? (
+              item.upsMetrics.output_load_percent !== undefined ? (
               renderGauge('LOAD', item.upsMetrics.output_load_percent)
             ) : item.load !== undefined ? (
               renderGauge('LOAD', item.load)
@@ -335,8 +335,8 @@ const AccordionRow = ({
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
             item.upsMetrics &&
-            item.upsMetrics.input_voltage !== undefined &&
-            item.upsMetrics.output_voltage !== undefined ? (
+              item.upsMetrics.input_voltage !== undefined &&
+              item.upsMetrics.output_voltage !== undefined ? (
               <span
                 className={styles.rowSub}
                 style={{
@@ -547,20 +547,32 @@ export const DetailsView = ({
   config,
   data,
   getProgressBarColor,
+  metadata,
+  filters,
+  setFilters,
 }) => {
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(50);
+  // Server-Side Pagination Logic
+  const total = metadata?.total !== undefined ? metadata.total : data.length;
+  const limit = metadata?.limit !== undefined ? metadata.limit : (filters?.limit || 100);
+  const skip = metadata?.skip !== undefined ? metadata.skip : (filters?.skip || 0);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(data.length / itemsPerPage) || 1;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+  const currentPage = metadata?.current_page || Math.floor(skip / limit) + 1;
+  const totalPages = metadata?.pages || Math.ceil(total / limit) || 1;
+  const startIndex = skip;
+
+  // Data is already paginated by backend
+  const paginatedData = data;
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
+      const newSkip = (newPage - 1) * limit;
+      setFilters((prev) => ({ ...prev, skip: newSkip }));
     }
+  };
+
+  const handleLimitChange = (e) => {
+    const val = e?.target?.value !== undefined ? e.target.value : e;
+    setFilters((prev) => ({ ...prev, limit: Number(val), skip: 0 }));
   };
 
   // Ensure accordions are closed by default
@@ -592,18 +604,27 @@ export const DetailsView = ({
         </h2>
         {/* Quick Filter Stats */}
         <div className={styles.detailsStats}>
-          <span className={`${styles.statBadge} ${styles.statBadgeUp}`}>
+          <button
+            className={`${styles.statBadge} ${styles.statBadgeUp} ${filters?.status === 'UP' ? styles.statBadgeActive : ''}`}
+            onClick={() => setFilters(prev => ({ ...prev, status: 'UP', skip: 0 }))}
+          >
             <Icon icon="mdi:check-circle" width={16} height={16} />
             {data.filter((d) => d.status === 'Up').length} Up
-          </span>
-          <span className={`${styles.statBadge} ${styles.statBadgeDown}`}>
+          </button>
+          <button
+            className={`${styles.statBadge} ${styles.statBadgeDown} ${filters?.status === 'DOWN' ? styles.statBadgeActive : ''}`}
+            onClick={() => setFilters(prev => ({ ...prev, status: 'DOWN', skip: 0 }))}
+          >
             <Icon icon="mdi:alert-circle" width={16} height={16} />
             {data.filter((d) => d.status === 'Down').length} Down
-          </span>
-          <span className={`${styles.statBadge} ${styles.statBadgeTotal}`}>
+          </button>
+          <button
+            className={`${styles.statBadge} ${styles.statBadgeTotal} ${!filters?.status ? styles.statBadgeActive : ''}`}
+            onClick={() => setFilters(prev => ({ ...prev, status: undefined, skip: 0 }))}
+          >
             <Icon icon="mdi:database" width={16} height={16} />
             {data.length} Total
-          </span>
+          </button>
         </div>
       </div>
 
@@ -712,11 +733,8 @@ export const DetailsView = ({
           <div className={styles.paginationRight}>
             <SelectComponent
               className={styles.paginationSelect}
-              value={itemsPerPage}
-              onChange={(val) => {
-                setItemsPerPage(val);
-                setCurrentPage(1);
-              }}
+              value={limit}
+              onChange={handleLimitChange}
               options={[
                 { value: 10, label: '10 / page' },
                 { value: 50, label: '50 / page' },
@@ -724,9 +742,9 @@ export const DetailsView = ({
               ]}
             />
             <span className={styles.paginationCount}>
-              {data.length === 0 ? 0 : startIndex + 1} -{' '}
-              {Math.min(startIndex + itemsPerPage, data.length)} of{' '}
-              {data.length} items
+              {total === 0 ? 0 : startIndex + 1} -{' '}
+              {Math.min(startIndex + paginatedData.length, total)} of{' '}
+              {total} items
             </span>
           </div>
         </div>

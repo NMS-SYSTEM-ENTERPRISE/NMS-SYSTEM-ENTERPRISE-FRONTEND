@@ -40,8 +40,8 @@ export const NetworkMonitoringProvider = ({ children }) => {
           search: searchQuery || filters?.search || undefined,
           status: filters?.status || undefined,
           paginated: true,
-          limit: filters?.limit || 100,
-          skip: filters?.skip || 0,
+          limit: filters?.limit ? parseInt(filters.limit, 10) : 100,
+          skip: filters?.skip ? parseInt(filters.skip, 10) : 0,
           start_date: filters?.start_date || undefined,
           end_date: filters?.end_date || undefined,
           multiple_dates: filters?.multiple_dates || undefined,
@@ -79,6 +79,7 @@ export const NetworkMonitoringProvider = ({ children }) => {
             type: s.device_type,
             category: s.device_category || 'Network',
             uptime: s.uptime_days,
+            latency: i.latency_ms,
             tags: i.tags || [],
             group: i.group || (s.device_group ? [s.device_group] : [s.device_type].filter(Boolean)),
             cpu: parseFloat(m.cpu_load_percent) || 0,
@@ -87,6 +88,7 @@ export const NetworkMonitoringProvider = ({ children }) => {
             bandwidthOut: m.total_bandwidth_out,
             interfaces: device.frontend_data.interfaces || [],
             upsMetrics: device.frontend_data.ups_metrics || null,
+            cctvMetrics: device.frontend_data.cctv_metrics || null,
             raw: device
           };
         });
@@ -164,6 +166,14 @@ export const NetworkMonitoringProvider = ({ children }) => {
   const handleCategoryChange = useCallback((newCategory) => {
     setActiveCategory(newCategory);
     setActiveGroup(null);
+    setSearchQuery('');
+    setFilters(prev => ({ ...prev, search: undefined, skip: 0 }));
+  }, []);
+
+  const handleGroupChange = useCallback((newGroup) => {
+    setActiveGroup(newGroup);
+    setSearchQuery('');
+    setFilters(prev => ({ ...prev, search: undefined, skip: 0 }));
   }, []);
 
   const dynamicMetadata = useMemo(() => {
@@ -182,7 +192,7 @@ export const NetworkMonitoringProvider = ({ children }) => {
     activeCategory,
     setActiveCategory: handleCategoryChange,
     activeGroup,
-    setActiveGroup,
+    setActiveGroup: handleGroupChange,
     availableGroups,
     viewMode,
     setViewMode,

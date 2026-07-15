@@ -1,5 +1,4 @@
 export const CATEGORY_CONFIGS = {
-  /*
   'Server & Apps': {
     icon: 'mdi:server',
     color: 'var(--color-chart-cyan)',
@@ -23,7 +22,25 @@ export const CATEGORY_CONFIGS = {
       'Memory Distribution',
     ],
   },
-  */
+  CCTV: {
+    icon: 'mdi:cctv',
+    color: 'var(--color-chart-yellow)',
+    detailColumns: [
+      'DEVICE',
+      'STATUS',
+      'IP',
+      'MODEL',
+      'RESOLUTION',
+      'UPTIME',
+      'BANDWIDTH IN',
+      'BANDWIDTH OUT',
+    ],
+    dashboardWidgets: [
+      'CCTV Health',
+      'Bandwidth Usage',
+      'Alerts',
+    ],
+  },
   Network: {
     icon: 'mdi:lan',
     color: 'var(--color-chart-blue)',

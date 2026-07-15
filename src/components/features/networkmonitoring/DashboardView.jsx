@@ -1,4 +1,5 @@
 import CloudDashboard from './dashboards/CloudDashboard';
+import CCTVDashboard from './dashboards/CCTVDashboard';
 import {
   DefaultDashboard,
   OtherDashboard
@@ -33,6 +34,8 @@ const DashboardView = ({ category, config, data, dashboardData }) => {
       return <ServerDashboard data={data} />;
     case 'Network':
       return <NetworkDashboard data={data} dashboardData={dashboardData} />;
+    case 'CCTV':
+      return <CCTVDashboard data={data} />;
     case 'UPS':
       return <UPSDashboard data={data} />;
     case 'SDN':

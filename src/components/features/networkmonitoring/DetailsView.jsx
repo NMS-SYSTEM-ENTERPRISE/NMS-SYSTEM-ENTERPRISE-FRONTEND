@@ -295,7 +295,7 @@ const AccordionRow = ({
           </span>
         </div>
 
-        {/* Col 3: CPU or Battery */}
+        {/* Col 3: CPU or Battery or Uptime */}
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
             item.upsMetrics &&
@@ -306,6 +306,10 @@ const AccordionRow = ({
             ) : (
               <span className={styles.rowSub}>-</span>
             )
+          ) : category === 'CCTV' ? (
+            <span className={styles.rowSub} style={{ fontSize: '13px', color: 'var(--color-text-primary)', fontWeight: 600 }}>
+              {item.uptime || '-'}
+            </span>
           ) : item.cpu !== undefined ? (
             renderGauge('CPU', item.cpu)
           ) : (
@@ -313,7 +317,7 @@ const AccordionRow = ({
           )}
         </div>
 
-        {/* Col 4: Memory or Load */}
+        {/* Col 4: Memory or Load or Latency */}
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
             item.upsMetrics &&
@@ -324,6 +328,10 @@ const AccordionRow = ({
             ) : (
               <span className={styles.rowSub}>-</span>
             )
+          ) : category === 'CCTV' ? (
+            <span className={styles.rowSub} style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+              <strong style={{ color: 'var(--color-text-primary)' }}>{item.latency !== undefined ? `${item.latency} ms` : '-'}</strong>
+            </span>
           ) : item.memory !== undefined ? (
             renderGauge('MEM', item.memory)
           ) : (
@@ -331,7 +339,7 @@ const AccordionRow = ({
           )}
         </div>
 
-        {/* Col 5: Disk/Network or Voltage/Chart */}
+        {/* Col 5: Disk/Network or Voltage or Bandwidth */}
         <div className={styles.metricSlot}>
           {category === 'UPS' ? (
             item.upsMetrics &&
@@ -355,21 +363,26 @@ const AccordionRow = ({
             ) : (
               <span className={styles.rowSub}>-</span>
             )
+          ) : category === 'CCTV' || item.bandwidthIn ? (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                fontSize: '12px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981' }}>
+                <Icon icon="mdi:arrow-down-thick" width={14} height={14} />
+                <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{item.bandwidthIn || '0 Mbps'}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#3b82f6' }}>
+                <Icon icon="mdi:arrow-up-thick" width={14} height={14} />
+                <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>{item.bandwidthOut || '0 Mbps'}</span>
+              </div>
+            </div>
           ) : item.disk !== undefined ? (
             renderGauge('DISK', item.disk)
-          ) : item.bandwidthIn ? (
-            <span
-              className={styles.rowSub}
-              style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}
-            >
-              <strong style={{ color: 'var(--color-text-primary)' }}>
-                {item.bandwidthIn}
-              </strong>{' '}
-              /{' '}
-              <strong style={{ color: 'var(--color-text-primary)' }}>
-                {item.bandwidthOut}
-              </strong>
-            </span>
           ) : (
             <span className={styles.rowSub}>-</span>
           )}
@@ -412,22 +425,17 @@ const AccordionRow = ({
               <div className={styles.detailsGrid}>
                 <DetailCard
                   label="Device Type"
-                  value={item.type || 'Unknown'}
+                  value={item.type || 'N/A'}
                   icon="mdi:devices"
                 />
                 <DetailCard
                   label="IP Address"
-                  value={item.ip || '192.168.1.10'}
+                  value={item.ip || 'N/A'}
                   icon="mdi:ip-network"
                 />
                 <DetailCard
-                  label="Location"
-                  value="Data Center A"
-                  icon="mdi:map-marker"
-                />
-                <DetailCard
                   label="Uptime"
-                  value={item.uptime || '12d 4h'}
+                  value={item.uptime || 'N/A'}
                   icon="mdi:clock-outline"
                 />
               </div>
@@ -458,46 +466,104 @@ const AccordionRow = ({
               )}
             </div>
 
-            {/* Section 2: Performance & Resources */}
-            <div className={styles.detailSection}>
-              <h4 className={styles.sectionTitle}>Performance Metrics</h4>
-              <div className={styles.detailsGrid}>
-                {item.disk !== undefined && (
+            {/* Section 1.5: CCTV Details (Only shown for CCTV devices) */}
+            {item.cctvMetrics && (
+              <div className={styles.detailSection}>
+                <h4 className={styles.sectionTitle}>CCTV Information</h4>
+                <div className={styles.detailsGrid}>
                   <DetailCard
-                    label="Disk Usage"
-                    value={`${item.disk}%`}
-                    icon="mdi:harddisk"
-                    subValue={
-                      <div
-                        style={{
-                          height: 4,
-                          width: '100%',
-                          background: 'var(--color-bg-tertiary)',
-                          borderRadius: 2,
-                          marginTop: 4,
-                        }}
-                      >
+                    label="Camera Model"
+                    value={item.cctvMetrics.model || 'N/A'}
+                    icon="mdi:cctv"
+                  />
+                  <DetailCard
+                    label="Vendor"
+                    value={item.cctvMetrics.vendor || 'N/A'}
+                    icon="mdi:domain"
+                  />
+                  <DetailCard
+                    label="Camera Type"
+                    value={item.cctvMetrics.type || 'N/A'}
+                    icon="mdi:shape"
+                  />
+                  <DetailCard
+                    label="Serial Number"
+                    value={item.cctvMetrics.serial_number || 'N/A'}
+                    icon="mdi:barcode"
+                  />
+                </div>
+                {item.cctvMetrics.firmware && (
+                  <div
+                    style={{
+                      marginTop: '12px',
+                      padding: '12px',
+                      background: 'var(--color-bg-tertiary)',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      color: 'var(--color-text-secondary)',
+                      border: '1px solid var(--color-border)',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color: 'var(--color-text-primary)',
+                        display: 'block',
+                        marginBottom: '4px',
+                      }}
+                    >
+                      Firmware & Build Data
+                    </span>
+                    {item.cctvMetrics.firmware}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Section 2: Performance & Resources */}
+            {(item.disk !== undefined || item.bandwidthIn || item.bandwidthOut) && (
+              <div className={styles.detailSection}>
+                <h4 className={styles.sectionTitle}>Performance Metrics</h4>
+                <div className={styles.detailsGrid}>
+                  {item.disk !== undefined && (
+                    <DetailCard
+                      label="Disk Usage"
+                      value={`${item.disk}%`}
+                      icon="mdi:harddisk"
+                      subValue={
                         <div
                           style={{
-                            width: `${item.disk}%`,
-                            background: getProgressBarColor(item.disk),
-                            height: '100%',
+                            height: 4,
+                            width: '100%',
+                            background: 'var(--color-bg-tertiary)',
                             borderRadius: 2,
+                            marginTop: 4,
                           }}
-                        />
-                      </div>
-                    }
-                  />
-                )}
-                <DetailCard
-                  label="Network Traffic"
-                  value="1.2 GB/s"
-                  icon="mdi:access-point-network"
-                  subValue="In: 800MB | Out: 400MB"
-                />
-                {/* Placeholder for more specific metrics */}
+                        >
+                          <div
+                            style={{
+                              width: `${item.disk}%`,
+                              background: getProgressBarColor(item.disk),
+                              height: '100%',
+                              borderRadius: 2,
+                            }}
+                          />
+                        </div>
+                      }
+                    />
+                  )}
+                  {(item.bandwidthIn || item.bandwidthOut) && (
+                    <DetailCard
+                      label="Network Traffic"
+                      value={item.bandwidthIn ? item.bandwidthIn : item.bandwidthOut}
+                      icon="mdi:access-point-network"
+                      subValue={`In: ${item.bandwidthIn || '0 Mbps'} | Out: ${item.bandwidthOut || '0 Mbps'}`}
+                    />
+                  )}
+                  {/* Placeholder for more specific metrics */}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Section 3: Status & Groups */}
             <div className={styles.detailSection}>
@@ -641,6 +707,12 @@ export const DetailsView = ({
               <span>Battery Level</span>
               <span>Load Capacity</span>
               <span>Voltage (In / Out)</span>
+            </>
+          ) : category === 'CCTV' ? (
+            <>
+              <span>Uptime</span>
+              <span>Latency</span>
+              <span>Bandwidth (In / Out)</span>
             </>
           ) : (
             <>

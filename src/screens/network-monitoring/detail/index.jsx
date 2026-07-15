@@ -1,4 +1,5 @@
 'use client';
+import CCTVDetail from '@/components/features/networkmonitoring/detail-dashboards/CCTVDetail';
 import CloudDetail from '@/components/features/networkmonitoring/detail-dashboards/CloudDetail';
 import NetworkDetail from '@/components/features/networkmonitoring/detail-dashboards/NetworkDetail';
 import NetworkInterface from '@/components/features/networkmonitoring/detail-dashboards/NetworkInterface';
@@ -111,8 +112,8 @@ const NetworkMonitoringDetail = () => {
         [
           'Device Name',
           deviceData?.frontend_data?.identity?.description ||
-            deviceData?.device_name ||
-            'N/A',
+          deviceData?.device_name ||
+          'N/A',
         ],
         ['Device IP', decodedDeviceId],
         [
@@ -123,8 +124,8 @@ const NetworkMonitoringDetail = () => {
           'Last Polled',
           formatPollTime(
             deviceData?.last_polled_at ||
-              deviceData?.last_updated ||
-              deviceData?.timestamp
+            deviceData?.last_updated ||
+            deviceData?.timestamp
           ),
         ],
         ['Export Date', new Date().toLocaleString('en-GB')],
@@ -236,6 +237,8 @@ const NetworkMonitoringDetail = () => {
         return <NetworkDetail data={deviceData} />;
       case 'Cloud':
         return <CloudDetail data={deviceData} />;
+      case 'CCTV':
+        return <CCTVDetail data={deviceData} />;
       case 'UPS':
         return <UPSDetail data={deviceData} />;
       default:
@@ -264,8 +267,8 @@ const NetworkMonitoringDetail = () => {
 
   const lastPollTime = formatPollTime(
     deviceData?.last_polled_at ||
-      deviceData?.last_updated ||
-      deviceData?.timestamp
+    deviceData?.last_updated ||
+    deviceData?.timestamp
   );
 
   return (

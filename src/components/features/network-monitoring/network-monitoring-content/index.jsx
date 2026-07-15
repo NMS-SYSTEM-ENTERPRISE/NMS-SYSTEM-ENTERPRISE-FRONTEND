@@ -32,9 +32,13 @@ export const NetworkMonitoringContent = () => {
     metadata,
     handleCloseFilterSidebar,
     groupCounts,
+    searchQuery,
   } = useNetworkMonitoring();
 
   const hasData = filteredData && filteredData.length > 0;
+  
+  // Only show the massive "No Telemetry Data Found" if they haven't applied any filters
+  const hasActiveFilters = Object.keys(filters || {}).length > 0 || !!activeGroup || !!searchQuery;
 
   return (
     <div className={sharedStyles.networkMonitoring}>
@@ -58,7 +62,7 @@ export const NetworkMonitoringContent = () => {
         <div className={clsx(sharedStyles.contentArea, viewMode === 'details' && sharedStyles.contentAreaNoPadding)}>
           {isLoading ? (
             <NetworkMonitoringSkeleton />
-          ) : !hasData ? (
+          ) : !hasData && !hasActiveFilters ? (
             <NoDataFound
               title="No Telemetry Data Found"
               description={`There is currently no active telemetry or device data available for the '${activeCategory}' category.`}

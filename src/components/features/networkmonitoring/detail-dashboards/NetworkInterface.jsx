@@ -81,7 +81,15 @@ const NetworkInterface = ({ data }) => {
           portData.port_type
             ? `<div style="margin: 6px 0;">
           <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Type:</span>
-          <span style="color: #fff;">${portData.port_type}</span>
+          <span style="color: #fff;">${portData.port_type === '6' ? 'Ethernet' : portData.port_type}</span>
+        </div>`
+            : ''
+        }
+        ${
+          portData.speed
+            ? `<div style="margin: 6px 0;">
+          <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Speed:</span>
+          <span style="color: #fff;">${portData.speed}</span>
         </div>`
             : ''
         }
@@ -126,14 +134,14 @@ const NetworkInterface = ({ data }) => {
       (item.ip_address || '').includes(searchQuery);
     const matchesStatus =
       statusFilter === 'All' ||
-      (statusFilter === 'Up' && item.status?.toLowerCase() === 'up') ||
-      (statusFilter === 'Down' && item.status?.toLowerCase() !== 'up');
+      (statusFilter === 'Up' && (item.oper_status?.toLowerCase() === 'up' || item.status?.toLowerCase() === 'up')) ||
+      (statusFilter === 'Down' && (item.oper_status?.toLowerCase() !== 'up' && item.status?.toLowerCase() !== 'up'));
     return matchesSearch && matchesStatus;
   });
 
   // Generate visual rack ports for ALL available interfaces
   const visualPorts = interfaces.map((iface, i) => {
-    const isUp = iface.status?.toLowerCase() === 'up';
+    const isUp = iface.oper_status?.toLowerCase() === 'up' || iface.status?.toLowerCase() === 'up';
     const matchesSearch =
       (iface.description || '')
         .toLowerCase()
@@ -355,95 +363,76 @@ const NetworkInterface = ({ data }) => {
             <thead>
               <tr>
                 <th>Interface</th>
-                <th>Description</th>
                 <th>Status</th>
-                <th>IN (%)</th>
-                <th>OUT (%)</th>
-                <th>Port Type</th>
-                <th>Error</th>
-                <th>Discarded</th>
-                <th>Mac Address</th>
-                <th>IP Address</th>
-                <th>Assigned VLAN</th>
+                {filteredData.some((r) => r.in_octets) && <th>Traffic In</th>}
+                {filteredData.some((r) => r.out_octets) && <th>Traffic Out</th>}
+                {filteredData.some((r) => r.port_type) && <th>Port Type</th>}
+                {filteredData.some((r) => r.speed) && <th>Speed</th>}
+                {filteredData.some((r) => r.in_errors != null || r.error != null) && <th>Errors</th>}
+                {filteredData.some((r) => r.in_discards != null || r.discarded != null) && <th>Discarded</th>}
+                {filteredData.some((r) => r.mac_address) && <th>MAC Address</th>}
+                {filteredData.some((r) => r.ip_address) && <th>IP Address</th>}
+                {filteredData.some((r) => r.assigned_vlan) && <th>VLAN</th>}
               </tr>
             </thead>
             <tbody>
               {filteredData.map((row, idx) => {
-                const inPercent = parseFloat(row.in_percent) || 0;
-                const outPercent = parseFloat(row.out_percent) || 0;
+                const operStatus = row.oper_status || row.admin_status || row.status || 'DOWN';
+                const isUp = operStatus.toLowerCase() === 'up';
+                const inErrors = row.in_errors != null ? row.in_errors : row.error != null ? row.error : null;
+                const inDiscards = row.in_discards != null ? row.in_discards : row.discarded != null ? row.discarded : null;
                 return (
                   <tr key={row.index || idx}>
                     <td className={styles.textBlue}>
-                      {row.description || `Port ${idx + 1}`}
-                    </td>
-                    <td className={styles.textWhite}>
-                      {row.description || `Interface ${idx + 1}`}
+                      {row.description || `Port ${row.index || idx + 1}`}
                     </td>
                     <td>
                       <div className={styles.statusCell}>
-                        {row.status === 'Up' ? (
+                        {isUp ? (
                           <FiCheckCircle className={styles.iconGreen} />
                         ) : (
                           <FiXCircle className={styles.iconRed} />
                         )}
-                        <span
-                          className={
-                            row.status === 'Up'
-                              ? styles.textGreen
-                              : styles.textRed
-                          }
-                        >
-                          {row.status || 'Down'}
+                        <span className={isUp ? styles.textGreen : styles.textRed}>
+                          {isUp ? 'Up' : 'Down'}
                         </span>
                       </div>
                     </td>
-                    <td>
-                      <div className={styles.progressBarWrapper}>
-                        <div
-                          className={styles.progressBar}
-                          style={{ width: `${inPercent}%` }}
-                        ></div>
-                      </div>
-                      <span className={styles.progressText}>{inPercent}%</span>
-                    </td>
-                    <td>
-                      <div className={styles.progressBarWrapper}>
-                        <div
-                          className={styles.progressBar}
-                          style={{ width: `${outPercent}%` }}
-                        ></div>
-                      </div>
-                      <span className={styles.progressText}>{outPercent}%</span>
-                    </td>
-                    <td>
-                      <div className={styles.iconCell}>
-                        <FiServer className={styles.iconOrange} />{' '}
-                        <span>
-                          {row.port_type || renderEmptyBadge('Unknown')}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className={styles.iconCell}>
-                        <FiAlertCircle className={styles.iconRed} />{' '}
-                        <span>{row.error || 0}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className={styles.iconCell}>
-                        <FiTrash2 className={styles.iconYellow} />{' '}
-                        <span>{row.discarded || 0}</span>
-                      </div>
-                    </td>
-                    <td className={styles.textWhite}>
-                      {row.mac_address || renderEmptyBadge('No MAC')}
-                    </td>
-                    <td className={styles.textWhite}>
-                      {row.ip_address || renderEmptyBadge('Unassigned')}
-                    </td>
-                    <td className={styles.textWhite}>
-                      {row.assigned_vlan || renderEmptyBadge('Default')}
-                    </td>
+                    {filteredData.some((r) => r.in_octets) && (
+                      <td className={styles.textWhite} style={{ fontSize: '12px' }}>
+                        {row.in_octets || '—'}
+                      </td>
+                    )}
+                    {filteredData.some((r) => r.out_octets) && (
+                      <td className={styles.textWhite} style={{ fontSize: '12px' }}>
+                        {row.out_octets || '—'}
+                      </td>
+                    )}
+                    {filteredData.some((r) => r.port_type) && (
+                      <td className={styles.textWhite}>
+                        {row.port_type === '6' ? 'Ethernet' : row.port_type === '1' ? 'Other' : row.port_type || '—'}
+                      </td>
+                    )}
+                    {filteredData.some((r) => r.speed) && (
+                      <td className={styles.textWhite}>{row.speed || '—'}</td>
+                    )}
+                    {filteredData.some((r) => r.in_errors != null || r.error != null) && (
+                      <td className={styles.textWhite}>{inErrors !== null ? inErrors : '—'}</td>
+                    )}
+                    {filteredData.some((r) => r.in_discards != null || r.discarded != null) && (
+                      <td className={styles.textWhite}>{inDiscards !== null ? inDiscards : '—'}</td>
+                    )}
+                    {filteredData.some((r) => r.mac_address) && (
+                      <td className={styles.textWhite} style={{ fontFamily: 'monospace', fontSize: '12px' }}>
+                        {row.mac_address || '—'}
+                      </td>
+                    )}
+                    {filteredData.some((r) => r.ip_address) && (
+                      <td className={styles.textBlue}>{row.ip_address || '—'}</td>
+                    )}
+                    {filteredData.some((r) => r.assigned_vlan) && (
+                      <td className={styles.textWhite}>{row.assigned_vlan || '—'}</td>
+                    )}
                   </tr>
                 );
               })}

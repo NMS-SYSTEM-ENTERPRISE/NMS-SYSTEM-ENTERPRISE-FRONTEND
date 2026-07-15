@@ -19,9 +19,8 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // We initialize state inside the component using the `data` prop.
 
 const LG_LAYOUT = [
-  { i: 'avail', x: 0, y: 0, w: 4, h: 3 },
-  { i: 'ifAvail', x: 4, y: 0, w: 4, h: 3 },
-  { i: 'alert', x: 8, y: 0, w: 4, h: 3 },
+  { i: 'avail', x: 0, y: 0, w: 6, h: 3 },
+  { i: 'ifAvail', x: 6, y: 0, w: 6, h: 3 },
   { i: 'heatmap', x: 0, y: 3, w: 12, h: 3 },
   { i: 'latency', x: 0, y: 6, w: 4, h: 3 },
   { i: 'cpu', x: 4, y: 6, w: 4, h: 3 },
@@ -86,13 +85,14 @@ const NetworkDetail = ({ data }) => {
 
     // Process Dynamic Data
     const interfaces = data?.frontend_data?.interfaces || [];
-    const upIfaces = interfaces.filter(
-      (i) => i.status?.toLowerCase() === 'up'
+    const interfaceSummary = data?.frontend_data?.interface_summary || {};
+    const totalIfaces = interfaceSummary.total_interfaces || interfaces.length || 1;
+    const upIfaces = interfaceSummary.interfaces_up !== undefined ? interfaceSummary.interfaces_up : interfaces.filter(
+      (i) => (i.oper_status || i.admin_status || i.status || '').toLowerCase() === 'up'
     ).length;
-    const downIfaces = interfaces.filter(
-      (i) => i.status?.toLowerCase() === 'down'
+    const downIfaces = interfaceSummary.interfaces_down !== undefined ? interfaceSummary.interfaces_down : interfaces.filter(
+      (i) => (i.oper_status || i.admin_status || i.status || '').toLowerCase() !== 'up'
     ).length;
-    const totalIfaces = interfaces.length || 1;
 
     const availabilityData = [
       { value: upIfaces, name: 'Up', itemStyle: { color: '#22c55e' } },
@@ -106,7 +106,8 @@ const NetworkDetail = ({ data }) => {
     interfaces.forEach((iface, idx) => {
       const col = idx % numCols;
       const row = Math.floor(idx / numCols);
-      const status = iface.status?.toLowerCase() === 'up' ? 0 : 3;
+      const isUp = (iface.oper_status || iface.admin_status || iface.status || '').toLowerCase() === 'up';
+      const status = isUp ? 0 : 3;
       heatmapData.push([col, row, status]);
     });
 
@@ -115,13 +116,6 @@ const NetworkDetail = ({ data }) => {
       { label: 'Up', value: upIfaces, color: '#22c55e' },
     ];
 
-    const sysAlarms = data?.frontend_data?.ups_metrics?.alarms_present || 0;
-    const alertSummaryData = [
-      { label: 'Down', value: downIfaces, color: '#ef4444' },
-      { label: 'Major', value: sysAlarms, color: '#f97316' },
-      { label: 'Warning', value: 0, color: '#eab308' },
-      { label: 'Clear', value: totalIfaces, color: '#22c55e' },
-    ];
 
     const historyTimes = historyData.map((h) =>
       new Date(h.time).toLocaleTimeString([], {
@@ -300,30 +294,27 @@ const NetworkDetail = ({ data }) => {
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Status:</span>
                 <span style="color: ${statusColor}; font-weight: 600;">${status.toUpperCase()}</span>
               </div>
-              ${
-                iface.ip_address
-                  ? `<div style="margin: 6px 0;">
+              ${iface.ip_address
+              ? `<div style="margin: 6px 0;">
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IP:</span>
                 <span style="color: #3b82f6;">${iface.ip_address}</span>
               </div>`
-                  : ''
-              }
-              ${
-                iface.mac_address
-                  ? `<div style="margin: 6px 0;">
+              : ''
+            }
+              ${iface.mac_address
+              ? `<div style="margin: 6px 0;">
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">MAC:</span>
                 <span style="color: #fff; font-size: 11px; font-family: monospace;">${iface.mac_address}</span>
               </div>`
-                  : ''
-              }
-              ${
-                iface.port_type
-                  ? `<div style="margin: 6px 0;">
+              : ''
+            }
+              ${iface.port_type
+              ? `<div style="margin: 6px 0;">
                 <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Type:</span>
                 <span style="color: #fff;">${iface.port_type}</span>
               </div>`
-                  : ''
-              }
+              : ''
+            }
               <div style="margin: 6px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
                 <div style="margin: 4px 0;">
                   <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IN:</span>
@@ -543,14 +534,13 @@ const NetworkDetail = ({ data }) => {
 
     // Attach dynamic stats to refs so they can be read by render function if needed
     chartsRef.current.interfaceAvailabilityData = interfaceAvailabilityData;
-    chartsRef.current.alertSummaryData = alertSummaryData;
     chartsRef.current.downtimeData = downtimeData;
     chartsRef.current.heatmapStats = { up: upIfaces, down: downIfaces };
 
     const handleResize = () => {
-      Object.values(chartsRef.current).forEach(
-        (chart) => chart && chart.resize()
-      );
+      Object.values(chartsRef.current).forEach((item) => {
+        if (item && typeof item.resize === 'function') item.resize();
+      });
     };
     window.addEventListener('resize', handleResize);
 
@@ -623,9 +613,9 @@ const NetworkDetail = ({ data }) => {
   const onLayoutChange = (currentLayout, allLayouts) => {
     setLayouts(allLayouts);
     setTimeout(() => {
-      Object.values(chartsRef.current).forEach(
-        (chart) => chart && chart.resize()
-      );
+      Object.values(chartsRef.current).forEach((item) => {
+        if (item && typeof item.resize === 'function') item.resize();
+      });
     }, 300);
   };
 
@@ -696,29 +686,6 @@ const NetworkDetail = ({ data }) => {
               <div key={idx}>{renderSmallGauge(item)}</div>
             )
           )}
-        </div>
-      </div>
-
-      <div key="alert" className={styles.widgetCard}>
-        <div className={styles.cardHeader}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div className={`${styles.dragController} drag-handle`}>
-              <MdDragIndicator />
-            </div>
-            <h3 className={styles.widgetTitle}>Alert Summary</h3>
-          </div>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            height: '100%',
-          }}
-        >
-          {(chartsRef.current?.alertSummaryData || []).map((item, idx) => (
-            <div key={idx}>{renderSmallGauge(item, 60)}</div>
-          ))}
         </div>
       </div>
 

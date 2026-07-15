@@ -61,60 +61,53 @@ const NetworkInterface = ({ data }) => {
           <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Status:</span>
           <span style="color: ${port.status === 'up' ? '#22c55e' : '#ef4444'}; font-weight: 600;">${port.status.toUpperCase()}</span>
         </div>
-        ${
-          portData.ip_address
-            ? `<div style="margin: 6px 0;">
+        ${portData.ip_address
+        ? `<div style="margin: 6px 0;">
           <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IP:</span>
           <span style="color: #3b82f6;">${portData.ip_address}</span>
         </div>`
-            : ''
-        }
-        ${
-          portData.mac_address
-            ? `<div style="margin: 6px 0;">
+        : ''
+      }
+        ${portData.mac_address
+        ? `<div style="margin: 6px 0;">
           <span style="color: #9ca3af; min-width: 50px; display: inline-block;">MAC:</span>
           <span style="color: #fff; font-size: 11px; font-family: monospace;">${portData.mac_address}</span>
         </div>`
-            : ''
-        }
-        ${
-          portData.port_type
-            ? `<div style="margin: 6px 0;">
+        : ''
+      }
+        ${portData.port_type
+        ? `<div style="margin: 6px 0;">
           <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Type:</span>
           <span style="color: #fff;">${portData.port_type === '6' ? 'Ethernet' : portData.port_type}</span>
         </div>`
-            : ''
-        }
-        ${
-          portData.speed
-            ? `<div style="margin: 6px 0;">
+        : ''
+      }
+        ${portData.speed
+        ? `<div style="margin: 6px 0;">
           <span style="color: #9ca3af; min-width: 50px; display: inline-block;">Speed:</span>
           <span style="color: #fff;">${portData.speed}</span>
         </div>`
-            : ''
-        }
-        ${
-          portData.in_percent || portData.out_percent
-            ? `<div style="margin: 6px 0; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px;">
-          ${
-            portData.in_percent
-              ? `<div style="margin: 4px 0;">
+        : ''
+      }
+        ${portData.in_percent || portData.out_percent
+        ? `<div style="margin: 6px 0; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px;">
+          ${portData.in_percent
+          ? `<div style="margin: 4px 0;">
             <span style="color: #9ca3af; min-width: 50px; display: inline-block;">IN:</span>
             <span style="color: #3b82f6; font-weight: 500;">${parseFloat(portData.in_percent).toFixed(2)}%</span>
           </div>`
-              : ''
-          }
-          ${
-            portData.out_percent
-              ? `<div style="margin: 4px 0;">
+          : ''
+        }
+          ${portData.out_percent
+          ? `<div style="margin: 4px 0;">
             <span style="color: #9ca3af; min-width: 50px; display: inline-block;">OUT:</span>
             <span style="color: #22c55e; font-weight: 500;">${parseFloat(portData.out_percent).toFixed(2)}%</span>
           </div>`
-              : ''
-          }
-        </div>`
-            : ''
+          : ''
         }
+        </div>`
+        : ''
+      }
       </div>
     `;
     setTooltipContent(content);

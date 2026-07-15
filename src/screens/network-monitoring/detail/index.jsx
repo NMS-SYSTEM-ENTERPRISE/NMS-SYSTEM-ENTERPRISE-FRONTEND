@@ -253,9 +253,9 @@ const NetworkMonitoringDetail = () => {
 
   // Format the last updated time safely
   const formatPollTime = (dateString) => {
-    if (!dateString) return new Date().toLocaleString('en-GB');
+    if (!dateString) return '-';
     const d = new Date(dateString);
-    if (isNaN(d.getTime())) return new Date().toLocaleString('en-GB');
+    if (isNaN(d.getTime())) return '-';
     return d
       .toLocaleString('en-GB', {
         day: '2-digit',

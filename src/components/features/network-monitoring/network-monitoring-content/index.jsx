@@ -36,7 +36,7 @@ export const NetworkMonitoringContent = () => {
   } = useNetworkMonitoring();
 
   const hasData = filteredData && filteredData.length > 0;
-  
+
   // Only show the massive "No Telemetry Data Found" if they haven't applied any filters
   const hasActiveFilters = Object.keys(filters || {}).length > 0 || !!activeGroup || !!searchQuery;
 

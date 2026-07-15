@@ -51,9 +51,13 @@ const AccordionRow = ({
 
   const handleDetailClick = (e) => {
     e.stopPropagation();
+    let urlCategory = category;
+    if (category === 'Server & Apps') {
+      urlCategory = 'ServerApps';
+    }
     const path = ROUTE_PATHS.NET_WORK_MONITORING_DETAIL.replace(
       ':category',
-      encodeURIComponent(category)
+      encodeURIComponent(urlCategory)
     ).replace(':deviceId', encodeURIComponent(item.ip));
     router.push(path);
   };

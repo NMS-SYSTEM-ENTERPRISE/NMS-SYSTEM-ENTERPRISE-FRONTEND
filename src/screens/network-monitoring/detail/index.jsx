@@ -25,7 +25,10 @@ const NetworkMonitoringDetail = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  const decodedCategory = decodeURIComponent(category);
+  let decodedCategory = decodeURIComponent(category);
+  if (decodedCategory === 'ServerApps') {
+    decodedCategory = 'Server & Apps';
+  }
   const decodedDeviceId = decodeURIComponent(deviceId); // Now the IP address
 
   // Generate storage key for tab persistence
@@ -282,11 +285,11 @@ const NetworkMonitoringDetail = () => {
           <div className={styles.deviceInfoContainer}>
             <div className={styles.deviceNameWrapper}>
               <span className={styles.deviceName}>
-                {deviceData?.frontend_data?.identity?.description?.substring(
-                  0,
-                  30
-                ) ||
-                  deviceData?.device_name ||
+                {deviceData?.device_name ||
+                  deviceData?.frontend_data?.identity?.name ||
+                  (deviceData?.frontend_data?.identity?.description !== 'none'
+                    ? deviceData?.frontend_data?.identity?.description?.substring(0, 30)
+                    : null) ||
                   decodedDeviceId}
               </span>
             </div>

@@ -34,8 +34,12 @@ export const NetworkMonitoringProvider = ({ children }) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        let apiCategory = activeCategory;
+        if (activeCategory === 'Server & Apps') apiCategory = 'Server';
+        else if (activeCategory === 'Network') apiCategory = 'Network Switch';
+
         const params = {
-          category: activeCategory,
+          category: apiCategory,
           device_group: activeGroup || undefined,
           search: searchQuery || filters?.search || undefined,
           status: filters?.status || undefined,

@@ -3,43 +3,87 @@ export const generateElements = (data, viewMode) => {
   const nodes = [];
   const edges = [];
   const deviceMap = new Map();
+  const addedEdges = new Set();
 
-  const viewDeviceIds = new Set();
-  const collectViewDeviceIds = (node) => {
+  const viewData = data?.views?.[viewMode] || data?.views?.all;
+
+  // Try to parse from nested tree structure (New API format)
+  const collectDevices = (node) => {
     if (!node) return;
-    if (node.id) {
-      viewDeviceIds.add(node.id);
+    if (node.id && !node.id.startsWith('view-')) {
+      if (!deviceMap.has(node.id)) {
+        deviceMap.set(node.id, {
+          ...node,
+          label: node.name,
+        });
+      }
     }
-    (node.children || []).forEach(collectViewDeviceIds);
+    (node.children || []).forEach(collectDevices);
   };
 
-  collectViewDeviceIds(data?.views?.[viewMode]);
+  collectDevices(viewData);
 
-  (data?.devices || [])
-    .filter((device) => viewDeviceIds.has(device.id))
-    .forEach((device) => {
-      nodes.push({
-        data: {
-          ...device,
-          label: device.label || device.name,
-        },
-      });
-      deviceMap.set(device.id, device);
+  if (deviceMap.size > 0) {
+    deviceMap.forEach((device) => {
+      nodes.push({ data: device });
     });
 
-  (data?.connections || [])
-    .filter((connection) => deviceMap.has(connection.source) && deviceMap.has(connection.target))
-    .forEach((connection) => {
-      edges.push({
-        data: {
-          id: connection.id,
-          source: connection.source,
-          target: connection.target,
-          label: connection.label,
-          type: connection.type,
-        },
+    deviceMap.forEach((device) => {
+      (device.connections || []).forEach((targetId) => {
+        if (deviceMap.has(targetId)) {
+          const edgeId = [device.id, targetId].sort().join('-');
+          if (!addedEdges.has(edgeId)) {
+            addedEdges.add(edgeId);
+            edges.push({
+              data: {
+                id: edgeId,
+                source: device.id,
+                target: targetId,
+              }
+            });
+          }
+        }
       });
     });
+  } else {
+    // Fallback for flat array structure (Old API format)
+    const viewDeviceIds = new Set();
+    const collectViewDeviceIds = (node) => {
+      if (!node) return;
+      if (node.id) {
+        viewDeviceIds.add(node.id);
+      }
+      (node.children || []).forEach(collectViewDeviceIds);
+    };
+
+    collectViewDeviceIds(viewData);
+
+    (data?.devices || [])
+      .filter((device) => viewDeviceIds.has(device.id))
+      .forEach((device) => {
+        nodes.push({
+          data: {
+            ...device,
+            label: device.label || device.name,
+          },
+        });
+        deviceMap.set(device.id, device);
+      });
+
+    (data?.connections || [])
+      .filter((connection) => deviceMap.has(connection.source) && deviceMap.has(connection.target))
+      .forEach((connection) => {
+        edges.push({
+          data: {
+            id: connection.id,
+            source: connection.source,
+            target: connection.target,
+            label: connection.label,
+            type: connection.type,
+          },
+        });
+      });
+  }
 
   return { nodes, edges };
 };

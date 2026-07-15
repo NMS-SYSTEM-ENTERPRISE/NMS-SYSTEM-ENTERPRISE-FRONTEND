@@ -383,15 +383,33 @@ export const NetworkTopologyContent = () => {
   };
 
   const currentTopologyData = useMemo(
-    () => filterTree(topologyData?.views?.[viewMode], searchQuery),
+    () => filterTree(topologyData?.views?.[viewMode] || topologyData?.views?.all, searchQuery),
     [topologyData, viewMode, searchQuery]
   );
 
   const selectedConnections = useMemo(() => {
-    if (!selectedDevice || !topologyData?.devices) return [];
+    if (!selectedDevice || !topologyData?.views) return [];
+    
+    // Find device in the nested tree
+    let allDevices = [];
+    const collectNodes = (node) => {
+      if (!node) return;
+      if (node.id && !node.id.startsWith('view-')) {
+        allDevices.push(node);
+      }
+      (node.children || []).forEach(collectNodes);
+    };
+    
+    // Use fallback to all if devices array is deprecated
+    if (topologyData?.devices) {
+       allDevices = topologyData.devices;
+    } else {
+       collectNodes(topologyData?.views?.[viewMode] || topologyData?.views?.all);
+    }
+
     return (selectedDevice.connections || [])
       .map((deviceId) =>
-        topologyData?.devices.find((device) => device.id === deviceId)
+        allDevices.find((device) => device.id === deviceId)
       )
       .filter(Boolean)
       .map((device) => ({
@@ -400,7 +418,7 @@ export const NetworkTopologyContent = () => {
         ip: device.ip,
         status: device.status,
       }));
-  }, [selectedDevice, topologyData]);
+  }, [selectedDevice, topologyData, viewMode]);
 
   const summary = topologyData?.summary || {};
   const currentViewHasDevices =

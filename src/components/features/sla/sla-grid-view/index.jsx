@@ -2,20 +2,12 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@iconify/react';
-import { useRouter } from 'next/navigation';
 import { useSla } from '@/hooks/sla';
 import styles from './styles.module.css';
 import { SlaGridSkeleton } from '@/components/ui/skeleton-loaders/sla-skeleton';
 import { NoDataFound } from '@/components/ui/no-data-found';
-
 export const SlaGridView = () => {
-  const router = useRouter();
   const { paginatedSLAs, isLoading, errorMessage } = useSla();
-
-  const handleCardClick = (sla) => {
-    // Navigate to device details or SLA details based on device_id
-    router.push(`/sla/${sla.device_id || sla.id}`);
-  };
 
   const getSlaStatus = (percentageStr) => {
     if (!percentageStr) return { label: 'UNKNOWN', variant: 'neutral', colorClass: '' };
@@ -24,7 +16,7 @@ export const SlaGridView = () => {
 
     if (val >= 99) return { label: 'OK', variant: 'success', colorClass: styles.metricValueAchieved };
     if (val >= 95) return { label: 'WARNING', variant: 'warning', colorClass: styles.metricValueWarning || '' };
-    return { label: 'BREACHED', variant: 'destructive', colorClass: styles.metricValueViolation };
+    return { label: 'BREACHED', variant: 'danger', colorClass: styles.metricValueViolation };
   };
 
   if (isLoading) {
@@ -52,10 +44,6 @@ export const SlaGridView = () => {
             <div
               key={sla.device_id || idx}
               className={styles.gridCard}
-              onClick={() => handleCardClick(sla)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && handleCardClick(sla)}
             >
               <div className={styles.cardHeader}>
                 <span className={styles.cardName} title={sla.ip_address}>
@@ -78,13 +66,13 @@ export const SlaGridView = () => {
               <div className={styles.cardMetrics}>
                 <div className={styles.metric}>
                   <div className={styles.metricLabel}>Avail</div>
-                  <div className={`${styles.metricValueGrid}`}>
+                  <div className={`${styles.metricValueGrid} ${getSlaStatus(sla.availability_achieved).colorClass}`}>
                     {sla.availability_achieved || 'N/A'}
                   </div>
                 </div>
                 <div className={styles.metric}>
                   <div className={styles.metricLabel}>Perf</div>
-                  <div className={`${styles.metricValueGrid}`}>
+                  <div className={`${styles.metricValueGrid} ${getSlaStatus(sla.performance_achieved).colorClass}`}>
                     {sla.performance_achieved || 'N/A'}
                   </div>
                 </div>

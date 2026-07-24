@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
 import { Table } from '@/components/ui/table';
 import { Icon } from '@iconify/react';
-import { useRouter } from 'next/navigation';
 import { useSla } from '@/hooks/sla';
 import {
   SLA_CATEGORIES,
@@ -22,7 +21,6 @@ const getCategoryIcon = (slaType) =>
 const isNegativeBudget = (value) => String(value).includes('-');
 
 export const SlaTableView = () => {
-  const router = useRouter();
   const {
     paginatedSLAs,
     totalSLAs,
@@ -34,18 +32,14 @@ export const SlaTableView = () => {
     errorMessage,
   } = useSla();
 
-  const handleRowClick = (sla) => {
-    router.push(`/sla/${sla.device_id || sla.id}`);
-  };
-
   const getSlaStatus = (percentageStr) => {
     if (!percentageStr) return { label: 'UNKNOWN', variant: 'neutral' };
-    const val = parseFloat(percentageStr.replace('%', ''));
+    const val = parseFloat(String(percentageStr).replace('%', ''));
     if (isNaN(val)) return { label: 'UNKNOWN', variant: 'neutral' };
 
     if (val >= 99) return { label: 'OK', variant: 'success' };
     if (val >= 95) return { label: 'WARNING', variant: 'warning' };
-    return { label: 'BREACHED', variant: 'destructive' };
+    return { label: 'BREACHED', variant: 'danger' };
   };
 
   const renderCell = (sla, column) => {
@@ -79,33 +73,40 @@ export const SlaTableView = () => {
           </div>
         );
       }
-      case 'availability':
+      case 'availability': {
+        const availStatus = getSlaStatus(sla.availability_achieved);
         return (
           <div className={styles.metricSlat}>
-            <span className={styles.metricValue}>{sla.availability_achieved || 'N/A'}</span>
+            <span className={`${styles.metricValue} ${styles[`metricValue${availStatus.label}`] || ''}`}>
+              {sla.availability_achieved || 'N/A'}
+            </span>
             <span className={styles.metricLabel}>Achieved</span>
           </div>
         );
-      case 'performance':
+      }
+      case 'performance': {
+        const perfStatus = getSlaStatus(sla.performance_achieved);
         return (
           <div className={styles.metricSlat}>
-            <span className={styles.metricValue}>{sla.performance_achieved || 'N/A'}</span>
+            <span className={`${styles.metricValue} ${styles[`metricValue${perfStatus.label}`] || ''}`}>
+              {sla.performance_achieved || 'N/A'}
+            </span>
             <span className={styles.metricLabel}>Achieved</span>
           </div>
         );
-      case 'tickets':
+      }
+      case 'tickets': {
+        const hasTickets = parseInt(sla.open_tickets, 10) > 0;
         return (
           <div className={styles.metricSlat}>
-            <span className={styles.metricValue}>{sla.open_tickets || 0}</span>
+            <span className={`${styles.metricValue} ${hasTickets ? styles.metricValueWARNING : styles.metricValueOK}`}>
+              {sla.open_tickets || 0}
+            </span>
             <span className={styles.metricLabel}>Open / {sla.total_tickets || 0} Total</span>
           </div>
         );
-      case 'actions':
-        return (
-          <Button variant="ghost" size="icon" className={styles.actionBtnRow} aria-label="View details">
-            <Icon icon="ph:caret-right-bold" />
-          </Button>
-        );
+      }
+
       default:
         return null;
     }
@@ -131,11 +132,10 @@ export const SlaTableView = () => {
     <div className={styles.listContainer}>
       <div className={styles.tableWrapper}>
         <Table
-          columns={SLA_TABLE_COLUMNS}
+          columns={SLA_TABLE_COLUMNS.filter(c => c.key !== 'actions')}
           data={paginatedSLAs}
           keyExtractor={(row, idx) => row.device_id || row.id || idx}
           renderCell={renderCell}
-          onRowClick={handleRowClick}
           className={styles.table}
         />
       </div>

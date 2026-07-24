@@ -175,7 +175,7 @@ export const NetPathContent = () => {
                   >
                     {/* Group Root Node */}
                     <div
-                      className={sharedStyles.treeRoot}
+                      className={`${sharedStyles.treeRoot} ${isExpanded ? sharedStyles.treeRootActive : ''}`}
                       onClick={() =>
                         setExpandedGroups((prev) => (prev === groupName ? null : groupName))
                       }

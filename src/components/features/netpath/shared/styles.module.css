@@ -96,7 +96,7 @@
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
-  color: var(--color-chart-cyan);
+  color: var(--color-text-primary);
   font-weight: 700;
   font-size: 11px;
   text-transform: uppercase;
@@ -104,6 +104,10 @@
   margin-bottom: 8px;
   position: relative;
   width: 100%;
+}
+
+.treeRootActive {
+  color: var(--color-chart-cyan);
 }
 
 .sidebarCollapsed .treeRoot {

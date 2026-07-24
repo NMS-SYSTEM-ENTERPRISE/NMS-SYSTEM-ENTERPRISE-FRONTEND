@@ -7,27 +7,25 @@
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--gap-xl);
+  gap: 0;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
 }
 
 .gridCard {
-  background: rgba(26, 31, 46, 0.3);
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--padding-lg);
+  background: rgba(26, 31, 46, 0.1);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--padding-md);
   cursor: pointer;
   transition: all var(--transition-fast);
   display: flex;
   flex-direction: column;
-  gap: var(--gap-md);
+  gap: var(--gap-sm);
 }
 
 .gridCard:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-accent-cyan);
-  background: rgba(26, 31, 46, 0.5);
-  box-shadow: var(--shadow-lg);
+  background: rgba(26, 31, 46, 0.4);
 }
 
 .cardHeader {
@@ -38,7 +36,7 @@
 }
 
 .cardName {
-  font-size: var(--font-md);
+  font-size: var(--font-sm);
   font-weight: var(--font-weight-bold);
   line-height: 1.4;
 }
@@ -47,14 +45,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--padding-sm);
+  padding-bottom: 0;
 }
 
 .cardMetaItem {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+}
+
+.cardMetaItem:last-child {
+  align-items: flex-end;
 }
 
 .cardMetaLabel {
@@ -78,17 +79,24 @@
 .cardMetrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-md);
+  gap: var(--gap-sm);
   margin-top: var(--margin-md);
-  padding-top: var(--padding-md);
-  border-top: 1px solid var(--color-border);
+  padding-top: 0;
 }
 
 .metric {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
+}
+
+.metric:first-child {
+  align-items: flex-start;
+}
+
+.metric:last-child {
+  align-items: flex-end;
 }
 
 .metricLabel {
@@ -99,7 +107,7 @@
 
 .metricValueGrid {
   font-family: var(--font-geist-mono), monospace;
-  font-size: var(--font-lg);
+  font-size: var(--font-md);
   font-weight: var(--font-weight-bold);
 }
 

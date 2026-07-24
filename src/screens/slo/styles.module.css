@@ -375,7 +375,7 @@
 .contentArea {
   flex: 1;
   overflow-y: auto;
-  padding: var(--padding-xl);
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: var(--gap-lg);
@@ -530,104 +530,7 @@
   color: var(--color-accent-cyan);
 }
 
-/* Grid Layout */
-.gridWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-xl);
-}
 
-.gridContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--gap-xl);
-}
-
-.gridCard {
-  background: rgba(26, 31, 46, 0.3);
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--padding-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-md);
-}
-
-.gridCard:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-accent-cyan);
-  background: rgba(26, 31, 46, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.cardName {
-  font-size: var(--font-md);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.4;
-}
-
-.cardMeta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: var(--padding-sm);
-}
-
-.cardMetaItem {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.cardMetaLabel {
-  font-size: 9px;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-}
-
-.cardMetaValue {
-  font-size: var(--font-xs);
-  font-weight: var(--font-weight-medium);
-}
-
-.frequencyBadge {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  font-size: 9px;
-}
-
-.cardMetrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-md);
-  margin-top: var(--margin-md);
-  padding-top: var(--padding-md);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.metric {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.metricValueGrid {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 16px;
-  font-weight: 700;
-}
 
 /* Pagination */
 .pagination {

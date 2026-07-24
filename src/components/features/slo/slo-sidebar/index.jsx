@@ -111,7 +111,10 @@ export const SloSidebar = () => {
                       <div key={cat.id} style={{ width: '100%' }}>
                         <div
                           className={`${styles.navItem} ${isCatExpanded ? styles.navItemActive : ''}`}
-                          onClick={() => setExpandedCategory((prev) => (prev === cat.id ? null : cat.id))}
+                          onClick={() => {
+                            setExpandedCategory((prev) => (prev === cat.id ? null : cat.id));
+                            setActiveCategory(cat.id);
+                          }}
                           title={!isSidebarOpen ? cat.label : ''}
                         >
                           <div className={styles.treeBranch} />

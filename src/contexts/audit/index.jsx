@@ -45,12 +45,15 @@ export const AuditProvider = ({ children }) => {
       const data = await getAuditLogs(apiParams);
       // Transform backend response to match frontend expectations if necessary
       const mappedData = (data.items || []).map(item => {
-        const dateObj = new Date(item.timestamp + 'Z'); // ensure UTC parsing if missing Z
+        // The timestamp already includes a timezone offset (e.g., +05:30).
+        // Adding 'Z' makes it invalid. Let the browser parse it natively.
+        const dateObj = new Date(item.timestamp);
         const formattedTime = isNaN(dateObj)
           ? item.timestamp
-          : dateObj.toLocaleString('en-US', {
+          : dateObj.toLocaleString('en-IN', {
+            timeZone: 'Asia/Kolkata',
             year: 'numeric', month: 'short', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
           });
 
         return {
@@ -90,10 +93,10 @@ export const AuditProvider = ({ children }) => {
     fetchAuditLogs();
   }, [fetchAuditLogs]);
 
-  // Reset to page 1 when filters or search change
+  // Reset to page 1 when filters, search, or itemsPerPage change
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters, searchQuery]);
+  }, [filters, searchQuery, itemsPerPage]);
 
   const toggleSection = useCallback((sectionId) => {
     setExpandedSections((prev) => {

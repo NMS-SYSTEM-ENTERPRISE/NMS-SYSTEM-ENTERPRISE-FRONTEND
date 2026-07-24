@@ -271,12 +271,12 @@ export const useAuditChartOptions = (auditEvents = [], analyticsData = null, tot
 
     const totalEvents = analyticsData ? analyticsData.total_events : totalEventsApi;
     const failures = failureCountApi !== undefined ? failureCountApi : auditEvents.filter(e => e.status === 'Failed').length;
-    const successRate = totalEvents > 0 ? (((totalEvents - failures) / totalEvents) * 100).toFixed(1) + '%' : '100%';
+    const successes = successCountApi !== undefined ? successCountApi : Math.max(0, totalEvents - failures);
 
     const summaryMetrics = [
       { id: 'total', label: 'TOTAL EVENTS', value: totalEvents.toLocaleString(), colorToken: 'sky', sparkMin: 0.8, sparkMax: 1.2 },
-      { id: 'success', label: 'SUCCESS RATE', value: successRate, colorToken: 'green', sparkMin: 95, sparkMax: 100 },
-      { id: 'failures', label: 'FAILURES', value: failures.toString(), colorToken: 'danger', sparkMin: 0, sparkMax: Math.max(failures, 5) },
+      { id: 'success', label: 'SUCCESSFUL LOGS', value: successes.toLocaleString(), colorToken: 'green', sparkMin: 95, sparkMax: 100 },
+      { id: 'failures', label: 'FAILURES', value: failures.toLocaleString(), colorToken: 'danger', sparkMin: 0, sparkMax: Math.max(failures, 5) },
     ];
 
     return {
@@ -289,5 +289,5 @@ export const useAuditChartOptions = (auditEvents = [], analyticsData = null, tot
       legendData,
       summaryMetrics,
     };
-  }, [auditEvents, analyticsData]);
+  }, [auditEvents, analyticsData, totalEventsApi, successCountApi, failureCountApi]);
 };

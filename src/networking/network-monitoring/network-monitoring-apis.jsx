@@ -106,10 +106,7 @@ export const getOverallFlowAnalysis = async () => {
 // ALERTS (FAULT MANAGEMENT) APIS
 // ==========================================
 
-export const getAlerts = async ({ activeOnly = false, severity = null } = {}) => {
-  const params = {};
-  if (activeOnly) params.active_only = true;
-  if (severity) params.severity = severity;
+export const getAlerts = async (params = {}) => {
   const response = await authApi.get(`${BASE_URL}/alerts`, { params });
   return response.data;
 };

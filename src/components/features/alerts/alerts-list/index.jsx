@@ -9,7 +9,7 @@ import { Pagination } from '@/components/ui/pagination';
 
 export const AlertsList = () => {
   const {
-    filteredAlerts,
+    totalAlerts,
     paginatedAlerts,
     expandedRows,
     toggleRow,
@@ -62,7 +62,7 @@ export const AlertsList = () => {
       <Pagination
         className={sharedStyles.pagination_wrapper}
         currentPage={currentPage}
-        totalItems={filteredAlerts.length}
+        totalItems={totalAlerts}
         pageSize={itemsPerPage}
         onPageChange={setCurrentPage}
         onPageSizeChange={setItemsPerPage}

@@ -32,19 +32,37 @@ export const AlertsProvider = ({ children }) => {
   );
 
   const [alerts, setAlerts] = useState([]);
+  const [summary, setSummary] = useState(null);
+  const [totalAlerts, setTotalAlerts] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchAlerts = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await getAlerts();
-      setAlerts(res.items || []);
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchQuery || undefined,
+        severity: severityFilter || undefined,
+        active_only: activeTab === 'active' || undefined, // assuming activeTab='active' maps to active_only
+      };
+
+      const res = await getAlerts(params);
+
+      const apiAlerts = Array.isArray(res.items) ? res.items : [];
+      setAlerts(apiAlerts);
+
+      setSummary(res.summary || null);
+      setTotalAlerts(res.total_alerts || 0);
+      setTotalPages(res.total_pages || 0);
+
     } catch (err) {
       console.error('Failed to fetch alerts:', err);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [currentPage, itemsPerPage, searchQuery, severityFilter, activeTab]);
 
   useEffect(() => {
     fetchAlerts();
@@ -81,14 +99,14 @@ export const AlertsProvider = ({ children }) => {
 
   const alertCounts = useMemo(
     () => ({
-      total: alerts.length,
-      down: alerts.filter((a) => a.severity === 'down').length,
-      unreachable: alerts.filter((a) => a.severity === 'unreachable').length,
-      critical: alerts.filter((a) => a.severity === 'critical').length,
-      major: alerts.filter((a) => a.severity === 'major').length,
-      warning: alerts.filter((a) => a.severity === 'warning').length,
+      total: summary?.total_alerts || 0,
+      down: summary?.down_alerts || 0,
+      unreachable: summary?.down_alerts || 0, // Fallback since schema doesn't have unreachable
+      critical: summary?.critical_alerts || 0,
+      major: summary?.major_alerts || 0,
+      warning: summary?.warning_alerts || 0,
     }),
-    [alerts]
+    [summary]
   );
 
   const categoryStats = useMemo(
@@ -108,31 +126,10 @@ export const AlertsProvider = ({ children }) => {
     [alerts]
   );
 
-  const filteredAlerts = useMemo(() => {
-    let result = alerts;
-    if (severityFilter) {
-      result = result.filter((alert) => alert.severity === severityFilter);
-    }
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (alert) =>
-          (alert.name && alert.name.toLowerCase().includes(q)) ||
-          (alert.source && alert.source.toLowerCase().includes(q))
-      );
-    }
-    return result;
-  }, [severityFilter, searchQuery, alerts]);
-
   // Reset page when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [severityFilter]);
-
-  const paginatedAlerts = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredAlerts.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredAlerts, currentPage, itemsPerPage]);
+  }, [severityFilter, searchQuery, activeTab, itemsPerPage]);
 
   const toggleSection = useCallback((section) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -166,8 +163,10 @@ export const AlertsProvider = ({ children }) => {
     toggleSection,
     alertCounts,
     categoryStats,
-    filteredAlerts,
-    paginatedAlerts,
+    paginatedAlerts: alerts,
+    summary,
+    totalAlerts,
+    totalPages,
     currentPage,
     setCurrentPage,
     itemsPerPage,

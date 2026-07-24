@@ -39,67 +39,49 @@ export const SlaHeader = () => {
     paginatedSLAs
   } = useSla();
 
-  const pdfTemplateRef = useRef(null);
+  const pageRefs = useRef([]);
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExportPdf = async () => {
-    if (!paginatedSLAs || paginatedSLAs.length === 0 || !pdfTemplateRef.current) return;
+    if (!paginatedSLAs || paginatedSLAs.length === 0) return;
+    const pages = pageRefs.current.filter(Boolean);
+    if (pages.length === 0) return;
+
     setIsExporting(true);
     try {
-      // 1. Pre-load watermark
+      // 1. Pre-load watermark asset
       const wmDataUrl = await loadImageDataUrl(watermarkSrc);
 
-      // 2. Capture the hidden React template as a high-res canvas
-      const element = pdfTemplateRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-
-      // 3. Create A4 Landscape PDF in pt
+      // 2. Create A4 Landscape PDF
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-      const pdfW = pdf.internal.pageSize.getWidth();  // 841.89pt
-      const pdfH = pdf.internal.pageSize.getHeight(); // 595.28pt
-
-      // Scale canvas to fit PDF width exactly
-      const imgScaledH = (canvas.height / canvas.width) * pdfW;
-      const totalPages = Math.ceil(imgScaledH / pdfH);
-
-      const wmSize = 220; // watermark square size in pt
+      const pdfW = pdf.internal.pageSize.getWidth();   // 841.89 pt
+      const pdfH = pdf.internal.pageSize.getHeight();  // 595.28 pt
+      const wmSize = 200;
       const wmX = (pdfW - wmSize) / 2;
       const wmY = (pdfH - wmSize) / 2;
 
-      for (let page = 0; page < totalPages; page++) {
-        if (page > 0) pdf.addPage();
+      // 3. Capture each A4 page-div individually — zero row-cutting guaranteed
+      for (let i = 0; i < pages.length; i++) {
+        const canvas = await html2canvas(pages[i], {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+        });
 
-        // Draw the content slice for this page
-        const yOffset = -(page * pdfH);
-        pdf.addImage(imgData, 'PNG', 0, yOffset, pdfW, imgScaledH);
+        if (i > 0) pdf.addPage();
 
-        // Draw centered watermark over each page at very low opacity
+        // Fit captured canvas to exact PDF page dimensions
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, pdfH);
+
+        // Draw watermark centred on every page
         if (wmDataUrl) {
           pdf.saveGraphicsState();
           pdf.setGState(new pdf.GState({ opacity: 0.04 }));
           pdf.addImage(wmDataUrl, 'PNG', wmX, wmY, wmSize, wmSize);
           pdf.restoreGraphicsState();
         }
-
-        // Clean white footer strip drawn on top
-        pdf.setFillColor(255, 255, 255);
-        pdf.rect(0, pdfH - 28, pdfW, 28, 'F');
-        pdf.setDrawColor(226, 232, 240);
-        pdf.setLineWidth(0.5);
-        pdf.line(24, pdfH - 28, pdfW - 24, pdfH - 28);
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(8);
-        pdf.setTextColor(148, 163, 184);
-        pdf.text('SNR Edatas Private Limited — NetMonitor Enterprise', 24, pdfH - 10);
-        pdf.text(`Page ${page + 1} of ${totalPages}`, pdfW - 24, pdfH - 10, { align: 'right' });
       }
 
       pdf.save(`SNR_Enterprise_SLA_Report_${format(new Date(), 'yyyyMMdd')}.pdf`);
@@ -229,7 +211,7 @@ export const SlaHeader = () => {
       </header>
       {/* Hidden PDF Template for html2canvas export */}
       {paginatedSLAs && paginatedSLAs.length > 0 && (
-        <SlaPdfTemplate slaData={paginatedSLAs} templateRef={pdfTemplateRef} />
+        <SlaPdfTemplate slaData={paginatedSLAs} pageRefs={pageRefs} />
       )}
     </div>
   );

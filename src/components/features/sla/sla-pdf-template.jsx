@@ -73,7 +73,7 @@ const TOTAL_W = PAGE_W - PAD * 2;
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const PageHeader = ({ exportDate }) => (
+const PageHeader = ({ exportDate, evaluationWindow, totalTime }) => (
   <div style={{
     display: 'flex',
     justifyContent: 'space-between',
@@ -91,9 +91,24 @@ const PageHeader = ({ exportDate }) => (
       <p style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 2px 0', color: '#0f172a', letterSpacing: '-0.2px' }}>
         SLA Compliance Report
       </p>
-      <p style={{ fontSize: '9px', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
-        Generated: {exportDate}
-      </p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px', marginTop: '2px' }}>
+        {evaluationWindow && (
+          <p style={{ fontSize: '8.5px', color: '#475569', margin: 0, fontWeight: 600 }}>
+            📅 {evaluationWindow}
+          </p>
+        )}
+        {evaluationWindow && totalTime && (
+          <span style={{ fontSize: '8px', color: '#cbd5e1' }}>|</span>
+        )}
+        {totalTime && (
+          <p style={{ fontSize: '8.5px', color: '#475569', margin: 0, fontWeight: 600 }}>
+            ⏱ {totalTime}
+          </p>
+        )}
+        <p style={{ fontSize: '8px', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
+          Generated: {exportDate}
+        </p>
+      </div>
     </div>
   </div>
 );
@@ -195,7 +210,7 @@ const PageFooter = ({ pageNum, totalPages }) => (
 
 // ─── Main Export Component ────────────────────────────────────────────────────
 
-export const SlaPdfTemplate = ({ slaData = [], pageRefs }) => {
+export const SlaPdfTemplate = ({ slaData = [], pageRefs, evaluationWindow = '', totalTime = '' }) => {
   if (!slaData || slaData.length === 0) return null;
 
   const exportDate = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -237,7 +252,7 @@ export const SlaPdfTemplate = ({ slaData = [], pageRefs }) => {
             marginBottom: '16px',
           }}
         >
-          <PageHeader exportDate={exportDate} />
+          <PageHeader exportDate={exportDate} evaluationWindow={evaluationWindow} totalTime={totalTime} />
           <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
             <DataTable keys={keys} colWidths={colWidths} rows={rows} />
           </div>

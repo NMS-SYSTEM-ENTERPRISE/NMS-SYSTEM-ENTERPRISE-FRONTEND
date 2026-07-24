@@ -221,7 +221,11 @@ export const SlaHeader = () => {
             >
               {isExporting ? (
                 <>
-                  <Icon icon="ph:spinner-bold" width={17} style={{ animation: 'spin 0.9s linear infinite' }} />
+                  <Icon
+                    icon="svg-spinners:ring-resize"
+                    width={17}
+                    style={{ color: 'var(--color-primary, #06b6d4)', flexShrink: 0 }}
+                  />
                   <span>Generating...</span>
                 </>
               ) : (
@@ -265,7 +269,12 @@ export const SlaHeader = () => {
       </header>
       {/* Hidden PDF Template — rendered only during export with full API data */}
       {exportData.length > 0 && (
-        <SlaPdfTemplate slaData={exportData} pageRefs={pageRefs} />
+        <SlaPdfTemplate
+          slaData={exportData}
+          pageRefs={pageRefs}
+          evaluationWindow={evaluationWindow}
+          totalTime={totalTime}
+        />
       )}
     </div>
   );

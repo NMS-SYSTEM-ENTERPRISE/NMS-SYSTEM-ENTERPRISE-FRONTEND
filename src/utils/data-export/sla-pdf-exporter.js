@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import { format } from 'date-fns';
 import snrLogo from '@/assets/images/snr-logo-xl.svg';
 import watermarkIcon from '@/assets/images/snr-edatas-favicon.png';
+import { manropeBase64 } from '@/assets/fonts/manrope-base64';
 
 const loadImageAsDataUrl = (src) =>
   new Promise((resolve, reject) => {
@@ -28,6 +29,11 @@ const loadImageAsDataUrl = (src) =>
 export const exportSlaReportToPdf = async (slaData = []) => {
   // A4 Landscape: 842 x 595 pt
   const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+  doc.addFileToVFS('Manrope.ttf', manropeBase64);
+  doc.addFont('Manrope.ttf', 'manrope', 'normal');
+  doc.addFont('Manrope.ttf', 'manrope', 'bold');
+
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const exportDate = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -59,12 +65,12 @@ export const exportSlaReportToPdf = async (slaData = []) => {
       doc.addImage(logoDataUrl, 'PNG', MARGIN, MARGIN, 120, 35);
     }
 
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('manrope', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(15, 23, 42);
     doc.text('SLA Compliance Report', pageWidth - MARGIN, MARGIN + 15, { align: 'right' });
 
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('manrope', 'normal');
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
     doc.text(`Generated: ${exportDate}`, pageWidth - MARGIN, MARGIN + 30, { align: 'right' });
@@ -92,7 +98,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
     doc.setLineWidth(1);
     doc.line(MARGIN, footerY - 10, pageWidth - MARGIN, footerY - 10);
 
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('manrope', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(148, 163, 184);
     doc.text('SNR Edatas Private Limited - NetMonitor Enterprise', MARGIN, footerY);
@@ -120,7 +126,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
     doc.setLineWidth(1);
     doc.roundedRect(MARGIN, y, pageWidth - (MARGIN * 2), 56, 6, 6, 'FD');
 
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('manrope', 'bold');
     doc.setFontSize(11);
     doc.setTextColor(30, 58, 138);
     doc.text('Executive Summary', MARGIN + 15, y + 20);
@@ -129,12 +135,12 @@ export const exportSlaReportToPdf = async (slaData = []) => {
     const boxWidth = (pageWidth - (MARGIN * 2)) / 4;
 
     const drawMetric = (label, value, xOffset, valueColor) => {
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('manrope', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(100, 116, 139);
       doc.text(label, xOffset, metricsY);
 
-      doc.setFont('helvetica', 'bold');
+      doc.setFont('manrope', 'bold');
       doc.setFontSize(12);
       doc.setTextColor(...valueColor);
       doc.text(String(value), xOffset + 95, metricsY);
@@ -154,7 +160,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
     doc.setFillColor(241, 245, 249); // slate-100
     doc.rect(MARGIN, y, pageWidth - (MARGIN * 2), 24, 'F');
 
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('manrope', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(51, 65, 85);
 
@@ -173,7 +179,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
 
   currentY = drawTableHeader(currentY);
 
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('manrope', 'normal');
   doc.setFontSize(9);
 
   const rowHeight = 28;
@@ -186,7 +192,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
       drawWatermark();
       currentY = drawHeader();
       currentY = drawTableHeader(currentY);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('manrope', 'normal');
       doc.setFontSize(9);
     }
 
@@ -211,7 +217,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
         doc.setTextColor(15, 23, 42);
       }
 
-      doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+      doc.setFont('manrope', isBold ? 'bold' : 'normal');
 
       // Truncate long texts
       let safeText = String(text || 'N/A');
@@ -248,7 +254,7 @@ export const exportSlaReportToPdf = async (slaData = []) => {
     const slaCol = columns[5];
     let xSla = startX + (slaCol.width / 2) - 6;
     doc.setTextColor(...slaColor);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('manrope', 'bold');
 
     let slaLabel = 'UNKNOWN';
     const slaVal = parseFloat(String(slaStatusStr).replace('%', ''));

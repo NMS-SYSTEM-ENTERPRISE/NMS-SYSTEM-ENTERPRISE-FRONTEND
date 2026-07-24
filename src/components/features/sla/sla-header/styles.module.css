@@ -149,3 +149,8 @@
   background: rgba(var(--color-accent-cyan-rgb), 0.1);
   border-color: var(--color-accent-cyan);
 }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

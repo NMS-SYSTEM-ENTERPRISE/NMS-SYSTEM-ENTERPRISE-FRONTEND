@@ -4,23 +4,13 @@ import { Button } from '@/components/ui/button';
 import styles from './styles.module.css';
 
 const TIME_RANGES = [
-  { value: '5m', label: 'Last 5 Mins', shortLabel: '5m' },
-  { value: '15m', label: 'Last 15 Mins', shortLabel: '15m' },
   { value: '30m', label: 'Last 30 Mins', shortLabel: '30m' },
   { value: '1h', label: 'Last 1 Hour', shortLabel: '1h' },
   { value: '6h', label: 'Last 6 Hours', shortLabel: '6h' },
   { value: '12h', label: 'Last 12 Hours', shortLabel: '12h' },
   { value: '24h', label: 'Last 24 Hours', shortLabel: '24h' },
-  { value: '48h', label: 'Last 48 Hours', shortLabel: '48h' },
-  { value: 'today', label: 'Today', shortLabel: 'today' },
-  { value: '1d', label: 'Last Day', shortLabel: '1d' },
-  { value: '1w', label: 'Last Week', shortLabel: '1w' },
-  { value: '1mo', label: 'Last Month', shortLabel: '1mo' },
-  { value: 'week', label: 'This Week', shortLabel: 'week' },
-  { value: 'month', label: 'This Month', shortLabel: 'month' },
-  { value: '1q', label: 'Last Quarter', shortLabel: '1q' },
-  { value: '1y', label: 'Last Year', shortLabel: '1y' },
-  { value: 'custom', label: 'Custom', shortLabel: 'Custom' },
+  { value: '7d', label: 'Last 7 Days', shortLabel: '7d' },
+  { value: '30d', label: 'Last 30 Days', shortLabel: '30d' },
 ];
 
 export const TimeRangeSelector = ({ value, onChange }) => {

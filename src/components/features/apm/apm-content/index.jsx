@@ -7,6 +7,7 @@ import sharedStyles from '@/components/features/apm/shared/styles.module.css';
 import { Button } from '@/components/ui/button';
 import { FilterSidebar } from '@/components/ui/filter-sidebar';
 import { Input } from '@/components/ui/input';
+import { Pagination } from '@/components/ui/pagination';
 import { ApmSkeleton } from '@/components/ui/skeleton-loaders/apm-skeleton';
 import { useApm } from '@/hooks/apm';
 import { getServiceStatusColor } from '@/utils/constants/apm/status-colors';
@@ -15,12 +16,12 @@ import {
   ANALYTICS_PERFORMANCE_DATA,
   ANALYTICS_TOP_SERVICES,
   EXPLORER_TRACE_METRICS,
-  FILTER_SIDEBAR_CONFIG,
   SIDEBAR_ITEMS,
 } from '@/utils/dummy-data/apm';
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 export const ApmContent = () => {
   const router = useRouter();
@@ -38,6 +39,9 @@ export const ApmContent = () => {
     filteredServices,
     filteredTraces,
     analyticsData,
+    filterOptions,
+    pagination,
+    setPagination,
     isLoading,
     handleResetFilters,
   } = useApm();
@@ -45,6 +49,61 @@ export const ApmContent = () => {
   const handleTraceClick = (trace) => {
     router.push(`/apm/trace/${trace.id}`);
   };
+
+  const dynamicFilters = useMemo(() => {
+    const config = [{ key: 'search', type: 'search' }];
+    if (!filterOptions) return config;
+
+    if (activeView === 'services') {
+      config.push({
+        key: 'status_filter',
+        type: 'select',
+        label: 'Status',
+        options: [
+          { value: '', label: 'All' },
+          ...(filterOptions.service_statuses || []).map((s) => ({ value: s, label: s })),
+        ],
+        placeholder: 'Select status',
+      });
+    } else if (activeView === 'explorer') {
+      config.push({
+        key: 'service',
+        type: 'select',
+        label: 'Service',
+        options: [
+          { value: '', label: 'All Services' },
+          ...(filterOptions.services || []).map((s) => ({ value: s, label: s })),
+        ],
+        placeholder: 'Select service',
+      });
+      config.push({
+        key: 'status_code',
+        type: 'select',
+        label: 'Status Code',
+        options: [
+          { value: '', label: 'All Codes' },
+          ...(filterOptions.status_codes || []).map((s) => ({ value: String(s), label: String(s) })),
+        ],
+        placeholder: 'Select status code',
+      });
+      config.push({
+        key: 'user',
+        type: 'select',
+        label: 'User',
+        options: [
+          { value: '', label: 'All Users' },
+          ...(filterOptions.users || []).map((u) => ({ value: u, label: u })),
+        ],
+        placeholder: 'Select user',
+      });
+      config.push({ key: 'start_date', type: 'input', inputType: 'date', label: 'Start Date' });
+      config.push({ key: 'end_date', type: 'input', inputType: 'date', label: 'End Date' });
+    } else if (activeView === 'analytics') {
+      config.push({ key: 'start_date', type: 'input', inputType: 'date', label: 'Start Date' });
+      config.push({ key: 'end_date', type: 'input', inputType: 'date', label: 'End Date' });
+    }
+    return config;
+  }, [activeView, filterOptions]);
 
   return (
     <div className={sharedStyles.apm}>
@@ -180,76 +239,105 @@ export const ApmContent = () => {
                 <ServiceAccordion
                   servicesData={filteredServices.map((service) => ({
                     name: service.name || 'Unknown Service',
-                    type: service.type || 'service',
-                    latency: service.responseTime || 0,
-                    throughput: service.throughput || 0,
-                    errors: service.errorCount || 0,
+                    type: service.framework || 'service',
+                    latency: service.latency_ms || 0,
+                    throughput: service.throughput_tpm || 0,
+                    errors: service.error_rate || 0,
                     trend: service.responseTimeTrend || [],
                     color: getServiceStatusColor(service.status),
                   }))}
                   topLatencyData={[...filteredServices]
-                    .sort((a, b) => (b.responseTime || 0) - (a.responseTime || 0))
+                    .sort((a, b) => (b.latency_ms || 0) - (a.latency_ms || 0))
                     .slice(0, 5)
                     .map((service) => ({
                       name: service.name || 'Unknown',
-                      endpoint: service.type || 'service',
-                      value: `${(service.responseTime || 0).toFixed(2)} ms`,
+                      endpoint: service.framework || 'service',
+                      value: `${(service.latency_ms || 0).toFixed(2)} ms`,
                       sparkline: service.responseTimeTrend || [],
                     }))}
                   topThroughputData={[...filteredServices]
-                    .sort((a, b) => (b.throughput || 0) - (a.throughput || 0))
+                    .sort((a, b) => (b.throughput_tpm || 0) - (a.throughput_tpm || 0))
                     .slice(0, 5)
                     .map((service) => ({
                       name: service.name || 'Unknown',
-                      endpoint: service.type || 'service',
-                      value: `${service.throughput || 0} tpm`,
+                      endpoint: service.framework || 'service',
+                      value: `${service.throughput_tpm || 0} tpm`,
                       sparkline: service.throughputTrend || [],
                     }))}
                   topErrorsData={[...filteredServices]
-                    .sort((a, b) => (b.errorCount || 0) - (a.errorCount || 0))
+                    .sort((a, b) => (b.error_rate || 0) - (a.error_rate || 0))
                     .slice(0, 5)
                     .map((service) => ({
                       name: service.name || 'Unknown',
-                      endpoint: service.type || 'service',
-                      value: (service.errorCount || 0).toString(),
+                      endpoint: service.framework || 'service',
+                      value: (service.error_rate || 0).toString(),
                       sparkline: service.errorTrend || [],
                     }))}
                 />
               )}
 
               {activeView === 'explorer' && (
-                <ExplorerAccordion
-                  traceMetrics={EXPLORER_TRACE_METRICS}
-                  traces={filteredTraces.map((trace) => ({
-                    id: trace.id,
-                    timestamp: trace.timestamp,
-                    serviceName: trace.serviceName,
-                    serviceType: trace.type || 'service',
-                    resource: trace.resource,
-                    duration: trace.duration,
-                    spans: trace.spans,
-                    status:
-                      trace.status === 200
-                        ? 'success'
-                        : trace.status >= 400
-                          ? 'error'
-                          : 'warning',
-                  }))}
-                  onTraceClick={handleTraceClick}
-                />
+                <>
+                  <ExplorerAccordion
+                    traceMetrics={{
+                      count: analyticsData?.overview?.total_requests || EXPLORER_TRACE_METRICS.count,
+                      countTrend: analyticsData?.history?.map(h => h.requests) || EXPLORER_TRACE_METRICS.countTrend,
+                      avgDuration: analyticsData?.overview?.p95_latency_ms || EXPLORER_TRACE_METRICS.avgDuration,
+                      durationTrend: analyticsData?.history?.map(h => h.avg_latency_ms) || EXPLORER_TRACE_METRICS.durationTrend,
+                      errors: Math.round((analyticsData?.overview?.total_requests || 0) * (analyticsData?.history?.[analyticsData.history.length - 1]?.error_rate || 0) / 100) || EXPLORER_TRACE_METRICS.errors,
+                      errorTrend: analyticsData?.history?.map(h => h.error_rate) || EXPLORER_TRACE_METRICS.errorTrend,
+                    }}
+                    traces={filteredTraces.map((trace) => ({
+                      id: trace.trace_id,
+                      timestamp: trace.timestamp,
+                      serviceName: trace.service,
+                      serviceType: 'service',
+                      resource: trace.endpoint,
+                      duration: trace.duration_ms,
+                      spans: 1, // backend doesn't provide spans count
+                      status:
+                        trace.status_code >= 200 && trace.status_code < 300
+                          ? 'success'
+                          : trace.status_code >= 400
+                            ? 'error'
+                            : 'warning',
+                    }))}
+                    onTraceClick={handleTraceClick}
+                  />
+                  <div style={{ padding: '16px 24px' }}>
+                    <Pagination
+                      currentPage={pagination.page}
+                      totalItems={pagination.total_count}
+                      pageSize={pagination.limit}
+                      onPageChange={(page) => setPagination((prev) => ({ ...prev, page }))}
+                      onPageSizeChange={(limit) => setPagination((prev) => ({ ...prev, limit, page: 1 }))}
+                    />
+                  </div>
+                </>
               )}
 
               {activeView === 'analytics' && (
                 <AnalyticsAccordion
                   performanceData={
-                    analyticsData?.performanceData || ANALYTICS_PERFORMANCE_DATA
+                    analyticsData?.history ? {
+                      requestRate: analyticsData.history.map(h => h.requests),
+                      responseTime: analyticsData.history.map(h => h.avg_latency_ms),
+                      errorRate: analyticsData.history.map(h => h.error_rate),
+                    } : ANALYTICS_PERFORMANCE_DATA
                   }
                   distributionData={
                     analyticsData?.distributionData ||
                     ANALYTICS_DISTRIBUTION_DATA
                   }
                   topServices={
-                    analyticsData?.topServices || ANALYTICS_TOP_SERVICES
+                    analyticsData?.top_endpoints ? analyticsData.top_endpoints.map(ep => ({
+                      name: ep.endpoint,
+                      type: 'endpoint',
+                      requests: ep.count,
+                      avgLatency: ep.avg_latency,
+                      errorRate: 0,
+                      throughput: 0,
+                    })) : ANALYTICS_TOP_SERVICES
                   }
                 />
               )}
@@ -262,7 +350,7 @@ export const ApmContent = () => {
         isOpen={showFilterSidebar}
         onClose={() => setShowFilterSidebar(false)}
         title="APM Filters"
-        filters={FILTER_SIDEBAR_CONFIG}
+        filters={dynamicFilters}
         filterValues={filters}
         onFilterChange={(key, value) => {
           setFilters((prev) => ({ ...prev, [key]: value }));

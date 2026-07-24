@@ -44,27 +44,27 @@ export const MetricExplorerSidebar = ({
   if (!isSidebarOpen) {
     const categories = getCategories(metricItems.map((metric) => metric.name)); // Show all categories in collapsed state
     return (
-       <div className={styles.sidebar} style={{ alignItems: 'center', padding: '16px 0', background: 'transparent' }}>
-         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-           {categories.map(category => (
-             <div key={category} title={category.toUpperCase()} style={{ 
-               width: '32px', 
-               height: '32px', 
-               display: 'flex', 
-               alignItems: 'center', 
-               justifyContent: 'center',
-               borderRadius: '6px',
-               color: '#6b7280',
-               cursor: 'help',
-               transition: 'all 0.2s',
-               background: 'rgba(255,255,255,0.02)',
-               border: '1px solid rgba(255,255,255,0.05)'
-             }}>
-               <Icon icon={getCategoryIcon(category)} width={18} />
-             </div>
-           ))}
-         </div>
-       </div>
+      <div className={styles.sidebar} style={{ alignItems: 'center', padding: '16px 0', background: 'transparent' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {categories.map(category => (
+            <div key={category} title={category.toUpperCase()} style={{
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '6px',
+              color: '#6b7280',
+              cursor: 'help',
+              transition: 'all 0.2s',
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid rgba(255,255,255,0.05)'
+            }}>
+              <Icon icon={getCategoryIcon(category)} width={18} />
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 
@@ -80,14 +80,33 @@ export const MetricExplorerSidebar = ({
             onUpdateTab(activeTabId, { monitor: e.target.value })
           }
           options={[
-            { value: '', label: 'Select Monitor' },
+            { value: '', label: 'Select Monitor', icon: 'mdi:monitor' },
             ...Object.entries(
               monitors.reduce((acc, monitor) => {
                 const groupName = monitor.group || 'Ungrouped';
                 if (!acc[groupName]) acc[groupName] = [];
+
+                // Determine appropriate icon based on device type or name
+                let deviceIcon = 'mdi:server-network';
+                const typeStr = (monitor.device_type || monitor.type || '').toLowerCase();
+                const nameStr = (monitor.name || '').toLowerCase();
+
+                if (typeStr.includes('switch') || nameStr.includes('switch') || nameStr.includes('agg')) {
+                  deviceIcon = 'mdi:switch';
+                } else if (typeStr.includes('router') || nameStr.includes('router')) {
+                  deviceIcon = 'mdi:router-network';
+                } else if (typeStr.includes('firewall') || nameStr.includes('fw')) {
+                  deviceIcon = 'mdi:wall-fire';
+                } else if (typeStr.includes('server')) {
+                  deviceIcon = 'mdi:server';
+                }
+
                 acc[groupName].push({
                   value: monitor.id,
                   label: monitor.name,
+                  subLabel: monitor.ip || 'Unknown IP',
+                  icon: deviceIcon,
+                  color: monitor.status === 'UP' ? 'var(--color-success)' : 'var(--color-danger)',
                 });
                 return acc;
               }, {})
@@ -135,11 +154,11 @@ export const MetricExplorerSidebar = ({
               return acc;
             }, {})
           ).map(([category, metrics]) => (
-            <MetricGroup 
-              key={category} 
-              category={category} 
-              metrics={metrics} 
-              onAddMetric={onAddMetric} 
+            <MetricGroup
+              key={category}
+              category={category}
+              metrics={metrics}
+              onAddMetric={onAddMetric}
             />
           ))}
         </div>
@@ -173,15 +192,15 @@ const MetricGroup = ({ category, metrics, onAddMetric }) => {
   return (
     <div className={styles.metricGroup}>
       <div className={styles.groupHeader} onClick={() => setIsOpen(!isOpen)}>
-        <Icon 
-           icon={isOpen ? "mdi:chevron-down" : "mdi:chevron-right"} 
-           width={16}
-           style={{ marginRight: '4px', opacity: 0.7 }}
+        <Icon
+          icon={isOpen ? "mdi:chevron-down" : "mdi:chevron-right"}
+          width={16}
+          style={{ marginRight: '4px', opacity: 0.7 }}
         />
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '8px', 
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
           flex: 1,
           color: isOpen ? '#0ea5e9' : 'inherit'
         }}>
@@ -189,12 +208,12 @@ const MetricGroup = ({ category, metrics, onAddMetric }) => {
           <span className={styles.groupTitle}>{category.toUpperCase()}</span>
         </div>
       </div>
-      
+
       {isOpen && (
         <div className={styles.groupContent}>
           {metrics.map((metric, index) => (
-            <div 
-              key={metric.name || index} 
+            <div
+              key={metric.name || index}
               className={styles.metricItem}
               onClick={() => onAddMetric(metric)}
             >

@@ -23,3 +23,20 @@
   margin-top: 4px;
   display: block;
 }
+
+.customGroupScrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.customGroupScrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.customGroupScrollbar::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.3);
+  border-radius: 4px;
+}
+
+.customGroupScrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.8);
+}

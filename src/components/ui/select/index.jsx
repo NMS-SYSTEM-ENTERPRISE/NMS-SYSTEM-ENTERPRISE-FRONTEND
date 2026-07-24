@@ -152,6 +152,24 @@ export const SelectComponent = ({
         color: 'white',
       },
     }),
+    groupHeading: (provided) => ({
+      ...provided,
+      color: 'var(--color-chart-cyan)',
+      fontSize: '10px',
+      fontWeight: '700',
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+      padding: '10px 12px 6px',
+      display: 'flex',
+      alignItems: 'center',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+      marginBottom: '4px',
+    }),
+    group: (provided) => ({
+      ...provided,
+      paddingTop: 0,
+      paddingBottom: '4px',
+    }),
     placeholder: (provided) => ({
       ...provided,
       color: 'var(--color-text-muted)',
@@ -206,15 +224,15 @@ export const SelectComponent = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {props.data.icon && <Icon icon={props.data.icon} width={18} height={18} color="var(--color-text-muted)" />}
             {props.data.avatar && (
-              <div style={{ 
-                width: 24, 
-                height: 24, 
-                borderRadius: '50%', 
-                backgroundColor: props.data.color || 'var(--color-bg-tertiary)', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                fontSize: 10, 
+              <div style={{
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+                backgroundColor: props.data.color || 'var(--color-bg-tertiary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 10,
                 fontWeight: 'bold',
                 color: '#fff',
                 border: '1px solid var(--color-border)'
@@ -267,15 +285,15 @@ export const SelectComponent = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {props.data.icon && <Icon icon={props.data.icon} width={16} height={16} color="var(--color-text-muted)" />}
           {props.data.avatar && (
-            <div style={{ 
-              width: 18, 
-              height: 18, 
-              borderRadius: '50%', 
-              backgroundColor: props.data.color || 'var(--color-bg-tertiary)', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              fontSize: 9, 
+            <div style={{
+              width: 18,
+              height: 18,
+              borderRadius: '50%',
+              backgroundColor: props.data.color || 'var(--color-bg-tertiary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 9,
               fontWeight: 'bold',
               color: '#fff',
             }}>
@@ -285,6 +303,27 @@ export const SelectComponent = ({
           <span>{props.data.label}</span>
         </div>
       </components.SingleValue>
+    );
+  };
+
+  // Custom Group to add individual scrollbars per category
+  const CustomGroup = (props) => {
+    return (
+      <div style={{ paddingBottom: '4px' }}>
+        <components.GroupHeading {...props.headingProps}>
+          {props.label}
+        </components.GroupHeading>
+        <div 
+          style={{ 
+            maxHeight: '200px', 
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }} 
+          className={styles.customGroupScrollbar}
+        >
+          {props.children}
+        </div>
+      </div>
     );
   };
 
@@ -314,8 +353,8 @@ export const SelectComponent = ({
               (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                'var(--color-bg-primary)')
+            (e.currentTarget.style.backgroundColor =
+              'var(--color-bg-primary)')
             }
           >
             <Icon icon="mdi:plus-circle" width={16} height={16} />
@@ -337,24 +376,24 @@ export const SelectComponent = ({
         isMulti={isMulti}
         isClearable={isClearable}
         isSearchable={isSearchable}
-        components={{ Option: CustomOption, MenuList: CustomMenuList, SingleValue: CustomSingleValue }}
+        components={{ Option: CustomOption, MenuList: CustomMenuList, SingleValue: CustomSingleValue, Group: CustomGroup }}
         formatCreateLabel={
           isCreatable
             ? (inputValue) => (
-                <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  <Icon
-                    icon="mdi:plus-circle"
-                    width={16}
-                    height={16}
-                    color="var(--color-chart-cyan)"
-                  />
-                  <span style={{ color: 'var(--color-chart-cyan)' }}>
-                    Create "{inputValue}"
-                  </span>
-                </div>
-              )
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Icon
+                  icon="mdi:plus-circle"
+                  width={16}
+                  height={16}
+                  color="var(--color-chart-cyan)"
+                />
+                <span style={{ color: 'var(--color-chart-cyan)' }}>
+                  Create "{inputValue}"
+                </span>
+              </div>
+            )
             : undefined
         }
         styles={customStyles}

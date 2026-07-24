@@ -23,7 +23,16 @@ export const AuditHeader = () => {
     loading,
     activeView,
     setActiveView,
+    handleOpenActionSidebar,
   } = useAudit();
+
+  const hasFilters =
+    searchQuery.trim() !== '' ||
+    filters.module !== '' ||
+    filters.operationType !== 'All' ||
+    filters.user !== '' ||
+    filters.remoteIp !== '' ||
+    filters.status !== 'All';
 
   return (
     <header className={sharedStyles.header}>
@@ -98,15 +107,17 @@ export const AuditHeader = () => {
           >
             <Icon icon="mdi:filter-variant" width={20} height={20} />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={sharedStyles.actionBtn}
-            title="Export"
-            onClick={() => handleOpenActionSidebar('export')}
-          >
-            <Icon icon="mdi:download" width={20} height={20} />
-          </Button>
+          {hasFilters && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className={sharedStyles.actionBtn}
+              title="Export"
+              onClick={() => handleOpenActionSidebar('export')}
+            >
+              <Icon icon="mdi:download" width={20} height={20} />
+            </Button>
+          )}
         </div>
       </div>
     </header>

@@ -31,7 +31,7 @@ const getDeviceColor = (deviceName) => {
 
 export const TicketingRequestsTable = () => {
   const {
-    filteredRequests,
+    totalTickets,
     paginatedRequests,
     handleOpenSidebar,
     currentPage,
@@ -133,12 +133,11 @@ export const TicketingRequestsTable = () => {
         )}
       </div>
 
-      {/* Fixed Pagination Footer */}
-      {filteredRequests.length > 0 && (
+      {totalTickets > 0 && (
         <Pagination
           className={sharedStyles.pagination_wrapper}
           currentPage={currentPage}
-          totalItems={filteredRequests.length}
+          totalItems={totalTickets}
           pageSize={itemsPerPage}
           onPageChange={setCurrentPage}
           onPageSizeChange={setItemsPerPage}

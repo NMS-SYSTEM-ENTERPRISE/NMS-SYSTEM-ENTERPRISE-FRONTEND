@@ -9,7 +9,7 @@ import { TICKETING_BADGE_ANALYTICS } from '@/utils/constants/ticketing';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingAnalyticsAccordion = () => {
-  const { expandedSections, toggleSection, filteredRequests } = useTicketing();
+  const { expandedSections, toggleSection, totalTickets } = useTicketing();
   const isOpen = expandedSections.has('analytics');
 
   return (

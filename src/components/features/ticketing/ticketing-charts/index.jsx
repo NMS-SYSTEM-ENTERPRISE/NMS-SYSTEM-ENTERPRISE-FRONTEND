@@ -14,37 +14,30 @@ import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingCharts = () => {
   const { resolveColor } = useTicketingChartOptions();
-  const { filteredRequests } = useTicketing();
+  const { tickets, summary } = useTicketing();
 
   const pieData = useMemo(() => {
-    const counts = { open: 0, progress: 0, resolved: 0, closed: 0 };
-    (filteredRequests || []).forEach(t => {
-      if (t.status === 'Open') counts.open++;
-      else if (t.status === 'In Progress') counts.progress++;
-      else if (t.status === 'Resolved') counts.resolved++;
-      else if (t.status === 'Closed') counts.closed++;
-    });
     return [
-      { name: 'Open', value: counts.open, colorToken: 'violet' },
-      { name: 'In Progress', value: counts.progress, colorToken: 'orange' },
-      { name: 'Resolved', value: counts.resolved, colorToken: 'green' },
-      { name: 'Closed', value: counts.closed, colorToken: 'gray' },
+      { name: 'Open', value: summary?.open_tickets || 0, colorToken: 'violet' },
+      { name: 'Acknowledged', value: summary?.acknowledged_tickets || 0, colorToken: 'orange' },
+      { name: 'Resolved', value: summary?.resolved_tickets || 0, colorToken: 'green' },
+      { name: 'Closed', value: summary?.closed_tickets || 0, colorToken: 'gray' },
     ];
-  }, [filteredRequests]);
+  }, [summary]);
 
   const workloadData = useMemo(() => {
     const workloads = {};
-    (filteredRequests || []).forEach(t => {
+    (tickets || []).forEach(t => {
       const a = t.assignee || 'Unassigned';
       workloads[a] = (workloads[a] || 0) + 1;
     });
-    
+
     const entries = Object.entries(workloads);
     return {
       categories: entries.map(([name]) => name),
       values: entries.map(([_, count]) => count),
     };
-  }, [filteredRequests]);
+  }, [tickets]);
 
   const pieOption = useMemo(
     () => buildStatusPieOption(pieData, resolveColor),

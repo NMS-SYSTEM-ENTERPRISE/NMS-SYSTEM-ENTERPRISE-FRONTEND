@@ -8,7 +8,7 @@ import { useTicketing } from '@/hooks/ticketing';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingStatsAccordion = () => {
-  const { expandedSections, toggleSection, filteredRequests } = useTicketing();
+  const { expandedSections, toggleSection, totalTickets } = useTicketing();
   const isOpen = expandedSections.has('stats');
 
   return (
@@ -39,7 +39,7 @@ export const TicketingStatsAccordion = () => {
         />
       </button>
       <div className={sharedStyles.accordionContent}>
-        {filteredRequests?.length === 0 ? (
+        {totalTickets === 0 ? (
           <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
             <NoDataFound title="No Overview Data" description="No ticketing data available to generate stats." icon="mdi:monitor-dashboard" />
           </div>

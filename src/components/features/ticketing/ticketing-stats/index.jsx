@@ -9,11 +9,11 @@ import { useTicketing } from '@/hooks/ticketing';
 
 export const TicketingStats = () => {
   const { getSparklineOption } = useTicketingChartOptions();
-  const { filteredRequests } = useTicketing();
+  const { summary } = useTicketing();
 
-  const total = filteredRequests?.length || 0;
-  const openCount = filteredRequests?.filter(t => t.status === 'Open' || t.status === 'In Progress').length || 0;
-  const closedCount = filteredRequests?.filter(t => t.status === 'Resolved' || t.status === 'Closed').length || 0;
+  const total = summary?.total_tickets || 0;
+  const openCount = summary?.open_tickets || 0;
+  const closedCount = summary?.closed_tickets || 0;
 
   const dynamicMetrics = [
     { id: '1', label: 'Total Tickets', value: total, colorToken: 'cyan', sparkColorToken: 'cyan' },

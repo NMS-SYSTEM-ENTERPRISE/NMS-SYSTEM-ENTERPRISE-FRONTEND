@@ -8,11 +8,11 @@ import { useTicketing } from '@/hooks/ticketing';
 import { TICKETING_SIDEBAR_ITEMS } from '@/utils/constants/ticketing';
 
 export const TicketingSidebar = () => {
-  const { isSidebarOpen, setIsSidebarOpen, activeCategory, setActiveCategory, tickets } = useTicketing();
+  const { isSidebarOpen, setIsSidebarOpen, activeCategory, setActiveCategory, tickets, summary } = useTicketing();
 
   const getBadgeCount = (item) => {
     if (item.id === 'open') {
-      return tickets ? tickets.filter(t => t.status === 'Open' || t.status === 'In Progress').length : 0;
+      return summary?.open_tickets || 0;
     }
     return item.badgeCount;
   };

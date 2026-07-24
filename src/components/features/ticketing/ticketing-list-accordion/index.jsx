@@ -8,7 +8,7 @@ import { useTicketing } from '@/hooks/ticketing';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const TicketingListAccordion = () => {
-  const { expandedSections, toggleSection, filteredRequests } = useTicketing();
+  const { expandedSections, toggleSection, totalTickets } = useTicketing();
   const isOpen = expandedSections.has('list');
 
   return (
@@ -36,7 +36,7 @@ export const TicketingListAccordion = () => {
         />
       </button>
       <div className={clsx(sharedStyles.accordionContent, sharedStyles.accordionContentFlush)}>
-        {filteredRequests?.length === 0 ? (
+        {totalTickets === 0 ? (
           <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
             <NoDataFound title="No Tickets Found" description="No tickets match your current category or search query." icon="mdi:format-list-bulleted" />
           </div>

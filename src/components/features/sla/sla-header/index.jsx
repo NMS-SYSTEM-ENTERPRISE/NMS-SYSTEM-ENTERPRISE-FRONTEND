@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { useSla } from '@/hooks/sla';
 import { Icon } from '@iconify/react';
 import { DEFAULT_SLA_FILTERS } from '@/utils/constants/sla';
+import { exportSlaReportToPdf } from '@/utils/data-export/sla-pdf-exporter';
 import styles from './styles.module.css';
 
 export const SlaHeader = () => {
@@ -15,8 +16,15 @@ export const SlaHeader = () => {
     setShowActionSidebar,
     refreshSlaPortfolio,
     filters,
-    handleResetFilters
+    handleResetFilters,
+    paginatedSLAs
   } = useSla();
+
+  const handleExportPdf = async () => {
+    if (paginatedSLAs && paginatedSLAs.length > 0) {
+      await exportSlaReportToPdf(paginatedSLAs);
+    }
+  };
 
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
@@ -85,13 +93,12 @@ export const SlaHeader = () => {
           <div className={styles.headerActions}>
             <Button
               variant="outline"
-              size="sm"
-              className={styles.actionBtn}
+              className={styles.exportBtn}
               title="Export PDF"
-              style={{ width: 'auto', padding: '0 12px', gap: '6px', color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}
+              onClick={handleExportPdf}
             >
               <Icon icon="ph:file-pdf-bold" color="var(--color-danger)" width={18} />
-              <span style={{ fontSize: '12px', fontWeight: 600 }}>EXPORT</span>
+              <span>EXPORT</span>
             </Button>
             <Button
               variant={hasActiveFilters ? 'primary' : 'ghost'}

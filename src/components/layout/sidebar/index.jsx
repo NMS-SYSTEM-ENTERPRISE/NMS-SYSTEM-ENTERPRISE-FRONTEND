@@ -73,6 +73,12 @@ const menuGroups = [
         badge: null,
       },
       {
+        icon: 'lucide:file-bar-chart',
+        label: 'SLA Reports',
+        path: '/sla',
+        badge: null,
+      },
+      {
         icon: 'lucide:layers',
         label: 'Event Monitor',
         path: '/trap-explorer',

@@ -73,7 +73,7 @@ export const SlaTableView = () => {
             <span className={`${styles.metricValue} ${styles[`metricValue${status.label}`] || ''}`}>
               {sla.sla_percentage}
             </span>
-            <Badge variant={status.variant} style={{ marginTop: '4px', fontSize: '8px' }}>
+            <Badge variant={status.variant} style={{ fontSize: '9px', padding: '0px 6px', height: '18px' }}>
               {status.label}
             </Badge>
           </div>

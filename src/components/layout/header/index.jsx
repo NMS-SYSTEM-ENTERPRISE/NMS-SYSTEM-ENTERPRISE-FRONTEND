@@ -21,6 +21,7 @@ const pageMap = {
   '/netpath': { label: 'Path Analysis', icon: 'lucide:route' },
   '/flow': { label: 'Traffic Flow', icon: 'lucide:workflow' },
   '/slo': { label: 'Service Objectives', icon: 'lucide:target' },
+  '/sla': { label: 'SLA Reports', icon: 'lucide:file-bar-chart' },
   '/trap-explorer': { label: 'Event Monitor', icon: 'lucide:layers' },
   '/alerts': { label: 'Alert Center', icon: 'lucide:bell' },
   '/ticketing': { label: 'Support Desk', icon: 'lucide:ticket' },
@@ -83,19 +84,19 @@ export const Header = () => {
   const userData = {
     name: currentUser
       ? [currentUser.first_name, currentUser.last_name]
-          .filter(Boolean)
-          .join(' ') ||
-        currentUser.username ||
-        'User'
+        .filter(Boolean)
+        .join(' ') ||
+      currentUser.username ||
+      'User'
       : 'Guest User',
     email: currentUser?.email || '',
     role: 'Administrator', // Could be mapped from permissions if available later
     initials: currentUser
       ? (
-          currentUser.first_name?.[0] ||
-          currentUser.username?.[0] ||
-          'U'
-        ).toUpperCase()
+        currentUser.first_name?.[0] ||
+        currentUser.username?.[0] ||
+        'U'
+      ).toUpperCase()
       : 'G',
     status: 'online', // Keep online status for aesthetics
   };

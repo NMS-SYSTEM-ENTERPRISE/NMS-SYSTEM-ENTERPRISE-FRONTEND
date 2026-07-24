@@ -79,7 +79,10 @@ const Table = ({
                   sortKey === col.key && sortDir === 'desc' && styles.th_desc,
                   col.className
                 )}
-                style={col.align ? { textAlign: col.align } : undefined}
+                style={{
+                  ...(col.align ? { textAlign: col.align } : {}),
+                  ...(col.width ? { width: col.width } : {}),
+                }}
                 onClick={() => handleSort(col)}
               >
                 <span className={styles.thContent}>
@@ -120,10 +123,10 @@ const Table = ({
             <tr>
               <td colSpan={columns.length} style={{ padding: '40px 0' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <NoDataFound 
-                    title={emptyTitle} 
-                    description={emptyMessage} 
-                    icon={emptyIcon} 
+                  <NoDataFound
+                    title={emptyTitle}
+                    description={emptyMessage}
+                    icon={emptyIcon}
                   />
                 </div>
               </td>
@@ -141,7 +144,10 @@ const Table = ({
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    style={col.align ? { textAlign: col.align } : undefined}
+                    style={{
+                      ...(col.align ? { textAlign: col.align } : {}),
+                      ...(col.width ? { width: col.width } : {}),
+                    }}
                   >
                     {renderCell ? renderCell(row, col) : row[col.key]}
                   </td>

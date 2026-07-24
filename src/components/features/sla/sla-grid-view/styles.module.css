@@ -1,0 +1,124 @@
+.gridWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+}
+
+.gridCard {
+  background: rgba(26, 31, 46, 0.1);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--padding-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.gridCard:hover {
+  background: rgba(26, 31, 46, 0.4);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--gap-md);
+}
+
+.cardName {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.4;
+}
+
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0;
+}
+
+.cardMetaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardMetaItem:last-child {
+  align-items: flex-end;
+}
+
+.cardMetaLabel {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.cardMetaValue {
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.frequencyBadge {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+}
+
+.cardMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-sm);
+  margin-top: var(--margin-md);
+  padding-top: 0;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.metric:first-child {
+  align-items: flex-start;
+}
+
+.metric:last-child {
+  align-items: flex-end;
+}
+
+.metricLabel {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.metricValueGrid {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.metricValueTarget {
+  color: var(--color-accent-cyan);
+}
+
+.metricValueAchieved {
+  color: var(--color-success);
+}
+
+.metricValueViolation {
+  color: var(--color-danger);
+}

@@ -1,0 +1,153 @@
+'use client';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Pagination } from '@/components/ui/pagination';
+import { Table } from '@/components/ui/table';
+import { Icon } from '@iconify/react';
+import { useRouter } from 'next/navigation';
+import { useSla } from '@/hooks/sla';
+import {
+  SLA_CATEGORIES,
+  SLA_STATUS_BADGE_VARIANT,
+  SLA_TABLE_COLUMNS,
+} from '@/utils/constants/sla';
+import styles from './styles.module.css';
+import { SlaTableSkeleton } from '@/components/ui/skeleton-loaders/sla-skeleton';
+import { NoDataFound } from '@/components/ui/no-data-found';
+
+const getCategoryIcon = (slaType) =>
+  SLA_CATEGORIES.find((c) => c.id === slaType)?.icon || 'ph:target-bold';
+
+const isNegativeBudget = (value) => String(value).includes('-');
+
+export const SlaTableView = () => {
+  const router = useRouter();
+  const {
+    paginatedSLAs,
+    totalSLAs,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    isLoading,
+    errorMessage,
+  } = useSla();
+
+  const handleRowClick = (sla) => {
+    router.push(`/sla/${sla.device_id || sla.id}`);
+  };
+
+  const getSlaStatus = (percentageStr) => {
+    if (!percentageStr) return { label: 'UNKNOWN', variant: 'neutral' };
+    const val = parseFloat(percentageStr.replace('%', ''));
+    if (isNaN(val)) return { label: 'UNKNOWN', variant: 'neutral' };
+
+    if (val >= 99) return { label: 'OK', variant: 'success' };
+    if (val >= 95) return { label: 'WARNING', variant: 'warning' };
+    return { label: 'BREACHED', variant: 'destructive' };
+  };
+
+  const renderCell = (sla, column) => {
+    switch (column.key) {
+      case 'device':
+        return (
+          <div className={styles.rowIdentity}>
+            <div className={styles.rowIcon}>
+              <Icon icon="mdi:server-network" width={16} />
+            </div>
+            <div className={styles.rowInfo}>
+              <span className={styles.rowName} title={sla.ip_address}>
+                {sla.hostname || sla.ip_address || 'Unknown'}
+              </span>
+              <span className={styles.rowSub}>
+                {sla.group} • {sla.device_type}
+              </span>
+            </div>
+          </div>
+        );
+      case 'status': {
+        const status = getSlaStatus(sla.sla_percentage);
+        return (
+          <div className={styles.metricSlat}>
+            <span className={`${styles.metricValue} ${styles[`metricValue${status.label}`] || ''}`}>
+              {sla.sla_percentage}
+            </span>
+            <Badge variant={status.variant} style={{ marginTop: '4px', fontSize: '8px' }}>
+              {status.label}
+            </Badge>
+          </div>
+        );
+      }
+      case 'availability':
+        return (
+          <div className={styles.metricSlat}>
+            <span className={styles.metricValue}>{sla.availability_achieved || 'N/A'}</span>
+            <span className={styles.metricLabel}>Achieved</span>
+          </div>
+        );
+      case 'performance':
+        return (
+          <div className={styles.metricSlat}>
+            <span className={styles.metricValue}>{sla.performance_achieved || 'N/A'}</span>
+            <span className={styles.metricLabel}>Achieved</span>
+          </div>
+        );
+      case 'tickets':
+        return (
+          <div className={styles.metricSlat}>
+            <span className={styles.metricValue}>{sla.open_tickets || 0}</span>
+            <span className={styles.metricLabel}>Open / {sla.total_tickets || 0} Total</span>
+          </div>
+        );
+      case 'actions':
+        return (
+          <Button variant="ghost" size="icon" className={styles.actionBtnRow} aria-label="View details">
+            <Icon icon="ph:caret-right-bold" />
+          </Button>
+        );
+      default:
+        return null;
+    }
+  };
+
+  if (isLoading) {
+    return <div className={styles.listContainer}><SlaTableSkeleton /></div>;
+  }
+
+  if (errorMessage || paginatedSLAs.length === 0) {
+    return (
+      <div className={styles.listContainer} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%', minHeight: '400px', padding: '0' }}>
+        <NoDataFound
+          title="No SLAs Found"
+          description={errorMessage || "No SLA reports match your current filters."}
+          icon="mdi:target-variant"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.listContainer}>
+      <div className={styles.tableWrapper}>
+        <Table
+          columns={SLA_TABLE_COLUMNS}
+          data={paginatedSLAs}
+          keyExtractor={(row, idx) => row.device_id || row.id || idx}
+          renderCell={renderCell}
+          onRowClick={handleRowClick}
+          className={styles.table}
+        />
+      </div>
+      <Pagination
+        className={styles.pagination}
+        currentPage={currentPage}
+        totalItems={totalSLAs}
+        pageSize={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setItemsPerPage}
+        pageSizeOptions={[50, 100]}
+      />
+    </div>
+  );
+};

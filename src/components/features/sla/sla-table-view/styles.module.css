@@ -1,0 +1,97 @@
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--color-bg-primary);
+}
+
+.tableWrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.table {
+  border: none;
+  border-radius: 0;
+  width: 100%;
+}
+
+.rowIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.rowIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: rgba(var(--color-accent-cyan-rgb), 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-cyan);
+  border: 1px solid rgba(var(--color-accent-cyan-rgb), 0.1);
+}
+
+.rowInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.rowName {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.rowSub {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.metricSlat {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricValue {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.metricLabel {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.metricValueOK {
+  color: var(--color-success);
+}
+
+.metricValueWARNING {
+  color: var(--color-warning);
+}
+
+.metricValueBREACHED {
+  color: var(--color-danger);
+}
+
+.actionBtnRow {
+  color: var(--color-text-muted);
+}
+
+.pagination {
+  border-top: 1px solid var(--color-border);
+  padding: var(--padding-md) var(--padding-xl);
+  background: var(--color-bg-secondary);
+  flex-shrink: 0;
+}

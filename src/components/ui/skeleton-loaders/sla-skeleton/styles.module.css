@@ -1,0 +1,327 @@
+/* Hardware Accelerated Shimmer Base */
+.skeletonInner {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary, #1a1f2e);
+  border-radius: 6px;
+}
+
+.skeletonWrapper {
+  padding: 0;
+  width: 100%;
+}
+
+.skeletonInner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.015) 20%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.015) 80%,
+      transparent 100%);
+  animation: smoothShimmer 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes smoothShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Table Skeleton */
+.tableSkeleton {
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+  background-color: transparent;
+  border-radius: 0;
+  overflow: hidden;
+  border: none;
+}
+
+.tableHeaderSkeleton {
+  display: grid;
+  grid-template-columns: 2.2fr 100px 100px 100px 1.2fr 40px;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerCellSkeleton {
+  height: 12px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tableRowSkeleton {
+  display: grid;
+  grid-template-columns: 2.2fr 100px 100px 100px 1.2fr 40px;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.identityWrapperSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconSkeleton {
+  height: 32px;
+  width: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.textSkeleton {
+  height: 16px;
+  border-radius: 4px;
+}
+
+
+.cellIdentity {
+  height: 36px;
+  border-radius: 6px;
+}
+
+.cellStatus {
+  height: 24px;
+  width: 60px;
+  border-radius: 12px;
+}
+
+.metricSlotSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metricValSkeleton {
+  height: 16px;
+  border-radius: 4px;
+}
+
+.metricLblSkeleton {
+  height: 10px;
+  border-radius: 4px;
+}
+
+.cellAction {
+  height: 32px;
+  width: 32px;
+  border-radius: 6px;
+  justify-self: end;
+}
+
+/* Grid Skeleton */
+.gridWrapper {
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.gridCardSkeleton {
+  background-color: var(--color-bg-secondary, #121621);
+  border-radius: 12px;
+  border: 1px solid var(--color-border, #1f2937);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.titleSkeleton {
+  height: 20px;
+  border-radius: 4px;
+}
+
+.badgeSkeleton {
+  width: 70px;
+  height: 22px;
+  border-radius: 12px;
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.metaSkeleton {
+  height: 14px;
+  width: 60%;
+  border-radius: 4px;
+}
+
+.cardMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.metricSkeleton {
+  height: 48px;
+  border-radius: 8px;
+}
+
+/* Detail Skeleton */
+.detailSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.4s ease-out;
+  padding: 24px;
+}
+
+.detailHeaderSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: var(--color-bg-secondary, #121621);
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border, #1f2937);
+}
+
+.headerIconSkeleton {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.headerInfoSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.headerTitleSkeleton {
+  height: 28px;
+  width: 40%;
+  border-radius: 6px;
+}
+
+.headerDescSkeleton {
+  height: 16px;
+  width: 60%;
+  border-radius: 4px;
+}
+
+.headerActionsSkeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.actionBtnSkeleton {
+  width: 90px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.accordionSkeleton {
+  background-color: var(--color-bg-secondary, #121621);
+  border: 1px solid var(--color-border, #1f2937);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.accordionHeaderSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.accHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.accIconSkeleton {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.accTitleSkeleton {
+  height: 18px;
+  border-radius: 4px;
+}
+
+.accBadgeSkeleton {
+  width: 100px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+.accordionBodySkeleton {
+  padding: 24px;
+  border-top: 1px solid var(--color-border, #1f2937);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.chartSkeleton {
+  height: 320px;
+  border-radius: 12px;
+}
+
+.statBlockSkeleton {
+  height: 120px;
+  border-radius: 12px;
+}

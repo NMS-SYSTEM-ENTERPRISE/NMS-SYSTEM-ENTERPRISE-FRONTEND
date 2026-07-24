@@ -9,6 +9,7 @@ import { jsPDF } from 'jspdf';
 import { format } from 'date-fns';
 import { SlaPdfTemplate } from '../sla-pdf-template';
 import watermarkSrc from '@/assets/images/snr-edatas-favicon.png';
+import { getSlaReport } from '@/networking/network-monitoring/network-monitoring-apis';
 import styles from './styles.module.css';
 
 const loadImageDataUrl = (src) =>
@@ -41,28 +42,60 @@ export const SlaHeader = () => {
 
   const pageRefs = useRef([]);
   const [isExporting, setIsExporting] = useState(false);
+  const [exportData, setExportData] = useState([]);
+
+  // Build API params from all active filters
+  const buildExportParams = () => {
+    const p = { limit: 500, page: 1 };
+    if (searchQuery) p.search = searchQuery;
+    if (filters.device_group) p.device_group = filters.device_group;
+    if (filters.device_type) p.device_type = filters.device_type;
+    if (filters.device_subgroup) p.device_subgroup = filters.device_subgroup;
+    if (filters.quick_select) p.quick_select = filters.quick_select;
+    if (filters.start_date) p.start_date = filters.start_date;
+    if (filters.end_date) p.end_date = filters.end_date;
+    if (filters.start_time) p.start_time = filters.start_time;
+    if (filters.end_time) p.end_time = filters.end_time;
+    return p;
+  };
 
   const handleExportPdf = async () => {
-    if (!paginatedSLAs || paginatedSLAs.length === 0) return;
-    const pages = pageRefs.current.filter(Boolean);
-    if (pages.length === 0) return;
-
     setIsExporting(true);
     try {
-      // 1. Pre-load watermark asset
+      // 1. Fetch ALL data from API using current filters (paginate if needed)
+      const params = buildExportParams();
+      const firstPage = await getSlaReport(params);
+      let allItems = firstPage.items || [];
+      const totalApiPages = firstPage.total_pages || 1;
+
+      // Fetch remaining pages if dataset spans multiple API pages
+      for (let p = 2; p <= totalApiPages; p++) {
+        const nextPage = await getSlaReport({ ...params, page: p });
+        allItems = [...allItems, ...(nextPage.items || [])];
+      }
+
+      if (allItems.length === 0) return;
+
+      // 2. Inject data into the PDF template and wait for React to render it
+      setExportData(allItems);
+      await new Promise((r) => setTimeout(r, 300)); // Allow React to rerender
+
+      // 3. Pre-load watermark
       const wmDataUrl = await loadImageDataUrl(watermarkSrc);
 
-      // 2. Create A4 Landscape PDF
+      // 4. Create A4 Landscape PDF
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-      const pdfW = pdf.internal.pageSize.getWidth();   // 841.89 pt
-      const pdfH = pdf.internal.pageSize.getHeight();  // 595.28 pt
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = pdf.internal.pageSize.getHeight();
       const wmSize = 200;
       const wmX = (pdfW - wmSize) / 2;
       const wmY = (pdfH - wmSize) / 2;
 
-      // 3. Capture each A4 page-div individually — zero row-cutting guaranteed
-      for (let i = 0; i < pages.length; i++) {
-        const canvas = await html2canvas(pages[i], {
+      const domPages = pageRefs.current.filter(Boolean);
+
+      // 5. Capture each pre-chunked A4 page div individually
+      for (let i = 0; i < domPages.length; i++) {
+        const canvas = await html2canvas(domPages[i], {
           scale: 2,
           useCORS: true,
           allowTaint: true,
@@ -71,11 +104,9 @@ export const SlaHeader = () => {
         });
 
         if (i > 0) pdf.addPage();
-
-        // Fit captured canvas to exact PDF page dimensions
         pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, pdfH);
 
-        // Draw watermark centred on every page
+        // Centered watermark on every page
         if (wmDataUrl) {
           pdf.saveGraphicsState();
           pdf.setGState(new pdf.GState({ opacity: 0.04 }));
@@ -88,6 +119,7 @@ export const SlaHeader = () => {
     } catch (err) {
       console.error('PDF generation failed', err);
     } finally {
+      setExportData([]);
       setIsExporting(false);
     }
   };
@@ -209,9 +241,9 @@ export const SlaHeader = () => {
           </div>
         </div>
       </header>
-      {/* Hidden PDF Template for html2canvas export */}
-      {paginatedSLAs && paginatedSLAs.length > 0 && (
-        <SlaPdfTemplate slaData={paginatedSLAs} pageRefs={pageRefs} />
+      {/* Hidden PDF Template — rendered only during export with full API data */}
+      {exportData.length > 0 && (
+        <SlaPdfTemplate slaData={exportData} pageRefs={pageRefs} />
       )}
     </div>
   );

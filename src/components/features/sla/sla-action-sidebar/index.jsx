@@ -8,11 +8,19 @@ import { useSla } from '@/hooks/sla';
 import {
   CATEGORY_FILTER_OPTIONS,
   FREQUENCY_FILTER_OPTIONS,
+  QUICK_SELECT_OPTIONS,
   STATUS_FILTER_OPTIONS,
 } from '@/utils/constants/sla';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import styles from './styles.module.css';
+
+const FilterField = ({ label, children }) => (
+  <div className={styles.filterGroup}>
+    <label className={styles.filterLabel}>{label}</label>
+    {children}
+  </div>
+);
 
 export const SlaActionSidebar = () => {
   const {
@@ -30,9 +38,10 @@ export const SlaActionSidebar = () => {
 
   if (!showActionSidebar) return null;
 
-  const handleApply = () => {
-    handleApplyFilters(filters);
-  };
+  const set = (key) => (e) =>
+    setFilters((prev) => ({ ...prev, [key]: e.target.value }));
+
+  const isCustomRange = !filters.quick_select;
 
   return (
     <>
@@ -43,6 +52,7 @@ export const SlaActionSidebar = () => {
       />
 
       <aside className={styles.sidebar}>
+        {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>
             <Icon icon="ph:gear-six-bold" />
@@ -59,6 +69,7 @@ export const SlaActionSidebar = () => {
           </Button>
         </div>
 
+        {/* Tab toggle */}
         <div className={styles.viewToggle}>
           <Button
             variant="ghost"
@@ -81,6 +92,7 @@ export const SlaActionSidebar = () => {
         <div className={styles.content}>
           {activeView === 'filters' ? (
             <>
+              {/* Search */}
               <div className={styles.searchSection}>
                 <Input
                   type="text"
@@ -94,83 +106,124 @@ export const SlaActionSidebar = () => {
               <div className={styles.filtersSection}>
                 <h3 className={styles.sectionTitle}>Filter Settings</h3>
 
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Status</label>
+                {/* ── Device Filters ── */}
+                <FilterField label="Device Group">
+                  <Input
+                    type="text"
+                    placeholder="e.g. Network, Server"
+                    value={filters.device_group || ''}
+                    onChange={set('device_group')}
+                  />
+                </FilterField>
+
+                <FilterField label="Device Type">
+                  <Input
+                    type="text"
+                    placeholder="e.g. Switch, UPS"
+                    value={filters.device_type || ''}
+                    onChange={set('device_type')}
+                  />
+                </FilterField>
+
+                <FilterField label="Device Subgroup">
+                  <Input
+                    type="text"
+                    placeholder="Further subgroup filter"
+                    value={filters.device_subgroup || ''}
+                    onChange={set('device_subgroup')}
+                  />
+                </FilterField>
+
+                {/* ── Status / Category ── */}
+                <FilterField label="Status">
                   <SelectComponent
                     value={filters.status || ''}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        status: e.target.value,
-                      }))
-                    }
+                    onChange={set('status')}
                     options={STATUS_FILTER_OPTIONS}
                   />
-                </div>
+                </FilterField>
 
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Category</label>
+                <FilterField label="Category">
                   <SelectComponent
                     value={filters.slaType || ''}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        slaType: e.target.value,
-                      }))
-                    }
+                    onChange={set('slaType')}
                     options={CATEGORY_FILTER_OPTIONS}
                   />
-                </div>
+                </FilterField>
 
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Reporting Period</label>
+                <FilterField label="Reporting Period">
                   <SelectComponent
                     value={filters.frequency || ''}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        frequency: e.target.value,
-                      }))
-                    }
+                    onChange={set('frequency')}
                     options={FREQUENCY_FILTER_OPTIONS}
                   />
-                </div>
+                </FilterField>
 
-                <div className={styles.filterGroup}>
-                  <span className={styles.filterLabel}>
-                    Objective Range (%)
-                  </span>
+                {/* ── Date / Time ── */}
+                <FilterField label="Quick Select">
+                  <SelectComponent
+                    value={filters.quick_select || ''}
+                    onChange={set('quick_select')}
+                    options={QUICK_SELECT_OPTIONS}
+                  />
+                </FilterField>
+
+                {isCustomRange && (
+                  <>
+                    <FilterField label="Start Date">
+                      <Input
+                        type="date"
+                        value={filters.start_date || ''}
+                        onChange={set('start_date')}
+                      />
+                    </FilterField>
+
+                    <FilterField label="End Date">
+                      <Input
+                        type="date"
+                        value={filters.end_date || ''}
+                        onChange={set('end_date')}
+                      />
+                    </FilterField>
+                  </>
+                )}
+
+                <FilterField label="Time Range">
+                  <div className={styles.rangeGroup}>
+                    <Input
+                      type="time"
+                      value={filters.start_time || '00:00'}
+                      onChange={set('start_time')}
+                    />
+                    <Icon icon="ph:minus-bold" className={styles.rangeDivider} />
+                    <Input
+                      type="time"
+                      value={filters.end_time || '23:59'}
+                      onChange={set('end_time')}
+                    />
+                  </div>
+                </FilterField>
+
+                {/* ── Objective Range ── */}
+                <FilterField label="Objective Range (%)">
                   <div className={styles.rangeGroup}>
                     <Input
                       type="number"
                       className={styles.rangeInput}
                       value={filters.targetMin || ''}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          targetMin: e.target.value,
-                        }))
-                      }
+                      onChange={set('targetMin')}
                       placeholder="Min"
                     />
-                    <Icon
-                      icon="ph:minus-bold"
-                      className={styles.rangeDivider}
-                    />
+                    <Icon icon="ph:minus-bold" className={styles.rangeDivider} />
                     <Input
                       type="number"
                       className={styles.rangeInput}
                       value={filters.targetMax || ''}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          targetMax: e.target.value,
-                        }))
-                      }
+                      onChange={set('targetMax')}
                       placeholder="Max"
                     />
                   </div>
-                </div>
+                </FilterField>
               </div>
             </>
           ) : (
@@ -180,19 +233,11 @@ export const SlaActionSidebar = () => {
 
         {activeView === 'filters' && (
           <div className={styles.footer}>
-            <Button
-              variant="ghost"
-              className={styles.resetBtn}
-              onClick={handleResetFilters}
-            >
+            <Button variant="ghost" className={styles.resetBtn} onClick={handleResetFilters}>
               <Icon icon="ph:arrow-counter-clockwise-bold" />
               Reset All
             </Button>
-            <Button
-              variant="cyan"
-              className={styles.applyBtn}
-              onClick={handleApply}
-            >
+            <Button variant="cyan" className={styles.applyBtn} onClick={() => handleApplyFilters(filters)}>
               <Icon icon="ph:check-bold" />
               Apply
             </Button>

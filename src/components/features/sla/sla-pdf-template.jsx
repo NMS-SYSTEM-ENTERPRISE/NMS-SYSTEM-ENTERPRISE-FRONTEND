@@ -10,54 +10,66 @@ const formatHeader = (key) =>
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
-const getValueColor = (value) => {
-  if (value === null || value === undefined || value === '') return '#475569';
+// Smart column weight based on key name patterns (fully dynamic)
+const getColWeight = (key) => {
+  const k = key.toLowerCase();
+  if (k === 'device_id' || k === 'id') return 0.55;
+  if (k.includes('ip') || k.includes('address')) return 1.0;
+  if (k.includes('hostname') || k.includes('name')) return 1.6;
+  if (k.includes('group') || k.includes('type') || k.includes('subgroup')) return 1.1;
+  if (k.includes('percentage') || k.includes('sla')) return 0.8;
+  if (k.includes('time') || k.includes('duration')) return 0.85;
+  if (k.includes('ticket') || k.includes('open') || k.includes('total')) return 0.7;
+  if (k.includes('status')) return 0.75;
+  return 1.0;
+};
+
+const getValueColor = (key, value) => {
+  if (value === null || value === undefined || value === '') return '#64748b';
   const str = String(value);
-  const pct = parseFloat(str.replace('%', ''));
-  if (!str.includes('%') || isNaN(pct)) return '#0f172a';
-  if (pct >= 99) return '#16a34a';
-  if (pct >= 95) return '#ea580c';
-  return '#dc2626';
+  const k = key.toLowerCase();
+
+  // Percentage-based coloring
+  if (str.includes('%')) {
+    const pct = parseFloat(str.replace('%', ''));
+    if (!isNaN(pct)) {
+      if (pct >= 99) return '#16a34a';
+      if (pct >= 95) return '#ea580c';
+      return '#dc2626';
+    }
+  }
+
+  // Status keyword coloring
+  if (k.includes('status') || str.toUpperCase() === str) {
+    const up = str.toUpperCase();
+    if (up.includes('OK') || up.includes('HEALTHY') || up.includes('UP')) return '#16a34a';
+    if (up.includes('WARN') || up.includes('RISK') || up.includes('DEGRADED')) return '#ea580c';
+    if (up.includes('BREACH') || up.includes('DOWN') || up.includes('FAIL')) return '#dc2626';
+  }
+
+  return '#0f172a';
 };
 
-const computeSummary = (data) => {
-  if (!data.length || !('sla_percentage' in data[0])) return null;
-  let healthy = 0, atRisk = 0, breached = 0;
-  data.forEach((row) => {
-    const val = parseFloat(String(row.sla_percentage).replace('%', ''));
-    if (!isNaN(val)) {
-      if (val >= 99) healthy++;
-      else if (val >= 95) atRisk++;
-      else breached++;
-    } else breached++;
-  });
-  return { total: data.length, healthy, atRisk, breached };
+const isBoldKey = (key) => {
+  const k = key.toLowerCase();
+  return k.includes('hostname') || k.includes('name') || k === 'ip_address';
 };
 
-// ─── Page-level sizing constants (A4 Landscape @ 96 DPI = 1122 × 794px) ─────
+// ─── Page layout constants (A4 Landscape @ 96 DPI = 1122 × 794 px) ───────────
 const PAGE_W = 1122;
 const PAGE_H = 794;
-const PAD = 36;          // horizontal & vertical padding
+const PAD = 28;
 
-// Approximate pixel heights of layout regions
-const HDR_H = 78;         // letterhead height
-const HDR_MB = 16;         // margin after header
-const SUM_H = 90;         // summary card row
-const SUM_MB = 18;         // margin after summary
-const TBL_HDR = 36;         // table <thead> row height
-const ROW_H = 32;         // each data <tr> height
-const FOOTER_H = 32;         // bottom footer strip
-const FTR_MT = 12;         // margin before footer
+const HDR_H = 48;
+const HDR_MB = 8;
+const TBL_HDR = 26;
+const ROW_H = 22;
+const FOOTER_H = 22;
+const FTR_MT = 8;
 
 const CONTENT_H = PAGE_H - PAD * 2 - FOOTER_H - FTR_MT;
-
-// How many rows fit on page 1 (with summary) vs subsequent pages
-const ROWS_P1 = Math.floor(
-  (CONTENT_H - HDR_H - HDR_MB - SUM_H - SUM_MB - TBL_HDR) / ROW_H
-);
-const ROWS_PN = Math.floor(
-  (CONTENT_H - HDR_H - HDR_MB - TBL_HDR) / ROW_H
-);
+const ROWS_PER_PAGE = Math.floor((CONTENT_H - HDR_H - HDR_MB - TBL_HDR) / ROW_H);
+const TOTAL_W = PAGE_W - PAD * 2;
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -66,74 +78,55 @@ const PageHeader = ({ exportDate }) => (
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: '14px',
-    borderBottom: '2px solid #e2e8f0',
+    paddingBottom: '8px',
+    borderBottom: '1.5px solid #e2e8f0',
     marginBottom: `${HDR_MB}px`,
     height: `${HDR_H}px`,
     boxSizing: 'border-box',
+    flexShrink: 0,
   }}>
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={snrLogo.src || snrLogo} alt="SNR Logo" style={{ height: '40px', objectFit: 'contain' }} />
+    <img src={snrLogo.src || snrLogo} alt="SNR Logo" style={{ height: '30px', objectFit: 'contain' }} />
     <div style={{ textAlign: 'right' }}>
-      <p style={{ fontSize: '20px', fontWeight: 800, margin: '0 0 3px 0', color: '#0f172a', letterSpacing: '-0.2px' }}>
+      <p style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 2px 0', color: '#0f172a', letterSpacing: '-0.2px' }}>
         SLA Compliance Report
       </p>
-      <p style={{ fontSize: '11px', color: '#64748b', margin: 0, fontWeight: 500 }}>
+      <p style={{ fontSize: '9px', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
         Generated: {exportDate}
       </p>
     </div>
   </div>
 );
 
-const SummaryBar = ({ summary }) => {
-  if (!summary) return null;
-  const items = [
-    { label: 'Total Evaluated', value: summary.total, color: '#0f172a' },
-    { label: 'Healthy (≥ 99%)', value: summary.healthy, color: '#16a34a' },
-    { label: 'At Risk (95–99%)', value: summary.atRisk, color: '#ea580c' },
-    { label: 'Breached (< 95%)', value: summary.breached, color: '#dc2626' },
-  ];
-  return (
-    <div style={{ display: 'flex', gap: '10px', marginBottom: `${SUM_MB}px`, height: `${SUM_H}px`, boxSizing: 'border-box' }}>
-      {items.map(({ label, value, color }) => (
-        <div key={label} style={{
-          flex: 1,
-          backgroundColor: '#f8fafc',
-          border: '1px solid #e2e8f0',
-          borderLeft: `4px solid ${color}`,
-          borderRadius: '7px',
-          padding: '12px 14px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}>
-          <p style={{ fontSize: '10px', fontWeight: 700, color: '#64748b', margin: '0 0 5px 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</p>
-          <p style={{ fontSize: '20px', fontWeight: 800, color, margin: 0, lineHeight: 1 }}>{value}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const DataTable = ({ keys, rows, colWidth }) => (
-  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px', tableLayout: 'fixed' }}>
+// ── Data table — every key = its own column ───────────────────────────────────
+const DataTable = ({ keys, colWidths, rows }) => (
+  <table style={{
+    width: '100%',
+    borderCollapse: 'collapse',
+    tableLayout: 'fixed',
+    fontSize: '9px',
+  }}>
     <thead>
       <tr style={{ backgroundColor: '#f1f5f9', height: `${TBL_HDR}px` }}>
         {keys.map((key) => (
-          <th key={key} style={{
-            width: `${colWidth}px`,
-            padding: '0 10px',
-            textAlign: 'left',
-            fontWeight: 800,
-            color: '#334155',
-            fontSize: '10.5px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.4px',
-            borderBottom: '2px solid #cbd5e1',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}>
+          <th
+            key={key}
+            style={{
+              width: `${colWidths[key]}px`,
+              padding: '0 6px',
+              textAlign: 'left',
+              fontWeight: 800,
+              color: '#334155',
+              fontSize: '8px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.35px',
+              borderBottom: '1.5px solid #cbd5e1',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            title={formatHeader(key)}
+          >
             {formatHeader(key)}
           </th>
         ))}
@@ -141,26 +134,36 @@ const DataTable = ({ keys, rows, colWidth }) => (
     </thead>
     <tbody>
       {rows.map((row, i) => (
-        <tr key={i} style={{
-          backgroundColor: i % 2 === 0 ? '#ffffff' : '#f8fafc',
-          borderBottom: '1px solid #e2e8f0',
-          height: `${ROW_H}px`,
-        }}>
+        <tr
+          key={i}
+          style={{
+            backgroundColor: i % 2 === 0 ? '#ffffff' : '#f8fafc',
+            borderBottom: '1px solid #f1f5f9',
+            height: `${ROW_H}px`,
+          }}
+        >
           {keys.map((key) => {
             const rawVal = row[key];
-            const display = rawVal === null || rawVal === undefined || rawVal === '' ? 'N/A' : String(rawVal);
-            const isHighlight = key === 'hostname' || key === 'device_id';
+            const display =
+              rawVal === null || rawVal === undefined || rawVal === ''
+                ? 'N/A'
+                : String(rawVal);
             return (
-              <td key={key} style={{
-                padding: '0 10px',
-                color: getValueColor(rawVal),
-                fontWeight: isHighlight ? 700 : 500,
-                fontSize: '11.5px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: `${colWidth}px`,
-              }} title={display}>
+              <td
+                key={key}
+                style={{
+                  padding: '0 6px',
+                  color: getValueColor(key, rawVal),
+                  fontWeight: isBoldKey(key) ? 700 : 500,
+                  fontSize: '9px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: `${colWidths[key]}px`,
+                  verticalAlign: 'middle',
+                }}
+                title={display}
+              >
                 {display}
               </td>
             );
@@ -181,11 +184,11 @@ const PageFooter = ({ pageNum, totalPages }) => (
     alignItems: 'center',
     flexShrink: 0,
   }}>
-    <p style={{ fontSize: '10px', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
+    <p style={{ fontSize: '8px', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
       SNR Edatas Private Limited — NetMonitor Enterprise
     </p>
-    <p style={{ fontSize: '10px', color: '#94a3b8', margin: 0, fontWeight: 600 }}>
-      Page {pageNum} of {totalPages}
+    <p style={{ fontSize: '8px', color: '#94a3b8', margin: 0, fontWeight: 700 }}>
+      Page {pageNum} / {totalPages}
     </p>
   </div>
 );
@@ -196,27 +199,27 @@ export const SlaPdfTemplate = ({ slaData = [], pageRefs }) => {
   if (!slaData || slaData.length === 0) return null;
 
   const exportDate = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+  // All keys from the API — every key = its own column, nothing absorbed/hidden
   const keys = Object.keys(slaData[0]);
-  const summary = computeSummary(slaData);
-  const colWidth = Math.floor((PAGE_W - PAD * 2) / keys.length);
 
-  // Split rows into pages — no row ever crosses a page boundary
+  // Proportional column widths derived from key name patterns
+  const totalWeight = keys.reduce((sum, k) => sum + getColWeight(k), 0);
+  const colWidths = Object.fromEntries(
+    keys.map((k) => [k, Math.floor((getColWeight(k) / totalWeight) * TOTAL_W)])
+  );
+
+  // Pre-chunk rows — no row ever crosses a page boundary
   const pages = [];
-  let remaining = [...slaData];
-
-  const firstChunk = remaining.splice(0, Math.max(1, ROWS_P1));
-  pages.push({ rows: firstChunk, showSummary: true });
-
+  const remaining = [...slaData];
   while (remaining.length > 0) {
-    const chunk = remaining.splice(0, Math.max(1, ROWS_PN));
-    pages.push({ rows: chunk, showSummary: false });
+    pages.push(remaining.splice(0, Math.max(1, ROWS_PER_PAGE)));
   }
-
   const totalPages = pages.length;
 
   return (
     <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', zIndex: -1 }}>
-      {pages.map((page, pageIndex) => (
+      {pages.map((rows, pageIndex) => (
         <div
           key={pageIndex}
           ref={(el) => { if (pageRefs) pageRefs.current[pageIndex] = el; }}
@@ -230,14 +233,13 @@ export const SlaPdfTemplate = ({ slaData = [], pageRefs }) => {
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden',        // ← guarantees nothing bleeds out
-            marginBottom: '20px',          // visual gap between pages in DOM
+            overflow: 'hidden',
+            marginBottom: '16px',
           }}
         >
           <PageHeader exportDate={exportDate} />
-          {page.showSummary && <SummaryBar summary={summary} />}
-          <div style={{ flex: 1, overflow: 'hidden' }}>
-            <DataTable keys={keys} rows={page.rows} colWidth={colWidth} />
+          <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+            <DataTable keys={keys} colWidths={colWidths} rows={rows} />
           </div>
           <PageFooter pageNum={pageIndex + 1} totalPages={totalPages} />
         </div>

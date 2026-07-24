@@ -32,7 +32,7 @@ export const NetPathContent = () => {
     isLoading,
   } = useNetPath();
 
-  const [expandedGroups, setExpandedGroups] = useState({});
+  const [expandedGroups, setExpandedGroups] = useState(null);
 
   const groupedPaths = useMemo(() => {
     const groups = {};
@@ -166,7 +166,7 @@ export const NetPathContent = () => {
               </div>
             ) : (
               Object.entries(groupedPaths).map(([groupName, paths]) => {
-                const isExpanded = expandedGroups[groupName] !== false; // Default true
+                const isExpanded = expandedGroups === groupName; // Accordion style, default all collapsed
 
                 return (
                   <div
@@ -177,10 +177,7 @@ export const NetPathContent = () => {
                     <div
                       className={sharedStyles.treeRoot}
                       onClick={() =>
-                        setExpandedGroups((prev) => ({
-                          ...prev,
-                          [groupName]: !isExpanded,
-                        }))
+                        setExpandedGroups((prev) => (prev === groupName ? null : groupName))
                       }
                       style={{ cursor: 'pointer' }}
                     >

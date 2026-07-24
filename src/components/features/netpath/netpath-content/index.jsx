@@ -194,7 +194,7 @@ export const NetPathContent = () => {
                         width={18}
                       />
                       <span className={sharedStyles.rootLabel}>
-                        {groupName}
+                        {groupName.replace(/_/g, ' ').toUpperCase()}
                       </span>
                     </div>
 

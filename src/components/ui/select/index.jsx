@@ -308,20 +308,21 @@ export const SelectComponent = ({
 
   // Custom Group to add individual scrollbars per category
   const CustomGroup = (props) => {
+    const { Heading, headingProps, label, children, innerProps, getStyles } = props;
     return (
-      <div style={{ paddingBottom: '4px' }}>
-        <components.GroupHeading {...props.headingProps}>
-          {props.label}
-        </components.GroupHeading>
-        <div 
-          style={{ 
-            maxHeight: '200px', 
+      <div {...innerProps} style={getStyles ? getStyles('group', props) : {}}>
+        <Heading {...props} {...headingProps}>
+          {label}
+        </Heading>
+        <div
+          style={{
+            maxHeight: '200px',
             overflowY: 'auto',
             overflowX: 'hidden',
-          }} 
+          }}
           className={styles.customGroupScrollbar}
         >
-          {props.children}
+          {children}
         </div>
       </div>
     );

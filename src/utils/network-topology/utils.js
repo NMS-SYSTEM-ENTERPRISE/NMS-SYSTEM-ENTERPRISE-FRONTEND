@@ -1,4 +1,24 @@
 // Generate cytoscape elements from topology data with connections
+
+export const isNodeInViewMode = (device, viewMode) => {
+  if (!viewMode || viewMode === 'all') return true;
+
+  const typeStr = (device?.type || device?.category || '').toLowerCase();
+
+  if (viewMode === 'network') {
+    return ['router', 'switch', 'firewall', 'network', 'core'].some(kw => typeStr.includes(kw)) || typeStr === '';
+  }
+
+  if (viewMode === 'sdn') {
+    return ['access-point', 'controller', 'manager', 'edge', 'sdn', 'ap'].some(kw => typeStr.includes(kw));
+  }
+
+  if (viewMode === 'cloud') {
+    return ['region', 'cloud', 'server', 'database', 'topic', 'queue', 'vm', 'instance'].some(kw => typeStr.includes(kw));
+  }
+
+  return true;
+};
 export const generateElements = (data, viewMode) => {
   const nodes = [];
   const edges = [];
@@ -7,14 +27,31 @@ export const generateElements = (data, viewMode) => {
 
   const viewData = data?.views?.[viewMode] || data?.views?.all;
 
+  // Build a lookup map of all detailed devices
+  const detailedDevices = new Map();
+  if (data?.devices && Array.isArray(data.devices)) {
+    data.devices.forEach(device => {
+      detailedDevices.set(device.id, device);
+    });
+  }
+
   // Try to parse from nested tree structure (New API format)
   const collectDevices = (node) => {
     if (!node) return;
     if (node.id && !node.id.startsWith('view-')) {
+      const detailedDevice = detailedDevices.get(node.id) || {};
+
+      // Filter by view mode dynamically if the API only gave us the 'all' view
+      if (!isNodeInViewMode(detailedDevice, viewMode) && !isNodeInViewMode(node, viewMode)) {
+        return;
+      }
+
       if (!deviceMap.has(node.id)) {
+        // Merge with detailed device info if available
         deviceMap.set(node.id, {
-          ...node,
-          label: node.name,
+          ...detailedDevice,
+          ...node, // node from view might have specific view-related data
+          label: node.name || detailedDevice.name || detailedDevice.label,
         });
       }
     }
@@ -28,23 +65,44 @@ export const generateElements = (data, viewMode) => {
       nodes.push({ data: device });
     });
 
-    deviceMap.forEach((device) => {
-      (device.connections || []).forEach((targetId) => {
-        if (deviceMap.has(targetId)) {
-          const edgeId = [device.id, targetId].sort().join('-');
+    // Use top-level connections array for edges if available
+    if (data?.connections && Array.isArray(data.connections)) {
+      data.connections.forEach((conn) => {
+        if (deviceMap.has(conn.source) && deviceMap.has(conn.target)) {
+          const edgeId = [conn.source, conn.target].sort().join('-');
           if (!addedEdges.has(edgeId)) {
             addedEdges.add(edgeId);
             edges.push({
               data: {
-                id: edgeId,
-                source: device.id,
-                target: targetId,
-              }
+                ...conn,
+                id: edgeId, // use sorted ID to avoid duplicate rendering of bidirectional edges as two lines
+                label: conn.bandwidth || conn.label,
+                type: conn.link_type || conn.connection_type || conn.type,
+              },
             });
           }
         }
       });
-    });
+    } else {
+      // Fallback to connection list on device nodes
+      deviceMap.forEach((device) => {
+        (device.connections || []).forEach((targetId) => {
+          if (deviceMap.has(targetId)) {
+            const edgeId = [device.id, targetId].sort().join('-');
+            if (!addedEdges.has(edgeId)) {
+              addedEdges.add(edgeId);
+              edges.push({
+                data: {
+                  id: edgeId,
+                  source: device.id,
+                  target: targetId,
+                },
+              });
+            }
+          }
+        });
+      });
+    }
   } else {
     // Fallback for flat array structure (Old API format)
     const viewDeviceIds = new Set();
@@ -73,15 +131,18 @@ export const generateElements = (data, viewMode) => {
     (data?.connections || [])
       .filter((connection) => deviceMap.has(connection.source) && deviceMap.has(connection.target))
       .forEach((connection) => {
-        edges.push({
-          data: {
-            id: connection.id,
-            source: connection.source,
-            target: connection.target,
-            label: connection.label,
-            type: connection.type,
-          },
-        });
+        const edgeId = [connection.source, connection.target].sort().join('-');
+        if (!addedEdges.has(edgeId)) {
+          addedEdges.add(edgeId);
+          edges.push({
+            data: {
+              ...connection,
+              id: edgeId,
+              label: connection.bandwidth || connection.label,
+              type: connection.link_type || connection.connection_type || connection.type,
+            },
+          });
+        }
       });
   }
 

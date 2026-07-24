@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/skeleton-loaders/network-topology-skeleton';
 import { useNetworkTopology } from '@/hooks/network-topology';
 import { useCytoscape } from '@/hooks/network-topology/useCytoscape';
+import { isNodeInViewMode } from '@/utils/network-topology/utils';
 import { Icon } from '@iconify/react';
 import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -237,7 +238,7 @@ export const NetworkTopologyContent = () => {
       resetFocus(cyRef.current);
     }
 
-    await refreshTopology();
+    await refreshTopology(true);
   };
 
   const handleExportPNG = () => {
@@ -324,9 +325,8 @@ export const NetworkTopologyContent = () => {
     return (
       <div key={node?.name || node?.id} className={styles.treeNode}>
         <div
-          className={`${styles.treeNodeLabel} ${
-            isDevice ? styles.treeNodeDevice : ''
-          } ${focusedNode === node?.id ? styles.treeNodeFocused : ''}`}
+          className={`${styles.treeNodeLabel} ${isDevice ? styles.treeNodeDevice : ''
+            } ${focusedNode === node?.id ? styles.treeNodeFocused : ''}`}
           onClick={handleNodeClick}
         >
           {hasChildren && (
@@ -342,9 +342,8 @@ export const NetworkTopologyContent = () => {
             icon={getNodeIcon(node?.type)}
             width={16}
             height={16}
-            className={`${styles.treeNodeIcon} ${
-              isDevice ? getStatusColor(node.status) : ''
-            }`}
+            className={`${styles.treeNodeIcon} ${isDevice ? getStatusColor(node.status) : ''
+              }`}
           />
           <span className={styles.treeNodeText}>{node?.name}</span>
           {isDevice && node.ip && (
@@ -382,37 +381,112 @@ export const NetworkTopologyContent = () => {
     return null;
   };
 
-  const currentTopologyData = useMemo(
-    () => filterTree(topologyData?.views?.[viewMode] || topologyData?.views?.all, searchQuery),
-    [topologyData, viewMode, searchQuery]
-  );
+  const currentTopologyData = useMemo(() => {
+    let viewData = topologyData?.views?.[viewMode] || topologyData?.views?.all;
+    if (!viewData) return null;
+
+    if (viewData.children && topologyData?.devices) {
+      const deviceMap = new Map(topologyData.devices.map(d => [d.id, d]));
+      const groupedChildren = {};
+      const ungroupedChildren = [];
+
+      const processNodes = (nodes) => {
+        const result = [];
+        nodes.forEach(node => {
+          // If the node is already a group from the backend, keep it intact
+          if (node.type === 'group' || node.children?.length > 0) {
+            result.push({
+              ...node,
+              children: processNodes(node.children || [])
+            });
+            return;
+          }
+
+          const deviceDetail = deviceMap.get(node.id);
+          const groupName = (deviceDetail?.group && deviceDetail.group.length > 0)
+            ? deviceDetail.group[0]
+            : null;
+
+          // Ensure we are filtering out nodes that don't match the active view tab
+          if (!isNodeInViewMode(deviceDetail || node, viewMode)) {
+            return;
+          }
+
+          if (groupName) {
+            if (!groupedChildren[groupName]) {
+              groupedChildren[groupName] = [];
+            }
+            groupedChildren[groupName].push({
+              ...node,
+              ...deviceDetail, // enrich with full device detail
+              label: node.name || deviceDetail?.name || deviceDetail?.label
+            });
+          } else {
+            ungroupedChildren.push({
+              ...node,
+              ...deviceDetail,
+              label: node.name || deviceDetail?.name || deviceDetail?.label
+            });
+          }
+        });
+        return result;
+      };
+
+      const existingGroups = processNodes(viewData.children);
+
+      const newGroupNodes = Object.keys(groupedChildren).sort().map(gName => ({
+        id: `group-by-${gName}`,
+        name: gName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Format name nicely
+        type: 'group',
+        children: groupedChildren[gName]
+      }));
+
+      viewData = {
+        ...viewData,
+        children: [...existingGroups, ...newGroupNodes, ...ungroupedChildren]
+      };
+    }
+
+    return filterTree(viewData, searchQuery);
+  }, [topologyData, viewMode, searchQuery]);
 
   const selectedConnections = useMemo(() => {
     if (!selectedDevice || !topologyData?.views) return [];
-    
-    // Find device in the nested tree
+
+    // Find all devices
     let allDevices = [];
-    const collectNodes = (node) => {
-      if (!node) return;
-      if (node.id && !node.id.startsWith('view-')) {
-        allDevices.push(node);
-      }
-      (node.children || []).forEach(collectNodes);
-    };
-    
-    // Use fallback to all if devices array is deprecated
     if (topologyData?.devices) {
-       allDevices = topologyData.devices;
+      allDevices = topologyData.devices;
     } else {
-       collectNodes(topologyData?.views?.[viewMode] || topologyData?.views?.all);
+      const collectNodes = (node) => {
+        if (!node) return;
+        if (node.id && !node.id.startsWith('view-')) {
+          allDevices.push(node);
+        }
+        (node.children || []).forEach(collectNodes);
+      };
+      collectNodes(topologyData?.views?.[viewMode] || topologyData?.views?.all);
     }
 
-    return (selectedDevice.connections || [])
-      .map((deviceId) =>
-        allDevices.find((device) => device.id === deviceId)
-      )
+    const deviceMap = new Map(allDevices.map(d => [d.id, d]));
+
+    // Find connections
+    let connectedDeviceIds = new Set(selectedDevice.connections || []);
+
+    if (topologyData?.connections && Array.isArray(topologyData.connections)) {
+      topologyData.connections.forEach(conn => {
+        if (conn.source === selectedDevice.id) {
+          connectedDeviceIds.add(conn.target);
+        } else if (conn.target === selectedDevice.id) {
+          connectedDeviceIds.add(conn.source);
+        }
+      });
+    }
+
+    return Array.from(connectedDeviceIds)
+      .map(deviceId => deviceMap.get(deviceId))
       .filter(Boolean)
-      .map((device) => ({
+      .map(device => ({
         target: device.label || device.name,
         type: device.type,
         ip: device.ip,
@@ -501,9 +575,8 @@ export const NetworkTopologyContent = () => {
           <div className={styles.viewTabs}>
             <Button
               variant="outline"
-              className={`${styles.viewTab} ${
-                viewMode === 'network' ? styles.viewTabActive : ''
-              }`}
+              className={`${styles.viewTab} ${viewMode === 'network' ? styles.viewTabActive : ''
+                }`}
               onClick={() => setViewMode('network')}
               title="Network View"
             >
@@ -511,9 +584,8 @@ export const NetworkTopologyContent = () => {
             </Button>
             <Button
               variant="outline"
-              className={`${styles.viewTab} ${
-                viewMode === 'sdn' ? styles.viewTabActive : ''
-              }`}
+              className={`${styles.viewTab} ${viewMode === 'sdn' ? styles.viewTabActive : ''
+                }`}
               onClick={() => setViewMode('sdn')}
               title="SDN View"
             >
@@ -521,9 +593,8 @@ export const NetworkTopologyContent = () => {
             </Button>
             <Button
               variant="outline"
-              className={`${styles.viewTab} ${
-                viewMode === 'cloud' ? styles.viewTabActive : ''
-              }`}
+              className={`${styles.viewTab} ${viewMode === 'cloud' ? styles.viewTabActive : ''
+                }`}
               onClick={() => setViewMode('cloud')}
               title="Cloud View"
             >

@@ -17,9 +17,11 @@ export const NetworkTopologyProvider = ({ children }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [topologyError, setTopologyError] = useState(null);
 
-  const refreshTopology = useCallback(async () => {
+  const refreshTopology = useCallback(async (isManualRefresh = false) => {
     try {
-      setIsRefreshing(true);
+      if (isManualRefresh) {
+        setIsRefreshing(true);
+      }
       setTopologyError(null);
       const data = await getNetworkTopology();
       setTopologyData(data);
@@ -28,7 +30,9 @@ export const NetworkTopologyProvider = ({ children }) => {
       setTopologyError(error?.detail || error?.message || 'Unable to load network topology.');
     } finally {
       setIsLoadingTopology(false);
-      setIsRefreshing(false);
+      if (isManualRefresh) {
+        setIsRefreshing(false);
+      }
     }
   }, []);
 

@@ -105,20 +105,21 @@ export const NetPathContent = () => {
           </Button>
         </div>
 
-        <div className={sharedStyles.sidebarNav}>
-          {/* Search */}
-          {isSidebarOpen && (
-            <div className={sharedStyles.sidebarSearch}>
-              <Input
-                type="text"
-                placeholder="Search paths..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                icon={<Icon icon="mdi:magnify" />}
-              />
-            </div>
-          )}
+        {/* Search - Full Width & Integrated */}
+        {isSidebarOpen && (
+          <div className={sharedStyles.sidebarSearch}>
+            <Input
+              type="text"
+              placeholder="Search paths..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              icon={<Icon icon="mdi:magnify" />}
+              className={sharedStyles.integratedSearchInput}
+            />
+          </div>
+        )}
 
+        <div className={sharedStyles.sidebarNav}>
           {/* Path List with Tree Structure - Grouped by Category */}
           <div
             className={sharedStyles.treeChildren}
@@ -199,7 +200,7 @@ export const NetPathContent = () => {
                     </div>
 
                     {/* Group Children */}
-                    {isExpanded && (
+                    {isExpanded && isSidebarOpen && (
                       <div
                         className={`${sharedStyles.treeChildren} ${sharedStyles.customScrollbar}`}
                         style={{ maxHeight: '220px', overflowY: 'auto', overflowX: 'hidden' }}
@@ -217,19 +218,14 @@ export const NetPathContent = () => {
                             <div className={sharedStyles.treeBranch} />
 
                             <div className={sharedStyles.itemIconWrapper}>
-                              {isSidebarOpen ? (
+                              <div className={!isSidebarOpen ? sharedStyles.collapsedIcon : ''}>
                                 <Icon
                                   icon={getNodeIcon(path.type || '')}
-                                  width={16}
-                                  className={`${sharedStyles[`avatar_${path.status}`]}`}
+                                  width={isSidebarOpen ? 16 : 22}
+                                  className={sharedStyles[`avatar_${path.status}`]}
+                                  style={{ background: 'transparent', border: 'none' }}
                                 />
-                              ) : (
-                                <div
-                                  className={`${sharedStyles.avatarText} ${sharedStyles[`avatar_${path.status}`]}`}
-                                >
-                                  {getPathInitials(path.name)}
-                                </div>
-                              )}
+                              </div>
                             </div>
 
                             <div className={sharedStyles.navContent}>

@@ -217,16 +217,27 @@ export const SlaHeader = () => {
               title="Export PDF"
               onClick={handleExportPdf}
               disabled={isExporting}
-              style={{ opacity: isExporting ? 0.7 : 1, cursor: isExporting ? 'not-allowed' : 'pointer', minWidth: '110px' }}
+              style={{
+                cursor: isExporting ? 'not-allowed' : 'pointer',
+                minWidth: '120px',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
             >
               {isExporting ? (
                 <>
-                  <Icon
-                    icon="svg-spinners:ring-resize"
-                    width={17}
-                    style={{ color: 'var(--color-primary, #06b6d4)', flexShrink: 0 }}
-                  />
-                  <span>Generating...</span>
+                  <style>{`@keyframes sla-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@keyframes sla-pulse{0%,100%{opacity:1}50%{opacity:0.5}}`}</style>
+                  <span style={{
+                    display: 'inline-block',
+                    width: 16,
+                    height: 16,
+                    border: '2.5px solid rgba(6,182,212,0.25)',
+                    borderTopColor: 'var(--color-primary, #06b6d4)',
+                    borderRadius: '50%',
+                    animation: 'sla-spin 0.75s linear infinite',
+                    flexShrink: 0,
+                  }} />
+                  <span style={{ animation: 'sla-pulse 1.5s ease-in-out infinite' }}>Generating...</span>
                 </>
               ) : (
                 <>

@@ -11,6 +11,7 @@ export const SlaProvider = ({ children }) => {
   const [totalDevices, setTotalDevices] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [evaluationWindow, setEvaluationWindow] = useState('');
+  const [totalTime, setTotalTime] = useState('');
 
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
@@ -48,6 +49,7 @@ export const SlaProvider = ({ children }) => {
       setTotalDevices(response.total_devices || 0);
       setTotalPages(response.total_pages || 0);
       setEvaluationWindow(response.evaluation_window || '');
+      setTotalTime(response.total_time || '');
 
     } catch (error) {
       console.error('Failed to load SLA report:', error);
@@ -99,6 +101,7 @@ export const SlaProvider = ({ children }) => {
     totalSLAs: totalDevices,
     totalPages,
     evaluationWindow,
+    totalTime,
     handleResetFilters,
     handleApplyFilters,
     refreshSlaPortfolio: loadSlaReport,

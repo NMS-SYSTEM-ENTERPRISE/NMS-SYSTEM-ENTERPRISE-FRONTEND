@@ -37,7 +37,9 @@ export const SlaHeader = () => {
     refreshSlaPortfolio,
     filters,
     handleResetFilters,
-    paginatedSLAs
+    paginatedSLAs,
+    evaluationWindow,
+    totalTime
   } = useSla();
 
   const pageRefs = useRef([]);
@@ -74,11 +76,14 @@ export const SlaHeader = () => {
         allItems = [...allItems, ...(nextPage.items || [])];
       }
 
-      if (allItems.length === 0) return;
+      if (allItems.length === 0) {
+        setIsExporting(false);
+        return;
+      }
 
       // 2. Inject data into the PDF template and wait for React to render it
       setExportData(allItems);
-      await new Promise((r) => setTimeout(r, 300)); // Allow React to rerender
+      await new Promise((r) => setTimeout(r, 500)); // Allow React to rerender
 
       // 3. Pre-load watermark
       const wmDataUrl = await loadImageDataUrl(watermarkSrc);
@@ -149,7 +154,24 @@ export const SlaHeader = () => {
           <div className={styles.headerIcon}>
             <Icon icon="ph:chart-line-up-bold" width={20} />
           </div>
-          <h1 className={styles.headerTitle}>SLA Report</h1>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <h1 className={styles.headerTitle}>SLA Report</h1>
+            {(evaluationWindow || totalTime) && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+                {evaluationWindow && (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Icon icon="ph:calendar-blank-bold" /> {evaluationWindow}
+                  </span>
+                )}
+                {evaluationWindow && totalTime && <span style={{ opacity: 0.5 }}>|</span>}
+                {totalTime && (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Icon icon="ph:clock-bold" /> {totalTime}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className={styles.headerRight}>

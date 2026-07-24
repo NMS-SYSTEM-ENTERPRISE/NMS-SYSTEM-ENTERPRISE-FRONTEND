@@ -1,105 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NMS Enterprise Frontend - Docker Deployment Guide
 
-## Getting Started
+## Overview
+This repository contains the enterprise-grade Dockerized setup for the NMS Frontend application. It is optimized for Linux deployments and designed with strict security, minimal image size, and performance best practices. End users are **not required** to install Node.js, manage npm dependencies, or possess prior Docker experience.
 
-First, run the development server:
+## Requirements
+To run this application, the host machine must have the following installed:
+- **Docker Engine** (or Docker Desktop)
+- **Docker Compose** plugin (usually bundled with modern Docker installations)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+No Node.js, npm, or local development tools are required.
+
+## Folder Structure
+```text
+project/
+├── Dockerfile          # Multi-stage production build configuration
+├── docker-compose.yml  # Container orchestration and runtime settings
+├── .dockerignore       # Optimizes build context and ensures security
+├── .env.example        # Template for production environment variables
+├── start.sh            # Automated startup script (Linux/Mac)
+├── stop.sh             # Automated teardown script (Linux/Mac)
+├── package.json        # Node.js dependencies configuration
+├── next.config.mjs     # Next.js standalone output configuration
+└── src/                # Application source code
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
+1. Obtain the project source code (via Git, USB, Network Share, etc.).
+2. Navigate to the project directory in your terminal:
+   ```bash
+   cd /path/to/project
+   ```
+3. Grant execution permissions to the scripts (if not already set):
+   ```bash
+   chmod +x start.sh stop.sh
+   ```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Start
+To automatically build the image, install dependencies inside the container, and start the application in the background, run:
+```bash
+./start.sh
+```
+*Alternatively, you can manually run `docker compose up -d`.*
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Upon success, the application will be accessible at **http://localhost:3000** (or your configured port).
 
-## Learn More
+## Stop
+To stop the application and clean up running containers gracefully, run:
+```bash
+./stop.sh
+```
+*Alternatively, you can manually run `docker compose down`.*
 
-To learn more about Next.js, take a look at the following resources:
+## Restart
+If you need to restart the application to apply configuration changes, simply run the stop command followed by the start command:
+```bash
+./stop.sh && ./start.sh
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Logs
+To monitor the live output from the container, run:
+```bash
+docker compose logs -f
+```
+Press `Ctrl+C` to exit the log view.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Update
+When receiving new source code, overwrite your local files and execute the start script. The script automatically rebuilds the Docker image with your latest changes:
+```bash
+./start.sh
+```
 
-## Deploy on Vercel
+## Environment Variables
+The application ships with an `.env.example` file. The `start.sh` script automatically copies this to `.env` if one does not exist.
+To customize settings (such as `PORT`), edit the `.env` file before starting the application:
+```env
+PORT=3000
+NODE_ENV=production
+NEXT_TELEMETRY_DISABLED=1
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Container Health Status
+The Docker setup includes a built-in healthcheck. Docker will automatically poll the application to ensure it is responding. You can check the health status via:
+```bash
+docker ps
+```
+Look for `(healthy)` or `(starting)` in the STATUS column.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Common Errors
+- **Address already in use (Port 3000)**: Another application is using port 3000. Edit your `.env` file and change `PORT=8080`, then restart the application.
+- **Permission Denied executing start.sh**: Run `chmod +x start.sh` to make the script executable.
+- **Docker daemon is not running**: Ensure Docker is started on your system before executing the scripts.
 
-see mermaid sketches looks like ver old feel so take tim eneatly enahnce it with out any sissue in the all the section s mermaid skctech with neat primary coloring latets way displaye di tokay take yorown time handle this gracefully with out nay issue sokay  
+## FAQ
+**Q: Do I need to run `npm install`?**
+A: No, the `Dockerfile` automatically installs dependencies and builds the application inside the isolated container environment.
 
+**Q: Where are my node_modules?**
+A: They exist exclusively inside the Docker image. This keeps your local filesystem clean and guarantees identical environments across all machines.
 
+**Q: Can I use Docker commands directly?**
+A: Yes, you can freely substitute the `start.sh` and `stop.sh` scripts with standard `docker compose up -d` and `docker compose down` commands.
 
-TAKE HOW MUCH TIME YOU WANT NO PROBLEM BUT HANDLE THIS GRACEFULLY WITH OUT 
-ANY ISSUES OKAY 
+## Docker Commands
+For advanced users, here are equivalent standard Docker commands:
+- Start and build: `docker compose up -d --build`
+- Stop and remove: `docker compose down`
+- View logs: `docker compose logs -f`
+- Check status: `docker ps`
+- Enter container shell: `docker exec -it nms_frontend_app /bin/sh`
 
+## Build and Share
+./docker-setup/export-release.sh
 
-SEE IT IS THE MAJOR MAJOR MAIN TASK SO CALLED HEART OF THE APPLICATION NOW 
-
-SO HOW CARE YOU CAN IMPOSE THOSE MUCH IMPLEMENT IN THIS OKAY
-MAKE IT SOLID EFFECTIVE EVEN CLEAN HANDLED IN THAT INDUSTRY ALIGNED 
-WITH OUT ANY ISSUE AND BUD HANDLE THIS GRACEFULLY OKAY 
-
-SEE PLACE AN WIDGET HOW WE NEEDED IS 
-EVERY SCREEN WE DISPLAY THE SOME MORE ACTIONS ICON CLICK THIS OPEN THE BIG SIZE RIGHT SIDE BAR 
-HERE 
-
-WE DISPLAY THE FOLLOWING OPTIONS 
-
-- FORMATS WE NEEDED IS
-- PNG : ALSO PLACE THE COMPANY LOGO ACCORDINGLY
-- XLSX : PLACE THE LOGO AS AN WATER MARK WITH LIGHTER CONCENTRATION
-- CSV : PLACE THE LOGO AS AN WATER MARK WITH LIGHTER CONCENTRATION
-- PDF LAN-SLIDE FORMAT : NEAT CLEAN EVEN BALANCED PROFESSIONAL GRADE REPORT NEEDED WITH NEAT DETAILED
-- CLEAN BREAKDOWN
--
-THEN ALONG WITH THIS DISPLAY THE WIDGET YOU WANT TO DOWNLOAD 
-WITH ALL OPTIONS WITH CHECK BOXES
-
-EXAMPLE:
-/dashboard SCREEN 
-WE HAVE THE MULTIPLE THINGS OKAY 
-Infrastructure summary
-system cpu performance
-Memory utilization
-Network Health & Latency
-Storage Health & Capacity
-Network Traffic Analysys
-Infrastructure Health
-
-SO WITH THIS LIST WE CAN DISPLAY HERE 
-USER ABLE TO SELECT THIS WIDGETS AND SELECT THE FORMAT HE WANT TO DOWNLOAD THEN DOWNLOAD THOSE ONE NEATLY 
-
-SEE FOR THIS NEATLY PREPARE AN COMPONENT IN THIS PATH : /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/components/common
-
-WITH NEAT CLEAN DEDICATED WAY HAVING THEIR DEDICATED INDEX.JSX AND STYLES.MODULE.CSS 
-
-NOTE: SEE IT IS USED IN THE ALL THE SCREENS WE HAVE OKAY SO BASED ON THIS DONE THIS NEATLY GRACEFULLY WITH OUT ANY ISSUES 
-AT ANY CASE AT ANY SITUATION IT IS CAPABLE OF FIT TO THOSE RESPECTIVE SCREEN AND SECTION OKAY FOR THIS COMPONENT 
-WE HAVE THE MULTIPLE FORMATS WE HAVE SO FOR THIS WHAT ARE ALL THE NECESSARY PACKAGES YOU NEED INSTALL IT OKAY 
-AND REGARDING CODING STRUCTURE ALIGN THE DESIGN THEME AND FOLDER STRUCTURE AND ALL ALONG WITH THE EXISTING FEATURES OKAY
-
-FOR THIS NEED TO HANDLE ANY THING GLOBALLY CREATE AN CONTEXT - APPEND THIS CONTENT IN THE PROVIDERS
-IN THIS CREATE FOLDER /home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/utils
-FUNCTIONS UNDER THIS CREATE FOLDER DATA-EXPORT IN THIS CREATE MULIPLE FUNCTION-JS FILES WHERE IT SELF
-YOU ACCESS THE FUNCTIONS OKAY BECUASE MAINTAINING THE MODULAR CLEAN EFFECTIVE CODING STRUCTURE 
-
-IN THIS FUNCTINALITY WISE IMPORT THIS COMPONENT IN THE RESEPCTIVE SCREEN WHERE FROM THE CHILD WHAT EVER WE SEND 
-BASED ON THIS RENDER THE OUT PUTS IN THIS PARENT COMPONENT LIKE WISE DONE IT OKAY WITH OUT ANY ISSUES
-
-ONCE THE COMPONENT COMPLTED INITIALLY GO WITH THE /dashboard screen it self OKAY
-
-WATERMARK CONSIDER THIS 
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/assets/images/snr-edatas-favicon.png
-
-LOGO CONSIDER THIS OKAY 
-/home/snr/Downloads/Downloads/Projects/NMS/NMS-SYSTEM-ENTERPRISE-FRONTEND/src/assets/images/snr-logo-xl.svg
+## OTHER Machine Starts & Stop the App
+./start.sh
+./stop.sh

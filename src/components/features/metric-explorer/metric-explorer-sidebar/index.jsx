@@ -81,9 +81,19 @@ export const MetricExplorerSidebar = ({
           }
           options={[
             { value: '', label: 'Select Monitor' },
-            ...monitors.map((monitor) => ({
-              value: monitor.id,
-              label: monitor.name,
+            ...Object.entries(
+              monitors.reduce((acc, monitor) => {
+                const groupName = monitor.group || 'Ungrouped';
+                if (!acc[groupName]) acc[groupName] = [];
+                acc[groupName].push({
+                  value: monitor.id,
+                  label: monitor.name,
+                });
+                return acc;
+              }, {})
+            ).map(([group, opts]) => ({
+              label: group.toUpperCase(),
+              options: opts,
             })),
           ]}
           placeholder="Select Monitor"

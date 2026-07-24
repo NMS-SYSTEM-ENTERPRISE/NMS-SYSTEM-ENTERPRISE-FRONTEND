@@ -16,7 +16,7 @@ const HistoryChart = ({ type, data, times }) => {
 
     let seriesData = [];
     let color = '#38bdf8';
-    
+
     // Safely fallback to empty array if backend omits data
     const safeData = data || [];
 

@@ -16,15 +16,18 @@ const HistoryChart = ({ type, data, times }) => {
 
     let seriesData = [];
     let color = '#38bdf8';
+    
+    // Safely fallback to empty array if backend omits data
+    const safeData = data || [];
 
     if (type === 'availability') {
-      seriesData = data.map(v => v === 1 ? 100 : 0);
+      seriesData = safeData.map(v => v === 1 ? 100 : 0);
       color = '#c084fc'; // Match Pink/Purple Title
     } else if (type === 'errorPackets') {
-      seriesData = data;
+      seriesData = safeData;
       color = '#f59e0b'; // Amber for Errors
     } else {
-      seriesData = data;
+      seriesData = safeData;
       color = type === 'packetLoss' ? '#f43f5e' : '#22d3ee';
     }
 

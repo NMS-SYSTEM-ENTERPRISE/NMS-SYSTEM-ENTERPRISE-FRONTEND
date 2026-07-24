@@ -34,9 +34,8 @@ export const TimeRangeSelector = ({ value, onChange }) => {
               <Button
                 key={range.value}
                 variant="ghost"
-                className={`${styles.option} ${
-                  value === range.value ? styles.optionActive : ''
-                }`}
+                className={`${styles.option} ${value === range.value ? styles.optionActive : ''
+                  }`}
                 onClick={() => onChange(range.value)}
               >
                 <span className={styles.optionLabel}>{range.label}</span>

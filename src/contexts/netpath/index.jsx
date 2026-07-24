@@ -12,7 +12,7 @@ export const NetPathProvider = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -26,10 +26,21 @@ export const NetPathProvider = ({ children }) => {
     const fetchPaths = async () => {
       try {
         setIsLoading(true);
-        const data = await getNetPaths();
-        setPaths(data.paths || []);
-        if (data.paths && data.paths.length > 0) {
-          setActivePathId(data.paths[0].id);
+        const response = await getNetPaths();
+
+        const getArray = (res, key) => {
+          if (Array.isArray(res)) return res;
+          if (res?.[key] && Array.isArray(res[key])) return res[key];
+          if (res?.data && Array.isArray(res.data)) return res.data;
+          if (res?.items && Array.isArray(res.items)) return res.items;
+          return [];
+        };
+
+        const safePaths = getArray(response, 'paths');
+        setPaths(safePaths);
+
+        if (safePaths.length > 0) {
+          setActivePathId(safePaths[0].id);
         }
       } catch (err) {
         console.error("Failed to fetch net paths:", err);
@@ -43,7 +54,7 @@ export const NetPathProvider = ({ children }) => {
 
   const filteredPaths = paths.filter((path) => {
     // Basic search query
-    const matchesSearch = 
+    const matchesSearch =
       path.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       path.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
       path.destination.toLowerCase().includes(searchQuery.toLowerCase());
@@ -54,7 +65,7 @@ export const NetPathProvider = ({ children }) => {
     if (filters.status && path.status !== filters.status) return false;
     if (filters.source && !path.source.toLowerCase().includes(filters.source.toLowerCase())) return false;
     if (filters.destination && !path.destination.toLowerCase().includes(filters.destination.toLowerCase())) return false;
-    
+
     // Port filtering (if applicable)
     if (filters.portMin || filters.portMax) {
       const portNum = parseInt(path.port, 10);

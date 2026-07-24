@@ -256,11 +256,13 @@ export const useCytoscape = ({
           },
         },
       ],
-      layout: getLayoutConfig(layoutType),
       minZoom: 0.1,
       maxZoom: 5,
       wheelSensitivity: 0.15,
     });
+
+    const layout = cy.layout(getLayoutConfig(layoutType));
+    layout.run();
 
     // Fit to view after layout with animation
     const fitTimeout = setTimeout(() => {
@@ -327,8 +329,12 @@ export const useCytoscape = ({
 
     return () => {
       clearTimeout(fitTimeout);
+      if (layout) {
+        try { layout.stop(); } catch (e) { }
+      }
       if (cy && !cy.destroyed()) {
         try {
+          cy.stop(true, true);
           cy.destroy();
         } catch (error) {
           console.error('Error destroying cytoscape:', error);

@@ -168,12 +168,19 @@ export const Sidebar = () => {
 
         if (!isMounted) return;
 
-        const activeAlerts = (alertsRes.data || alertsRes || []).filter(
+        const getArray = (res) => {
+          if (Array.isArray(res)) return res;
+          if (res?.items && Array.isArray(res.items)) return res.items;
+          if (res?.data && Array.isArray(res.data)) return res.data;
+          return [];
+        };
+
+        const activeAlerts = getArray(alertsRes).filter(
           (a) => a.is_active
         ).length;
         setAlertCount(activeAlerts);
 
-        const activeTickets = (ticketsRes.data || ticketsRes || []).filter(
+        const activeTickets = getArray(ticketsRes).filter(
           (t) => t.status === 'Open' || t.status === 'In Progress'
         ).length;
         setTicketCount(activeTickets);

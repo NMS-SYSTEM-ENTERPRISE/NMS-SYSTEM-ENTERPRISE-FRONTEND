@@ -116,6 +116,7 @@ export const SloProvider = ({ children }) => {
     errorMessage,
     timelineData,
     sourceInfo,
+    slos,
     filteredSLOs,
     paginatedSLOs,
     totalSLOs: filteredSLOs.length,

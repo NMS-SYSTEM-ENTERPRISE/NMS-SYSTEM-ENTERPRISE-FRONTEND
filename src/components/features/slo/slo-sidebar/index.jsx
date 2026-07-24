@@ -2,13 +2,49 @@
 
 import { Button } from '@/components/ui/button';
 import { useSlo } from '@/hooks/slo';
-import { SLO_CATEGORIES } from '@/utils/constants/slo';
+import { SLO_CATEGORIES, STATUS_CATEGORY_IDS } from '@/utils/constants/slo';
 import { Icon } from '@iconify/react';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import styles from './styles.module.css';
 
 export const SloSidebar = () => {
-  const { activeCategory, setActiveCategory, isSidebarOpen, setIsSidebarOpen } =
-    useSlo();
+  const router = useRouter();
+  const { isSidebarOpen, setIsSidebarOpen, slos } = useSlo();
+
+  const [expandedGroup, setExpandedGroup] = useState(null);
+  const [expandedCategory, setExpandedCategory] = useState(null);
+
+  const groupedSlos = useMemo(() => {
+    const groups = {};
+    (slos || []).forEach((slo) => {
+      const g = slo.group || 'Ungrouped';
+      if (!groups[g]) groups[g] = [];
+      groups[g].push(slo);
+    });
+    return groups;
+  }, [slos]);
+
+  const matchesCategory = (slo, catId) => {
+    if (catId === 'all') return true;
+    if (STATUS_CATEGORY_IDS.includes(catId)) {
+      return slo.status === catId;
+    }
+    return slo.sloType === catId;
+  };
+
+  const getGroupIcon = (groupName) => {
+    const lower = groupName.toLowerCase();
+    if (lower.includes('ups')) return 'mdi:car-battery';
+    if (lower.includes('switch')) return 'mdi:switch';
+    if (lower.includes('cctv')) return 'mdi:cctv';
+    if (lower.includes('server')) return 'mdi:server';
+    return 'mdi:server-network';
+  };
+
+  const handleDeviceClick = (sloId) => {
+    router.push(`/slo/${sloId}`);
+  };
 
   return (
     <aside
@@ -35,31 +71,113 @@ export const SloSidebar = () => {
       </div>
 
       <nav className={styles.sidebarNav}>
-        <div className={styles.treeRoot}>
-          <div className={styles.itemIconWrapper}>
-            <Icon icon="ph:target-bold" className={styles.rootIcon} width={18} />
-          </div>
-          <span className={styles.rootLabel}>SLO Management</span>
-        </div>
+        {Object.entries(groupedSlos).map(([groupName, groupSlos]) => {
+          const isGroupExpanded = expandedGroup === groupName;
 
-        <div className={styles.treeChildren}>
-          {SLO_CATEGORIES?.map((cat) => (
-            <div
-              key={cat.id}
-              className={`${styles.navItem} ${activeCategory === cat.id ? styles.navItemActive : ''}`}
-              onClick={() => setActiveCategory(cat.id)}
-              title={!isSidebarOpen ? cat.label : ''}
-            >
-              <div className={styles.treeBranch} />
+          return (
+            <div key={groupName} style={{ width: '100%', marginBottom: '8px' }}>
+              {/* Level 1: Group Root */}
               <div
-                className={`${styles.itemIconWrapper} ${styles[`categoryIcon_${cat.colorToken}`]}`}
+                className={styles.treeRoot}
+                onClick={() => setExpandedGroup((prev) => (prev === groupName ? null : groupName))}
+                style={{
+                  cursor: 'pointer',
+                  color: isGroupExpanded ? 'var(--color-chart-cyan)' : 'var(--color-text-primary)',
+                }}
               >
-                <Icon icon={cat.icon} width={18} />
+                <div className={styles.itemIconWrapper}>
+                  <Icon
+                    icon={getGroupIcon(groupName)}
+                    className={styles.rootIcon}
+                    style={{
+                      color: groupName.toLowerCase().includes('ups')
+                        ? '#f97316'
+                        : 'var(--color-chart-cyan)',
+                    }}
+                    width={18}
+                  />
+                </div>
+                <span className={styles.rootLabel}>{groupName.replace(/_/g, ' ').toUpperCase()}</span>
               </div>
-              <span className={styles.navText}>{cat.label}</span>
+
+              {/* Level 2: Categories */}
+              {isGroupExpanded && isSidebarOpen && (
+                <div className={styles.treeChildren}>
+                  {SLO_CATEGORIES.map((cat) => {
+                    const catSlos = groupSlos.filter((slo) => matchesCategory(slo, cat.id));
+                    const isCatExpanded = expandedCategory === cat.id;
+
+                    return (
+                      <div key={cat.id} style={{ width: '100%' }}>
+                        <div
+                          className={`${styles.navItem} ${isCatExpanded ? styles.navItemActive : ''}`}
+                          onClick={() => setExpandedCategory((prev) => (prev === cat.id ? null : cat.id))}
+                          title={!isSidebarOpen ? cat.label : ''}
+                        >
+                          <div className={styles.treeBranch} />
+                          <div className={`${styles.itemIconWrapper} ${styles[`categoryIcon_${cat.colorToken}`]}`}>
+                            <Icon icon={cat.icon} width={18} />
+                          </div>
+                          <span className={styles.navText}>{cat.label}</span>
+                          {catSlos.length > 0 && (
+                            <span style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--color-text-muted)' }}>
+                              {catSlos.length}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Level 3: Devices */}
+                        {isCatExpanded && catSlos.length > 0 && (
+                          <div
+                            style={{
+                              paddingLeft: '24px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '4px',
+                              marginTop: '4px',
+                              marginBottom: '8px',
+                            }}
+                          >
+                            {catSlos.map((slo) => (
+                              <div
+                                key={slo.id}
+                                onClick={() => handleDeviceClick(slo.id)}
+                                style={{
+                                  padding: '6px 12px',
+                                  fontSize: '11px',
+                                  color: 'var(--color-text-secondary)',
+                                  cursor: 'pointer',
+                                  borderRadius: '6px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  transition: 'background 0.2s, color 0.2s'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.background = 'transparent';
+                                  e.currentTarget.style.color = 'var(--color-text-secondary)';
+                                }}
+                              >
+                                <Icon icon="mdi:circle-medium" width={14} color={cat.colorToken === 'success' ? 'var(--color-success)' : cat.colorToken === 'danger' ? 'var(--color-danger)' : cat.colorToken === 'warning' ? 'var(--color-warning)' : 'var(--color-chart-cyan)'} />
+                                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                  {slo.name}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </nav>
     </aside>
   );

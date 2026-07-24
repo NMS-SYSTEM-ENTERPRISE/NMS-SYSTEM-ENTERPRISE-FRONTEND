@@ -10,8 +10,8 @@ import { AUDIT_LEGEND_DOT_CLASS } from '@/utils/constants/audit';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AuditAnalyticsAccordion = () => {
-  const { activeView, expandedSections, toggleSection, auditEvents, analyticsData } = useAudit();
-  const { auditEventOption, userActivityOption, actionDistributionOption, eventTimelineOption, legendData } = useAuditChartOptions(auditEvents, analyticsData);
+  const { activeView, expandedSections, toggleSection, auditEvents, totalEvents, successCount, failureCount, analyticsData } = useAudit();
+  const { auditEventOption, userActivityOption, actionDistributionOption, eventTimelineOption, legendData } = useAuditChartOptions(auditEvents, analyticsData, totalEvents, successCount, failureCount);
 
   if (activeView !== 'overview') return null;
 
@@ -46,7 +46,7 @@ export const AuditAnalyticsAccordion = () => {
 
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
-          {auditEvents.length === 0 ? (
+          {totalEvents === 0 ? (
             <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
               <NoDataFound title="No Traffic Data" description="Not enough data to generate module distribution and user activity." icon="mdi:chart-arc" />
             </div>

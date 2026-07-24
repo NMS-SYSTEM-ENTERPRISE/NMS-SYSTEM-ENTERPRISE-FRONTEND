@@ -10,8 +10,8 @@ import { AUDIT_METRIC_VALUE_CLASS } from '@/utils/constants/audit';
 import { NoDataFound } from '@/components/ui/no-data-found';
 
 export const AuditSummaryAccordion = () => {
-  const { activeView, expandedSections, toggleSection, auditEvents, analyticsData } = useAudit();
-  const { getSummarySparklineOption, summaryMetrics } = useAuditChartOptions(auditEvents, analyticsData);
+  const { activeView, expandedSections, toggleSection, auditEvents, totalEvents, successCount, failureCount, analyticsData } = useAudit();
+  const { getSummarySparklineOption, summaryMetrics } = useAuditChartOptions(auditEvents, analyticsData, totalEvents, successCount, failureCount);
 
   if (activeView !== 'overview') return null;
 
@@ -43,7 +43,7 @@ export const AuditSummaryAccordion = () => {
 
       {isOpen && (
         <div className={sharedStyles.accordionContent}>
-          {auditEvents.length === 0 ? (
+          {totalEvents === 0 ? (
             <div style={{ padding: '40px', display: 'flex', justifyContent: 'center' }}>
               <NoDataFound title="No Analytics Data" description="No audit logs available for real-time analysis." icon="mdi:pulse" />
             </div>

@@ -27,13 +27,19 @@ export const AuditProvider = ({ children }) => {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [totalEvents, setTotalEvents] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+  const [failureCount, setFailureCount] = useState(0);
 
   const fetchAuditLogs = useCallback(async () => {
     try {
       setLoading(true);
       const apiParams = {
-        module: filters.module !== 'All' ? filters.module : undefined,
-        status: filters.status !== 'All' ? filters.status : undefined,
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchQuery || undefined,
       };
 
       const data = await getAuditLogs(apiParams);
@@ -62,6 +68,9 @@ export const AuditProvider = ({ children }) => {
         };
       });
       setAuditEvents(mappedData);
+      setTotalEvents(data.total_logs || 0);
+      setSuccessCount(data.success_logs || 0);
+      setFailureCount(data.failure_logs || 0);
 
       try {
         const analytics = await getAuditAnalytics(apiParams);
@@ -75,31 +84,16 @@ export const AuditProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, currentPage, itemsPerPage, searchQuery]);
 
   useEffect(() => {
     fetchAuditLogs();
   }, [fetchAuditLogs]);
 
-  const filteredEvents = useMemo(() => {
-    let events = auditEvents;
-    const query = searchQuery.toLowerCase();
-    if (query) {
-      events = events.filter(
-        (e) =>
-          e.message?.toLowerCase().includes(query) ||
-          e.user?.toLowerCase().includes(query) ||
-          e.module?.toLowerCase().includes(query)
-      );
-    }
-    if (filters.module && filters.module !== 'All') {
-      events = events.filter((e) => e.module === filters.module);
-    }
-    if (filters.status && filters.status !== 'All') {
-      events = events.filter((e) => e.status === filters.status);
-    }
-    return events;
-  }, [searchQuery, filters.module, filters.status, auditEvents]);
+  // Reset to page 1 when filters or search change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, searchQuery]);
 
   const toggleSection = useCallback((sectionId) => {
     setExpandedSections((prev) => {
@@ -154,12 +148,18 @@ export const AuditProvider = ({ children }) => {
     handleApplyFilters,
     handleFilterChange,
     handleOpenActionSidebar,
-    filteredEvents,
     auditEvents,
     analyticsData,
     loading,
     error,
     fetchAuditLogs,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    totalEvents,
+    successCount,
+    failureCount,
   };
 
   return <AuditContext.Provider value={value}>{children}</AuditContext.Provider>;

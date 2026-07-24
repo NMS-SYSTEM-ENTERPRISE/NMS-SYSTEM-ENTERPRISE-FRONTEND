@@ -20,7 +20,7 @@ const COLOR_TOKEN_MAP = {
 
 const resolveColor = (token) => getCssVar(COLOR_TOKEN_MAP[token]) || (token === 'muted' ? '#374151' : '#06b6d4');
 
-export const useAuditChartOptions = (auditEvents = [], analyticsData = null) => {
+export const useAuditChartOptions = (auditEvents = [], analyticsData = null, totalEventsApi = 0, successCountApi = 0, failureCountApi = 0) => {
   return useMemo(() => {
     const bg = getCssVar('--audit-content-bg') || getCssVar('--color-bg-primary') || '#0b0f19';
     const border = getCssVar('--color-border') || 'rgba(255,255,255,0.1)';
@@ -262,15 +262,15 @@ export const useAuditChartOptions = (auditEvents = [], analyticsData = null) => 
       return getSparklineOption(data, colorToken);
     }
 
-    const totalLogs = analyticsData ? analyticsData.total_events : (auditEvents.length || 1);
+    const totalLogs = analyticsData ? analyticsData.total_events : (totalEventsApi || 1);
     const legendData = pieData.map(item => ({
       label: item.name,
       colorToken: item.colorToken,
       percent: Math.round((item.value / totalLogs) * 100) + '%'
     }));
 
-    const totalEvents = analyticsData ? analyticsData.total_events : auditEvents.length;
-    const failures = auditEvents.filter(e => e.status === 'Failed').length;
+    const totalEvents = analyticsData ? analyticsData.total_events : totalEventsApi;
+    const failures = failureCountApi !== undefined ? failureCountApi : auditEvents.filter(e => e.status === 'Failed').length;
     const successRate = totalEvents > 0 ? (((totalEvents - failures) / totalEvents) * 100).toFixed(1) + '%' : '100%';
 
     const summaryMetrics = [

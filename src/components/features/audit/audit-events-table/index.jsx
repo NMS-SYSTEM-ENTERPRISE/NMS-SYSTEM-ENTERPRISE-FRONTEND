@@ -9,18 +9,15 @@ import { Pagination } from '@/components/ui/pagination';
 import React from 'react';
 
 export const AuditEventsTable = () => {
-  const { filteredEvents, handleOpenActionSidebar } = useAudit();
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [itemsPerPage, setItemsPerPage] = React.useState(50);
-
-  const totalItems = filteredEvents.length;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedEvents = filteredEvents.slice(startIndex, startIndex + itemsPerPage);
-
-  // Reset to page 1 if filteredEvents change
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [filteredEvents]);
+  const {
+    auditEvents: paginatedEvents,
+    totalEvents,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    handleOpenActionSidebar
+  } = useAudit();
 
   return (
     <div className={sharedStyles.requestsContainer}>
@@ -112,11 +109,11 @@ export const AuditEventsTable = () => {
         )}
       </div>
 
-      {totalItems > 0 && (
+      {totalEvents > 0 && (
         <Pagination
           className={sharedStyles.pagination_wrapper}
           currentPage={currentPage}
-          totalItems={totalItems}
+          totalItems={totalEvents}
           pageSize={itemsPerPage}
           onPageChange={setCurrentPage}
           onPageSizeChange={setItemsPerPage}

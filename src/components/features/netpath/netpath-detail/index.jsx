@@ -50,8 +50,6 @@ const NetPathDetail = ({ pathId: propPathId }) => {
   const router = useRouter();
   // Use propPathId directly - when used in dynamic route, it will be passed from the page component
   const pathId = propPathId || '1';
-  const [currentDateTime, setCurrentDateTime] = useState(new Date());
-
   const [pathInfo, setPathInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,28 +68,16 @@ const NetPathDetail = ({ pathId: propPathId }) => {
     if (pathId) fetchDetail();
   }, [pathId]);
 
-  const formatDateTime = (date) => {
-    const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const period = date.getHours() >= 12 ? 'PM' : 'AM';
-
-    return `${weekday}, Oct ${day}, ${year} ${hours}:${minutes}:00 ${period}`;
-  };
-
   if (isLoading) {
     return <NetPathDetailSkeleton />;
   }
-  
+
   if (!pathInfo) {
     return (
       <div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <NoDataFound 
-          title="Path Details Unavailable" 
-          description={`Unable to locate telemetry and node data for path ID: ${pathId}.`} 
+        <NoDataFound
+          title="Path Details Unavailable"
+          description={`Unable to locate telemetry and node data for path ID: ${pathId}.`}
           icon="mdi:alert-circle-outline"
         />
       </div>
@@ -175,26 +161,6 @@ const NetPathDetail = ({ pathId: propPathId }) => {
         <PathVisualization pathInfo={pathInfo} />
 
         <PathHistory historyData={pathInfo.history} />
-
-        <div className={styles.footer}>
-          <div className={styles.navControls}>
-            <Button variant="ghost" className={styles.navBtn}>
-              <Icon icon="mdi:chevron-double-left" width={16} height={16} />
-            </Button>
-            <Button variant="ghost" className={styles.navBtn}>
-              <Icon icon="mdi:chevron-left" width={16} height={16} />
-            </Button>
-            <span className={styles.dateTime}>
-              {formatDateTime(currentDateTime)}
-            </span>
-            <Button variant="ghost" className={styles.navBtn}>
-              <Icon icon="mdi:chevron-right" width={16} height={16} />
-            </Button>
-            <Button variant="ghost" className={styles.navBtn}>
-              <Icon icon="mdi:chevron-double-right" width={16} height={16} />
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );

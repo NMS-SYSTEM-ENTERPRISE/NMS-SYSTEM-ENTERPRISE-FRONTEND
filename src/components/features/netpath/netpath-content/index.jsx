@@ -200,15 +200,17 @@ export const NetPathContent = () => {
 
                     {/* Group Children */}
                     {isExpanded && (
-                      <div className={sharedStyles.treeChildren}>
+                      <div
+                        className={`${sharedStyles.treeChildren} ${sharedStyles.customScrollbar}`}
+                        style={{ maxHeight: '220px', overflowY: 'auto', overflowX: 'hidden' }}
+                      >
                         {paths.map((path) => (
                           <div
                             key={path.id}
-                            className={`${sharedStyles.navItem} ${
-                              activePathId === path.id
-                                ? sharedStyles.navItemActive
-                                : ''
-                            }`}
+                            className={`${sharedStyles.navItem} ${activePathId === path.id
+                              ? sharedStyles.navItemActive
+                              : ''
+                              }`}
                             onClick={() => setActivePathId(path.id)}
                             title={!isSidebarOpen ? path.name : ''}
                           >

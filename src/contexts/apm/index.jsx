@@ -34,10 +34,18 @@ export const ApmProvider = ({ children }) => {
           getApmAnalytics()
         ]);
 
-        if (results[0].status === 'fulfilled') setServicesData(results[0].value || []);
+        const getArray = (res, key) => {
+          if (Array.isArray(res)) return res;
+          if (res?.[key] && Array.isArray(res[key])) return res[key];
+          if (res?.data && Array.isArray(res.data)) return res.data;
+          if (res?.items && Array.isArray(res.items)) return res.items;
+          return [];
+        };
+
+        if (results[0].status === 'fulfilled') setServicesData(getArray(results[0].value, 'services'));
         else console.error("Failed to fetch services:", results[0].reason);
 
-        if (results[1].status === 'fulfilled') setTracesData(results[1].value || []);
+        if (results[1].status === 'fulfilled') setTracesData(getArray(results[1].value, 'traces'));
         else console.error("Failed to fetch traces:", results[1].reason);
 
         if (results[2].status === 'fulfilled') setAnalyticsData(results[2].value || null);

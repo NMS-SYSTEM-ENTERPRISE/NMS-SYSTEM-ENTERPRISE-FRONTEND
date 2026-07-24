@@ -720,33 +720,42 @@ export const NetworkTopologyContent = () => {
           </div>
 
           {/* Cytoscape Container */}
-          <div ref={containerRef} className={styles.cytoscape}>
-            {showTopologySkeleton && <TopologyCanvasSkeleton />}
-            {!isLoadingTopology && topologyError && (
-              <div className={styles.canvasState}>
-                <Icon icon="mdi:alert-circle-outline" width={32} height={32} />
-                <span>{topologyError}</span>
-              </div>
-            )}
-            {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
-              <div
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  height: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <div style={{ maxWidth: '400px' }}>
-                  <NoDataFound
-                    title="Topology Empty"
-                    description="Try adjusting your filters or switching views to map devices."
-                    icon="mdi:sitemap-outline"
-                  />
+          <div className={styles.cytoscape}>
+            {/* 
+              IMPORTANT: Cytoscape needs an empty, dedicated DOM node. 
+              React children must not be inside containerRef because Cytoscape mutates its children.
+            */}
+            <div ref={containerRef} style={{ position: 'absolute', inset: 0, zIndex: 1 }} />
+
+            <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
+              {showTopologySkeleton && <TopologyCanvasSkeleton />}
+              {!isLoadingTopology && topologyError && (
+                <div className={styles.canvasState} style={{ pointerEvents: 'auto' }}>
+                  <Icon icon="mdi:alert-circle-outline" width={32} height={32} />
+                  <span>{topologyError}</span>
                 </div>
-              </div>
-            )}
+              )}
+              {!isLoadingTopology && !topologyError && !currentViewHasDevices && (
+                <div
+                  style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    pointerEvents: 'auto'
+                  }}
+                >
+                  <div style={{ maxWidth: '400px' }}>
+                    <NoDataFound
+                      title="Topology Empty"
+                      description="Try adjusting your filters or switching views to map devices."
+                      icon="mdi:sitemap-outline"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Info Panel */}
